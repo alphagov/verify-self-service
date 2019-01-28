@@ -1,0 +1,6 @@
+---
+applications:
+- name: verify-self-service
+  routes:
+  - route: verify-self-service-((environment)).cloudapps.digital
+  buildpacks: ruby_buildpack
