@@ -15,6 +15,4 @@ fi
 
 bundle check || bundle install
 
-yarn check || yarn install
-
-bundle exec rspec
+bundle exec rake
