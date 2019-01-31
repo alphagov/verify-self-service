@@ -1,6 +1,5 @@
 language: ruby
 script:
-  - yarn install
-  - bundle exec rspec
+  - bundle exec rake
 addons:
   firefox: latest
