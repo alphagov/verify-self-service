@@ -1,0 +1,42 @@
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">Upload your certificate</h1>
+  </legend>
+
+  <div class="govuk-form-group">
+    <%= form_for @upload, url: '/upload'  do |f| %>
+      <h3 class="govuk-heading-m">Select certificate type</h3>
+      <div class="govuk-radios govuk-radios--inline">
+        <div class="govuk-radios__item">
+          <%= f.radio_button :usage, 'Signing', class: 'govuk-radios__input'  %>
+          <%= f.label :usage, 'Signing', :value => 'Signing', class: 'govuk-label govuk-radios__label' %>
+        </div>
+        <div class="govuk-radios__item">
+          <%= f.radio_button :usage, 'Encryption', class: 'govuk-radios__input'  %>
+          <%= f.label :usage, 'Encryption', :value => 'Encryption', class: 'govuk-label govuk-radios__label' %>
+        </div>
+      </div><br>
+      <h3 class="govuk-heading-m">Paste in certificate</h3>
+      <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea", rows: "6" %>
+      <%= f.submit "Upload", class: "govuk-button" %>
+    <% end %>
+  </div>
+</fieldset>
+
+<table class="govuk-table">
+  <h3 class="govuk-heading-m">Uploaded certificates</h3>
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header" scope="col">Usage</th>
+      <th class="govuk-table__header" scope="col">Value</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <% for upload in @uploads.reverse %>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row"><%= upload.usage %></th>
+        <td class="govuk-table__cell"><%= upload.value %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
