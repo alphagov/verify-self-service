@@ -1,4 +1,3 @@
 class Certificate < ApplicationRecord
-  validates_presence_of :usage
-  validates_presence_of :value
+  validates_inclusion_of :usage, in: ['signing', 'encryption']
 end

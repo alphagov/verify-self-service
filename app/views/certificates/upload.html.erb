@@ -5,18 +5,18 @@
 
   <div class="govuk-form-group">
     <%= form_for @upload, url: '/upload'  do |f| %>
-      <h3 class="govuk-heading-m">Select certificate type</h3>
+      <h3 class="govuk-heading-m">Certificate usage</h3>
       <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item">
-          <%= f.radio_button :usage, 'Signing', class: 'govuk-radios__input'  %>
-          <%= f.label :usage, 'Signing', :value => 'Signing', class: 'govuk-label govuk-radios__label' %>
+          <%= f.radio_button :usage, 'signing', class: 'govuk-radios__input'  %>
+          <%= f.label :usage, 'Signing', class: 'govuk-label govuk-radios__label' %>
         </div>
         <div class="govuk-radios__item">
-          <%= f.radio_button :usage, 'Encryption', class: 'govuk-radios__input'  %>
-          <%= f.label :usage, 'Encryption', :value => 'Encryption', class: 'govuk-label govuk-radios__label' %>
+          <%= f.radio_button :usage, 'encryption', class: 'govuk-radios__input'  %>
+          <%= f.label :usage, 'Encryption', class: 'govuk-label govuk-radios__label' %>
         </div>
       </div><br>
-      <h3 class="govuk-heading-m">Paste in certificate</h3>
+      <h3 class="govuk-heading-m">Certificate value</h3>
       <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea", rows: "6" %>
       <%= f.submit "Upload", class: "govuk-button" %>
     <% end %>

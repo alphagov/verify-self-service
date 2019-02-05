@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe HomeController, type: :controller do
+RSpec.describe CertificatesController, type: :controller do
 
   describe "GET #index" do
     it "returns http success" do
@@ -8,5 +8,5 @@ RSpec.describe HomeController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
-  
+
 end

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  get '/upload', to: 'home#upload'
-  post '/upload', to: 'home#create'
+  get '/upload', to: 'certificates#upload'
+  post '/upload', to: 'certificates#create'
 
-  root 'home#index'
+  root 'certificates#index'
 end
