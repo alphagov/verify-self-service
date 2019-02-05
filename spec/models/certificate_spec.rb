@@ -11,7 +11,8 @@ RSpec.describe Certificate, type: :model do
   end
 
   it "is not valid without a usage and/or value" do
-    expect(Certificate.new(usage: nil)).to_not be_valid
-    expect(Certificate.new(value: nil)).to_not be_valid
+    expect(Certificate.new(usage: nil, value: 'Test')).to_not be_valid
+    expect(Certificate.new(usage: 'signing', value: nil)).to_not be_valid
+    expect(Certificate.new(usage: nil, value: nil)).to_not be_valid
   end
 end
