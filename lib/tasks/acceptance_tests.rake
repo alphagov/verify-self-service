@@ -1,7 +1,9 @@
-namespace :acceptance_tests do
-  desc 'Run acceptance tests'
-  task :run, [:url] do |task, args|
-    #Example command: bundle exec rake acceptance_tests:run[verify-self-service-dev.cloudapps.digital]
-    sh "TEST_URL=#{args[:url]} bundle exec rspec spec/system/acceptance --tag acceptance"
-  end
+require 'rspec/core/rake_task'
+
+desc 'Run acceptance tests'
+RSpec::Core::RakeTask.new(:acceptance_tests) do |t|
+  t.pattern = 'spec/acceptance/*_spec.rb'
+  t.rspec_opts = "--tag acceptance"
 end
+
+
