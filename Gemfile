@@ -5,8 +5,8 @@ ruby '2.6.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.2'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+# Use postgres as the database for Active Record
+gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
@@ -42,6 +42,8 @@ group :development, :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'geckodriver-helper'
+  # still use sqlite3 in development and testing.
+  gem 'sqlite3'
 end
 
 group :development do
