@@ -1,0 +1,9 @@
+---
+applications:
+- name: verify-self-service-db-migration
+  buildpacks:
+  - ruby_buildpack
+  services:
+  - verify-self-service-db
+  no-route: true
+
