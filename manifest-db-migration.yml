@@ -5,4 +5,5 @@ applications:
   - ruby_buildpack
   services:
   - verify-self-service-db
+  no-route: true
 
