@@ -8,5 +8,6 @@ RSpec.describe 'UploadPage', type: :system do
     fill_in 'certificate_value', with: test_certificate
     click_button 'Upload'
     expect(page).to have_content test_certificate
+    expect(current_path).to eql certificates_path
   end
 end

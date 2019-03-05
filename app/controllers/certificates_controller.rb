@@ -1,15 +1,15 @@
 class CertificatesController < ApplicationController
   def index
+    @uploads = Certificate.all
   end
 
   def upload
     @upload = Certificate.new
-    @uploads = Certificate.all
   end
 
   def create
     @upload = Certificate.create(upload_params)
-    redirect_to '/upload'
+    redirect_to certificates_path
   end
 
   private
