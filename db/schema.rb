@@ -10,13 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_04_113019) do
+ActiveRecord::Schema.define(version: 2019_03_05_142449) do
 
   create_table "certificates", force: :cascade do |t|
     t.string "value"
     t.string "usage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string "type", null: false
+    t.json "data"
+    t.string "aggregate_type"
+    t.integer "aggregate_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["aggregate_type", "aggregate_id"], name: "index_events_on_aggregate_type_and_aggregate_id"
   end
 
 end
