@@ -4,12 +4,18 @@ class CertificatesController < ApplicationController
   end
 
   def upload
-    @upload = Certificate.new
+    @upload = UploadCertificateEvent.new
   end
 
   def create
-    @upload = Certificate.create(upload_params)
-    redirect_to certificates_path
+    @upload = UploadCertificateEvent.create(upload_params)
+    if @upload.valid?
+      redirect_to certificates_path
+    else
+      # FIXME add error messages to view
+      Rails.logger.info(@upload.errors.full_messages)
+      render :upload
+    end
   end
 
   private

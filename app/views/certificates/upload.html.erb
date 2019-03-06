@@ -4,7 +4,7 @@
   </legend>
 
   <div class="govuk-form-group">
-    <%= form_for @upload, url: '/upload'  do |f| %>
+    <%= form_for @upload, url: upload_path, as: :certificate  do |f| %>
       <h3 class="govuk-heading-m">Certificate usage</h3>
       <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item">
