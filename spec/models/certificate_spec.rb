@@ -15,4 +15,10 @@ RSpec.describe Certificate, type: :model do
     expect(Certificate.new(usage: 'signing', value: nil)).to_not be_valid
     expect(Certificate.new(usage: nil, value: nil)).to_not be_valid
   end
+
+  it 'has events' do
+    event = UploadCertificateEvent.create!(usage: 'signing', value: 'foobar')
+    certificate = event.certificate
+    expect(certificate.events.to_a).to eql [event]
+  end
 end
