@@ -1,21 +1,24 @@
+<h1 class="govuk-heading-l">Events</h3>
 <table class="govuk-table">
-  <h3 class="govuk-heading-m">Events</h3>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
       <th class="govuk-table__header" scope="col">Type</th>
       <th class="govuk-table__header" scope="col">Data</th>
       <th class="govuk-table__header" scope="col">Created at</th>
-      <th class="govuk-table__header" scope="col">Aggregate</th>
+      <th class="govuk-table__header" scope="col">Aggregate ID</th>
+      <th class="govuk-table__header" scope="col">Aggregate Type</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
     <% @events.reverse.each do |event| %>
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="row"><%= event.type %></th>
-        <td class="govuk-table__cell"><%= event.data %></td>
-        <td class="govuk-table__cell"><%= event.created_at %></td>
-        <td class="govuk-table__cell"><%= event.aggregate %></td>
+        <td class="govuk-table__cell" scope="row"><%= event.type %></th>
+        <td class="govuk-table__cell" scope="row"><code><%= JSON.pretty_generate(event.data) %></code></td>
+        <td class="govuk-table__cell" scope="row"><%= event.created_at %></td>
+        <td class="govuk-table__cell" scope="row"><%= event.aggregate_id %></td>
+        <td class="govuk-table__cell" scope="row"><%= event.aggregate_type %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+<%= paginate @events %>

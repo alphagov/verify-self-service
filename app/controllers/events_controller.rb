@@ -1,6 +1,10 @@
 class EventsController < ApplicationController
   def index
-    @events = Event.includes(:aggregate).order('created_at')
+    @page_number = params[:page] || 1
+    @events = Event
+      .includes(:aggregate)
+      .order('id DESC')
+      .page(@page_number)
     render :index
   end
 end
