@@ -3,8 +3,12 @@
     <h1 class="govuk-fieldset__heading">Upload your certificate</h1>
   </legend>
 
-  <div class="govuk-form-group">
-    <%= form_for @upload, url: upload_path, as: :certificate  do |f| %>
+  <% if @upload.errors.any? %>
+    <%= render "error_messages" %>
+  <% end %>
+
+  <div class="govuk-form-group <%= 'govuk-form-group--error' if upload_errors?(@upload) %>">
+    <%= form_for @upload, url: upload_path, as: :certificate do |f| %>
       <h3 class="govuk-heading-m">Certificate usage</h3>
       <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item">
@@ -17,7 +21,14 @@
         </div>
       </div><br>
       <h3 class="govuk-heading-m">Certificate value</h3>
-      <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea", rows: "6" %>
+      <% if upload_errors?(@upload) %>
+        <%= render "field_error_messages" %>
+      <% end %>
+      <% if upload_errors?(@upload) %>
+        <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea govuk-textarea--error", id: "value-error", rows: "6" %>
+      <% else %>
+        <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea", rows: "6" %>
+      <% end %>
       <%= f.submit "Upload", class: "govuk-button" %>
     <% end %>
   </div>
