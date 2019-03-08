@@ -1,5 +1,7 @@
 # Verify Self-service platform
 
+[![Build Status](https://travis-ci.org/alphagov/verify-self-service.svg?branch=master)](https://travis-ci.org/alphagov/verify-self-service)
+
 A Ruby on Rails application for the Verify self-service configuration management
 platform. It is currently a work in progress.
 
