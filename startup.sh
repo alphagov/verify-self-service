@@ -1,7 +1,7 @@
 #!/bin/bash
-
+set -e
 bundle check || bundle install
 
 yarn check || yarn install
 
-bundle exec rails s
+bin/rails s
