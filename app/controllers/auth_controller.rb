@@ -42,8 +42,6 @@ class AuthController < ApplicationController
 
   def destroy
     session[:userinfo] = nil
-    #render :text => "You've logged out!"
-    #redirect_to '/'
     redirect_to login_url
   end
 end
