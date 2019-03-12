@@ -1,7 +1,12 @@
 require 'rails_helper'
+require 'auth_test_helper'
 
 RSpec.describe 'the events page', type: :system do
+  before(:each) do
+    stub_auth
+  end
   it 'there are some events' do
+    
     UploadCertificateEvent.create(usage: 'signing', value: 'foobar')
     UploadCertificateEvent.create(usage: 'signing', value: 'barfoo')
     UploadCertificateEvent.create(usage: 'signing', value: 'foobarbaz')

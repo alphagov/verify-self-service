@@ -1,0 +1,21 @@
+<h1  class="govuk-heading-l">Dashboard</h1>
+
+<div>
+  <img class="avatar" src="<%= @user[:info][:image] %>"/>
+  <h2  class="govuk-heading-m">Welcome <%= @user[:info][:name] %></h2>
+  <p class="govuk-body">Profile:</p>
+  <p class="govuk-body"><%= @user[:info] %></p>
+  <p class="govuk-body">Provider: <%= @user[:provider] %></p>
+  <!-- <p class="govuk-body">Everything: <%= @user %></p> -->
+  <% if @user[:provider] == 'cognito-idp' %>
+    <a href="<%= Rails.application.secrets.cognito_user_pool_site + 
+    "logout?client_id=" + Rails.application.secrets.cognito_client_id +
+    "&logout_uri=http://localhost:3000/logout" %>" class="govuk-button">Logout</a>
+  <% elsif @user[:provider] == 'facebook' %>
+    <a class="govuk-button"
+    href="https://www.facebook.com/logout.php?next=http://localhost:3000/logout&access_token=<%= @user[:credentials][:token] %>">
+    Logout</a>
+  <% else %>
+    <a href="http://localhost:3000/logout" class="govuk-button">Logout</a>
+  <% end %>
+</div>
