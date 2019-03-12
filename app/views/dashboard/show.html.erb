@@ -7,9 +7,5 @@
   <p class="govuk-body"><%= @user[:info] %></p>
   <p class="govuk-body">Provider: <%= @user[:provider] %></p>
   <!-- <p class="govuk-body">Everything: <%= @user %></p> -->
-  <% if @user[:provider] == 'cognito-idp' %>
-    <a href="/logout" %>" class="govuk-button">Logout</a>
-  <% else %>
-    <a href="http://localhost:3000/logout" class="govuk-button">Logout</a>
-  <% end %>
+  <a href="/logout" class="govuk-button">Logout</a>
 </div>
