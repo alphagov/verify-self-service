@@ -9,10 +9,10 @@ Rails.application.config.middleware.use OmniAuth::Strategies::CognitoIdP,
     client_options: {
         site: Rails.application.secrets.cognito_user_pool_site
     }
-
-Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :developer, :fields => [:name, :email, :phone, :first_name, :last_name],
-  :uid_field => :last_name unless Rails.env.production?
+if Rails.env.development?
+    Rails.application.config.middleware.use OmniAuth::Builder do
+        provider :developer, :fields => [:name, :email, :phone, :first_name, :last_name], :uid_field => :last_name
+    end
 end
 
 OmniAuth.config.on_failure = Proc.new { |env|
