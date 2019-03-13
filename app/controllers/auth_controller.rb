@@ -1,7 +1,8 @@
 class AuthController < ApplicationController
   # Required for OmniAuth Dev Flow... Not to be used in Production
   skip_before_action :verify_authenticity_token, only: :callback unless Rails.env.production?
-
+  skip_before_action :authenticate_user!
+  
   def create
     auth_hash = request.env['omniauth.auth']
     
@@ -19,7 +20,7 @@ class AuthController < ApplicationController
    
       render :text => "Welcome #{auth.user.name}!"
     end
-    redirect_to session[:redirect_path] || '/'
+    redirect_to session[:redirect_path] || root_path
   end
 
   # This stores all the user information that came from the Auth Provider
@@ -29,7 +30,7 @@ class AuthController < ApplicationController
     session[:provider] = auth_hash[:provider]
     session[:userinfo] = auth_hash[:extra]["raw_info"]
     # Redirect to the URL you want after successful auth
-    redirect_to session[:redirect_path] || '/'
+    redirect_to session[:redirect_path] || root_path
   end
 
   # This handles authentication failures

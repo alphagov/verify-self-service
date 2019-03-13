@@ -1,11 +1,9 @@
 <h1  class="govuk-heading-l">Dashboard</h1>
 
 <div>
-  <img class="avatar" src="<%= @user[:info][:image] %>"/>
-  <h2  class="govuk-heading-m">Welcome <%= @user[:info][:name] %></h2>
+  <h2  class="govuk-heading-m">Welcome <%= @user["name"] %></h2>
   <p class="govuk-body">Profile:</p>
-  <p class="govuk-body"><%= @user[:info] %></p>
-  <p class="govuk-body">Provider: <%= @user[:provider] %></p>
-  <!-- <p class="govuk-body">Everything: <%= @user %></p> -->
+  <p class="govuk-body"><%= @user %></p>
+  <p class="govuk-body">Provider: <%= @provider %></p>
   <a href="/logout" class="govuk-button">Logout</a>
 </div>

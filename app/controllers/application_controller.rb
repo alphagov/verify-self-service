@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
+  
   # Is the user signed in?
   # @return [Boolean]
   def user_signed_in?
@@ -22,15 +24,5 @@ class ApplicationController < ActionController::Base
     @current_user
   end
 
-  # @return the path to the login page
-  def login_url
-    '/auth/cognito-idp/'
-  end
-
-  def logout_url
-    host = "#{request.protocol}#{request.host}:#{request.port}" || "http://localhost:3000"
-    Rails.application.secrets.cognito_user_pool_site + 
-    "logout?client_id=" + Rails.application.secrets.cognito_client_id +
-    "&logout_uri=#{host}/logout/callback"
-  end
+  before_action :authenticate_user!
 end

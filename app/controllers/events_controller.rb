@@ -1,5 +1,4 @@
 class EventsController < ApplicationController
-  before_action :authenticate_user!
   
   def index
     @page_number = params[:page] || 1
