@@ -4,11 +4,12 @@ include CertificateSupport
 
 RSpec.describe 'UploadPage', type: :system do
 
-  root = PKI.new
-  good_cert = root.sign(generate_cert_with_expiry(Time.now + 2.months))
-  good_cert_value = Base64.strict_encode64(good_cert.to_der)
+  let(:root) { PKI.new }
 
-  let(:test_certificate) { good_cert_value }
+  let(:test_certificate) do
+    good_cert = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+  end
+
   it 'successfully submits a certificate' do
     visit '/upload'
     choose 'certificate_usage_signing', allow_label_click: true
