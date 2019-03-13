@@ -6,7 +6,7 @@
             'info' => {
             'name' => 'Test User'
             }
-        }}, 'provider' => 'twitter'})
+        }}, 'provider' => 'test-idp'})
         OmniAuth.config.add_mock(:cognito_idp, {:provider => 'cognito-idp'})
         Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:cognito_idp]
     end
@@ -17,5 +17,10 @@
             'info' => {
             'name' => 'Test User'
             }
-        }}, 'provider' => 'twitter'})
+        }}, 'provider' => 'test-idp'})
+    end
+
+    def populate_session
+        session[:userinfo] = "Test User"
+        session[:provider] = "test-idp"
     end
