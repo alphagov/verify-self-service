@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  get 'auth/callback'
-  get 'auth/failure'
   get 'home/index', to: 'home#index'
   get '/upload', to: 'certificates#upload'
   post '/upload', to: 'certificates#create'
@@ -11,7 +9,6 @@ Rails.application.routes.draw do
   get '/events/:page', to: 'events#page'
   
   
-  get   '/login', :to => 'sessions#new', :as => :login
   match '/auth/:provider/callback', :to => 'auth#callback', :via => [:get, :post]
   match '/auth/failure', :to => 'auth#failure', :via => [:get, :post]
   get '/logout/', :to => 'auth#logout'
