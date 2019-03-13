@@ -15,7 +15,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     it 'must be present' do
       event = UploadCertificateEvent.create()
       expect(event).to_not be_valid
-      expect(event.errors[:value]).to eql ['can\'t be blank']
+      expect(event.errors[:certificate]).to eql ['can\'t be blank']
     end
   end
 

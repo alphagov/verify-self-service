@@ -6,12 +6,14 @@
   <% if @upload.errors? %>
     <%= render "error_messages" %>
   <% end %>
-
-  <div class="govuk-form-group <%= 'govuk-form-group--error' if @upload.errors? %>">
-    <%= form_for @upload, url: upload_path, as: :certificate do |f| %>
+  <%= form_for @upload, url: upload_path, as: :certificate do |f| %>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @upload.errors.key?(:usage) %>">
       <h3 class="govuk-heading-m">Certificate usage</h3>
+      <% if @upload.errors? %>
+        <%= render partial: "field_error_messages", locals: { fields: [:usage] } %>
+      <% end %>
       <div class="govuk-radios govuk-radios--inline">
-        <div class="govuk-radios__item">
+        <div class="govuk-radios__item ">
           <%= f.radio_button :usage, 'signing', class: 'govuk-radios__input'  %>
           <%= f.label :usage, 'Signing', class: 'govuk-label govuk-radios__label' %>
         </div>
@@ -19,17 +21,15 @@
           <%= f.radio_button :usage, 'encryption', class: 'govuk-radios__input'  %>
           <%= f.label :usage, 'Encryption', class: 'govuk-label govuk-radios__label' %>
         </div>
-      </div><br>
+      </div>
+    </div>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @upload.errors.key?(:certificate) %>">
       <h3 class="govuk-heading-m">Certificate value</h3>
       <% if @upload.errors? %>
-        <%= render "field_error_messages" %>
+        <%= render partial: "field_error_messages", locals: { fields: [:value, :certificate] } %>
       <% end %>
-      <% if @upload.errors? %>
-        <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea govuk-textarea--error", id: "value-error", rows: "6" %>
-      <% else %>
-        <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea", rows: "6" %>
-      <% end %>
+      <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea#{@upload.errors.key?(:certificate) ? ' govuk-textarea--error' : ''}", rows: "6" %>
       <%= f.submit "Upload", class: "govuk-button" %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 </fieldset>

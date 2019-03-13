@@ -5,10 +5,12 @@
     </h2>
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
-        <% @upload.errors.full_messages.each do |msg| %>
+        <% @upload.errors.keys.each do |key| %>
+          <% @upload.errors.full_messages_for(key).each do |msg| %>
           <li>
-            <a href="#value-error"><%= msg %></a>
+            <a href="<%= "#certificate_#{key}"%>"><%= msg %></a>
           </li>
+          <% end %>
         <% end %>
       </ul>
     </div>

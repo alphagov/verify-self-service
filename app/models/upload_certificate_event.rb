@@ -3,11 +3,11 @@ class UploadCertificateEvent < Event
   data_attributes :value, :usage
   before_save :convert_value_to_inline_der
 
+  validate :value_is_present
   validate :certificate_is_valid,
            :certificate_is_new, on: :create, if: :value_present?
 
   validates_inclusion_of :usage, in: ['signing', 'encryption']
-  validates_presence_of :value
 
   def build_certificate
     Certificate.new
@@ -21,6 +21,12 @@ class UploadCertificateEvent < Event
 
   def convert_value_to_inline_der
     self.value = Base64.strict_encode64(x509_certificate.to_der)
+  end
+
+  def value_is_present
+    if !value_present?
+      self.errors.add(:certificate, "can't be blank")
+    end
   end
 
   def value_present?
