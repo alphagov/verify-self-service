@@ -1,6 +1,4 @@
 require 'rails_helper'
-require_relative '../support/certificate_support'
-require_relative '../support/pki'
 
 include CertificateSupport
 
