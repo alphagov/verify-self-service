@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
   include ApplicationHelper
+
+  before_action :authenticate_user!
   
   # Is the user signed in?
   # @return [Boolean]
@@ -24,5 +26,4 @@ class ApplicationController < ActionController::Base
     @current_user
   end
 
-  before_action :authenticate_user!
 end
