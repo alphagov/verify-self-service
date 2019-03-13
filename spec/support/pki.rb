@@ -51,6 +51,24 @@ class PKI
     cert
   end
 
+  def generate_signed_cert_with_expiry(time)
+    sign(generate_cert_with_expiry(time))
+  end
+
+  def generate_encoded_cert_with_expiry(time)
+    Base64.strict_encode64(generate_signed_cert_with_expiry(time).to_der)
+  end
+
+  def generate_signed_ec_cert(time)
+    cert = generate_ec_cert_and_key(time)[0]
+    self.sign cert
+  end
+
+  def generate_signed_rsa_cert_and_key(size, time)
+    cert, key = *generate_rsa_cert_and_key(size, time)
+    [self.sign(cert), key]
+  end
+
   def generate_signed_cert(cn = "SIGNED TEST CERTIFICATE")
     sign(generate_cert(cn))
   end
