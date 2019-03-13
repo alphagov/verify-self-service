@@ -1,5 +1,4 @@
 class CertificatesController < ApplicationController
-  before_action :authenticate_user!
   
   def index
     @uploads = Certificate.all
