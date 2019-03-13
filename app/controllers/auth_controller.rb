@@ -25,7 +25,10 @@ class AuthController < ApplicationController
   # This stores all the user information that came from the Auth Provider
   # and the IdP
   def callback
-    session[:userinfo] = request.env['omniauth.auth']
+    auth_hash = request.env['omniauth.auth']
+    session[:provider] = auth_hash[:provider]
+    session[:userinfo] = auth_hash[:extra]["raw_info"]
+    #session[:userinfo] = request.env['omniauth.auth']
     # Redirect to the URL you want after successful auth
     redirect_to session[:redirect_path] || '/'
   end
