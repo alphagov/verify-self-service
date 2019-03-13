@@ -1,13 +1,9 @@
 require 'rails_helper'
+require 'auth_test_helper'
 
 RSpec.describe AuthController, type: :controller do
   before(:each) do
-    request.env['omniauth.auth'] = auth_hash = OmniAuth::AuthHash.new({'extra' => { 'raw_info' =>{
-            'uid' => '12032019',
-            'info' => {
-            'name' => 'Test User'
-            }
-        }}, 'provider' => 'twitter'})
+    get_auth_hash
   end
 
 
