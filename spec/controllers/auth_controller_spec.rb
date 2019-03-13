@@ -9,14 +9,14 @@ RSpec.describe AuthController, type: :controller do
 
   describe 'GET #callback' do
     it 'returns redirect to / if no path set in session' do
-      get :callback
+      get :callback, params: { provider: 'test-idp' }
       expect(response).to have_http_status(:redirect)
       expect(response).to redirect_to(root_path)
     end
     
     it 'returns redirect to path if set in session' do
       session[:redirect_path] = '/test'
-      get :callback
+      get :callback, params: { provider: 'test-idp' }
       expect(response).to have_http_status(:redirect)
       expect(response).to redirect_to('/test')
     end
