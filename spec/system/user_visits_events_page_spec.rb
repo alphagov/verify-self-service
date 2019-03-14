@@ -7,9 +7,9 @@ RSpec.describe 'the events page', type: :system do
   let(:root) { PKI.new }
 
   it 'there are some events' do
-    good_cert_1 = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
-    good_cert_2 = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
-    good_cert_3 = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+    good_cert_1 = root.generate_encoded_cert(expires_in: 2.months)
+    good_cert_2 = root.generate_encoded_cert(expires_in: 2.months)
+    good_cert_3 = root.generate_encoded_cert(expires_in: 2.months)
 
     UploadCertificateEvent.create(usage: 'signing', value: good_cert_1)
     UploadCertificateEvent.create(usage: 'signing', value: good_cert_2)
@@ -22,7 +22,7 @@ RSpec.describe 'the events page', type: :system do
 
   it 'is paginated' do
     events = 55.times.map do
-      UploadCertificateEvent.create(usage: 'signing', value: root.generate_encoded_cert_with_expiry(Time.now + 2.months))
+      UploadCertificateEvent.create(usage: 'signing', value: root.generate_encoded_cert(expires_in: 2.months))
     end.reverse
 
     visit events_path
