@@ -28,7 +28,13 @@ class AuthController < ApplicationController
   def callback
     auth_hash = request.env['omniauth.auth']
     session[:provider] = auth_hash[:provider]
-    session[:userinfo] = auth_hash[:extra]["raw_info"]
+      
+    if auth_hash[:provider] == 'cognito-idp'
+        session[:userinfo] = auth_hash[:extra]["raw_info"]
+    else
+        session[:userinfo] = auth_hash
+    end
+
     # Redirect to the URL you want after successful auth
     redirect_to session[:redirect_path] || root_path
   end

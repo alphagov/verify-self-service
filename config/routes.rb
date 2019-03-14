@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   
   match '/auth/:provider/callback', :to => 'auth#callback', :via => [:get, :post]
   match '/auth/failure', :to => 'auth#failure', :via => [:get, :post]
-  get '/logout/', :to => 'auth#logout'
-  get '/logout/callback', :to => 'auth#destroy'
+  get '/logout/', :to => 'auth#logout', :as => 'logout'
+  get '/logout/callback', :to => 'auth#destroy', :as => 'logout_callback'
   
   if Rails.env.development?
     get '/devauth' => 'dev_auth#show'
