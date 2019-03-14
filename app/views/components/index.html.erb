@@ -1,0 +1,19 @@
+<h1>Components#index</h1>
+
+<table class="govuk-table">
+  <h3 class="govuk-heading-m">Components</h3>
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header" scope="col">Name</th>
+      <th class="govuk-table__header" scope="col">Type</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <% for component in @components.reverse %>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row"><%= component.name %></th>
+        <td class="govuk-table__cell"><%= component.component_type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

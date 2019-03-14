@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   
   get '/certificates', to: 'certificates#index'
   root 'certificates#index'
+
+  get '/components', to: 'components#index'
+
   get '/events', to: 'events#index'
   get '/events/:page', to: 'events#page'
   
