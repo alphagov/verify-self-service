@@ -13,7 +13,6 @@ class CertificatesController < ApplicationController
     if @upload.valid?
       redirect_to certificates_path
     else
-      # FIXME add error messages to view
       Rails.logger.info(@upload.errors.full_messages)
       render :upload
     end
