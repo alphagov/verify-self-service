@@ -1,20 +1,30 @@
 require 'rails_helper'
 
+include CertificateSupport
+
 RSpec.describe 'the events page', type: :system do
+
+  let(:root) { PKI.new }
+
   it 'there are some events' do
-    UploadCertificateEvent.create(usage: 'signing', value: 'foobar')
-    UploadCertificateEvent.create(usage: 'signing', value: 'barfoo')
-    UploadCertificateEvent.create(usage: 'signing', value: 'foobarbaz')
+    good_cert_1 = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+    good_cert_2 = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+    good_cert_3 = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+
+    UploadCertificateEvent.create(usage: 'signing', value: good_cert_1)
+    UploadCertificateEvent.create(usage: 'signing', value: good_cert_2)
+    UploadCertificateEvent.create(usage: 'signing', value: good_cert_3)
     visit events_path
-    expect(page).to have_content 'foobar'
-    expect(page).to have_content 'barfoo'
-    expect(page).to have_content 'foobarbaz'
+    expect(page).to have_content good_cert_1
+    expect(page).to have_content good_cert_2
+    expect(page).to have_content good_cert_3
   end
 
   it 'is paginated' do
-    events = 55.times.map do |idx|
-      UploadCertificateEvent.create(usage: 'signing', value: "foobar#{idx}foobar")
+    events = 55.times.map do
+      UploadCertificateEvent.create(usage: 'signing', value: root.generate_encoded_cert_with_expiry(Time.now + 2.months))
     end.reverse
+
     visit events_path
     expect(page).to have_selector('tbody tr', count: 25)
     first_page_events = events.slice!(0, 25)

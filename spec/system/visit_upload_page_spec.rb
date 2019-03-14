@@ -1,7 +1,15 @@
 require 'rails_helper'
 
+include CertificateSupport
+
 RSpec.describe 'UploadPage', type: :system do
-  let(:test_certificate) { 'ThisIsATestCertificate' }
+
+  let(:root) { PKI.new }
+
+  let(:test_certificate) do
+    good_cert = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+  end
+
   it 'successfully submits a certificate' do
     visit '/upload'
     choose 'certificate_usage_signing', allow_label_click: true
