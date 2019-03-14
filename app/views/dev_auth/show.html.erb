@@ -4,7 +4,7 @@
 below to populate your temporary profile for Omniauth</p>
 
 <% if Rails.application.secrets.cognito_client_id.present? %>
-    <a href="/auth/cognito-idp" class="govuk-button">Login with Cognito</a>
+    <%= link_to "Login with Cognito", "/auth/cognito-idp", id: nil, class: "govuk-button" %>
 <% end %>
 
 <form method='post' action='/auth/developer/callback' noValidate='noValidate'>
