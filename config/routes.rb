@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   root 'certificates#index'
 
   get '/components', to: 'components#index'
+  get '/components/new', to: 'components#new'
+  post '/components/new', to: 'components#create'
 
   get '/events', to: 'events#index'
   get '/events/:page', to: 'events#page'

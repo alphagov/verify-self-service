@@ -1,0 +1,28 @@
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">Upload your component</h1>
+  </legend>
+
+  <%= form_for @component, url: components_new_path, as: :component do |f| %>
+    <div class="govuk-form-group">
+      <h3 class="govuk-heading-m">Component name</h3>
+      <%= f.text_field :name, class: "govuk-input" %>
+    </div>
+    <div class="govuk-form-group">
+      <h3 class="govuk-heading-m">Component type</h3>
+      <div class="govuk-radios govuk-radios--inline">
+        <div class="govuk-radios__item ">
+          <%= f.radio_button :component_type, 'VSP', class: 'govuk-radios__input'  %>
+          <%= f.label :component_type, 'VSP', class: 'govuk-label govuk-radios__label' %>
+        </div>
+        <div class="govuk-radios__item">
+          <%= f.radio_button :component_type, 'MSA', class: 'govuk-radios__input'  %>
+          <%= f.label :component_type, 'MSA', class: 'govuk-label govuk-radios__label' %>
+        </div>
+      </div>
+    </div>
+    <div class="govuk-form-group">
+        <%= f.submit "Create component", class: "govuk-button" %>
+    </div>
+  <% end %>
+</fieldset>

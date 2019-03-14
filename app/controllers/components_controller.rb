@@ -8,7 +8,7 @@ class ComponentsController < ApplicationController
     end
   
     def create
-      @component = NewCertificateEvent.create(component_params)
+      @component = NewComponentEvent.create(component_params)
       redirect_to components_path
     end
   
@@ -17,7 +17,7 @@ class ComponentsController < ApplicationController
     def component_params
       params.require(:component).permit(
         :name,
-        :type
+        :component_type
       )
     end
   
