@@ -13,12 +13,14 @@ if  Rails.application.secrets.cognito_client_id.present?
     login_path='/auth/cognito-idp'
 end
 
-if Rails.env.development?
+if %w(test development).include? Rails.env    
     Rails.application.config.middleware.use OmniAuth::Builder do
         provider :developer, :fields => [:name, :email, :phone, :first_name, :last_name], :uid_field => :last_name
     end
     login_path='/devauth'
 end
+
+login_path='/auth/developer' if Rails.env.test?
 
 OmniAuth.config.on_failure = Proc.new { |env|
   message_key = env['omniauth.error.type']
@@ -27,10 +29,10 @@ OmniAuth.config.on_failure = Proc.new { |env|
   Rack::Response.new(['302 Moved'], 302, 'Location' => new_path).finish
 }
 
-if login_path.nil?
-    puts "No Auth Configured, App won't run"
-    raise StandardError, "Stopping Rails Application as no Auth has been configured"
-end
+#if login_path.nil?
+#    puts "No Auth Configured, App won't run"
+#    raise StandardError, "Stopping Rails Application as no Auth has been configured"
+#end
 
 AUTH_LOGIN_PATH=login_path
 

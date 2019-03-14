@@ -1,4 +1,3 @@
-
     def stub_auth
         OmniAuth.config.test_mode = true
         OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new({'extra' => { 'raw_info' =>{
@@ -7,7 +6,8 @@
             'name' => 'Test User'
             }
         }}, 'provider' => 'test-idp'})
-        OmniAuth.config.add_mock(:cognito_idp, {:provider => 'cognito-idp'})
+        OmniAuth.config.add_mock(:developer, {:provider => 'developer'})
+    
         Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:cognito_idp]
     end
 
