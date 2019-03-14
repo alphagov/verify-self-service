@@ -9,7 +9,12 @@ class ComponentsController < ApplicationController
   
     def create
       @component = NewComponentEvent.create(component_params)
-      redirect_to components_path
+      if @component.valid?
+        redirect_to components_path
+      else
+        Rails.logger.info(@component.errors.full_messages)
+        render :new
+      end
     end
   
     private

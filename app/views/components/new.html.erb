@@ -3,13 +3,22 @@
     <h1 class="govuk-fieldset__heading">Upload your component</h1>
   </legend>
 
+  <% if @component.errors? %>
+    <%= render "error_messages" %>
+  <% end %>
   <%= form_for @component, url: components_new_path, as: :component do |f| %>
-    <div class="govuk-form-group">
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:name) %>">
       <h3 class="govuk-heading-m">Component name</h3>
-      <%= f.text_field :name, class: "govuk-input" %>
+      <% if @component.errors? %>
+        <%= render partial: "field_error_messages", locals: { fields: [:name] } %>
+      <% end %>
+      <%= f.text_field :name, class: "govuk-input#{@component.errors.key?(:name) ? ' govuk-input--error' : ''}" %>
     </div>
-    <div class="govuk-form-group">
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:component_type) %>">
       <h3 class="govuk-heading-m">Component type</h3>
+      <% if @component.errors? %>
+        <%= render partial: "field_error_messages", locals: { fields: [:component_type] } %>
+      <% end %>
       <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item ">
           <%= f.radio_button :component_type, 'VSP', class: 'govuk-radios__input'  %>
