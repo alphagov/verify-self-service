@@ -29,10 +29,5 @@ OmniAuth.config.on_failure = Proc.new { |env|
   Rack::Response.new(['302 Moved'], 302, 'Location' => new_path).finish
 }
 
-#if login_path.nil?
-#    puts "No Auth Configured, App won't run"
-#    raise StandardError, "Stopping Rails Application as no Auth has been configured"
-#end
-
 AUTH_LOGIN_PATH=login_path
 
