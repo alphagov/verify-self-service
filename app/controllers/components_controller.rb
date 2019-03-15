@@ -2,11 +2,15 @@ class ComponentsController < ApplicationController
     def index
       @components = Component.all
     end
-  
+
     def new
       @component = NewComponentEvent.new
     end
-  
+
+    def show
+      @component = Component.find(params[:id])
+    end
+
     def create
       @component = NewComponentEvent.create(component_params)
       if @component.valid?

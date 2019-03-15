@@ -6,13 +6,16 @@
     <tr class="govuk-table__row">
       <th class="govuk-table__header" scope="col">Name</th>
       <th class="govuk-table__header" scope="col">Type</th>
+      <th class="govuk-table__header" scope="col">View</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
     <% for component in @components.reverse %>
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="row"><%= component.name %></th>
+        <td class="govuk-table__cell" scope="row"><%= component.name %></td>
         <td class="govuk-table__cell"><%= component.component_type %></td>
+        <td class="govuk-table__cell"><%= link_to 'View component', component_path(component) %>
+</td>
       </tr>
     <% end %>
   </tbody>

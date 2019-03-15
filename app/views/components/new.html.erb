@@ -6,7 +6,7 @@
   <% if @component.errors? %>
     <%= render "error_messages" %>
   <% end %>
-  <%= form_for @component, url: components_new_path, as: :component do |f| %>
+  <%= form_for @component, url: components_path, as: :component do |f| %>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:name) %>">
       <h3 class="govuk-heading-m">Component name</h3>
       <% if @component.errors? %>
