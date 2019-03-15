@@ -20,15 +20,18 @@ class ComponentsController < ApplicationController
         render :new
       end
     end
-  
+
+    def update
+      
+    end
+
     private
-  
+
     def component_params
       params.require(:component).permit(
         :name,
         :component_type
       )
     end
-  
+
   end
-  

@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_14_124333) do
+ActiveRecord::Schema.define(version: 2019_03_15_170837) do
 
   create_table "certificates", force: :cascade do |t|
     t.string "value"
     t.string "usage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "component_id"
   end
 
   create_table "components", force: :cascade do |t|
