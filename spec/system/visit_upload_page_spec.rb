@@ -1,8 +1,13 @@
 require 'rails_helper'
+require 'auth_test_helper'
 
 include CertificateSupport
 
 RSpec.describe 'UploadPage', type: :system do
+
+  before(:each) do
+    stub_auth
+  end
 
   let(:root) { PKI.new }
 

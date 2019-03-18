@@ -1,8 +1,13 @@
 require 'rails_helper'
+require 'auth_test_helper'
 
 include CertificateSupport
 
 RSpec.describe 'the events page', type: :system do
+
+  before(:each) do
+    stub_auth
+  end
 
   let(:root) { PKI.new }
 
@@ -14,6 +19,7 @@ RSpec.describe 'the events page', type: :system do
     UploadCertificateEvent.create(usage: 'signing', value: good_cert_1)
     UploadCertificateEvent.create(usage: 'signing', value: good_cert_2)
     UploadCertificateEvent.create(usage: 'signing', value: good_cert_3)
+
     visit events_path
     expect(page).to have_content good_cert_1
     expect(page).to have_content good_cert_2

@@ -1,0 +1,20 @@
+<h1 class="govuk-heading-l">User Info</h1>
+
+<p class="govuk-body">Welcome Developer.  Please supply your information in the boxes
+below to populate your temporary profile for Omniauth</p>
+
+<% if Rails.application.secrets.cognito_client_id.present? %>
+    <%= link_to "Login with Cognito", "/auth/cognito-idp", id: nil, class: "govuk-button" %>
+<% end %>
+
+<form method='post' action='/auth/developer/callback' noValidate='noValidate'>
+    <div class="govuk-form-group">
+        <label class="govuk-label" for='name'>Name:</label> <input class="govuk-input" type='text' id='name' name='name'/></p>
+        <label class="govuk-label" for='email'>Email:</label> <input class="govuk-input" type='text' id='email' name='email'/></p>
+        <label class="govuk-label" for='phone'>Phone:</label> <input class="govuk-input" type='text' id='phone' name='phone'/></p>
+        <label class="govuk-label" for='first_name'>First name:</label> <input class="govuk-input" type='text' id='first_name' name='first_name'/></p>
+        <label class="govuk-label" for='last_name'>Last name:</label> <input class="govuk-input" type='text' id='last_name' name='last_name'/></p>
+        <button type='submit' class="govuk-button">Sign In</button>
+        <a href="/" class="govuk-button">Cancel</a></p>
+    </div>
+</form>

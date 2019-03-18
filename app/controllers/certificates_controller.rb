@@ -1,4 +1,5 @@
 class CertificatesController < ApplicationController
+  
   def index
     @uploads = Certificate.all
   end
