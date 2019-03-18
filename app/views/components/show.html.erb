@@ -1,2 +1,19 @@
-<h1>Yay!</h1>
-<%= @component.name %>
+<h1>Component</h1>
+
+<table class="govuk-table">
+  <h3 class="govuk-heading-m">Component</h3>
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header" scope="col">Name</th>
+      <th class="govuk-table__header" scope="col">Type</th>
+      <th class="govuk-table__header" scope="col">Upload Certificate</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell" scope="row"><%= @component.name %></td>
+        <td class="govuk-table__cell"><%= @component.component_type %></td>
+        <td class="govuk-table__cell"><%= link_to 'Upload', edit_component_path %></td>
+      </tr>
+  </tbody>
+</table>

@@ -11,6 +11,10 @@ class ComponentsController < ApplicationController
       @component = Component.find(params[:id])
     end
 
+    def edit
+      @component = Component.find(params[:id])
+    end
+
     def create
       @component = NewComponentEvent.create(component_params)
       if @component.valid?
@@ -22,7 +26,7 @@ class ComponentsController < ApplicationController
     end
 
     def update
-      
+
     end
 
     private

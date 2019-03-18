@@ -1,6 +1,6 @@
 class UploadCertificateEvent < Event
   belongs_to_aggregate :certificate
-  data_attributes :value, :usage
+  data_attributes :value, :usage, :component_id
   before_save :convert_value_to_inline_der
 
   validate :value_is_present
@@ -14,7 +14,7 @@ class UploadCertificateEvent < Event
   end
 
   def attributes_to_apply
-    {usage: self.usage, value: self.value, created_at: self.created_at}
+    {usage: self.usage, value: self.value, component_id: self.component_id, created_at: self.created_at}
   end
 
   private
