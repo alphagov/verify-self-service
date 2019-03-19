@@ -1,0 +1,218 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  EnvDBHost:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /rails-lambda/DB_HOST
+  EnvDBUser:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /rails-lambda/DB_USER
+  EnvDBPassword:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /rails-lambda/DB_PASSWORD
+  EnvRailsSecret:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /rails-lambda/SECRET_KEY_BASE
+  DBName: 
+    Type: String
+    Default: railslambdapg
+
+Mappings:
+  VPC:
+    single-vpc-priv:
+      Id: "vpc-rails-lambda"
+  Subnets:
+   private-subnet:
+     PrivateSubnet2a: subnet-a1234
+     PrivateSubnet2b: subnet-b1234
+     PrivateSubnet2c: subnet-c1234
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+  SubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.0.0/24'
+      AvailabilityZone: 'eu-west-2a'
+      VpcId:
+        Ref: VPC
+  SubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.1.0/24'
+      AvailabilityZone: 'eu-west-2b'
+      VpcId:
+        Ref: VPC
+  SubnetC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '10.0.2.0/24'
+      AvailabilityZone: 'eu-west-2c'
+      VpcId:
+        Ref: VPC
+  DBSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+     GroupDescription: "Function Access"
+     VpcId: 
+       Ref: VPC
+     SecurityGroupIngress:
+       - IpProtocol : "tcp"
+         FromPort: 5432
+         ToPort: 5432
+         CidrIp: "10.0.0.0/16"
+  DBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: "DB Private Subnet"
+      SubnetIds: 
+        - Ref: SubnetA
+        - Ref: SubnetB
+        - Ref: SubnetC
+  SelfServiceDB:
+    Type : "AWS::RDS::DBInstance"
+    Properties:
+      DBName: !Ref DBName
+      AllocatedStorage: 5
+      DBInstanceClass: db.t2.micro
+      Engine: "postgres"
+      MasterUsername: !Ref EnvDBUser
+      MasterUserPassword: !Ref EnvDBPassword
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      VPCSecurityGroups:
+        - "Fn::GetAtt": [ "DBSecurityGroup", "GroupId" ] 
+  SelfServiceLambdaRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+  MigrationFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: SelfServiceMigrationFunction
+      Handler: lambda.migration_handler
+      Runtime: ruby2.5
+      CodeUri: "./"
+      MemorySize: 1024
+      Timeout: 500
+      Role: !GetAtt SelfServiceLambdaRole.Arn
+      Environment:
+        Variables:
+          RAILS_LOG_TO_STDOUT: true
+          RAILS_ENV: production
+          BOOTSNAP_CACHE_DIR: '/tmp/.bootsnap/'
+          DB_HOST: !GetAtt SelfServiceDB.Endpoint.Address
+          DB_NAME: !Ref DBName
+          DB_USER: !Ref  EnvDBUser
+          DB_PASSWORD: !Ref EnvDBPassword
+          SECRET_KEY_BASE: !Ref EnvRailsSecret
+          SCHEMA: /tmp/schema.rb
+      VpcConfig:
+        SecurityGroupIds:
+          - "Fn::GetAtt": [ "DBSecurityGroup", "GroupId" ] 
+        SubnetIds: 
+          - Ref: SubnetA
+          - Ref: SubnetB
+          - Ref: SubnetC
+  RailsFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: SelfServiceApp
+      Handler: lambda.handler
+      Runtime: ruby2.5
+      CodeUri: "./"
+      MemorySize: 1024
+      Timeout: 500
+      Role: !GetAtt SelfServiceLambdaRole.Arn
+      Environment:
+        Variables:
+          RAILS_SERVE_STATIC_FILES: true
+          RAILS_LOG_TO_STDOUT: true
+          RAILS_ENV: production
+          BOOTSNAP_CACHE_DIR: '/tmp/.bootsnap/'
+          DB_HOST: !GetAtt SelfServiceDB.Endpoint.Address
+          DB_NAME: !Ref DBName
+          DB_USER: !Ref  EnvDBUser
+          DB_PASSWORD: !Ref EnvDBPassword
+          SECRET_KEY_BASE: !Ref EnvRailsSecret
+          RAILS_RELATIVE_URL_ROOT: /Prod
+      VpcConfig:
+        SecurityGroupIds:
+          - !GetAtt [ "DBSecurityGroup", "GroupId" ] 
+        SubnetIds: 
+          - Ref: SubnetA
+          - Ref: SubnetB
+          - Ref: SubnetC
+  RailsAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: RailsAPI
+      StageName: Prod
+      DefinitionBody:
+        swagger: '2.0'
+        basePath: '/Prod'
+        info:
+          title: !Ref AWS::StackName
+        paths:
+          /articles/new:
+            x-amazon-apigateway-any-method:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri:
+                  !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RailsFunction.Arn}/invocations'
+                passthroughBehavior: "when_no_match"
+                httpMethod: POST
+                type: "aws_proxy"
+          /articles:
+            x-amazon-apigateway-any-method:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri:
+                  !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RailsFunction.Arn}/invocations'
+                passthroughBehavior: "when_no_match"
+                httpMethod: POST
+                type: "aws_proxy"
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri:
+                  !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RailsFunction.Arn}/invocations'
+                passthroughBehavior: "when_no_match"
+                httpMethod: POST
+                type: "aws_proxy"
+          /:
+            get:
+              responses: {}
+              x-amazon-apigateway-integration:
+                uri:
+                  !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RailsFunction.Arn}/invocations'
+                passthroughBehavior: "when_no_match"
+                httpMethod: POST
+                type: "aws_proxy"
+  ConfigLambdaPermission:
+    Type: "AWS::Lambda::Permission"
+    DependsOn:
+    - RailsFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref RailsFunction
+      Principal: apigateway.amazonaws.com
+Outputs:
+  RailsAppUrl:
+    Description: App endpoint URL
+    Value: !Sub "https://${RailsAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod"
