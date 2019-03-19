@@ -9,6 +9,7 @@ class ComponentsController < ApplicationController
 
     def show
       @component = Component.find(params[:id])
+      @component_certificates = @component.certificates
     end
 
     def edit
