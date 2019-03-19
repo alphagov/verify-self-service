@@ -1,7 +1,14 @@
 module ApplicationHelper
   # @return the path to the login page
   def login_url
-    AUTH_LOGIN_PATH
+    case Rails.env
+    when 'production'
+      oauth_path('cognito-idp')
+    when 'development'
+      devauth_path
+    when 'test'
+      oauth_path('developer')
+    end
   end
 
   def logout_url
