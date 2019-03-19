@@ -18,44 +18,126 @@ Parameters:
     Type: String
     Default: railslambdapg
 
-Mappings:
-  VPC:
-    single-vpc-priv:
-      Id: "vpc-rails-lambda"
-  Subnets:
-   private-subnet:
-     PrivateSubnet2a: subnet-a1234
-     PrivateSubnet2b: subnet-b1234
-     PrivateSubnet2c: subnet-c1234
-
 Resources:
   VPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.0.0.0/16
+      CidrBlock: 172.30.0.0/16
       EnableDnsSupport: true
       EnableDnsHostnames: true
-  SubnetA:
+  PublicSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
-      CidrBlock: '10.0.0.0/24'
+      CidrBlock: '172.30.4.0/24'
       AvailabilityZone: 'eu-west-2a'
       VpcId:
         Ref: VPC
-  SubnetB:
+      MapPublicIpOnLaunch: true
+  PublicSubnetB:
     Type: AWS::EC2::Subnet
     Properties:
-      CidrBlock: '10.0.1.0/24'
+      CidrBlock: '172.30.3.0/24'
+      AvailabilityZone: 'eu-west-2a'
+      VpcId:
+        Ref: VPC
+      MapPublicIpOnLaunch: true
+  PrivateSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '172.30.0.0/24'
+      AvailabilityZone: 'eu-west-2a'
+      VpcId:
+        Ref: VPC
+  PrivateSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: '172.30.1.0/24'
       AvailabilityZone: 'eu-west-2b'
       VpcId:
         Ref: VPC
-  SubnetC:
+  PrivateSubnetC:
     Type: AWS::EC2::Subnet
     Properties:
-      CidrBlock: '10.0.2.0/24'
+      CidrBlock: '172.30.2.0/24'
       AvailabilityZone: 'eu-west-2c'
       VpcId:
         Ref: VPC
+  InternetGateway:
+    Type: 'AWS::EC2::InternetGateway'
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Join [_, [!Ref 'AWS::StackName']]
+        - Key: Network
+          Value: Public
+  GatewayToInternet:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+  PublicRouteTable:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Network
+          Value: Public
+  PublicRoute:
+    Type: 'AWS::EC2::Route'
+    DependsOn: GatewayToInternet
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  PublicSubnetARouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PublicSubnetA
+      RouteTableId: !Ref PublicRouteTable
+  PublicSubnetBRouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PublicSubnetB
+      RouteTableId: !Ref PublicRouteTable
+  NatGateway:
+    Type: "AWS::EC2::NatGateway"
+    DependsOn: NatPublicIP
+    Properties: 
+      AllocationId: !GetAtt NatPublicIP.AllocationId
+      SubnetId: !Ref PublicSubnetA
+  NatPublicIP:
+    Type: "AWS::EC2::EIP"
+    DependsOn: VPC
+    Properties:
+      Domain: vpc
+  PrivateRouteTable:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Network
+          Value: Private
+  PrivateRoute:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway
+  PrivateSubnetARouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PrivateSubnetA
+      RouteTableId: !Ref PrivateRouteTable
+  PrivateSubnetBRouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PrivateSubnetB
+      RouteTableId: !Ref PrivateRouteTable
+  PrivateSubnetCRouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PrivateSubnetC
+      RouteTableId: !Ref PrivateRouteTable
   DBSecurityGroup:
     Type: "AWS::EC2::SecurityGroup"
     Properties:
@@ -66,15 +148,15 @@ Resources:
        - IpProtocol : "tcp"
          FromPort: 5432
          ToPort: 5432
-         CidrIp: "10.0.0.0/16"
+         CidrIp: "172.30.0.0/16"
   DBSubnetGroup:
     Type: "AWS::RDS::DBSubnetGroup"
     Properties:
-      DBSubnetGroupDescription: "DB Private Subnet"
+      DBSubnetGroupDescription: "DB Private PrivateSubnet"
       SubnetIds: 
-        - Ref: SubnetA
-        - Ref: SubnetB
-        - Ref: SubnetC
+        - Ref: PrivateSubnetA
+        - Ref: PrivateSubnetB
+        - Ref: PrivateSubnetC
   SelfServiceDB:
     Type : "AWS::RDS::DBInstance"
     Properties:
@@ -125,9 +207,9 @@ Resources:
         SecurityGroupIds:
           - "Fn::GetAtt": [ "DBSecurityGroup", "GroupId" ] 
         SubnetIds: 
-          - Ref: SubnetA
-          - Ref: SubnetB
-          - Ref: SubnetC
+          - Ref: PrivateSubnetA
+          - Ref: PrivateSubnetB
+          - Ref: PrivateSubnetC
   RailsFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
@@ -149,14 +231,14 @@ Resources:
           DB_USER: !Ref  EnvDBUser
           DB_PASSWORD: !Ref EnvDBPassword
           SECRET_KEY_BASE: !Ref EnvRailsSecret
-          RAILS_RELATIVE_URL_ROOT: /Prod
+          RAILS_RELATIVE_URL_ROOT: '/Prod'
       VpcConfig:
         SecurityGroupIds:
           - !GetAtt [ "DBSecurityGroup", "GroupId" ] 
         SubnetIds: 
-          - Ref: SubnetA
-          - Ref: SubnetB
-          - Ref: SubnetC
+          - Ref: PrivateSubnetA
+          - Ref: PrivateSubnetB
+          - Ref: PrivateSubnetC
   RailsAPI:
     Type: AWS::Serverless::Api
     Properties:
@@ -168,24 +250,6 @@ Resources:
         info:
           title: !Ref AWS::StackName
         paths:
-          /articles/new:
-            x-amazon-apigateway-any-method:
-              responses: {}
-              x-amazon-apigateway-integration:
-                uri:
-                  !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RailsFunction.Arn}/invocations'
-                passthroughBehavior: "when_no_match"
-                httpMethod: POST
-                type: "aws_proxy"
-          /articles:
-            x-amazon-apigateway-any-method:
-              responses: {}
-              x-amazon-apigateway-integration:
-                uri:
-                  !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RailsFunction.Arn}/invocations'
-                passthroughBehavior: "when_no_match"
-                httpMethod: POST
-                type: "aws_proxy"
           /{proxy+}:
             x-amazon-apigateway-any-method:
               responses: {}
