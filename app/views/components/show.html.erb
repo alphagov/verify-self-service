@@ -6,17 +6,17 @@
     <tr class="govuk-table__row">
       <th class="govuk-table__header" scope="col">Name</th>
       <th class="govuk-table__header" scope="col">Type</th>
-      <th class="govuk-table__header" scope="col">Upload Certificate</th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
       <tr class="govuk-table__row">
         <td class="govuk-table__cell" scope="row"><%= @component.name %></td>
         <td class="govuk-table__cell"><%= @component.component_type %></td>
-        <td class="govuk-table__cell"><%= link_to 'Upload', new_component_certificate_path(@component) %></td>
       </tr>
   </tbody>
+
 </table>
+<%= link_to 'Upload', new_component_certificate_path(@component), class: 'govuk-button' %>
 
 <% if @component_certificates.present? %>
   <table class="govuk-table">
