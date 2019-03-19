@@ -6,3 +6,5 @@ require_relative 'config/application'
 Rails.application.load_tasks
 
 task :spec => ["yarn:install"]
+
+task "assets:precompile" => ["copy_govuk_dependencies"]
