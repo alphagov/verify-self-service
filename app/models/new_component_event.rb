@@ -3,8 +3,8 @@ class NewComponentEvent < Event
     data_attributes :name, :component_type
 
     validate :name_is_present
-    validates_inclusion_of :component_type, in: ['VSP', 'MSA']
-  
+    validates_inclusion_of :component_type, in: ['VSP', 'MSA', 'SP']
+
     def build_component
       Component.new
     end
