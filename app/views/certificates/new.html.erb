@@ -6,7 +6,7 @@
   <% if @upload.errors? %>
     <%= render "error_messages" %>
   <% end %>
-  <%= form_for @upload, url: certificates_path, as: :certificate do |f| %>
+  <%= form_for @upload, url: component_certificates_path, as: :certificate do |f| %>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @upload.errors.key?(:usage) %>">
       <h3 class="govuk-heading-m">Certificate usage</h3>
       <% if @upload.errors? %>

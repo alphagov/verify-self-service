@@ -13,7 +13,7 @@
       <tr class="govuk-table__row">
         <td class="govuk-table__cell" scope="row"><%= @component.name %></td>
         <td class="govuk-table__cell"><%= @component.component_type %></td>
-        <td class="govuk-table__cell"><%= link_to 'Upload', edit_component_path %></td>
+        <td class="govuk-table__cell"><%= link_to 'Upload', new_component_certificate_path(@component) %></td>
       </tr>
   </tbody>
 </table>

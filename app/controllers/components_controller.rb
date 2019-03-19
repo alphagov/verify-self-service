@@ -12,10 +12,6 @@ class ComponentsController < ApplicationController
       @component_certificates = @component.certificates
     end
 
-    def edit
-      @component = Component.find(params[:id])
-    end
-
     def create
       @component = NewComponentEvent.create(component_params)
       if @component.valid?
@@ -24,10 +20,6 @@ class ComponentsController < ApplicationController
         Rails.logger.info(@component.errors.full_messages)
         render :new
       end
-    end
-
-    def update
-
     end
 
     private

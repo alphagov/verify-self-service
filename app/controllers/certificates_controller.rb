@@ -1,9 +1,4 @@
 class CertificatesController < ApplicationController
-  
-  def index
-    @uploads = Certificate.all
-  end
-
   def new
     @upload = UploadCertificateEvent.new
   end
