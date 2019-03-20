@@ -14,6 +14,21 @@ Parameters:
   EnvRailsSecret:
     Type : 'AWS::SSM::Parameter::Value<String>'
     Default: /rails-lambda/SECRET_KEY_BASE
+  COGNITOCLIENTID:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /self-service-lambda/COGNITO_CLIENT_ID
+  COGNITOCLIENTSECRET:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /self-service-lambda/COGNITO_CLIENT_SECRET
+  COGNITOUSERPOOLSITE:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /self-service-lambda/COGNITO_USER_POOL_SITE
+  COGNITOUSERPOOLID:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /self-service-lambda/COGNITO_USER_POOL_ID
+  COGNITOAWSREGION:
+    Type : String
+    Default: 'eu-west-2'
   DBName: 
     Type: String
     Default: railslambdapg
@@ -232,6 +247,11 @@ Resources:
           DB_PASSWORD: !Ref EnvDBPassword
           SECRET_KEY_BASE: !Ref EnvRailsSecret
           RAILS_RELATIVE_URL_ROOT: '/Prod'
+          COGNITO_CLIENT_ID: !Ref COGNITOCLIENTID
+          COGNITO_CLIENT_SECRET: !Ref COGNITOCLIENTSECRET
+          COGNITO_USER_POOL_SITE: !Ref COGNITOUSERPOOLSITE
+          COGNITO_USER_POOL_ID: !Ref COGNITOUSERPOOLID
+          COGNITO_AWS_REGION: !Ref COGNITOAWSREGION
       VpcConfig:
         SecurityGroupIds:
           - !GetAtt [ "DBSecurityGroup", "GroupId" ] 
