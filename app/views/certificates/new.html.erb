@@ -29,7 +29,6 @@
         <%= render partial: "field_error_messages", locals: { fields: [:value, :certificate] } %>
       <% end %>
       <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea#{@upload.errors.key?(:certificate) ? ' govuk-textarea--error' : ''}", rows: "6" %>
-      <%= f.hidden_field :component_id %>
       <%= f.submit "Upload", class: "govuk-button" %>
     </div>
   <% end %>

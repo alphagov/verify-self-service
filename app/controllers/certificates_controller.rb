@@ -17,26 +17,13 @@ class CertificatesController < ApplicationController
   private
 
   def upload_params
-    cert_params = params.require(:certificate).permit(
+    @component_id ||= params[:component_id]
+
+    params.require(:certificate).permit(
       :value,
       :usage
-    )
+    ).merge(component_id: @component_id)
 
-    if !params[:component_id].nil?
-      cert_params.merge(component_id: params[:component_id])
-    elsif is_integer?(nested_param_key_after_failed_validation)
-      cert_params.merge(component_id: nested_param_key_after_failed_validation)
-    else
-      Rails.logger.info("component_id not valid")
-      nil
-    end
   end
 
-  def is_integer?(component_id)
-    component_id.to_i.to_s == component_id
-  end
-
-  def nested_param_key_after_failed_validation
-    params["certificate"]["component_id"]
-  end
 end
