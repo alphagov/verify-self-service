@@ -5,7 +5,7 @@ include CertificateSupport
 RSpec.describe UploadCertificateEvent, type: :model do
 
   root = PKI.new
-  good_cert_value = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+  good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
 
   include_examples 'has data attributes', UploadCertificateEvent, [:usage, :value]
   include_examples 'is aggregated', UploadCertificateEvent, {usage: 'signing', value: good_cert_value }
@@ -30,7 +30,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must allow base64 encoded DER format x509 certificate' do
-      cert = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+      cert = root.generate_encoded_cert(expires_in: 2.months)
 
       event = UploadCertificateEvent.create(usage: 'signing', value: cert)
       expect(event).to be_valid
@@ -38,7 +38,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must allow PEM format x509 certificate' do
-      cert = root.generate_signed_cert_with_expiry Time.now + 2.months
+      cert = root.generate_signed_cert(expires_in: 2.months)
 
       event = UploadCertificateEvent.create(usage: 'signing', value: cert.to_pem)
       expect(event).to be_valid
@@ -46,7 +46,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must not be expired' do
-      cert = root.generate_encoded_cert_with_expiry Time.now - 1.months
+      cert = root.generate_encoded_cert(expires_in: -1.months)
 
       event = UploadCertificateEvent.create(usage: 'signing', value: cert)
       expect(event).to_not be_valid
@@ -54,7 +54,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must not expire within 1 month' do
-      cert = root.generate_encoded_cert_with_expiry Time.now + 15.days
+      cert = root.generate_encoded_cert(expires_in: 15.days)
 
       event = UploadCertificateEvent.create(usage: 'signing', value: cert)
       expect(event).to_not be_valid
@@ -62,7 +62,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must expire within 1 year' do
-      cert = root.generate_encoded_cert_with_expiry Time.now + 2.years
+      cert = root.generate_encoded_cert(expires_in: 2.years)
 
       event = UploadCertificateEvent.create(usage: 'signing', value: cert)
       expect(event).to_not be_valid
@@ -70,7 +70,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must be RSA' do
-      cert = root.generate_signed_ec_cert(Time.now + 6.months)
+      cert = root.generate_signed_ec_cert(6.months)
 
       event = UploadCertificateEvent.create(usage: 'signing', value: cert.to_pem)
       expect(event).to_not be_valid
@@ -78,8 +78,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must be at least 2048 bits' do
-      cert = root.generate_signed_rsa_cert_and_key(1024, Time.now + 6.months)[0]
-
+      cert = root.generate_signed_rsa_cert_and_key(size: 1024)[0]
 
       event = UploadCertificateEvent.create(usage: 'signing', value: cert.to_pem)
       expect(event).to_not be_valid

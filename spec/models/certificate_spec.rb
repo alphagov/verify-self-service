@@ -4,9 +4,10 @@ include CertificateSupport
 
 RSpec.describe Certificate, type: :model do
 
-  root = PKI.new
-  good_cert = root.sign(generate_cert_with_expiry(Time.now + 2.months))
-  good_cert_value = PKI.inline_pem(good_cert)
+  let(:good_cert_value) {
+    root = PKI.new
+    root.generate_signed_cert(expires_in: 2.months).to_pem
+  }
 
   it "is valid with valid attributes" do
     expect(Certificate.new(usage: 'signing', value: good_cert_value)).to be_valid

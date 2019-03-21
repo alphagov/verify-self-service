@@ -12,7 +12,7 @@ RSpec.describe 'UploadPage', type: :system do
   let(:root) { PKI.new }
 
   let(:test_certificate) do
-    good_cert = root.generate_encoded_cert_with_expiry(Time.now + 2.months)
+    root.generate_encoded_cert(expires_in: 2.months)
   end
 
   it 'successfully submits a certificate' do
