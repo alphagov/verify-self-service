@@ -6,7 +6,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
   root = PKI.new
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
-  component_params = {component_type: 'MSA', name:'fake_name'}
+  component_params = { component_type: 'MSA', name:'fake_name' }
   component = NewComponentEvent.create(component_params).component
   include_examples 'has data attributes', UploadCertificateEvent, [:usage, :value, :component_id]
   include_examples 'is aggregated', UploadCertificateEvent, {usage: 'signing', value: good_cert_value, component_id: component.id }
@@ -22,7 +22,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
   context '#certificate' do
 
-    let(:root){PKI.new}
+    let(:root){ PKI.new }
 
     it 'must error with invalid x509 certificate' do
       event = UploadCertificateEvent.create(usage: 'signing', value: 'Not a valid certificate',component_id: component.id)

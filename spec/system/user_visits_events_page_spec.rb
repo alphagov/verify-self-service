@@ -9,10 +9,10 @@ RSpec.describe 'the events page', type: :system do
     stub_auth
   end
 
+  component_params = { component_type: 'MSA', name:'fake_name' }
+  let(:component) { NewComponentEvent.create(component_params).component }
   let(:root) { PKI.new }
-  component_params = {component_type: 'MSA', name:'fake_name'}
-  let(:component) {NewComponentEvent.create(component_params).component}
-  
+
   it 'there are some events' do
     good_cert_1 = root.generate_encoded_cert(expires_in: 2.months)
     good_cert_2 = root.generate_encoded_cert(expires_in: 2.months)

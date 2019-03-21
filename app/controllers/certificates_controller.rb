@@ -10,7 +10,7 @@ class CertificatesController < ApplicationController
       redirect_to component_path @upload.component_id
     else
       Rails.logger.info(@upload.errors.full_messages)
-      render 'new'
+      render :new
     end
   end
 
@@ -19,11 +19,9 @@ class CertificatesController < ApplicationController
   def upload_params
     @component_id ||= params[:component_id]
 
-    params.require(:certificate).permit(
-      :value,
-      :usage
-    ).merge(component_id: @component_id)
+    params.require(:certificate)
+          .permit(:value,:usage)
+          .merge(component_id: @component_id)
 
   end
-
 end

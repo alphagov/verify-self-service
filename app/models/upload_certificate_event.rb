@@ -24,7 +24,7 @@ class UploadCertificateEvent < Event
   end
 
   def value_is_present
-    if !value_present?
+    unless value_present?
       self.errors.add(:certificate, "can't be blank")
     end
   end

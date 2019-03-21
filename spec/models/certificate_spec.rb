@@ -9,8 +9,8 @@ RSpec.describe Certificate, type: :model do
     root.generate_signed_cert(expires_in: 2.months).to_pem
   }
 
-  component_params = {component_type: 'MSA', name:'fake_name'}
-  let (:component)  { NewComponentEvent.create(component_params).component}
+  component_params = { component_type: 'MSA', name:'fake_name' }
+  let(:component){ NewComponentEvent.create(component_params).component}
   it "is valid with valid attributes" do
 
     expect(Certificate.new(usage: 'signing', value: good_cert_value, component_id: component.id)).to be_valid

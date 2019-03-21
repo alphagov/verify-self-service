@@ -23,7 +23,7 @@ class NewComponentEvent < Event
     private
 
     def name_is_present
-      if !name_present?
+      unless name_present?
         self.errors.add(:name, "can't be blank")
       end
     end

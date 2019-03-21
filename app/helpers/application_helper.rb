@@ -16,6 +16,7 @@ module ApplicationHelper
     else
         logout_callback_url
     end
-    
+
   end
+
 end

@@ -1,7 +1,0 @@
-<% fields.each do |field| %>
-  <% @component.errors.full_messages_for(field).each do |msg| %>
-    <span id="" class="govuk-error-message">
-      <span class="govuk-visually-hidden">Error:</span> <%= msg %>
-    </span>
-  <% end %>
-<% end %>
