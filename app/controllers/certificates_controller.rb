@@ -7,7 +7,7 @@ class CertificatesController < ApplicationController
     @upload = UploadCertificateEvent.create(upload_params)
 
     if @upload.valid?
-      redirect_to component_path @upload.component_id
+      redirect_to component_path(@upload.component_id)
     else
       Rails.logger.info(@upload.errors.full_messages)
       render :new
@@ -17,11 +17,11 @@ class CertificatesController < ApplicationController
   private
 
   def upload_params
-    @component_id ||= params[:component_id]
+    component_id ||= params[:component_id]
 
     params.require(:certificate)
           .permit(:value,:usage)
-          .merge(component_id: @component_id)
+          .merge(component_id: component_id)
 
   end
 end
