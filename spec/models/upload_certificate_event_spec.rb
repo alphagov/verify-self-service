@@ -114,4 +114,54 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
   end
 
+  context "#component" do
+    it 'reads from component_id' do
+      event = UploadCertificateEvent.new(component_id: component.id)
+      expect(event.component).to eql component
+    end
+
+    it 'refreshes when component_id changes' do
+      event = UploadCertificateEvent.new(component_id: component.id)
+      expect(event.component).to eql component
+      second_component = NewComponentEvent.create(component_params).component
+
+      event.component_id = second_component.id
+      expect(event.component).to_not eql component
+      expect(event.component).to eql second_component
+    end
+
+
+  end
+
+  context "#component=" do
+    it 'will set component_id when called during ::create' do
+      event = UploadCertificateEvent.create(usage: 'signing', component_id: component.id)
+      expect(event.component).to eql component
+    end
+
+    it 'will set component_id when called directly' do
+      event = UploadCertificateEvent.new
+      event.component=component
+      expect(event.component).to eql component
+      expect(event.component_id).to eql component.id
+    end
+
+    it 'must be persisted' do
+      event = UploadCertificateEvent.create(component: Component.new)
+      expect(event).to_not be_valid
+      expect(event.errors[:component]).to eql ['must exist']
+    end
+
+    it 'must be persisted' do
+      event = UploadCertificateEvent.create(component_id: component.id)
+      expect(event).to_not be_valid
+      expect(event.errors[:component]).to be_empty
+    end
+
+    it 'must reference an object' do
+      event = UploadCertificateEvent.create()
+      expect(event.errors[:component]).to eql ['must exist']
+    end
+  end
+
 end

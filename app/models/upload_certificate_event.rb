@@ -7,6 +7,8 @@ class UploadCertificateEvent < Event
   validate :certificate_is_valid,
            :certificate_is_new, on: :create, if: :value_present?
 
+  validate :component_is_persisted
+
   validates_inclusion_of :usage, in: ['signing', 'encryption']
 
   def build_certificate
@@ -17,7 +19,26 @@ class UploadCertificateEvent < Event
     {usage: self.usage, value: self.value, component_id: self.component_id, created_at: self.created_at}
   end
 
+  def component
+    if @component&.id == self.component_id
+      @component
+    else
+      @component = Component.find_by_id(self.component_id)
+    end
+  end
+
+  def component=(component)
+    self.component_id = component.id
+    @component = component
+  end
+
   private
+
+  def component_is_persisted
+    unless self.component&.persisted?
+      self.errors.add(:component, "must exist")
+    end
+  end
 
   def convert_value_to_inline_der
     self.value = Base64.strict_encode64(x509_certificate.to_der)
