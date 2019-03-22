@@ -31,7 +31,7 @@
       <% @component_certificates.each do |certificate| %>
         <tr class="govuk-table__row">
           <td class="govuk-table__cell" scope="row"><%= certificate.usage %></td>
-          <td class="govuk-table__cell"><%= certificate.updated_at.strftime("%e-%m-%Y %H:%M") %></td>
+          <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
         </tr>
       <% end %>
     </tbody>
