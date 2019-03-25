@@ -1,16 +1,14 @@
-<% if @upload.errors? %>
+<% if errors.any? %>
   <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
     <h2 class="govuk-error-summary__title" id="error-summary-title">
       There is a problem
     </h2>
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
-        <% @upload.errors.keys.each do |key| %>
-          <% @upload.errors.full_messages_for(key).each do |msg| %>
+        <% errors.each do |key| %>
           <li>
-            <a href="<%= "#certificate_#{key}"%>"><%= msg %></a>
+            <%= link_to "#{errors&.full_messages_for(key).first}" , "#component_#{key}" %>
           </li>
-          <% end %>
         <% end %>
       </ul>
     </div>

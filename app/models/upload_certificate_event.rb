@@ -1,11 +1,13 @@
 class UploadCertificateEvent < Event
   belongs_to_aggregate :certificate
-  data_attributes :value, :usage
+  data_attributes :value, :usage, :component_id
   before_save :convert_value_to_inline_der
 
   validate :value_is_present
   validate :certificate_is_valid,
            :certificate_is_new, on: :create, if: :value_present?
+
+  validate :component_is_persisted
 
   validates_inclusion_of :usage, in: ['signing', 'encryption']
 
@@ -14,17 +16,36 @@ class UploadCertificateEvent < Event
   end
 
   def attributes_to_apply
-    {usage: self.usage, value: self.value, created_at: self.created_at}
+    {usage: self.usage, value: self.value, component_id: self.component_id, created_at: self.created_at}
+  end
+
+  def component
+    if @component&.id == self.component_id
+      @component
+    else
+      @component = Component.find_by_id(self.component_id)
+    end
+  end
+
+  def component=(component)
+    self.component_id = component.id
+    @component = component
   end
 
   private
+
+  def component_is_persisted
+    unless self.component&.persisted?
+      self.errors.add(:component, "must exist")
+    end
+  end
 
   def convert_value_to_inline_der
     self.value = Base64.strict_encode64(x509_certificate.to_der)
   end
 
   def value_is_present
-    if !value_present?
+    unless value_present?
       self.errors.add(:certificate, "can't be blank")
     end
   end

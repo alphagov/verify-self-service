@@ -10,11 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_05_142449) do
+ActiveRecord::Schema.define(version: 2019_03_15_170837) do
 
   create_table "certificates", force: :cascade do |t|
     t.string "value"
     t.string "usage"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "component_id"
+    t.index ["component_id"], name: "index_certificates_on_component_id"
+  end
+
+  create_table "components", force: :cascade do |t|
+    t.string "name"
+    t.string "component_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

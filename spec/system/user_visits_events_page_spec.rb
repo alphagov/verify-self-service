@@ -9,6 +9,8 @@ RSpec.describe 'the events page', type: :system do
     stub_auth
   end
 
+  component_params = { component_type: 'MSA', name:'fake_name' }
+  let(:component) { NewComponentEvent.create(component_params).component }
   let(:root) { PKI.new }
 
   it 'there are some events' do
@@ -16,9 +18,9 @@ RSpec.describe 'the events page', type: :system do
     good_cert_2 = root.generate_encoded_cert(expires_in: 2.months)
     good_cert_3 = root.generate_encoded_cert(expires_in: 2.months)
 
-    UploadCertificateEvent.create(usage: 'signing', value: good_cert_1)
-    UploadCertificateEvent.create(usage: 'signing', value: good_cert_2)
-    UploadCertificateEvent.create(usage: 'signing', value: good_cert_3)
+    UploadCertificateEvent.create(usage: 'signing', value: good_cert_1, component_id: component.id)
+    UploadCertificateEvent.create(usage: 'signing', value: good_cert_2, component_id: component.id)
+    UploadCertificateEvent.create(usage: 'signing', value: good_cert_3, component_id: component.id)
 
     visit events_path
     expect(page).to have_content good_cert_1
@@ -28,7 +30,7 @@ RSpec.describe 'the events page', type: :system do
 
   it 'is paginated' do
     events = 55.times.map do
-      UploadCertificateEvent.create(usage: 'signing', value: root.generate_encoded_cert(expires_in: 2.months))
+      UploadCertificateEvent.create(usage: 'signing', value: root.generate_encoded_cert(expires_in: 2.months), component_id: component.id)
     end.reverse
 
     visit events_path

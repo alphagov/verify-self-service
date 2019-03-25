@@ -50,11 +50,12 @@ RSpec.shared_examples "is a creation event" do |klass, parameters|
   end
 
   it "cannot be attached to an aggregate that already exists" do
+
     first_event = klass.create(parameters)
     expect(first_event).to be_persisted
-    aggregate = first_event.aggregate 
+    aggregate = first_event.aggregate
     expect(aggregate).to be_persisted
-
+    
     second_event = klass.create(parameters.merge(aggregate: aggregate))
     expect(second_event).to_not be_valid
     expect(second_event).to_not be_persisted

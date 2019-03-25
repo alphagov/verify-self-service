@@ -16,6 +16,11 @@ module ApplicationHelper
     else
         logout_callback_url
     end
-    
+
   end
+
+  def format_date_time(cert_date_time)
+    cert_date_time.strftime("%e-%m-%Y %H:%M")
+  end
+
 end

@@ -1,0 +1,25 @@
+<h1>Components#index</h1>
+
+<% if @components.present? %>
+  <table class="govuk-table">
+    <h3 class="govuk-heading-m">Components</h3>
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Name</th>
+        <th class="govuk-table__header" scope="col">Type</th>
+        <th class="govuk-table__header" scope="col">View</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% for component in @components.reverse %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell" scope="row"><%= component.name %></td>
+          <td class="govuk-table__cell"><%= component.component_type %></td>
+          <td class="govuk-table__cell"><%= link_to 'View component', component_path(component) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<%= link_to 'Create a new component', new_component_path, class: "govuk-button govuk-button--start", role:"button", draggable:"false" %>
