@@ -1,4 +1,4 @@
-class NewComponentEvent < Event
+class NewComponentEvent < AggregatedEvent
     belongs_to_aggregate :component
     data_attributes :name, :component_type
 
