@@ -2,7 +2,7 @@ class UploadCertificateEvent < AggregatedEvent
   belongs_to_aggregate :certificate
   data_attributes :value, :usage, :component_id
   before_save :convert_value_to_inline_der
-
+  after_save :trigger_publish_event
   validate :value_is_present
   validate :certificate_is_valid,
            :certificate_is_new, on: :create, if: :value_present?
@@ -33,6 +33,10 @@ class UploadCertificateEvent < AggregatedEvent
   end
 
   private
+
+  def trigger_publish_event
+    PublishServicesMetadataEvent.create(event_id: self.id, cert_config: "I am here")
+  end
 
   def component_is_persisted
     unless self.component&.persisted?

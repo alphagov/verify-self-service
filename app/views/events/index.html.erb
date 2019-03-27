@@ -15,8 +15,8 @@
         <td class="govuk-table__cell" scope="row"><%= event.type %></th>
         <td class="govuk-table__cell" scope="row"><code><%= JSON.pretty_generate(event.data) %></code></td>
         <td class="govuk-table__cell" scope="row"><%= event.created_at %></td>
-        <td class="govuk-table__cell" scope="row"><%= event.aggregate_id %></td>
-        <td class="govuk-table__cell" scope="row"><%= event.aggregate_type %></td>
+        <td class="govuk-table__cell" scope="row"><%= event&.aggregate_id %></td>
+        <td class="govuk-table__cell" scope="row"><%= event&.aggregate_type %></td>
       </tr>
     <% end %>
   </tbody>

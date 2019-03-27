@@ -1,6 +1,7 @@
 
 class PublishServicesMetadataEvent < Event
-  data_attributes :cert_config
+  
+  data_attributes :event_id, :cert_config
   before_create :populate_data_attributes
 
   def populate_data_attributes
@@ -8,6 +9,7 @@ class PublishServicesMetadataEvent < Event
   end
 
   def attributes_to_apply
-    {cert_config: "I am here" }
+    {event_id: self.event_id, cert_config: self.cert_config }
   end
+
 end
