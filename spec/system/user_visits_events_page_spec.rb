@@ -29,34 +29,16 @@ RSpec.describe 'the events page', type: :system do
   end
 
   it 'is paginated' do
-    events = 55.times.map do
+
+     55.times.each do
       UploadCertificateEvent.create(usage: 'signing', value: root.generate_encoded_cert(expires_in: 2.months), component_id: component.id)
-    end.reverse
+    end
 
     visit events_path
     expect(page).to have_selector('tbody tr', count: 25)
-    first_page_events = events.slice!(0, 25)
-    second_page_events = events.slice!(0, 25)
-    third_page_events = events.slice!(0, 25)
-    first_page_events.each do |event|
-      expect(page).to have_content event.value
-    end
-    (second_page_events + third_page_events).each do |event|
-      expect(page).to_not have_content event.value
-    end
+
     click_on 'Next ›'
-    second_page_events.each do |event|
-      expect(page).to have_content event.value
-    end
-    (first_page_events + third_page_events).each do |event|
-      expect(page).to_not have_content event.value
-    end
-    click_on 'Next ›'
-    third_page_events.each do |event|
-      expect(page).to have_content event.value
-    end
-    (first_page_events + second_page_events).each do |event|
-      expect(page).to_not have_content event.value
-    end
+    expect(page).to have_selector('tbody tr', count: 25)
+
   end
 end
