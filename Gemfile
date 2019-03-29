@@ -46,6 +46,7 @@ group :development, :test do
   gem 'geckodriver-helper'
   # still use sqlite3 in development and testing.
   gem 'sqlite3'
+  gem 'pry'
 end
 
 group :development do
@@ -61,4 +62,3 @@ gem 'omniauth'
 gem 'omniauth_openid_connect'
 gem 'omniauth-cognito-idp'
 gem 'dotenv-rails', require: 'dotenv/rails-now', group: [:development, :test]
-

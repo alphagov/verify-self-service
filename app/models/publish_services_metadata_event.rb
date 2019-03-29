@@ -9,7 +9,7 @@ class PublishServicesMetadataEvent < Event
   end
 
   def attributes_to_apply
-    {event_id: self.event_id, cert_config: self.cert_config }
+    { event_id: self.event_id, cert_config: ServicesMetadata.to_json }
   end
 
 end

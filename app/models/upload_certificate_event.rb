@@ -35,7 +35,7 @@ class UploadCertificateEvent < AggregatedEvent
   private
 
   def trigger_publish_event
-    PublishServicesMetadataEvent.create(event_id: self.id, cert_config: "I am here")
+    PublishServicesMetadataEvent.create(event_id: self.id)
   end
 
   def component_is_persisted
