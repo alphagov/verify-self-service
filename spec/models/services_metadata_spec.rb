@@ -25,7 +25,7 @@ RSpec.describe ServicesMetadata, type: :model do
             name: root.certificate_subject(certificate),
             value: certificate
           },
-          signing_certificate: [{
+          signing_certificates: [{
             name: root.certificate_subject(certificate),
             value: certificate
           }, {

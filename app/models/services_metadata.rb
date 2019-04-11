@@ -28,7 +28,7 @@ class ServicesMetadata
     {
       name: item.name,
       encryption_certificate: encryption,
-      signing_certificate: signing
+      signing_certificates: signing
     }
   end
 
