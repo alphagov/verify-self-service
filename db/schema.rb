@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2019_04_10_203341) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "component_id"
+    t.index ["component_id"], name: "index_certificates_on_component_id"
   end
 
   create_table "components", force: :cascade do |t|

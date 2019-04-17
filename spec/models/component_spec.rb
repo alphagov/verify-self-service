@@ -1,12 +1,15 @@
 require 'rails_helper'
 require 'json'
-RSpec.describe ServicesMetadata, type: :model do
+RSpec.describe Component, type: :model do
   include CertificateSupport
-  context '#create' do
-    root = PKI.new
-    publish_date = Time.now
-    event_id = 4655675
-    certificate = root.generate_encoded_cert(expires_in: 2.months)
+  context '#to_service_metadata' do
+    before(:each) do
+      Component.destroy_all
+    end
+    let(:root) { PKI.new }
+    let(:published_at) { Time.now }
+    let(:event_id) { 0 }
+    let(:certificate) { root.generate_encoded_cert(expires_in: 2.months) }
     it 'is an MSA component with signing and encryption certs' do
 
       c = Component.create(name: 'lala', component_type: 'MSA')
@@ -14,22 +17,22 @@ RSpec.describe ServicesMetadata, type: :model do
       c.certificates.create(usage: 'signing', value: certificate)
       c.certificates.create(usage: 'encryption', value: certificate)
 
-      actual_config = ServicesMetadata.to_json(event_id, [c], publish_date)
+      actual_config = Component.to_service_metadata(event_id, published_at)
 
       expected_config = {
-        publish_date: publish_date,
-        event_id: 4655675,
+        published_at: published_at,
+        event_id: event_id,
         matching_service_adapters: [{
           name: 'lala',
           encryption_certificate: {
-            name: root.certificate_subject(certificate),
+            name: certificate_subject(certificate),
             value: certificate
           },
           signing_certificates: [{
-            name: root.certificate_subject(certificate),
+            name: certificate_subject(certificate),
             value: certificate
           }, {
-            name: root.certificate_subject(certificate),
+            name: certificate_subject(certificate),
             value: certificate
           }]
         }],
@@ -40,15 +43,16 @@ RSpec.describe ServicesMetadata, type: :model do
       expect(actual_config).to include(expected_config.to_json)
     end
     it 'produces required output structure' do
+      Component.destroy_all
       c = Component.new
-      actual_config = ServicesMetadata.to_json(event_id, [c], publish_date)
+      actual_config = Component.to_service_metadata(event_id, published_at)
       expected_config = {
-        publish_date: publish_date,
-        event_id: 4655675,
+        published_at: published_at,
+        event_id: event_id,
         matching_service_adapters: [],
         service_providers: []
       }
-      expect(actual_config).to include('publish_date', 'service_providers')
+      expect(actual_config).to include('published_at', 'service_providers')
       expect(actual_config).to include(expected_config.to_json)
     end
   end

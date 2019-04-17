@@ -133,7 +133,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
   end
 
-  context "#component=" do
+  context '#component=' do
     it 'will set component_id when called during ::create' do
       event = UploadCertificateEvent.create(usage: 'signing', component_id: component.id)
       expect(event.component).to eql component
@@ -141,7 +141,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
     it 'will set component_id when called directly' do
       event = UploadCertificateEvent.new
-      event.component=component
+      event.component = component
       expect(event.component).to eql component
       expect(event.component_id).to eql component.id
     end
@@ -159,9 +159,17 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must reference an object' do
-      event = UploadCertificateEvent.create()
+      event = UploadCertificateEvent.create
       expect(event.errors[:component]).to eql ['must exist']
     end
   end
 
+  context '#trigger_publish_event' do
+      it 'is triggered on creation' do
+        event = UploadCertificateEvent.create!(usage: 'signing', value: good_cert_value, component_id: component.id)
+        publish_event = PublishServicesMetadataEvent.last
+        expect(event.id).to_not be_nil
+        expect(event.id).to eql publish_event.event_id
+      end
+  end
 end

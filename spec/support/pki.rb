@@ -81,8 +81,4 @@ class PKI
   def revocation_data(serial)
     @revoked_certificates[serial.to_i]
   end
-
-  def certificate_subject(value)
-    OpenSSL::X509::Certificate.new(Base64.decode64(value)).subject.to_s
-  end
 end

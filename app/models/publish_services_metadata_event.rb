@@ -1,29 +1,27 @@
 class PublishServicesMetadataEvent < Event
-  
-  data_attributes :event_id, :cert_config
+  data_attributes :event_id, :services_metadata
+  validates_presence_of :event_id
   before_create :populate_data_attributes
   after_create :upload
   has_one_attached :document
-
+  
   def populate_data_attributes
-    assign_attributes(attributes_to_apply)
-  end
-
-  def attributes_to_apply
-    event_id = self.event_id
-    services_metadata = ServicesMetadata.to_json(self.event_id)
-
-    { event_id: event_id, cert_config: services_metadata }
+    assign_attributes(services_metadata: services_metadata)
   end
 
   def upload
-    file_name = "#{ServicesMetadata.name.downcase}.json"
-    json_data = attributes_to_apply[:cert_config]
+    file_name = 'servicesmetadata.json'
+
     document.attach(
-      io: StringIO.new(json_data),
+      io: StringIO.new(services_metadata),
       content_type: 'application/json',
       filename: file_name
     )
   end
 
+  private
+
+  def services_metadata
+    Component.to_service_metadata(event_id)
+  end
 end
