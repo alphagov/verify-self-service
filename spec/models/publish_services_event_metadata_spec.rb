@@ -1,5 +1,7 @@
+require 'yaml'
 require 'rails_helper'
-
+require_relative '../../app/lib/utilities/configuration/settings'
+include Utilities::Configuration::Settings
 RSpec.describe PublishServicesMetadataEvent, type: :model do
   let(:published_at) { Time.now }
   let(:event_id) { 0 }
@@ -17,23 +19,31 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
       expect(event.data['services_metadata']).to include('published_at')
     end
 
-    it 'when event_id is blank publishServicesMetadataEvent is invalid' do
+    it 'when event_id is blank services_metadata json is empty' do
       invalid_event = PublishServicesMetadataEvent.create
+      event_error = invalid_event.errors.messages[:event_id]
       expect(invalid_event).to_not be_valid
       expect(invalid_event.data).to be_empty
+      expect(event_error).to include("can't be blank")
     end
 
-    it 'can attach config metadata' do
+    it 'downloaded chunk are the same as upload' do
       event.upload
-      expect(event.document.attached?).to be true
-      expect(ActiveStorage::Blob.service.exist?(event.document.key)).to be true
-    end
+      key = event.storage_key
+      expected_chunks = event.json_data
+      current_active_storage_env = Rails.configuration.active_storage.service
 
-    it 'generates a link to uploaded config metadata' do
-      event.upload
-      current_url_helper = Rails.application.routes.url_helpers
-      url = current_url_helper.rails_blob_path(event.document, only_path: true)
-      expect(url).to end_with('servicesmetadata.json')
+      service = ActiveStorage::Service.configure(
+        current_active_storage_env,
+        configuration('storage.yml')
+      )
+
+      actual_chunks = []
+      service.download key do |chunk|
+        actual_chunks << chunk
+      end
+
+      expect(expected_chunks).to eql(actual_chunks.first)
     end
   end
 end

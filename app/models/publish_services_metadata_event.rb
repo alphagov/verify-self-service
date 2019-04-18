@@ -1,22 +1,29 @@
+require 'yaml'
+require 'digest/md5'
+require 'utilities/configuration/settings'
+
 class PublishServicesMetadataEvent < Event
+  include Utilities::Configuration::Settings
+
+  attr_reader :storage_key, :json_data
   data_attributes :event_id, :services_metadata
   validates_presence_of :event_id
   before_create :populate_data_attributes
   after_create :upload
-  has_one_attached :document
   
   def populate_data_attributes
-    assign_attributes(services_metadata: services_metadata)
+    @json_data = services_metadata
+    assign_attributes(services_metadata: json_data)
   end
 
   def upload
-    file_name = 'servicesmetadata.json'
-
-    document.attach(
-      io: StringIO.new(services_metadata),
-      content_type: 'application/json',
-      filename: file_name
+    @storage_key = "#{Time.now.to_formatted_s(:number)}_services_metadata.json"
+    check_sum = Digest::MD5.base64digest(json_data)
+    current_active_storage_env = Rails.configuration.active_storage.service
+    service = ActiveStorage::Service.configure(
+      current_active_storage_env, configuration('storage.yml')
     )
+    service.upload(storage_key, StringIO.new(json_data), checksum: check_sum)
   end
 
   private
