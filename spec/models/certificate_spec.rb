@@ -36,7 +36,7 @@ RSpec.describe Certificate, type: :model do
     cert = Base64.encode64(good_cert_value)
     certificate = Certificate.new(usage: 'signing', value: cert, component_id: component.id)
     subject = certificate_subject(cert)
-    expect(certificate).not_to be nil?
+    expect(certificate).not_to be_nil
     expect(certificate.to_metadata).to include(name: subject, value: cert)
   end
 end

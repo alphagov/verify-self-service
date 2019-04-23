@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class NewComponentEvent < AggregatedEvent
   belongs_to_aggregate :component
   data_attributes :name, :component_type

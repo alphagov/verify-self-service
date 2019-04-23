@@ -27,7 +27,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
       expect(event_error).to include("can't be blank")
     end
 
-    it 'downloaded chunk are the same as upload' do
+    it 'downloaded content is the same as upload with given key' do
       event.upload
       key = event.storage_key
       expected_chunks = event.json_data
@@ -43,7 +43,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
         actual_chunks << chunk
       end
 
-      expect(expected_chunks).to eql(actual_chunks.first)
+      expect(expected_chunks).to eq(actual_chunks.first)
     end
   end
 end
