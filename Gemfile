@@ -37,9 +37,10 @@ gem 'colorize'
 
 gem 'kaminari', '~> 1.1'
 
+gem 'aws-sdk-s3'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'aws-sdk-s3'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails'
   gem 'capybara'
