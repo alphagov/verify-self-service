@@ -1,8 +1,10 @@
-class UploadCertificateEvent < Event
+require 'utilities/certificate/certificate_factory'
+class UploadCertificateEvent < AggregatedEvent
+  include Utilities::Certificate
   belongs_to_aggregate :certificate
   data_attributes :value, :usage, :component_id
   before_save :convert_value_to_inline_der
-
+  after_save :trigger_publish_event
   validate :value_is_present
   validate :certificate_is_valid,
            :certificate_is_new, on: :create, if: :value_present?
@@ -33,6 +35,10 @@ class UploadCertificateEvent < Event
   end
 
   private
+
+  def trigger_publish_event
+    PublishServicesMetadataEvent.create(event_id: self.id)
+  end
 
   def component_is_persisted
     unless self.component&.persisted?
@@ -93,7 +99,8 @@ class UploadCertificateEvent < Event
 
   def x509_certificate
     if self.value != @last_converted_value || @x509_certificate.blank?
-      @x509_certificate = convert_value_to_x509_certificate
+      @certificate_factory = CertificateFactory.new(self.value)
+      @x509_certificate = @certificate_factory.certificate
       @last_converted_value = self.value
     end
 
@@ -103,11 +110,4 @@ class UploadCertificateEvent < Event
     return @x509_certificate = nil
   end
 
-  def convert_value_to_x509_certificate
-    begin
-      OpenSSL::X509::Certificate.new(self.value)
-    rescue
-      OpenSSL::X509::Certificate.new(Base64.decode64(self.value))
-    end
-  end
 end

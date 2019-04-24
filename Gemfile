@@ -37,6 +37,8 @@ gem 'colorize'
 
 gem 'kaminari', '~> 1.1'
 
+gem 'aws-sdk-s3'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -46,6 +48,7 @@ group :development, :test do
   gem 'geckodriver-helper'
   # still use sqlite3 in development and testing.
   gem 'sqlite3'
+  gem 'pry'
 end
 
 group :development do
@@ -61,4 +64,3 @@ gem 'omniauth'
 gem 'omniauth_openid_connect'
 gem 'omniauth-cognito-idp'
 gem 'dotenv-rails', require: 'dotenv/rails-now', group: [:development, :test]
-
