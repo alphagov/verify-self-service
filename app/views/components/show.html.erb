@@ -1,39 +1,63 @@
-<h1><%= @component.name %></h1>
+<h1 class="govuk-heading-l"><%= @component.name %></h1>
 
-<table class="govuk-table">
-  <h3 class="govuk-heading-m">Certificates to upload</h3>
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th class="govuk-table__header" scope="col">Name</th>
-      <th class="govuk-table__header" scope="col">Type</th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell" scope="row"><%= @component.name %></td>
-        <td class="govuk-table__cell"><%= @component.component_type %></td>
-      </tr>
-  </tbody>
+<h2 class="govuk-heading-m"><%= @component.component_type %></h2>
+
 
 </table>
 <%= link_to 'Upload', new_component_certificate_path(@component), class: 'govuk-button' %>
 
-<% if @component_certificates.present? %>
-  <table class="govuk-table">
-    <h3 class="govuk-heading-m">Certificates currently in use</h3>
-    <thead class="govuk-table__head">
+<table class="govuk-table">
+  <h3 class="govuk-heading-m">Signing Certificates Enabled</h3>
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header" scope="col">Last updated</th>
+      <th class="govuk-table__header" scope="col"></th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <% @component.enabled_signing_certificates.each do |certificate| %>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
+        <td class="govuk-table__cell">Disable</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table class="govuk-table">
+  <h3 class="govuk-heading-m">Signing Certificates Disabled</h3>
+  <thead class="govuk-table__head">
+  <tr class="govuk-table__row">
+    <th class="govuk-table__header" scope="col">Last updated</th>
+    <th class="govuk-table__header" scope="col"></th>
+  </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+  <% @component.disabled_signing_certificates.each do |certificate| %>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
+        <td class="govuk-table__cell">Enable</td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<% if @component.certificates.present? %>
+    <table class="govuk-table">
+      <h3 class="govuk-heading-m">All certificates currently in use</h3>
+      <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th class="govuk-table__header" scope="col">Usage</th>
         <th class="govuk-table__header" scope="col">Last updated</th>
       </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-      <% @component_certificates.each do |certificate| %>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell" scope="row"><%= certificate.usage %></td>
-          <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
-        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+      <% @component.certificates.each do |certificate| %>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell" scope="row"><%= certificate.usage %></td>
+            <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
+          </tr>
       <% end %>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
 <% end %>
