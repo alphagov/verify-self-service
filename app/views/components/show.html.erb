@@ -18,7 +18,11 @@
     <% @component.enabled_signing_certificates.each do |certificate| %>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
-        <td class="govuk-table__cell">Disable</td>
+        <td class="govuk-table__cell">
+          <%= form_for [@component, certificate], method: :put do |f| %>
+              <%= f.submit "Disable" %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
@@ -36,7 +40,11 @@
   <% @component.disabled_signing_certificates.each do |certificate| %>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
-        <td class="govuk-table__cell">Enable</td>
+        <td class="govuk-table__cell">
+          <%= form_for [@component, certificate], method: :put do |f| %>
+              <%= f.submit "Enable" %>
+          <% end %>
+        </td>
       </tr>
   <% end %>
   </tbody>
