@@ -15,16 +15,9 @@ class CertificatesController < ApplicationController
   end
 
   def update
-    certificate = Certificate.find(params[:id])
-    if certificate.enabled
-      certificate.enabled = false
-    else
-      certificate.enabled = true
-    end
-
-    certificate.save
-
-    redirect_to component_path(certificate.component_id)
+    @certificate = Certificate.find(params[:id])
+    @certificate.update_attributes(update_params)
+    redirect_to component_path(@certificate.component_id)
   end
 
   private
@@ -36,5 +29,10 @@ class CertificatesController < ApplicationController
           .permit(:value, :usage, :id)
           .merge(component_id: component_id)
 
+  end
+
+  def update_params
+    params.require(:certificate)
+        .permit(:enabled)
   end
 end

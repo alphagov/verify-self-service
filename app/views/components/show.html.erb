@@ -1,69 +1,45 @@
-<h1 class="govuk-heading-l"><%= @component.name %></h1>
+<h1 class="govuk-heading-xl"><%= @component.name %></h1>
 
-<h2 class="govuk-heading-m"><%= @component.component_type %></h2>
+<h2 class="govuk-heading-l"><%= @component.component_type %></h2>
 
 
 </table>
 <%= link_to 'Upload', new_component_certificate_path(@component), class: 'govuk-button' %>
 
-<table class="govuk-table">
-  <h3 class="govuk-heading-m">Signing Certificates Enabled</h3>
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th class="govuk-table__header" scope="col">Last updated</th>
-      <th class="govuk-table__header" scope="col"></th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-    <% @component.enabled_signing_certificates.each do |certificate| %>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
-        <td class="govuk-table__cell">
-          <%= form_for [@component, certificate], method: :put do |f| %>
-              <%= f.submit "Disable" %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<h3 class="govuk-heading-m">Signing Certificates (Enabled)</h3>
+<% @certificates =  @component.enabled_signing_certificates %>
+<%= render "certificates/certificates_table" %>
 
-<table class="govuk-table">
-  <h3 class="govuk-heading-m">Signing Certificates Disabled</h3>
-  <thead class="govuk-table__head">
-  <tr class="govuk-table__row">
-    <th class="govuk-table__header" scope="col">Last updated</th>
-    <th class="govuk-table__header" scope="col"></th>
-  </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-  <% @component.disabled_signing_certificates.each do |certificate| %>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
-        <td class="govuk-table__cell">
-          <%= form_for [@component, certificate], method: :put do |f| %>
-              <%= f.submit "Enable" %>
-          <% end %>
-        </td>
-      </tr>
-  <% end %>
-  </tbody>
-</table>
+<h3 class="govuk-heading-m">Signing Certificates (Disabled)</h3>
+<% @certificates =  @component.disabled_signing_certificates %>
+<%= render "certificates/certificates_table" %>
+
 
 <% if @component.certificates.present? %>
     <table class="govuk-table">
-      <h3 class="govuk-heading-m">All certificates currently in use</h3>
+      <h3 class="govuk-heading-m">All certificates for this component</h3>
       <thead class="govuk-table__head">
       <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">ID</th>
         <th class="govuk-table__header" scope="col">Usage</th>
+        <th class="govuk-table__header" scope="col">Enabled</th>
         <th class="govuk-table__header" scope="col">Last updated</th>
+        <th class="govuk-table__header" scope="col"></th>
       </tr>
       </thead>
       <tbody class="govuk-table__body">
       <% @component.certificates.each do |certificate| %>
           <tr class="govuk-table__row">
+            <td class="govuk-table__cell" scope="row"><%= certificate.id %></td>
             <td class="govuk-table__cell" scope="row"><%= certificate.usage %></td>
+            <td class="govuk-table__cell" scope="row"><%= certificate.enabled %></td>
             <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
+            <td class="govuk-table__cell">
+              <%= form_for [@component, certificate], method: :put do |f| %>
+                <%= f.hidden_field :enabled, value: !certificate.enabled %>
+                <%= f.submit "Enable/Disable", class: "govuk-button" %>
+              <% end %>
+            </td>
           </tr>
       <% end %>
       </tbody>
