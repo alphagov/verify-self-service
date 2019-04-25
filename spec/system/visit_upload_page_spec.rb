@@ -19,7 +19,9 @@ RSpec.describe 'UploadPage', type: :system do
     choose 'certificate_usage_signing', allow_label_click: true
     fill_in 'certificate_value', with: test_certificate
     click_button 'Upload'
-    expect(page).to have_content component.certificates.last.usage
+    expect(page).to have_selector ("#edit_certificate_#{component.certificates.last.id}")
     expect(current_path).to eql component_path(component)
+
   end
+
 end
