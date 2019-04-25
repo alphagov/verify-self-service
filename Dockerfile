@@ -1,4 +1,4 @@
-FROM ruby:2.6.0
+FROM ruby:2.6.2
 
 ADD Gemfile Gemfile
 ADD Gemfile.lock Gemfile.lock
