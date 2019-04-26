@@ -26,7 +26,7 @@ class CertificatesController < ApplicationController
     component_id ||= params[:component_id]
 
     params.require(:certificate)
-          .permit(:value, :usage, :id)
+          .permit(:value, :usage)
           .merge(component_id: component_id)
 
   end

@@ -12,10 +12,6 @@ RSpec.describe 'New Component Page', type: :system do
 
   let(:component) { NewComponentEvent.create(component_params).component }
 
-  # let(:root) { PKI.new }
-  # let(:test_certificate_1){root.generate_encoded_cert(expires_in: 2.months)}
-  # let(:test_certificate_2){root.generate_encoded_cert(expires_in: 2.months)}
-
   let(:upload_certs) do
         root = PKI.new
         x509_cert_1 = root.generate_encoded_cert(expires_in: 2.months)

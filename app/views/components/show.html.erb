@@ -2,8 +2,6 @@
 
 <h2 class="govuk-heading-l"><%= @component.component_type %></h2>
 
-
-</table>
 <%= link_to 'Upload', new_component_certificate_path(@component), class: 'govuk-button' %>
 
 <h3 class="govuk-heading-m">Signing Certificates (Enabled)</h3>
@@ -16,22 +14,22 @@
 
 
 <% if @component.certificates.present? %>
+  <h3 class="govuk-heading-m">All certificates for this component</h3>
     <table class="govuk-table">
-      <h3 class="govuk-heading-m">All certificates for this component</h3>
       <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col">ID</th>
-        <th class="govuk-table__header" scope="col">Usage</th>
-        <th class="govuk-table__header" scope="col">Enabled</th>
-        <th class="govuk-table__header" scope="col">Last updated</th>
+        <th class="govuk-table__header">ID</th>
+        <th class="govuk-table__header">Usage</th>
+        <th class="govuk-table__header">Enabled</th>
+        <th class="govuk-table__header">Last updated</th>
       </tr>
       </thead>
       <tbody class="govuk-table__body">
       <% @component.certificates.each do |certificate| %>
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell" scope="row"><%= certificate.id %></td>
-            <td class="govuk-table__cell" scope="row"><%= certificate.usage %></td>
-            <td class="govuk-table__cell" scope="row"><%= certificate.enabled %></td>
+            <td class="govuk-table__cell"><%= certificate.id %></td>
+            <td class="govuk-table__cell"><%= certificate.usage %></td>
+            <td class="govuk-table__cell"><%= certificate.enabled %></td>
             <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
           </tr>
       <% end %>
