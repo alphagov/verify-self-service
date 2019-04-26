@@ -3,6 +3,10 @@ class Component < Aggregate
   has_many :certificates
   has_many :signing_certificates,
            -> { where(usage: 'signing') }, class_name: 'Certificate'
+  has_many :enabled_signing_certificates,
+           -> { where(usage: 'signing', enabled: true) }, class_name: 'Certificate'
+  has_many :disabled_signing_certificates,
+           -> { where(usage: 'signing', enabled: false) }, class_name: 'Certificate'
   has_one :encryption_certificate,
           -> { where(usage: 'encryption').order(id: 'DESC') },
           class_name: 'Certificate'
