@@ -7,6 +7,6 @@ RSpec.describe 'Homepage', type: :feature, acceptance: true do
     fill_in('username', :with => 'test@test.test')
     fill_in('password', :with => 'Password!1')
     find("[name='signInSubmitButton']").click
-    expect(page).to have_content 'Components#index'
+    expect(page).to have_content 'Components'
   end
 end
