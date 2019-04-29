@@ -29,5 +29,9 @@ module VerifySelfService
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    # by default rails wraps invalid inputs with <div class="field_with_errors">
+    # we have our own way of styling errors, so we don't need this behaviour:
+    config.action_view.field_error_proc = Proc.new { |html_tag| html_tag }
+
   end
 end
