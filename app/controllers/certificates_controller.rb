@@ -16,7 +16,12 @@ class CertificatesController < ApplicationController
 
   def update
     @certificate = Certificate.find(params[:id])
-    @certificate.update_attributes(update_params)
+
+    if @certificate.enabled
+      DisableSigningCertificateEvent.create(certificate: @certificate)
+    else
+      EnableSigningCertificateEvent.create(certificate: @certificate)
+    end
     redirect_to component_path(@certificate.component_id)
   end
 
@@ -28,7 +33,6 @@ class CertificatesController < ApplicationController
     params.require(:certificate)
           .permit(:value, :usage, :id)
           .merge(component_id: component_id)
-
   end
 
   def update_params
