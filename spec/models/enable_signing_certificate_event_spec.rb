@@ -69,4 +69,13 @@ RSpec.describe EnableSigningCertificateEvent, type: :model do
     expect(cert.usage).to eq('encryption')
     expect(event).not_to be_persisted
   end
+
+  context '#trigger_publish_event' do
+    it 'when signing certificate is enabled' do
+      event = enable_signing_certificate_event
+      publish_event = PublishServicesMetadataEvent.last
+      expect(event.id).to_not be_nil
+      expect(event.id).to eql publish_event.event_id
+    end
+  end
 end

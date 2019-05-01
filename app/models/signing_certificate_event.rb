@@ -4,6 +4,7 @@ class SigningCertificateEvent < AggregatedEvent
   belongs_to_aggregate :certificate
   validates_presence_of :certificate
   validate :certificate_is_signing?
+  after_save :trigger_publish_event
 
   def attributes_to_apply
     assign_attributes(event_metadata_hash)
@@ -22,5 +23,9 @@ class SigningCertificateEvent < AggregatedEvent
     return if certificate.usage == 'signing'
 
     errors.add(:signing_certificate_event, 'signing certificate required')
+  end
+
+  def trigger_publish_event
+    PublishServicesMetadataEvent.create(event_id: self.id)
   end
 end
