@@ -35,9 +35,4 @@ class CertificatesController < ApplicationController
           .permit(:value, :usage)
           .merge(component_id: component_id)
   end
-
-  def update_params
-    params.require(:certificate)
-          .permit(:enabled)
-  end
 end
