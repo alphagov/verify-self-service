@@ -14,14 +14,15 @@ class CertificatesController < ApplicationController
     end
   end
 
-  def update
+  def enable
     @certificate = Certificate.find(params[:id])
+    EnableSigningCertificateEvent.create(certificate: @certificate)
+    redirect_to component_path(@certificate.component_id)
+  end
 
-    if @certificate.enabled
-      DisableSigningCertificateEvent.create(certificate: @certificate)
-    else
-      EnableSigningCertificateEvent.create(certificate: @certificate)
-    end
+  def disable
+    @certificate = Certificate.find(params[:id])
+    DisableSigningCertificateEvent.create(certificate: @certificate)
     redirect_to component_path(@certificate.component_id)
   end
 
@@ -37,6 +38,6 @@ class CertificatesController < ApplicationController
 
   def update_params
     params.require(:certificate)
-        .permit(:enabled)
+          .permit(:enabled)
   end
 end

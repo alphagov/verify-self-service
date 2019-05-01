@@ -16,9 +16,10 @@
       <td class="govuk-table__cell"><%= certificate.usage %></td>
       <td class="govuk-table__cell"><%= certificate.enabled %></td>
       <td class="govuk-table__cell">
-        <%= form_for [@component, certificate], method: :patch do |f| %>
-          <%= f.hidden_field :enabled, value: !certificate.enabled %>
-          <%= f.submit certificate.enabled ? 'Disable' : 'Enable', class: 'govuk-button' %>
+        <%= form_for [@component, certificate],
+          method: :patch,
+          url: "/components/#{@component.id}/certificates/#{certificate.id}/#{status}"  do |f| %>
+          <%= f.submit status.capitalize, class: 'govuk-button' %>
         <% end %>
       </td>
     </tr>

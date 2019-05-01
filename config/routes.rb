@@ -2,7 +2,12 @@ Rails.application.routes.draw do
 
   root 'components#index'
   resources :components do
-    resources :certificates
+    resources :certificates do
+      member do
+        patch 'enable'
+        patch 'disable'
+      end
+    end
   end
 
   get '/events', to: 'events#index'

@@ -6,11 +6,11 @@
 
 <h3 class="govuk-heading-m">Signing Certificates (Enabled)</h3>
 <% @certificates =  @component.enabled_signing_certificates %>
-<%= render "certificates/certificates_table" %>
+<%= render "certificates/certificates_table" , status: 'disable' %>
 
 <h3 class="govuk-heading-m">Signing Certificates (Disabled)</h3>
 <% @certificates =  @component.disabled_signing_certificates %>
-<%= render "certificates/certificates_table" %>
+<%= render "certificates/certificates_table" , status: 'enable' %>
 
 
 <% if @component.certificates.present? %>
