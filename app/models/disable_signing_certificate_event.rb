@@ -1,4 +1,4 @@
-class DisableSigningCertificateEvent < SigningCertificateEvent
+class DisableSigningCertificateEvent < ToggleEnableEvent
 
   def enabled
     false
