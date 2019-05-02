@@ -11,4 +11,8 @@ class Certificate < Aggregate
     subject = certificate_factory.to_subject
     { name: subject, value: self.value }
   end
+
+  def signing?
+    usage == 'signing'
+  end
 end

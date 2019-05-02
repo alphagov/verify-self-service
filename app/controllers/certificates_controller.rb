@@ -16,13 +16,23 @@ class CertificatesController < ApplicationController
 
   def enable
     @certificate = Certificate.find(params[:id])
-    EnableSigningCertificateEvent.create(certificate: @certificate)
+    event = EnableSigningCertificateEvent.create(certificate: @certificate)
+    unless event.valid?
+      error_message = event.errors.full_messages
+      Rails.logger.error(error_message)
+      flash[:notice] = error_message
+    end
     redirect_to component_path(@certificate.component_id)
   end
 
   def disable
     @certificate = Certificate.find(params[:id])
-    DisableSigningCertificateEvent.create(certificate: @certificate)
+    event = DisableSigningCertificateEvent.create(certificate: @certificate)
+    unless event.valid?
+      error_message = event.errors.full_messages
+      Rails.logger.error(error_message)
+      flash[:notice] = error_message
+    end
     redirect_to component_path(@certificate.component_id)
   end
 

@@ -9,7 +9,7 @@
   </tr>
   </thead>
   <tbody class="govuk-table__body">
-  <% @certificates.each do |certificate| %>
+  <% certificates.each do |certificate| %>
     <tr class="govuk-table__row" id="certificate_table_<%= certificate.id %>">
       <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
       <td class="govuk-table__cell"><%= certificate.id %></td>
@@ -18,8 +18,10 @@
       <td class="govuk-table__cell">
         <%= form_for [@component, certificate],
           method: :patch,
-          url: "/components/#{@component.id}/certificates/#{certificate.id}/#{status}"  do |f| %>
-          <%= f.submit status.capitalize, class: 'govuk-button' %>
+          url: certificate.enabled ? 
+            disable_component_certificate_path(@component, certificate) : 
+            enable_component_certificate_path(@component, certificate) do |f| %>
+              <%= f.submit certificate.enabled ? 'Disable': 'Enable', class: 'govuk-button' %>
         <% end %>
       </td>
     </tr>

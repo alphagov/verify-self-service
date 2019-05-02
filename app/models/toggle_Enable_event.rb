@@ -13,7 +13,7 @@ class ToggleEnableEvent < AggregatedEvent
   private
 
   def certificate_is_signing?
-    return unless certificate.usage == 'encryption'
+    return if certificate.signing?
 
     errors.add(:signing_certificate_event, 'signing certificate required')
   end
