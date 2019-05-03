@@ -14,13 +14,24 @@ class CertificatesController < ApplicationController
     end
   end
 
-  def update
+  def enable
     @certificate = Certificate.find(params[:id])
+    event = EnableSigningCertificateEvent.create(certificate: @certificate)
+    unless event.valid?
+      error_message = event.errors.full_messages
+      Rails.logger.error(error_message)
+      flash[:notice] = error_message
+    end
+    redirect_to component_path(@certificate.component_id)
+  end
 
-    if @certificate.enabled
-      DisableSigningCertificateEvent.create(certificate: @certificate)
-    else
-      EnableSigningCertificateEvent.create(certificate: @certificate)
+  def disable
+    @certificate = Certificate.find(params[:id])
+    event = DisableSigningCertificateEvent.create(certificate: @certificate)
+    unless event.valid?
+      error_message = event.errors.full_messages
+      Rails.logger.error(error_message)
+      flash[:notice] = error_message
     end
     redirect_to component_path(@certificate.component_id)
   end
@@ -33,10 +44,5 @@ class CertificatesController < ApplicationController
     params.require(:certificate)
           .permit(:value, :usage)
           .merge(component_id: component_id)
-  end
-
-  def update_params
-    params.require(:certificate)
-        .permit(:enabled)
   end
 end

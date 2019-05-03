@@ -17,20 +17,18 @@ class Component < Aggregate
 
   def self.to_service_metadata(event_id, published_at = Time.now)
     matching_service_adapters = Component.matching_service_adapters
-                                         .includes(:signing_certificates,
+                                         .includes(:enabled_signing_certificates,
                                                    :encryption_certificate)
     service_providers = Component.service_providers
-                                 .includes(:signing_certificates,
+                                 .includes(:enabled_signing_certificates,
                                            :encryption_certificate)
-      { 
-        published_at: published_at, event_id: event_id,
+      { published_at: published_at, event_id: event_id,
         matching_service_adapters: matching_service_adapters.map(&:to_metadata),
-        service_providers: service_providers.map(&:to_metadata)
-      }.to_json
+        service_providers: service_providers.map(&:to_metadata) }.to_json
   end
 
   def to_metadata
-    signing = self.signing_certificates.map(&:to_metadata)
+    signing = self.enabled_signing_certificates.map(&:to_metadata)
 
     encryption = self.encryption_certificate&.to_metadata
     {

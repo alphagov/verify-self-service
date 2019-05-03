@@ -38,7 +38,18 @@
 
     <div class="govuk-width-container">
       <main class="govuk-main-wrapper " id="main-content" role="main">
-        <%= yield %>
+       <% if flash.present? %>
+          <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+              <span class="govuk-warning-text__assistive">Warning</span>
+                <% flash.each do |name, msg| -%>
+                   <%=msg%>
+                <% end -%>
+            </strong>
+          </div>
+       <% end %>
+       <%= yield %>
       </main>
     </div>
 

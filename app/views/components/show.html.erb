@@ -5,12 +5,14 @@
 <%= link_to 'Upload', new_component_certificate_path(@component), class: 'govuk-button' %>
 
 <h3 class="govuk-heading-m">Signing Certificates (Enabled)</h3>
-<% @certificates =  @component.enabled_signing_certificates %>
-<%= render "certificates/certificates_table" %>
+ <%= render "certificates/certificates_table", 
+     certificates: @component.enabled_signing_certificates
+ %>
 
 <h3 class="govuk-heading-m">Signing Certificates (Disabled)</h3>
-<% @certificates =  @component.disabled_signing_certificates %>
-<%= render "certificates/certificates_table" %>
+ <%= render "certificates/certificates_table", 
+     certificates: @component.disabled_signing_certificates
+ %>
 
 
 <% if @component.certificates.present? %>
