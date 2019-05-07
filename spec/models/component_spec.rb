@@ -15,8 +15,11 @@ RSpec.describe Component, type: :model do
       c = Component.create(name: 'lala', component_type: 'MSA')
       c.certificates.create(usage: 'signing', value: certificate)
       c.certificates.create(usage: 'signing', value: certificate)
-      c.certificates.create(usage: 'encryption', value: certificate)
-
+      encryption_certificate = Certificate.create(
+        usage: 'encryption', value: certificate, component_id: c.id
+      )
+      c.encryption_certificate_id = encryption_certificate.id
+      c.save
       actual_config = Component.to_service_metadata(event_id, published_at)
 
       expected_config = {

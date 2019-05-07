@@ -9,22 +9,29 @@
   </tr>
   </thead>
   <tbody class="govuk-table__body">
-  <% certificates.each do |certificate| %>
-    <tr class="govuk-table__row" id="certificate_table_<%= certificate.id %>">
-      <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
-      <td class="govuk-table__cell"><%= certificate.id %></td>
-      <td class="govuk-table__cell"><%= certificate.usage %></td>
-      <td class="govuk-table__cell"><%= certificate.enabled %></td>
-      <td class="govuk-table__cell">
-        <%= form_for [@component, certificate],
-          method: :patch,
-          url: certificate.enabled ? 
-            disable_component_certificate_path(@component, certificate) : 
-            enable_component_certificate_path(@component, certificate) do |f| %>
-              <%= f.submit certificate.enabled ? 'Disable': 'Enable', class: 'govuk-button' %>
+
+    <% certificates.each do |certificate| %>
+      <tr class="govuk-table__row" id="certificate_table_<%= certificate.id %>">
+        <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
+        <td class="govuk-table__cell"><%= certificate.id %></td>
+        <td class="govuk-table__cell"><%= certificate.usage %></td>
+        <td class="govuk-table__cell"><%= certificate.enabled %></td>
+        <td class="govuk-table__cell">
+        <% if certificate.usage == 'encryption'%>
+          <%= form_for [@component, certificate], method: :patch do |f| %>
+              <%= f.submit 'TBC', class: 'govuk-button' %>
+          <% end %>
+        <% else %>
+          <%= form_for [@component, certificate],
+            method: :patch,
+            url: certificate.enabled ?
+              disable_component_certificate_path(@component, certificate) :
+              enable_component_certificate_path(@component, certificate) do |f| %>
+                <%= f.submit certificate.enabled ? 'Disable': 'Enable', class: 'govuk-button' %>
+          <% end %>
         <% end %>
-      </td>
-    </tr>
-  <% end %>
+        </td>
+      </tr>
+  <%end %>
   </tbody>
 </table>
