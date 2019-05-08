@@ -16,20 +16,22 @@ RSpec.describe 'New Component Page', type: :system do
     x509_cert_1 = root.generate_encoded_cert(expires_in: 2.months)
     x509_cert_2 = root.generate_encoded_cert(expires_in: 9.months)
     UploadCertificateEvent.create(
-      usage: 'signing', value: x509_cert_1, component_id: component.id
+      usage: CONSTANTS::SIGNING, value: x509_cert_1, component_id: component.id
     ).certificate
     UploadCertificateEvent.create(
-      usage: 'signing', value: x509_cert_2, component_id: component.id
+      usage: CONSTANTS::SIGNING, value: x509_cert_2, component_id: component.id
     ).certificate
   end
 
   let(:upload_encryption_cert) do
     x509_cert = root.generate_encoded_cert(expires_in: 9.months)
     encryption_cert = UploadCertificateEvent.create(
-      usage: 'encryption', value: x509_cert, component_id: component.id
+      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
     ).certificate
-    component.encryption_certificate_id = encryption_cert.id
-    component.save
+    ReplaceEncryptionCertificateEvent.create(
+      component: component,
+      encryption_certificate_id: encryption_cert.id
+    )
     encryption_cert
   end
 

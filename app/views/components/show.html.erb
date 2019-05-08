@@ -13,11 +13,13 @@
  <%= render "certificates/certificates_table",
      certificates: @component.disabled_signing_certificates
  %>
-
- <h3 class="govuk-heading-m">Encryption Certificate</h3>
-  <%= render "certificates/certificates_table",
-     certificates: @component.encryption_certificate ? [@component.encryption_certificate] : []
- %>
+ 
+ <% if @component.encryption_certificate.present? %>
+    <h3 class="govuk-heading-m">Encryption Certificate</h3>
+      <%= render "certificates/certificates_table",
+        certificates: [@component.encryption_certificate]
+    %>
+ <% end %>
 
 
 <% if @component.certificates.present? %>

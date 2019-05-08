@@ -11,7 +11,7 @@ class UploadCertificateEvent < AggregatedEvent
 
   validate :component_is_persisted
 
-  validates_inclusion_of :usage, in: ['signing', 'encryption']
+  validates_inclusion_of :usage, in: [CONSTANTS::SIGNING, CONSTANTS::ENCRYPTION]
 
   def build_certificate
     Certificate.new

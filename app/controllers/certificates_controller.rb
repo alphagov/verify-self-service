@@ -6,10 +6,11 @@ class CertificatesController < ApplicationController
   def create
     @upload = UploadCertificateEvent.create(upload_params)
     if @upload.valid?
-      component = Component.find(@upload.component_id)
-      if @upload.certificate.usage == 'encryption'
-        component.encryption_certificate_id = @upload.certificate.id
-        component.save
+      if @upload.certificate.encryption?
+        ReplaceEncryptionCertificateEvent.create(
+          component: Component.find(@upload.component_id),
+          encryption_certificate_id: @upload.certificate.id
+        )
       end
       redirect_to component_path(@upload.component_id)
     else

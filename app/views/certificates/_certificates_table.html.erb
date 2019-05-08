@@ -17,7 +17,7 @@
         <td class="govuk-table__cell"><%= certificate.usage %></td>
         <td class="govuk-table__cell"><%= certificate.enabled %></td>
         <td class="govuk-table__cell">
-        <% if certificate.usage == 'encryption'%>
+        <% if certificate.encryption? %>
           <%= form_for [@component, certificate], method: :patch do |f| %>
               <%= f.submit 'TBC', class: 'govuk-button' %>
           <% end %>

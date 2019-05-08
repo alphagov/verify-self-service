@@ -10,19 +10,19 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
 
   let(:signing_certificate) do
     UploadCertificateEvent.create(
-        usage: 'signing', value: good_cert_value, component_id: component.id
+        usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id
     ).certificate
   end
 
   let(:expired_signing_certificate) do
     UploadCertificateEvent.create(
-        usage: 'signing', value: expired_cert_value, component_id: component.id
+        usage: CONSTANTS::SIGNING, value: expired_cert_value, component_id: component.id
     ).certificate
   end
 
   let(:encryption_certificate) do
     UploadCertificateEvent.create(
-        usage: 'encryption', value: good_cert_value, component_id: component.id
+        usage: CONSTANTS::ENCRYPTION, value: good_cert_value, component_id: component.id
     ).certificate
   end
 
@@ -55,7 +55,7 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
         certificate: encryption_certificate
     )
     cert = event.certificate
-    expect(cert.usage).to eq('encryption')
+    expect(cert.usage).to eq(CONSTANTS::ENCRYPTION)
     expect(event).not_to be_persisted
   end
 
