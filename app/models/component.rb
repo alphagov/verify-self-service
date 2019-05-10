@@ -3,6 +3,11 @@ class Component < Aggregate
   has_many :certificates
   has_many :signing_certificates,
            -> { where(usage: CONSTANTS::SIGNING) }, class_name: 'Certificate'
+  has_many :previous_encryption_certificates,
+           lambda {
+             where(usage: CONSTANTS::ENCRYPTION).order(created_at: 'desc')
+                                                .offset(1)
+           }, class_name: 'Certificate'
   has_many :enabled_signing_certificates,
            -> { where(usage: CONSTANTS::SIGNING, enabled: true) }, class_name: 'Certificate'
   has_many :disabled_signing_certificates,

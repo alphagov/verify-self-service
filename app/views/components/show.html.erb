@@ -4,44 +4,72 @@
 
 <%= link_to 'Upload', new_component_certificate_path(@component), class: 'govuk-button' %>
 
-<h3 class="govuk-heading-m">Signing Certificates (Enabled)</h3>
- <%= render "certificates/certificates_table",
-     certificates: @component.enabled_signing_certificates
- %>
-
-<h3 class="govuk-heading-m">Signing Certificates (Disabled)</h3>
- <%= render "certificates/certificates_table",
-     certificates: @component.disabled_signing_certificates
- %>
- 
- <% if @component.encryption_certificate.present? %>
-    <h3 class="govuk-heading-m">Encryption Certificate</h3>
-      <%= render "certificates/certificates_table",
-        certificates: [@component.encryption_certificate]
+    <%= render partial: "certificates/status/certificate_table",
+      locals: { certificates: @component.enabled_signing_certificates,
+      heading: 'Signing Certificates (Enabled)' }
     %>
- <% end %>
 
+    <%= render partial: "certificates/status/certificate_table",
+      locals: { certificates: @component.disabled_signing_certificates,
+      heading: 'Signing Certificates (Disabled)' }
+    %>
+
+    <% if @component.encryption_certificate.present? %>
+      <%= render partial: "certificates/status/certificate_table",
+        locals: { certificates: [@component.encryption_certificate],
+        heading: 'Encryption Certificate assigned to component' }
+      %>
+    <% end %>
 
 <% if @component.certificates.present? %>
-  <h3 class="govuk-heading-m">All certificates for this component</h3>
-    <table class="govuk-table">
-      <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header">ID</th>
-        <th class="govuk-table__header">Usage</th>
-        <th class="govuk-table__header">Enabled</th>
-        <th class="govuk-table__header">Last updated</th>
-      </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-      <% @component.certificates.each do |certificate| %>
-          <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><%= certificate.id %></td>
-            <td class="govuk-table__cell"><%= certificate.usage %></td>
-            <td class="govuk-table__cell"><%= certificate.enabled %></td>
-            <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
-          </tr>
-      <% end %>
-      </tbody>
-    </table>
+
+    <div class="govuk-accordion" data-module="accordion" id="accordion-default">
+
+      <div class="govuk-accordion__section ">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+              Previous encryption Certificates
+            </span>
+          </h2>
+        </div>
+        <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
+
+            <% if @component.previous_encryption_certificates.present? %>
+              <%= render partial: "certificates/list/certificate_table",
+              locals: { certificates: @component.previous_encryption_certificates,
+              heading: 'Previous Encryption Certificates for this component'}
+            %>
+            <% end %>
+
+        </div>
+      </div>
+      <div class="govuk-accordion__section ">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
+              All certificates
+            </span>
+          </h2>
+        </div>
+        <div id="accordion-default-content-3" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-3">
+
+          <% if @component.certificates.present? %>
+            <%= render partial: "certificates/list/certificate_table",
+            locals: { certificates: @component.certificates,
+            heading: 'All certificates for this component'}
+            %>
+          <% end %>
+
+        </div>
+      </div>
+    </div>
+
 <% end %>
+
+
+
+
+
+
+

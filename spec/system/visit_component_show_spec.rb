@@ -86,7 +86,19 @@ RSpec.describe 'New Component Page', type: :system do
     cert = component.encryption_certificate
     visit component_path(component.id)
 
-    expect(page).to have_selector('h3', text: 'Encryption Certificate')
+    expect(page).to have_selector('table>caption', text: 'Encryption')
+   
+    expect(page).to have_selector("#certificate_table_#{cert.id}")
+  end
+
+  it 'displays encryption certificate for with the replaced id' do
+    upload_encryption_cert
+    visit component_path(component.id)
+    cert = component.encryption_certificate
+  
+    expect(page).to have_selector("table>thead+tbody>tr#certificate_table_#{cert.id} > td:nth-child(2)", text: cert.id)
+ 
+    expect(page).to have_selector('table>caption', text: 'Encryption')
     expect(page).to have_selector("#certificate_table_#{cert.id}")
   end
 
