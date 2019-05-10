@@ -3,7 +3,6 @@ class EventsController < ApplicationController
   def index
     @page_number = params[:page] || 1
     @events = Event
-      .order(id: 'DESC')
       .page(@page_number)
     render :index
   end
