@@ -24,7 +24,7 @@ class Component < Aggregate
                                            :encryption_certificate)
       { published_at: published_at, event_id: event_id,
         matching_service_adapters: matching_service_adapters.map(&:to_metadata),
-        service_providers: service_providers.map(&:to_metadata) }.to_json
+        service_providers: service_providers.map(&:to_metadata) }
   end
 
   def to_metadata
