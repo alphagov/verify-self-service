@@ -1,4 +1,5 @@
 require 'utilities/certificate/certificate_factory'
+
 class Certificate < Aggregate
   include Utilities::Certificate
 
@@ -11,8 +12,12 @@ class Certificate < Aggregate
     subject = certificate_factory.to_subject
     { name: subject, value: self.value }
   end
+  
+  def encryption?
+    usage == CONSTANTS::ENCRYPTION
+  end
 
   def signing?
-    usage == 'signing'
+    usage == CONSTANTS::SIGNING
   end
 end

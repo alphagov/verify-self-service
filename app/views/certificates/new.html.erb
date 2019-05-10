@@ -11,12 +11,12 @@
       <%=error_message_on(f.object.errors, :usage) %>
       <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item ">
-          <%= f.radio_button :usage, 'signing', class: 'govuk-radios__input'  %>
-          <%= f.label :usage, 'Signing', class: 'govuk-label govuk-radios__label' %>
+          <%= f.radio_button :usage, CONSTANTS::SIGNING, class: 'govuk-radios__input'  %>
+          <%= f.label :usage, CONSTANTS::SIGNING, class: 'govuk-label govuk-radios__label' %>
         </div>
         <div class="govuk-radios__item">
-          <%= f.radio_button :usage, 'encryption', class: 'govuk-radios__input'  %>
-          <%= f.label :usage, 'Encryption', class: 'govuk-label govuk-radios__label' %>
+          <%= f.radio_button :usage, CONSTANTS::ENCRYPTION, class: 'govuk-radios__input'  %>
+          <%= f.label :usage, CONSTANTS::ENCRYPTION, class: 'govuk-label govuk-radios__label' %>
         </div>
       </div>
     </div>
