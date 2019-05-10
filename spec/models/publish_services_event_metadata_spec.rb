@@ -29,7 +29,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
 
     it 'downloaded content is the same as upload with given key' do
       event.upload
-      key = event.storage_key
+      key = "verify_services_metadata.json"
       expected_chunks = event.json_data
       current_active_storage_env = Rails.configuration.active_storage.service
 

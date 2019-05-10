@@ -17,7 +17,7 @@ class PublishServicesMetadataEvent < Event
   end
 
   def upload
-    @storage_key = "#{Time.now.to_formatted_s(:number)}_services_metadata.json"
+    @storage_key = "verify_services_metadata.json"
     check_sum = Digest::MD5.base64digest(json_data)
     current_active_storage_env = Rails.configuration.active_storage.service
     service = ActiveStorage::Service.configure(
