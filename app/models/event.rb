@@ -1,5 +1,6 @@
 class Event < ApplicationRecord
   after_initialize :default_values
+  scope :newest_first, -> { order("created_at DESC")}
 
   private def default_values
     self.data ||= {}

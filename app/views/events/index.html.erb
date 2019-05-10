@@ -10,11 +10,16 @@
     </tr>
   </thead>
   <tbody class="govuk-table__body">
-    <% @events.reverse.each do |event| %>
+    <% @events.newest_first.each do |event| %>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell" scope="row"><%= event.type %></th>
-        <td class="govuk-table__cell" scope="row"><code><%= JSON.pretty_generate(event.data) %></code></td>
-        <td class="govuk-table__cell" scope="row"><%= event.created_at %></td>
+        <td class="govuk-table__cell" scope="row">
+          <details>
+            <summary>Event details</summary>
+            <code><pre><%= JSON.pretty_generate(event.data) %></pre></code>
+          </details>
+        </td>
+        <td class="govuk-table__cell" scope="row"><%= event.created_at.strftime('%Y-%m-%d %H:%M:%S.%N') %></td>
         <td class="govuk-table__cell" scope="row"><%= event.aggregate_id %></td>
         <td class="govuk-table__cell" scope="row"><%= event.aggregate_type %></td>
       </tr>

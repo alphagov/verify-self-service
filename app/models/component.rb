@@ -2,14 +2,15 @@ class Component < Aggregate
 
   has_many :certificates
   has_many :signing_certificates,
-           -> { where(usage: 'signing') }, class_name: 'Certificate'
+           -> { where(usage: CONSTANTS::SIGNING) }, class_name: 'Certificate'
   has_many :enabled_signing_certificates,
-           -> { where(usage: 'signing', enabled: true) }, class_name: 'Certificate'
+           -> { where(usage: CONSTANTS::SIGNING, enabled: true) }, class_name: 'Certificate'
   has_many :disabled_signing_certificates,
-           -> { where(usage: 'signing', enabled: false) }, class_name: 'Certificate'
-  has_one :encryption_certificate,
-          -> { where(usage: 'encryption').order(id: 'DESC') },
-          class_name: 'Certificate'
+           -> { where(usage: CONSTANTS::SIGNING, enabled: false) }, class_name: 'Certificate'
+
+  belongs_to :encryption_certificate, -> { where(usage: CONSTANTS::ENCRYPTION) },
+                                      class_name: 'Certificate', optional: true
+
 
   scope :matching_service_adapters, -> { where(component_type: 'MSA') }
   scope :service_providers,
