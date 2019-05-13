@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       member do
         patch 'enable'
         patch 'disable'
+        patch 'replace'
       end
     end
   end
