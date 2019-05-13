@@ -1,8 +1,7 @@
 require 'rails_helper'
 require 'auth_test_helper'
-require_relative '../support/show_component_certificates_form'
+
 RSpec.describe 'New Component Page', type: :system do
-  include Capybara::DSL
   before(:each) do
     stub_auth
   end
@@ -24,19 +23,6 @@ RSpec.describe 'New Component Page', type: :system do
   end
   let(:x509_cert) { root.generate_encoded_cert(expires_in: 2.months) }
   let(:upload_encryption_cert) do
-    encryption_cert = UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
-    ).certificate
-    ReplaceEncryptionCertificateEvent.create(
-      component: component,
-      encryption_certificate_id: encryption_cert.id
-    )
-    encryption_cert
-  end
-
-
-  let(:upload_encryption_cert_1) do
-    x509_cert = root.generate_encoded_cert(expires_in: 9.months)
     encryption_cert = UploadCertificateEvent.create(
       usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
     ).certificate
@@ -69,7 +55,6 @@ RSpec.describe 'New Component Page', type: :system do
     certs = component.enabled_signing_certificates
     visit component_path(component.id)
 
-    expect(page).to have_selector("#certificate_table_#{certs[0].id}")
     expect(show_page).to have_enabled_signing_certificate(certs[0])
     show_page.disable_signing_certificate(certs[0])
 
@@ -103,15 +88,15 @@ RSpec.describe 'New Component Page', type: :system do
 
   it 'can replace encryption certificate with a different one' do
     upload_encryption_cert
-    current_cert = UploadCertificateEvent.create(
+    new_cert = UploadCertificateEvent.create(
       usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
     ).certificate
     visit component_path(component.id)
-    previous_cert = component.encryption_certificate
-    expect(show_page).to have_encryption_signing_certificate(previous_cert)
-
-    show_page.replace_encryption_certificate(current_cert)
+    current_cert = component.encryption_certificate
     expect(show_page).to have_encryption_signing_certificate(current_cert)
+
+    show_page.replace_encryption_certificate(new_cert)
+    expect(show_page).to have_encryption_signing_certificate(new_cert)
   end
 
   it 'successfully enables a certificate' do
