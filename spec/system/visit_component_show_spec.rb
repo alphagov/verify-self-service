@@ -1,8 +1,8 @@
 require 'rails_helper'
 require 'auth_test_helper'
-
+require_relative '../support/show_component_certificates_form'
 RSpec.describe 'New Component Page', type: :system do
-
+  include Capybara::DSL
   before(:each) do
     stub_auth
   end
@@ -22,8 +22,20 @@ RSpec.describe 'New Component Page', type: :system do
       usage: CONSTANTS::SIGNING, value: x509_cert_2, component_id: component.id
     ).certificate
   end
-
+  let(:x509_cert) { root.generate_encoded_cert(expires_in: 2.months) }
   let(:upload_encryption_cert) do
+    encryption_cert = UploadCertificateEvent.create(
+      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
+    ).certificate
+    ReplaceEncryptionCertificateEvent.create(
+      component: component,
+      encryption_certificate_id: encryption_cert.id
+    )
+    encryption_cert
+  end
+
+
+  let(:upload_encryption_cert_1) do
     x509_cert = root.generate_encoded_cert(expires_in: 9.months)
     encryption_cert = UploadCertificateEvent.create(
       usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
@@ -35,7 +47,9 @@ RSpec.describe 'New Component Page', type: :system do
     encryption_cert
   end
 
-  it 'successfully creates a new component' do
+  let(:show_page) { ShowComponentCertificatesForm.new }
+
+  it 'successfully displays an existing component' do
     visit component_path(component.id)
 
     expect(page).to have_selector('h1', text: component_name)
@@ -46,78 +60,74 @@ RSpec.describe 'New Component Page', type: :system do
     upload_certs
     certs = component.certificates
     visit component_path(component.id)
-    expect(page).to have_selector("#edit_certificate_#{certs[0].id}")
-    expect(page).to have_selector("#edit_certificate_#{certs[1].id}")
+    expect(show_page).to have_enabled_signing_certificate(certs[0])
+    expect(show_page).to have_enabled_signing_certificate(certs[1])
   end
 
   it 'successfully disables a certificate' do
     upload_certs
     certs = component.enabled_signing_certificates
     visit component_path(component.id)
-    expect(page).to have_selector("#certificate_table_#{certs[0].id}")
-    button_element = page.find(:css, "#edit_certificate_#{certs[0].id} > input[name='commit']")
-    button_element.click
 
-    expect(page).to have_selector('h1', text: component_name)
-    expect(page).to have_selector("#edit_certificate_#{certs[0].id}")
-    expect(page).to have_selector("#edit_certificate_#{certs[1].id}")
-    expect(page).to have_selector("#certificate_table_#{certs[0].id} > td:nth-child(4)", text: "false")
+    expect(page).to have_selector("#certificate_table_#{certs[0].id}")
+    expect(show_page).to have_enabled_signing_certificate(certs[0])
+    show_page.disable_signing_certificate(certs[0])
+
+    expect(show_page).to have_selector('h1', text: component_name)
+    expect(show_page).to have_disabled_signing_certificate(certs[0])
+    expect(show_page).to have_enabled_signing_certificate(certs[1])
   end
 
   it 'shows list of disabled certificates' do
     upload_certs
     certs = component.enabled_signing_certificates
     visit component_path(component.id)
-    button_element = page.find(:css, "#edit_certificate_#{certs[0].id} > input[name='commit']")
-    button_element.click
-    button_element = page.find(:css, "#edit_certificate_#{certs[1].id} > input[name='commit']")
-    button_element.click
+
+    certs.each do |certificate|
+      show_page.disable_signing_certificate(certificate)
+    end
 
     disabled_certs = component.disabled_signing_certificates
 
-    expect(page).to have_selector('h1', text: component_name)
-    expect(page).to have_selector("#certificate_table_#{disabled_certs[0].id} > td:nth-child(4)", text: "false")
-    expect(page).to have_selector("#certificate_table_#{disabled_certs[1].id} > td:nth-child(4)", text: "false")
-
+    expect(show_page).to have_selector('h1', text: component_name)
+    expect(show_page).to have_disabled_signing_certificate(disabled_certs[0])
+    expect(show_page).to have_disabled_signing_certificate(disabled_certs[1])
   end
 
   it 'displays encryption certificate for component' do
     upload_encryption_cert
-    cert = component.encryption_certificate
     visit component_path(component.id)
-
-    expect(page).to have_selector('table>caption', text: 'Encryption')
-   
-    expect(page).to have_selector("#certificate_table_#{cert.id}")
+    certificate = component.encryption_certificate
+    expect(show_page).to have_encryption_signing_certificate(certificate)
   end
 
-  it 'displays encryption certificate for with the replaced id' do
+  it 'can replace encryption certificate with a different one' do
     upload_encryption_cert
+    current_cert = UploadCertificateEvent.create(
+      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
+    ).certificate
     visit component_path(component.id)
-    cert = component.encryption_certificate
-  
-    expect(page).to have_selector("table>thead+tbody>tr#certificate_table_#{cert.id} > td:nth-child(2)", text: cert.id)
- 
-    expect(page).to have_selector('table>caption', text: 'Encryption')
-    expect(page).to have_selector("#certificate_table_#{cert.id}")
+    previous_cert = component.encryption_certificate
+    expect(show_page).to have_encryption_signing_certificate(previous_cert)
+
+    show_page.replace_encryption_certificate(current_cert)
+    expect(show_page).to have_encryption_signing_certificate(current_cert)
   end
 
   it 'successfully enables a certificate' do
     upload_certs
     certs = component.enabled_signing_certificates
     visit component_path(component.id)
-    button_element = page.find(:css, "#edit_certificate_#{certs[0].id} > input[name='commit']")
-    button_element.click
-    button_element = page.find(:css, "#edit_certificate_#{certs[1].id} > input[name='commit']")
-    button_element.click
+
+    certs.each do |certificate|
+      show_page.disable_signing_certificate(certificate)
+    end
 
     disabled_certs = component.disabled_signing_certificates
+    expect(show_page).to have_disabled_signing_certificate(disabled_certs[0])
+    show_page.enable_signing_certificate(disabled_certs[0])
 
-    expect(page).to have_selector("#certificate_table_#{disabled_certs[0].id}")
-    button_element = page.find(:css, "#edit_certificate_#{disabled_certs[0].id} > input[name='commit']")
-    button_element.click
-
-    expect(page).to have_selector('h1', text: component_name)
-    expect(page).to have_selector("#certificate_table_#{disabled_certs[0].id} > td:nth-child(4)", text: "true")
+    expect(show_page).to have_selector('h1', text: component_name)
+    expect(show_page).to have_enabled_signing_certificate(disabled_certs[0])
   end
 end
