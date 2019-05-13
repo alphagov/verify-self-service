@@ -62,9 +62,10 @@ RSpec.describe Component, type: :model do
         service_providers: []
       }
 
-      expect(actual_config).to include('matching_service_adapters')
-      expect(actual_config).to eq(expected_config.to_json)
+      expect(actual_config).to include(:matching_service_adapters)
+      expect(actual_config).to include(expected_config)
     end
+
     it 'produces required output structure' do
       Component.destroy_all
       actual_config = Component.to_service_metadata(event_id, published_at)
@@ -74,8 +75,8 @@ RSpec.describe Component, type: :model do
         matching_service_adapters: [],
         service_providers: []
       }
-      expect(actual_config).to include('published_at', 'service_providers')
-      expect(actual_config).to eq(expected_config.to_json)
+      expect(actual_config).to include(:published_at, :service_providers)
+      expect(actual_config).to eq(expected_config)
     end
   end
 end
