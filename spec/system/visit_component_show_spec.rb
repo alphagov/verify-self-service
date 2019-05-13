@@ -29,8 +29,7 @@ RSpec.describe 'New Component Page', type: :system do
     ReplaceEncryptionCertificateEvent.create(
       component: component,
       encryption_certificate_id: encryption_cert.id
-    )
-    encryption_cert
+    ).component.encryption_certificate
   end
 
   let(:show_page) { ShowComponentCertificatesForm.new }
@@ -84,6 +83,17 @@ RSpec.describe 'New Component Page', type: :system do
     visit component_path(component.id)
     certificate = component.encryption_certificate
     expect(show_page).to have_encryption_signing_certificate(certificate)
+  end
+
+  it 'does not display encryption certificate section when optional' do
+    ReplaceEncryptionCertificateEvent.create(
+      component: component,
+      encryption_certificate_id: nil
+    )
+    visit component_path(component.id)
+    certificate = component.encryption_certificate
+    expect(certificate).to be_nil
+    expect(show_page).not_to have_encryption_signing_certificate(certificate)
   end
 
   it 'can replace encryption certificate with a different one' do

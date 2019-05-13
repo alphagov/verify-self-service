@@ -33,7 +33,7 @@ class Component < Aggregate
   end
 
   def previous_encryption_certificates
-    encryption_certificates.where.not(id: encryption_certificate.id)
+    encryption_certificates.where.not(id: encryption_certificate&.id)
   end
 
   def to_metadata

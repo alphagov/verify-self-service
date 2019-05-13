@@ -1,4 +1,3 @@
-
 require 'rails_helper'
 class ShowComponentCertificatesForm
   include Capybara::DSL
@@ -10,18 +9,24 @@ class ShowComponentCertificatesForm
   end
 
   def has_enabled_signing_certificate?(certificate)
+    return false if certificate.nil?
+
     within_table('Signing Certificates (Enabled)') do
       has_selector?("tr#certificate_table_#{certificate.id}", text: 'true')
     end
   end
 
   def has_encryption_signing_certificate?(certificate)
+    return false if certificate.nil?
+
     within_table('Encryption Certificate assigned to component') do
       has_selector?("tr#certificate_table_#{certificate.id}")
     end
   end
 
   def disable_signing_certificate(certificate)
+    return if certificate.nil?
+
     within_table('Signing Certificates (Enabled)') do
       within("form#edit_certificate_#{certificate.id}") do
         click_on 'Disable'
@@ -30,6 +35,8 @@ class ShowComponentCertificatesForm
   end
 
   def enable_signing_certificate(certificate)
+    return if certificate.nil?
+
     within_table('Signing Certificates (Disabled)') do
       within("form#edit_certificate_#{certificate.id}") do
         click_on 'Enable'

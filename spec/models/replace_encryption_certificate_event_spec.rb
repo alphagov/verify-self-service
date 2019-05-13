@@ -25,6 +25,14 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     expect(event).to be_valid
     expect(event).to be_persisted
   end
+  
+  it 'creates valid event when encryption certificate is optional' do
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component, encryption_certificate_id: nil
+    )
+    expect(event).to be_valid
+    expect(event).to be_persisted
+  end
 
   it 'creates with component encryption id set to encryption certificate id' do
     ReplaceEncryptionCertificateEvent.create(
@@ -32,7 +40,7 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     )
     expect(component.encryption_certificate_id).to eq(upload_encryption_cert.id)
   end
-
+  
   it 'replace current encryption certificate with another' do
     new_encryption_certificate = UploadCertificateEvent.create(
       usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id

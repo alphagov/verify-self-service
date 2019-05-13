@@ -19,7 +19,6 @@
         <td class="govuk-table__cell">
         <% unless certificate.encryption? %>
             <%= form_for [@component, certificate],
-              method: :patch,
               url: certificate.enabled ?
                 disable_component_certificate_path(@component, certificate) :
                 enable_component_certificate_path(@component, certificate) do |f| %>
