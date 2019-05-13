@@ -3,10 +3,9 @@ class Component < Aggregate
   has_many :certificates
   has_many :signing_certificates,
            -> { where(usage: CONSTANTS::SIGNING) }, class_name: 'Certificate'
-  has_many :previous_encryption_certificates,
+  has_many :encryption_certificates,
            lambda {
              where(usage: CONSTANTS::ENCRYPTION).order(created_at: 'desc')
-                                                .offset(1)
            }, class_name: 'Certificate'
   has_many :enabled_signing_certificates,
            -> { where(usage: CONSTANTS::SIGNING, enabled: true) }, class_name: 'Certificate'
@@ -16,7 +15,7 @@ class Component < Aggregate
   belongs_to :encryption_certificate, -> { where(usage: CONSTANTS::ENCRYPTION) },
                                       class_name: 'Certificate', optional: true
 
-
+  
   scope :matching_service_adapters, -> { where(component_type: 'MSA') }
   scope :service_providers,
         -> { where(component_type: 'VSP').or(where(component_type: 'SP')) }
@@ -31,6 +30,10 @@ class Component < Aggregate
       { published_at: published_at, event_id: event_id,
         matching_service_adapters: matching_service_adapters.map(&:to_metadata),
         service_providers: service_providers.map(&:to_metadata) }.to_json
+  end
+
+  def previous_encryption_certificates
+    encryption_certificates.where.not(id: encryption_certificate.id)
   end
 
   def to_metadata

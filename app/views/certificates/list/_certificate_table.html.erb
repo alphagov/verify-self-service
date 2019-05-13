@@ -17,7 +17,9 @@
           <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
           <td class="govuk-table__cell">
               <% if certificate.encryption? && heading.start_with?('Previous') %>
-                  <%= form_for [@component, certificate], method: :patch do |f| %>
+                  <%= form_for [@component, certificate],
+                    method: :patch,
+                    url: replace_component_certificate_path(@component,certificate) do |f| %>
                       <%= f.submit 'Replace', class: 'govuk-button' %>
                   <% end %>
               <% end %>

@@ -20,25 +20,39 @@ class CertificatesController < ApplicationController
   end
 
   def enable
-    @certificate = Certificate.find(params[:id])
-    event = EnableSigningCertificateEvent.create(certificate: @certificate)
+    certificate = Certificate.find(params[:id])
+    event = EnableSigningCertificateEvent.create(certificate: certificate)
     unless event.valid?
       error_message = event.errors.full_messages
       Rails.logger.error(error_message)
       flash[:notice] = error_message
     end
-    redirect_to component_path(@certificate.component_id)
+    redirect_to component_path(certificate.component_id)
   end
 
   def disable
-    @certificate = Certificate.find(params[:id])
-    event = DisableSigningCertificateEvent.create(certificate: @certificate)
+    certificate = Certificate.find(params[:id])
+    event = DisableSigningCertificateEvent.create(certificate: certificate)
     unless event.valid?
       error_message = event.errors.full_messages
       Rails.logger.error(error_message)
       flash[:notice] = error_message
     end
-    redirect_to component_path(@certificate.component_id)
+    redirect_to component_path(certificate.component_id)
+  end
+  
+  def replace
+    component = Component.find(params[:component_id])
+    certificate = Certificate.find(params[:id])
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component,
+      encryption_certificate_id: certificate.id
+    )
+    unless event.valid?
+      error_message = event.errors.full_messages
+      flash[:notice] = error_message
+    end
+    redirect_to component_path(certificate.component_id)
   end
 
   private
