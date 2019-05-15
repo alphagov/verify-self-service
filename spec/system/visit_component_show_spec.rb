@@ -82,7 +82,7 @@ RSpec.describe 'New Component Page', type: :system do
     upload_encryption_cert
     visit component_path(component.id)
     certificate = component.encryption_certificate
-    expect(show_page).to have_encryption_signing_certificate(certificate)
+    expect(show_page).to have_encryption_certificate(certificate)
   end
 
   it 'does not display encryption certificate section when optional' do
@@ -93,7 +93,7 @@ RSpec.describe 'New Component Page', type: :system do
     visit component_path(component.id)
     certificate = component.encryption_certificate
     expect(certificate).to be_nil
-    expect(show_page).not_to have_encryption_signing_certificate(certificate)
+    expect(show_page).not_to have_encryption_certificate(certificate)
   end
 
   it 'can replace encryption certificate with a different one' do
@@ -103,10 +103,24 @@ RSpec.describe 'New Component Page', type: :system do
     ).certificate
     visit component_path(component.id)
     current_cert = component.encryption_certificate
-    expect(show_page).to have_encryption_signing_certificate(current_cert)
+    expect(show_page).to have_encryption_certificate(current_cert)
 
     show_page.replace_encryption_certificate(new_cert)
-    expect(show_page).to have_encryption_signing_certificate(new_cert)
+    expect(show_page).to have_encryption_certificate(new_cert)
+  end
+
+  it 'will not replace encryption certificate with an invalid certificate' do
+    upload_encryption_cert
+    invalid_cert = Certificate.create(
+      usage: CONSTANTS::ENCRYPTION, value: "invalid", component_id: component.id
+    )
+    visit component_path(component.id)
+
+    expect(show_page).to have_previous_encryption_certificate(invalid_cert)
+
+    show_page.replace_encryption_certificate(invalid_cert)
+    expect(show_page).not_to have_encryption_certificate(invalid_cert)
+    expect(show_page).to have_content 'Certificate is not a valid x509 certificate'
   end
 
   it 'successfully enables a certificate' do

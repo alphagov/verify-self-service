@@ -27,19 +27,28 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     Certificate.create(**defaults.merge(params))
   end
   
-  it 'creates valid event when encryption certificate is optional' do
+  it 'valid when encryption certificate is provided' do
     event = ReplaceEncryptionCertificateEvent.create(
-      component: component, encryption_certificate_id: nil
+      component: component, encryption_certificate_id: upload_encryption_cert.id
     )
     expect(event).to be_valid
     expect(event).to be_persisted
   end
 
-  it 'creates with component encryption id set to encryption certificate id' do
+  it 'valid with component encryption id set to encryption certificate id' do
     ReplaceEncryptionCertificateEvent.create(
       component: component, encryption_certificate_id: upload_encryption_cert.id
     )
     expect(component.encryption_certificate_id).to eq(upload_encryption_cert.id)
+  end
+  
+  it 'invalid when encryption certificate is optional' do
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component, encryption_certificate_id: nil
+    )
+    expect(event).not_to be_valid
+    expect(event).not_to be_persisted
+    expect(event.errors.messages[:certificate]).to eq(["can't be blank"])
   end
   
   it 'replace current encryption certificate with another' do
@@ -98,4 +107,16 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     )
     expect(event.errors[:certificate]).to eq ['valid for too long']
   end
+  
+  context '#trigger_publish_event' do
+    it 'when encryption certificate is replaced' do
+      event = ReplaceEncryptionCertificateEvent.create(
+        component: component, encryption_certificate_id: upload_encryption_cert.id
+      )
+      publish_event = PublishServicesMetadataEvent.last
+      expect(event.id).to_not be_nil
+      expect(event.id).to eq publish_event.event_id
+    end
+  end
 end
+
