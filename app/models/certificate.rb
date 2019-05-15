@@ -1,5 +1,3 @@
-require 'utilities/certificate/certificate_factory'
-
 class Certificate < Aggregate
   include Utilities::Certificate
 
@@ -8,11 +6,10 @@ class Certificate < Aggregate
   belongs_to :component
 
   def to_metadata
-    certificate_factory = CertificateFactory.new(value)
-    subject = certificate_factory.to_subject
+    subject = CertificateFactory.to_subject(value)
     { name: subject, value: self.value }
   end
-  
+
   def encryption?
     usage == CONSTANTS::ENCRYPTION
   end
