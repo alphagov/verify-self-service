@@ -1,9 +1,7 @@
 require 'rails_helper'
-
-include CertificateSupport
-
 RSpec.describe UploadCertificateEvent, type: :model do
-
+  include CertificateSupport
+  
   root = PKI.new
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
   component_params = { component_type: 'MSA', name: 'fake_name' }
@@ -146,7 +144,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
       expect(event.component_id).to eql component.id
     end
 
-    it 'must be persisted' do
+    it 'must be invalid when component is new' do
       event = UploadCertificateEvent.create(component: Component.new)
       expect(event).to_not be_valid
       expect(event.errors[:component]).to eql ['must exist']

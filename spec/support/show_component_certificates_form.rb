@@ -3,6 +3,8 @@ class ShowComponentCertificatesForm
   include Capybara::DSL
 
   def has_disabled_signing_certificate?(certificate)
+    return false if certificate.nil?
+
     within_table('Signing Certificates (Disabled)') do
       has_selector?("tr#certificate_table_#{certificate.id}", text: 'false')
     end
@@ -16,7 +18,7 @@ class ShowComponentCertificatesForm
     end
   end
 
-  def has_encryption_signing_certificate?(certificate)
+  def has_encryption_certificate?(certificate)
     return false if certificate.nil?
 
     within_table('Encryption Certificate assigned to component') do
@@ -44,7 +46,17 @@ class ShowComponentCertificatesForm
     end
   end
 
+  def has_previous_encryption_certificate?(certificate)
+    return false if certificate.nil?
+
+    within_table('Previous Encryption Certificates for this component') do
+      has_selector?("form#edit_certificate_#{certificate.id}")
+    end
+  end
+
   def replace_encryption_certificate(certificate)
+    return if certificate.nil?
+
     within_table('Previous Encryption Certificates for this component') do
       within("form#edit_certificate_#{certificate.id}") do
         click_on 'Replace'

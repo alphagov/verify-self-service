@@ -18,12 +18,13 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     ).certificate
   end
 
-  it 'creates valid and persisted replace encryption certificate event' do
-    event = ReplaceEncryptionCertificateEvent.create(
-      component: component, encryption_certificate_id: upload_encryption_cert.id
-    )
-    expect(event).to be_valid
-    expect(event).to be_persisted
+  def certificate_created_with(params = {})
+    defaults = {
+      usage: CONSTANTS::ENCRYPTION,
+      value: x509_cert,
+      component_id: component.id
+    }
+    Certificate.create(**defaults.merge(params))
   end
   
   it 'creates valid event when encryption certificate is optional' do
@@ -56,5 +57,45 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     ).component
 
     expect(component.encryption_certificate_id).to eq(new_encryption_certificate.id)
+  end
+
+  it 'must error with invalid x509 certificate' do
+    invalid = certificate_created_with(
+      value: 'not valid'
+    )
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component, encryption_certificate_id: invalid.id
+    )
+    expect(event.errors[:certificate]).to eq ['is not a valid x509 certificate']
+  end
+
+  it 'must not be expired' do
+    expired = certificate_created_with(
+      value: root.generate_encoded_cert(expires_in: -1.months)
+    )
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component, encryption_certificate_id: expired.id
+    )
+    expect(event.errors[:certificate]).to eq ['has expired']
+  end
+
+  it 'must not expire within 1 month' do
+    less_than_one_month = certificate_created_with(
+      value: root.generate_encoded_cert(expires_in: 15.days)
+    )
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component, encryption_certificate_id: less_than_one_month.id
+    )
+    expect(event.errors[:certificate]).to eq ['expires too soon']
+  end
+
+  it 'must expire within 1 year' do
+    more_than_one_year = certificate_created_with(
+      value: root.generate_encoded_cert(expires_in: 2.years)
+    )
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component, encryption_certificate_id: more_than_one_year.id
+    )
+    expect(event.errors[:certificate]).to eq ['valid for too long']
   end
 end
