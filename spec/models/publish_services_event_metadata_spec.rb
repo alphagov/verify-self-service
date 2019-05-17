@@ -1,7 +1,8 @@
 require 'yaml'
 require 'rails_helper'
-require_relative '../../app/lib/utilities/configuration/settings'
+
 include Utilities::Configuration::Settings
+
 RSpec.describe PublishServicesMetadataEvent, type: :model do
   let(:published_at) { Time.now }
   let(:event_id) { 0 }

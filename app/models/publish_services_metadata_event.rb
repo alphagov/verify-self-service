@@ -1,6 +1,5 @@
 require 'yaml'
 require 'digest/md5'
-require 'utilities/configuration/settings'
 
 class PublishServicesMetadataEvent < Event
   include Utilities::Configuration::Settings
@@ -10,7 +9,7 @@ class PublishServicesMetadataEvent < Event
   validates_presence_of :event_id
   before_create :populate_data_attributes
   after_create :upload
-  
+
   def populate_data_attributes
     @metadata = services_metadata
     assign_attributes(services_metadata: metadata)
