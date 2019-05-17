@@ -23,19 +23,30 @@ ActiveRecord::Base.class_eval do
     certificate_key_is_supported
   end
 
-  def factory
-    Utilities::Certificate::CertificateFactory
+  def convert_value_to_x509_certificate
+    begin
+      OpenSSL::X509::Certificate.new(value)
+    rescue
+      OpenSSL::X509::Certificate.new(Base64.decode64(value))
+    end
   end
 
   def x509_certificate
-    x509 = factory.x509_certificate(value)
+    if @last_converted_value || value != @last_converted_value
+      @last_converted_value = value
+      convert_value_to_x509_certificate
+    end
   rescue
-    errors.add(:certificate, 'is not a valid x509 certificate') if x509.nil?
-    x509
+    errors.add(:certificate, 'is not a valid x509 certificate')
+    nil
   end
-  
+
+  def certificate_subject
+    x509_certificate.subject.to_s
+  end
+
   def convert_value_to_inline_der
-    factory.convert_value_to_inline_der(value)
+    Base64.strict_encode64(x509_certificate.to_der)
   end
 
   def certificate_has_appropriate_not_after

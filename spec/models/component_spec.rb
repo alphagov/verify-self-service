@@ -1,7 +1,6 @@
 require 'rails_helper'
 require 'json'
 RSpec.describe Component, type: :model do
-  include CertificateSupport
   context '#to_service_metadata' do
     before(:each) do
       Component.destroy_all
@@ -18,10 +17,12 @@ RSpec.describe Component, type: :model do
     let(:x509_cert_1) { root.generate_encoded_cert(expires_in: 2.months) }
     let(:x509_cert_2) { root.generate_encoded_cert(expires_in: 9.months) }
     let(:x509_cert_3) { root.generate_encoded_cert(expires_in: 9.months) }
-    let(:upload_signing_event) do
+    let(:upload_signing_certificate_event_1) do
       UploadCertificateEvent.create(
         usage: CONSTANTS::SIGNING, value: x509_cert_1, component_id: component.id
       )
+    end
+    let(:upload_signing_certificate_event_2) do
       UploadCertificateEvent.create(
         usage: CONSTANTS::SIGNING, value: x509_cert_2, component_id: component.id
       )
@@ -35,11 +36,13 @@ RSpec.describe Component, type: :model do
         component: component,
         encryption_certificate_id: event.certificate.id
       )
+      event
     end
 
     it 'is an MSA component with signing and encryption certs' do
-      upload_signing_event
-      upload_encryption_event
+      signing1 = upload_signing_certificate_event_1
+      signing2 = upload_signing_certificate_event_2
+      encryption = upload_encryption_event
       actual_config = Component.to_service_metadata(event_id, published_at)
   
       expected_config = {
@@ -48,15 +51,15 @@ RSpec.describe Component, type: :model do
         matching_service_adapters: [{
           name: component_name,
           encryption_certificate: {
-            name: certificate_subject(x509_cert_3),
-            value: x509_cert_3
+            name: encryption.certificate.to_subject,
+            value: encryption.certificate.value
           },
           signing_certificates: [{
-            name: certificate_subject(x509_cert_1),
-            value: x509_cert_1
+            name: signing1.certificate.to_subject,
+            value: signing1.certificate.value
           }, {
-            name: certificate_subject(x509_cert_2),
-            value: x509_cert_2
+            name: signing2.certificate.to_subject,
+            value: signing2.certificate.value
           }]
         }],
         service_providers: []
