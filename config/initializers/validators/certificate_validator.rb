@@ -30,16 +30,14 @@ ActiveRecord::Base.class_eval do
       OpenSSL::X509::Certificate.new(Base64.decode64(value))
     end
   end
-
+  
   def x509_certificate
-    if @last_converted_value || value != @last_converted_value
-      @last_converted_value = value
-      convert_value_to_x509_certificate
-    end
+    convert_value_to_x509_certificate
   rescue
     errors.add(:certificate, 'is not a valid x509 certificate')
     nil
   end
+
 
   def certificate_subject
     x509_certificate.subject.to_s
