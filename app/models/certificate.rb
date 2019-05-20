@@ -3,12 +3,9 @@ class Certificate < Aggregate
   validates_presence_of :usage, :value, :component_id
   belongs_to :component
 
-  def to_subject
-    certificate_subject
-  end
 
   def to_metadata
-    { name: to_subject, value: self.value }
+    { name: x509.subject.to_s, value: self.value }
   end
 
   def encryption?
@@ -17,5 +14,13 @@ class Certificate < Aggregate
 
   def signing?
     usage == CONSTANTS::SIGNING
+  end
+
+  def x509
+    begin
+      OpenSSL::X509::Certificate.new(value)
+    rescue
+      OpenSSL::X509::Certificate.new(Base64.decode64(value))
+    end
   end
 end

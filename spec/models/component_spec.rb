@@ -51,14 +51,14 @@ RSpec.describe Component, type: :model do
         matching_service_adapters: [{
           name: component_name,
           encryption_certificate: {
-            name: encryption.certificate.to_subject,
+            name: encryption.certificate.x509.subject.to_s,
             value: encryption.certificate.value
           },
           signing_certificates: [{
-            name: signing1.certificate.to_subject,
+            name: signing1.certificate.x509.subject.to_s,
             value: signing1.certificate.value
           }, {
-            name: signing2.certificate.to_subject,
+            name: signing2.certificate.x509.subject.to_s,
             value: signing2.certificate.value
           }]
         }],
