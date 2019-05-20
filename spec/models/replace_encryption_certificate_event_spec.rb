@@ -1,13 +1,15 @@
 require 'rails_helper'
 require 'auth_test_helper'
+require 'securerandom'
 
 RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
   before(:each) do
     stub_auth
   end
+  entity_id = SecureRandom.hex(10)
   let(:component_name) { 'test component' }
   let(:component) do
-    component_params = { component_type: 'MSA', name: component_name }
+    component_params = { component_type: 'MSA', name: component_name, entity_id: entity_id }
     NewComponentEvent.create(component_params).component
   end
   let(:root) { PKI.new }

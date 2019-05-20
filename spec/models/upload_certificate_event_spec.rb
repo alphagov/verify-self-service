@@ -1,10 +1,12 @@
 require 'rails_helper'
+require 'securerandom'
 RSpec.describe UploadCertificateEvent, type: :model do
   include CertificateSupport
   
   root = PKI.new
+  entity_id = SecureRandom.hex(10)
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
-  component_params = { component_type: 'MSA', name: 'fake_name' }
+  component_params = { component_type: 'MSA', name: 'fake_name', entity_id: entity_id }
   component = NewComponentEvent.create(component_params).component
   include_examples 'has data attributes', UploadCertificateEvent, [:usage, :value, :component_id]
   include_examples 'is aggregated', UploadCertificateEvent, {usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id }
@@ -12,7 +14,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
   context '#value' do
     it 'must be present' do
-      event = UploadCertificateEvent.create()
+      event = UploadCertificateEvent.create
       expect(event).to_not be_valid
       expect(event.errors[:certificate]).to eql ['can\'t be blank']
     end
