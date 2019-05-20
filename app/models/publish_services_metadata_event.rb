@@ -29,6 +29,6 @@ class PublishServicesMetadataEvent < Event
   private
 
   def services_metadata
-    Component.to_service_metadata(event_id)
+    Component.to_service_metadata(event_id: event_id)
   end
 end

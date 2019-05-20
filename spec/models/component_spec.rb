@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'json'
+require 'securerandom'
 RSpec.describe Component, type: :model do
   include CertificateSupport
   context '#to_service_metadata' do
@@ -9,6 +10,7 @@ RSpec.describe Component, type: :model do
     let(:root) { PKI.new }
     let(:published_at) { Time.now }
     let(:event_id) { 0 }
+    let(:entity_id) { SecureRandom.hex(10) }
     let(:certificate) { root.generate_encoded_cert(expires_in: 2.months) }
 
     component_name = 'test component'
@@ -40,10 +42,15 @@ RSpec.describe Component, type: :model do
     it 'is an MSA component with signing and encryption certs' do
       upload_signing_event
       upload_encryption_event
-      actual_config = Component.to_service_metadata(event_id, published_at)
+      actual_config = Component.to_service_metadata(
+        event_id: event_id,
+        entity_id: entity_id,
+        published_at: published_at
+      )
   
       expected_config = {
         published_at: published_at,
+        entity_id: entity_id,
         event_id: event_id,
         matching_service_adapters: [{
           name: component_name,
@@ -68,8 +75,11 @@ RSpec.describe Component, type: :model do
 
     it 'produces required output structure' do
       Component.destroy_all
-      actual_config = Component.to_service_metadata(event_id, published_at)
+      actual_config = Component.to_service_metadata(event_id: event_id,
+                                                    entity_id: entity_id,
+                                                    published_at: published_at)
       expected_config = {
+        entity_id: entity_id,
         published_at: published_at,
         event_id: event_id,
         matching_service_adapters: [],
@@ -77,6 +87,26 @@ RSpec.describe Component, type: :model do
       }
       expect(actual_config).to include(:published_at, :service_providers)
       expect(actual_config).to eq(expected_config)
+    end
+
+    it 'can set entity id on MSA component' do
+      component_params = {
+        component_type: 'MSA',
+        name: component_name,
+        entity_id: entity_id
+      }
+      new_component = NewComponentEvent.create(component_params).component
+      expect(new_component).to be_persisted
+    end
+    
+    it 'cannot set entity id on VSP component' do
+      component_params = {
+        component_type: 'VSP',
+        name: component_name,
+        entity_id: entity_id
+      }
+      new_component = NewComponentEvent.create(component_params).component
+      expect(new_component).not_to be_persisted
     end
   end
 end
