@@ -1,10 +1,8 @@
 class NewComponentEvent < AggregatedEvent
   belongs_to_aggregate :component
   data_attributes :name, :component_type, :entity_id
-
   validate :name_is_present
   validates_inclusion_of :component_type, in: %w[VSP MSA SP]
-  validate :persist_entity_id_only_for_msa
   validate :component_is_new, :persist_entity_id_only_for_msa, on: :create
 
   def build_component
@@ -34,9 +32,22 @@ class NewComponentEvent < AggregatedEvent
     name.present?
   end
 
-  def persist_entity_id_only_for_msa
-    return if component_type == 'MSA' && entity_id.present?
+  def msa_has_entity_id?
+    component_type == 'MSA' && entity_id.present?
+  end
 
-    errors.add(:component, 'Entity id can not be set on VSP component') if entity_id.present?
+  def msa_does_not_have_entity_id?
+    component_type == 'MSA' && entity_id.blank?
+  end
+
+  def vsp_does_not_require_entity_id?
+    component_type != 'MSA' && entity_id.blank?
+  end
+
+  def persist_entity_id_only_for_msa
+    return if msa_has_entity_id? || vsp_does_not_require_entity_id?
+     
+    errors.add(:entity_id, 'id is required for MSA component') if msa_does_not_have_entity_id?
+    errors.add(:entity_id, 'id can not be set on VSP component') if entity_id.present?
   end
 end

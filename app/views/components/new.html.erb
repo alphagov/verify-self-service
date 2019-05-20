@@ -10,6 +10,11 @@
       <%=error_message_on(f.object.errors, :name) %>
       <%= f.text_field :name, class: "govuk-input#{@component.errors.key?(:name) ? ' govuk-input--error' : ''}" %>
     </div>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:entity_id) %>">
+      <h3 class="govuk-heading-m">Component entity id</h3>
+      <%=error_message_on(f.object.errors, :entity_id) %>
+      <%= f.text_field :entity_id, class: "govuk-input#{@component.errors.key?(:entity_id) ? ' govuk-input--error' : ''}" %>
+    </div>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:component_type) %>">
       <h3 class="govuk-heading-m">Component type</h3>
 
@@ -30,7 +35,7 @@
       </div>
     </div>
     <div class="govuk-form-group">
-        <%= f.submit "Create component", class: "govuk-button" %>
+        <%=f.submit "Create component", class: "govuk-button" %>
     </div>
   <% end %>
 </fieldset>
