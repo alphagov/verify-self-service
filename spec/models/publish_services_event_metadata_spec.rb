@@ -1,9 +1,9 @@
 require 'yaml'
 require 'rails_helper'
 
-include Utilities::Configuration::Settings
-
 RSpec.describe PublishServicesMetadataEvent, type: :model do
+  include Utilities::Configuration::Settings
+
   let(:published_at) { Time.now }
   let(:event_id) { 0 }
   let(:component) { Component.create(name: 'lala', component_type: 'MSA') }

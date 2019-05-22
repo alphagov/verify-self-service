@@ -3,7 +3,6 @@ class Certificate < Aggregate
   validates_presence_of :usage, :value, :component_id
   belongs_to :component
 
-
   def to_metadata
     { name: x509.subject.to_s, value: self.value }
   end
@@ -19,7 +18,7 @@ class Certificate < Aggregate
   def x509
     begin
       OpenSSL::X509::Certificate.new(value)
-    rescue
+    rescue # rubocop:disable Style/RescueStandardError
       OpenSSL::X509::Certificate.new(Base64.decode64(value))
     end
   end

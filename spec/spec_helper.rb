@@ -19,7 +19,7 @@ RSpec.configure do |config|
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
 
-  config.filter_run_excluding :acceptance => true
+  config.filter_run_excluding acceptance: true
   # remove active storage files generated during test/development runs
   config.before(:suite) do
     temp_generated_metadata_json_files = [

@@ -10,7 +10,7 @@ class ToggleEnableEvent < AggregatedEvent
     { enabled: enabled }
   end
 
-  private
+private
 
   def certificate_is_signing?
     return if certificate.signing?

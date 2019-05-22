@@ -1,9 +1,8 @@
 require 'rails_helper'
 require 'auth_test_helper'
 
-include CertificateSupport
-
 RSpec.describe 'the events page', type: :system do
+  include CertificateSupport
 
   before(:each) do
     stub_auth
@@ -29,8 +28,7 @@ RSpec.describe 'the events page', type: :system do
   end
 
   it 'is paginated' do
-
-     55.times.each do
+    55.times.each do
       UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: root.generate_encoded_cert(expires_in: 2.months), component_id: component.id)
     end
 
@@ -39,6 +37,5 @@ RSpec.describe 'the events page', type: :system do
 
     click_on 'Next ›'
     expect(page).to have_selector('tbody tr', count: 25)
-
   end
 end

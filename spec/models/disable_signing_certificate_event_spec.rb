@@ -10,19 +10,19 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
 
   let(:signing_certificate) do
     UploadCertificateEvent.create(
-        usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id
+      usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id
     ).certificate
   end
 
   let(:expired_signing_certificate) do
     UploadCertificateEvent.create(
-        usage: CONSTANTS::SIGNING, value: expired_cert_value, component_id: component.id
+      usage: CONSTANTS::SIGNING, value: expired_cert_value, component_id: component.id
     ).certificate
   end
 
   let(:encryption_certificate) do
     UploadCertificateEvent.create(
-        usage: CONSTANTS::ENCRYPTION, value: good_cert_value, component_id: component.id
+      usage: CONSTANTS::ENCRYPTION, value: good_cert_value, component_id: component.id
     ).certificate
   end
 
@@ -44,7 +44,7 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
 
   it 'cannot be created with expired certificate' do
     event = DisableSigningCertificateEvent.create(
-        certificate: expired_signing_certificate
+      certificate: expired_signing_certificate
     )
     expect(event.certificate).not_to be_valid
     expect(event).not_to be_persisted
@@ -52,7 +52,7 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
 
   it 'must be signing' do
     event = DisableSigningCertificateEvent.create(
-        certificate: encryption_certificate
+      certificate: encryption_certificate
     )
     cert = event.certificate
     expect(cert.usage).to eq(CONSTANTS::ENCRYPTION)

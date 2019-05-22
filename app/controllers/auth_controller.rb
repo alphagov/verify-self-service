@@ -2,23 +2,23 @@ class AuthController < ApplicationController
   # Required for OmniAuth Dev Flow... Not to be used in Production
   skip_before_action :verify_authenticity_token, only: :callback unless Rails.env.production?
   skip_before_action :authenticate_user!
-  
+
   def create
     auth_hash = request.env['omniauth.auth']
-    
+
     if session[:user_id]
       # Means our user is signed in. Add the authorization to the user
       User.find(session[:user_id]).add_provider(auth_hash)
- 
-      render :text => "You can now login using #{auth_hash["provider"].capitalize} too!"
+
+      render text: "You can now login using #{auth_hash['provider'].capitalize} too!"
     else
       # Log him in or sign him up
       auth = Authorization.find_or_create(auth_hash)
- 
+
       # Create the session
       session[:user_id] = auth.user.id
-   
-      render :text => "Welcome #{auth.user.name}!"
+
+      render text: "Welcome #{auth.user.name}!"
     end
     redirect_to session[:redirect_path] || root_path
   end
@@ -28,11 +28,11 @@ class AuthController < ApplicationController
   def callback
     auth_hash = request.env['omniauth.auth']
     session[:provider] = auth_hash[:provider]
-      
+
     if auth_hash[:provider] == 'cognito-idp'
-        session[:userinfo] = auth_hash[:extra]["raw_info"]
+      session[:userinfo] = auth_hash[:extra]["raw_info"]
     else
-        session[:userinfo] = auth_hash
+      session[:userinfo] = auth_hash
     end
 
     # Redirect to the URL you want after successful auth

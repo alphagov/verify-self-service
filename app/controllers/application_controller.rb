@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
 
   before_action :authenticate_user!
-  
+
   # Is the user signed in?
   # @return [Boolean]
   def user_signed_in?
@@ -22,8 +22,5 @@ class ApplicationController < ActionController::Base
 
   # What's the current_user?
   # @return [Hash]
-  def current_user
-    @current_user
-  end
-
+  attr_reader :current_user
 end

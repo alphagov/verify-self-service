@@ -20,14 +20,13 @@ Capybara.configure do |config|
   # config.run_server = false
   config.default_driver = :selenium_headless
   config.javascript_driver = :selenium_headless
-
 end
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
-  config.filter_run_excluding :acceptance => true
+  config.filter_run_excluding acceptance: true
 
 
   # The settings below are suggested to provide a good initial experience
