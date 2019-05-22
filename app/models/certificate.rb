@@ -1,13 +1,11 @@
 class Certificate < Aggregate
-  include Utilities::Certificate
-
   validates_inclusion_of :usage, in: %w[signing encryption]
   validates_presence_of :usage, :value, :component_id
   belongs_to :component
 
+
   def to_metadata
-    subject = CertificateFactory.to_subject(value)
-    { name: subject, value: self.value }
+    { name: x509.subject.to_s, value: self.value }
   end
 
   def encryption?
@@ -16,5 +14,13 @@ class Certificate < Aggregate
 
   def signing?
     usage == CONSTANTS::SIGNING
+  end
+
+  def x509
+    begin
+      OpenSSL::X509::Certificate.new(value)
+    rescue
+      OpenSSL::X509::Certificate.new(Base64.decode64(value))
+    end
   end
 end

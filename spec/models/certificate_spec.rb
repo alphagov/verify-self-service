@@ -35,7 +35,7 @@ RSpec.describe Certificate, type: :model do
   it 'holds valid metadata' do
     cert = Base64.encode64(good_cert_value)
     certificate = Certificate.new(usage: CONSTANTS::SIGNING, value: cert, component_id: component.id)
-    subject = certificate_subject(cert)
+    subject = certificate.x509.subject.to_s
     expect(certificate).not_to be_nil
     expect(certificate.to_metadata).to include(name: subject, value: cert)
   end

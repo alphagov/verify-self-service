@@ -17,39 +17,44 @@ ActiveRecord::Base.class_eval do
   end
 
   def certificate_is_valid
-    return if x509_certificate.nil?
+    @x509 = x509_certificate
+    return false if @x509.nil?
 
     certificate_has_appropriate_not_after
     certificate_key_is_supported
   end
 
-  def factory
-    Utilities::Certificate::CertificateFactory
-  end
-
-  def x509_certificate
-    x509 = factory.x509_certificate(value)
-  rescue
-    errors.add(:certificate, 'is not a valid x509 certificate') if x509.nil?
-    x509
+  def convert_value_to_x509_certificate
+    begin
+      OpenSSL::X509::Certificate.new(value)
+    rescue
+      OpenSSL::X509::Certificate.new(Base64.decode64(value))
+    end
   end
   
+  def x509_certificate
+    convert_value_to_x509_certificate
+  rescue
+    errors.add(:certificate, 'is not a valid x509 certificate')
+    nil
+  end
+
   def convert_value_to_inline_der
-    factory.convert_value_to_inline_der(value)
+    Base64.strict_encode64(@x509.to_der)
   end
 
   def certificate_has_appropriate_not_after
-    if x509_certificate.not_after < Time.now
+    if @x509.not_after < Time.now
       errors.add(:certificate, 'has expired')
-    elsif x509_certificate.not_after < Time.now + 30.days
+    elsif @x509.not_after < Time.now + 30.days
       errors.add(:certificate, 'expires too soon')
-    elsif x509_certificate.not_after > Time.now + 1.year
+    elsif @x509.not_after > Time.now + 1.year
       errors.add(:certificate, 'valid for too long')
     end
   end
 
   def certificate_key_is_supported
-    if x509_certificate.public_key.is_a?(OpenSSL::PKey::RSA)
+    if @x509.public_key.is_a?(OpenSSL::PKey::RSA)
       certificate_is_strong
     else
       errors.add(:certificate, 'in not RSA')
@@ -57,7 +62,7 @@ ActiveRecord::Base.class_eval do
   end
 
   def certificate_is_strong
-    return if x509_certificate.public_key.params['n'].num_bits >= 2048
+    return if @x509.public_key.params['n'].num_bits >= 2048
     
     errors.add(:certificate, 'key size is less than 2048')
   end

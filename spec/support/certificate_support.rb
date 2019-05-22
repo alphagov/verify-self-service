@@ -27,20 +27,4 @@ module CertificateSupport
     cert.not_after = Time.now + expires_in
     [cert, public_key]
   end
-
-  def inline_pem(cert)
-    Base64.encode64(cert.to_der)
-  end
-
-  def convert_value_to_x509_certificate(cert)
-    begin
-      OpenSSL::X509::Certificate.new(cert)
-    rescue
-      OpenSSL::X509::Certificate.new(Base64.decode64(cert))
-    end
-  end 
-  
-  def certificate_subject(cert)
-    convert_value_to_x509_certificate(cert).subject.to_s
-  end
 end
