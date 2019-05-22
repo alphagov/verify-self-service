@@ -49,6 +49,7 @@ group :development, :test do
   # still use sqlite3 in development and testing.
   gem 'sqlite3'
   gem 'pry'
+  gem 'govuk-lint'
 end
 
 group :development do
