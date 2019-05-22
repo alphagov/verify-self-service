@@ -1,5 +1,4 @@
 require 'rails_helper'
-
 include CertificateSupport
 
 RSpec.describe Certificate, type: :model do
@@ -7,8 +6,9 @@ RSpec.describe Certificate, type: :model do
   let(:good_cert_value) do
     pki.generate_signed_cert(expires_in: 2.months).to_pem
   end
-
-  component_params = { component_type: 'MSA', name: 'fake_name' }
+  
+  entity_id = 'http://test-entity-id'
+  component_params = { component_type: 'MSA', name: 'fake_name', entity_id: entity_id }
   let(:component) { NewComponentEvent.create(component_params).component }
   
   it 'is valid with valid attributes' do

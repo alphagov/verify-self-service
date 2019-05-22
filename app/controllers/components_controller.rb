@@ -26,7 +26,8 @@ private
   def component_params
     params.require(:component).permit(
       :name,
-      :component_type
+      :component_type,
+      :entity_id
     )
   end
 end

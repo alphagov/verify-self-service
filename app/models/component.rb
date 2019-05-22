@@ -40,10 +40,15 @@ class Component < Aggregate
     signing = self.enabled_signing_certificates.map(&:to_metadata)
 
     encryption = self.encryption_certificate&.to_metadata
-    {
+
+    metadata = {
       name: self.name,
       encryption_certificate: encryption,
       signing_certificates: signing
     }
+
+    metadata.merge!({ entity_id: entity_id }) if component_type == 'MSA'
+
+    metadata
   end
 end

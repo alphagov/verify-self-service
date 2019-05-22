@@ -8,8 +8,8 @@ RSpec.describe 'the events page', type: :system do
   before(:each) do
     stub_auth
   end
-
-  component_params = { component_type: 'MSA', name:'fake_name' }
+  entity_id = 'http://test-entity-id'
+  component_params = { component_type: 'MSA', name: 'fake_name', entity_id: entity_id }
   let(:component) { NewComponentEvent.create(component_params).component }
   let(:root) { PKI.new }
 
