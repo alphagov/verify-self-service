@@ -1,12 +1,12 @@
 require 'rails_helper'
 require 'auth_test_helper'
-require 'securerandom'
+
 RSpec.describe 'New Component Page', type: :system do
   before(:each) do
     stub_auth
   end
 
-  entity_id = SecureRandom.hex(10)
+  entity_id = 'http://test-entity-id'
   component_name = 'test component'
   component_params = { component_type: 'MSA', name: component_name, entity_id: entity_id }
 

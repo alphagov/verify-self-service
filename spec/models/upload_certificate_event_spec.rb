@@ -1,10 +1,10 @@
 require 'rails_helper'
-require 'securerandom'
+
 RSpec.describe UploadCertificateEvent, type: :model do
   include CertificateSupport
   
   root = PKI.new
-  entity_id = SecureRandom.hex(10)
+  entity_id = 'http://test-entity-id'
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
   component_params = { component_type: 'MSA', name: 'fake_name', entity_id: entity_id }
   component = NewComponentEvent.create(component_params).component

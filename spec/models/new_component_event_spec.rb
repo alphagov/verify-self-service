@@ -1,7 +1,8 @@
 require 'rails_helper'
-require 'securerandom'
+
 RSpec.describe NewComponentEvent, type: :model do
-  entity_id = SecureRandom.hex(10)
+  entity_id = 'http://test-entity-id'
+
   include_examples 'has data attributes', NewComponentEvent, [:name, :component_type, :entity_id]
   include_examples 'is aggregated', NewComponentEvent, {name: 'New component', component_type: 'MSA', entity_id: entity_id }
   include_examples 'is a creation event', NewComponentEvent, {name: 'New component', component_type: 'MSA', entity_id: entity_id }

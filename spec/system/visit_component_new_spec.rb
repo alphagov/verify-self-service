@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'securerandom'
+
 RSpec.describe 'New Component Page', type: :system do
-  let(:entity_id) { SecureRandom.hex(10) }
+  let(:entity_id) { 'http://test-entity-id' }
   context 'creation is successful' do
     it 'when required input is specified' do
       component_name = 'test component'
@@ -68,18 +68,6 @@ RSpec.describe 'New Component Page', type: :system do
       click_button 'Create component'
 
       expect(page).to have_content 'Entity id is required for MSA component'
-    end
-
-    it 'when entity id is specified for VSP component' do
-      entity = entity_id
-      component_name = 'test component'
-      visit new_component_path
-      choose 'component_component_type_vsp', allow_label_click: true
-      fill_in 'component_name', with: component_name
-      fill_in 'component_entity_id', with: entity
-      click_button 'Create component'
-
-      expect(page).to have_content 'Entity id can not be set on VSP component'
     end
   end
 end

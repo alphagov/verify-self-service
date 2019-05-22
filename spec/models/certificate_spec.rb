@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'securerandom'
 include CertificateSupport
 
 RSpec.describe Certificate, type: :model do
@@ -8,7 +7,7 @@ RSpec.describe Certificate, type: :model do
     pki.generate_signed_cert(expires_in: 2.months).to_pem
   end
   
-  entity_id = SecureRandom.hex(10)
+  entity_id = 'http://test-entity-id'
   component_params = { component_type: 'MSA', name: 'fake_name', entity_id: entity_id }
   let(:component) { NewComponentEvent.create(component_params).component }
   
