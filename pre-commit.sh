@@ -31,6 +31,8 @@ else
   fi
 fi
 
+bundle exec govuk-lint-ruby app lib
+
 bundle check || bundle install
 
 bundle exec rake
