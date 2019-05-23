@@ -38,7 +38,7 @@ class NewComponentEvent < AggregatedEvent
       errors.add(:entity_id, 'id is required for MSA component') unless entity_id.present?
       return entity_id.present?
     else
-      self.update_attribute(:entity_id, nil)
+      self.assign_attributes(entity_id: nil)
     end
   end
 end
