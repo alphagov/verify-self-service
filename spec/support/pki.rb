@@ -6,7 +6,7 @@ require_relative 'certificate_support'
 class PKI
   include CertificateSupport
   attr_reader :root_ca, :root_key, :ocsp_host
-  def initialize(type = :RSA, cn = "TEST CA", ocsp_host = "http://localhost:4568")
+  def initialize(_type = :RSA, cn = "TEST CA", ocsp_host = "http://localhost:4568")
     @root_ca = generate_root_certificate(cn)
     @revoked_certificates = {}
     @ocsp_host = URI(ocsp_host)
@@ -25,10 +25,10 @@ class PKI
     ef = OpenSSL::X509::ExtensionFactory.new
     ef.subject_certificate = root_ca
     ef.issuer_certificate = root_ca
-    root_ca.add_extension(ef.create_extension("basicConstraints","CA:TRUE",true))
-    root_ca.add_extension(ef.create_extension("keyUsage","keyCertSign, cRLSign", true))
-    root_ca.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
-    root_ca.add_extension(ef.create_extension("authorityKeyIdentifier","keyid:always",false))
+    root_ca.add_extension(ef.create_extension("basicConstraints", "CA:TRUE", true))
+    root_ca.add_extension(ef.create_extension("keyUsage", "keyCertSign, cRLSign", true))
+    root_ca.add_extension(ef.create_extension("subjectKeyIdentifier", "hash", false))
+    root_ca.add_extension(ef.create_extension("authorityKeyIdentifier", "keyid:always", false))
     root_ca.sign(@root_key, OpenSSL::Digest::SHA256.new)
   end
 
@@ -43,9 +43,9 @@ class PKI
     ef = OpenSSL::X509::ExtensionFactory.new
     ef.subject_certificate = cert
     ef.issuer_certificate = root_ca
-    cert.add_extension(ef.create_extension("keyUsage","digitalSignature", true))
-    cert.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
-    ocsp_extension = ef.create_extension("authorityInfoAccess","OCSP;URI:#{@ocsp_host.to_s}")
+    cert.add_extension(ef.create_extension("keyUsage", "digitalSignature", true))
+    cert.add_extension(ef.create_extension("subjectKeyIdentifier", "hash", false))
+    ocsp_extension = ef.create_extension("authorityInfoAccess", "OCSP;URI:#{@ocsp_host}")
     cert.add_extension(ocsp_extension)
     cert.sign(@root_key, OpenSSL::Digest::SHA256.new)
     cert

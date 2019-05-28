@@ -16,7 +16,7 @@ module CertificateSupport
     generate_cert_using_key(key, expires_in, cn)
   end
 
-  private
+private
 
   def generate_cert_using_key(public_key, expires_in, cn)
     cert = OpenSSL::X509::Certificate.new

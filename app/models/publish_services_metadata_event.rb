@@ -26,7 +26,7 @@ class PublishServicesMetadataEvent < Event
     service.upload(storage_key, StringIO.new(json_data), checksum: check_sum)
   end
 
-  private
+private
 
   def services_metadata
     Component.to_service_metadata(event_id)

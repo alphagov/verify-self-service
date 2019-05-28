@@ -23,7 +23,7 @@ class NewComponentEvent < AggregatedEvent
     errors.add(:component, 'already exists') if component.persisted?
   end
 
-  private
+private
 
   def name_is_present
     errors.add(:name, "can't be blank") unless name_present?
@@ -36,7 +36,7 @@ class NewComponentEvent < AggregatedEvent
   def msa_has_entity_id
     if component_type == 'MSA'
       errors.add(:entity_id, 'id is required for MSA component') unless entity_id.present?
-      return entity_id.present?
+      entity_id.present?
     else
       self.assign_attributes(entity_id: nil)
     end

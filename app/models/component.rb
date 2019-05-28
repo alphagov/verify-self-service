@@ -1,5 +1,4 @@
 class Component < Aggregate
-
   has_many :certificates
   has_many :signing_certificates,
            -> { where(usage: CONSTANTS::SIGNING) }, class_name: 'Certificate'
@@ -12,10 +11,9 @@ class Component < Aggregate
   has_many :disabled_signing_certificates,
            -> { where(usage: CONSTANTS::SIGNING, enabled: false) }, class_name: 'Certificate'
 
-  belongs_to :encryption_certificate, -> { where(usage: CONSTANTS::ENCRYPTION) },
-                                      class_name: 'Certificate', optional: true
+  belongs_to :encryption_certificate,
+             -> { where(usage: CONSTANTS::ENCRYPTION) }, class_name: 'Certificate', optional: true
 
-  
   scope :matching_service_adapters, -> { where(component_type: 'MSA') }
   scope :service_providers,
         -> { where(component_type: 'VSP').or(where(component_type: 'SP')) }
@@ -27,9 +25,9 @@ class Component < Aggregate
     service_providers = Component.service_providers
                                  .includes(:enabled_signing_certificates,
                                            :encryption_certificate)
-      { published_at: published_at, event_id: event_id,
-        matching_service_adapters: matching_service_adapters.map(&:to_metadata),
-        service_providers: service_providers.map(&:to_metadata) }
+    { published_at: published_at, event_id: event_id,
+      matching_service_adapters: matching_service_adapters.map(&:to_metadata),
+      service_providers: service_providers.map(&:to_metadata) }
   end
 
   def previous_encryption_certificates
@@ -47,7 +45,7 @@ class Component < Aggregate
       signing_certificates: signing
     }
 
-    metadata.merge!({ entity_id: entity_id }) if component_type == 'MSA'
+    metadata.merge!(entity_id: entity_id) if component_type == 'MSA'
 
     metadata
   end

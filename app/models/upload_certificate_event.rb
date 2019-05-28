@@ -1,4 +1,3 @@
-
 class UploadCertificateEvent < AggregatedEvent
   belongs_to_aggregate :certificate
   data_attributes :value, :usage, :component_id

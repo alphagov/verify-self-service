@@ -2,15 +2,15 @@ require 'rails_helper'
 
 RSpec.describe UploadCertificateEvent, type: :model do
   include CertificateSupport
-  
+
   root = PKI.new
   entity_id = 'http://test-entity-id'
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
   component_params = { component_type: 'MSA', name: 'fake_name', entity_id: entity_id }
   component = NewComponentEvent.create(component_params).component
-  include_examples 'has data attributes', UploadCertificateEvent, [:usage, :value, :component_id]
-  include_examples 'is aggregated', UploadCertificateEvent, {usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id }
-  include_examples 'is a creation event', UploadCertificateEvent, {usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id}
+  include_examples 'has data attributes', UploadCertificateEvent, %i[usage value component_id]
+  include_examples 'is aggregated', UploadCertificateEvent, usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id
+  include_examples 'is a creation event', UploadCertificateEvent, usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id
 
   context '#value' do
     it 'must be present' do
@@ -21,11 +21,10 @@ RSpec.describe UploadCertificateEvent, type: :model do
   end
 
   context '#certificate' do
-
     let(:root) { PKI.new }
 
     it 'must error with invalid x509 certificate' do
-      event = UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: 'Not a valid certificate',component_id: component.id)
+      event = UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: 'Not a valid certificate', component_id: component.id)
       expect(event).to_not be_valid
       expect(event.errors[:certificate]).to eql ['is not a valid x509 certificate']
     end
@@ -85,7 +84,6 @@ RSpec.describe UploadCertificateEvent, type: :model do
       expect(event).to_not be_valid
       expect(event.errors[:certificate]).to eql ['key size is less than 2048']
     end
-
   end
 
   context '#usage' do
@@ -129,8 +127,6 @@ RSpec.describe UploadCertificateEvent, type: :model do
       expect(event.component).to_not eql component
       expect(event.component).to eql second_component
     end
-
-
   end
 
   context '#component=' do

@@ -1,9 +1,8 @@
 require 'rails_helper'
 require 'auth_test_helper'
 
-include CertificateSupport
-
 RSpec.describe 'UploadPage', type: :system do
+  include CertificateSupport
 
   before(:each) do
     stub_auth
@@ -20,7 +19,7 @@ RSpec.describe 'UploadPage', type: :system do
     choose 'certificate_usage_signing', allow_label_click: true
     fill_in 'certificate_value', with: test_certificate
     click_button 'Upload'
-    expect(page).to have_selector ("#edit_certificate_#{component.certificates.last.id}")
+    expect(page).to have_selector "#edit_certificate_#{component.certificates.last.id}"
     expect(current_path).to eql component_path(component)
   end
 end

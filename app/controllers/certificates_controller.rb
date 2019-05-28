@@ -40,7 +40,7 @@ class CertificatesController < ApplicationController
     end
     redirect_to component_path(certificate.component_id)
   end
-  
+
   def replace
     component = Component.find(params[:component_id])
     certificate = Certificate.find(params[:id])
@@ -55,7 +55,7 @@ class CertificatesController < ApplicationController
     redirect_to component_path(certificate.component_id)
   end
 
-  private
+private
 
   def upload_params
     component_id ||= params[:component_id]

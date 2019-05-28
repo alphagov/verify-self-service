@@ -28,7 +28,7 @@ RSpec.describe Component, type: :model do
         usage: CONSTANTS::SIGNING, value: x509_cert_2, component_id: component.id
       )
     end
-  
+
     let(:upload_encryption_event) do
       event = UploadCertificateEvent.create(
         usage: CONSTANTS::ENCRYPTION, value: x509_cert_3, component_id: component.id
@@ -45,7 +45,7 @@ RSpec.describe Component, type: :model do
       signing2 = upload_signing_certificate_event_2
       encryption = upload_encryption_event
       actual_config = Component.to_service_metadata(event_id, published_at)
-  
+
       expected_config = {
         published_at: published_at,
         event_id: event_id,
