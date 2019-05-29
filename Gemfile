@@ -50,6 +50,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'pry'
   gem 'govuk-lint'
+  gem 'factory_bot_rails'
 end
 
 group :development do
