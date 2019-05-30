@@ -1,0 +1,2 @@
+class MsaComponent < Component
+end
