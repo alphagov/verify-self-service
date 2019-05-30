@@ -12,7 +12,11 @@ class ComponentsController < ApplicationController
   end
 
   def create
-    @component = NewComponentEvent.create(component_params)
+    @component = if params['component']['component_type'] == 'MSA'
+                   NewMsaComponentEvent.create(component_params)
+                 else
+                   NewComponentEvent.create(component_params)
+                 end
     if @component.valid?
       redirect_to components_path
     else

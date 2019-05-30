@@ -13,7 +13,7 @@ RSpec.describe Component, type: :model do
     entity_id = 'http://test-entity-id'
     component_name = 'test component'
     component_params = { component_type: 'MSA', name: component_name, entity_id: entity_id }
-    let(:component) { NewComponentEvent.create(component_params).component }
+    let(:component) { NewMsaComponentEvent.create(component_params).component }
     let(:root) { PKI.new }
     let(:x509_cert_1) { root.generate_encoded_cert(expires_in: 2.months) }
     let(:x509_cert_2) { root.generate_encoded_cert(expires_in: 9.months) }
@@ -89,7 +89,7 @@ RSpec.describe Component, type: :model do
         component_type: 'MSA',
         name: component_name
       }
-      new_component = NewComponentEvent.create(component_params).component
+      new_component = NewMsaComponentEvent.create(component_params).component
       expect(new_component).not_to be_persisted
     end
 
@@ -99,7 +99,7 @@ RSpec.describe Component, type: :model do
         name: component_name,
         entity_id: entity_id
       }
-      new_component = NewComponentEvent.create(component_params).component
+      new_component = NewMsaComponentEvent.create(component_params).component
       expect(new_component).to be_persisted
       expect(new_component.entity_id).to eq(entity_id)
     end
