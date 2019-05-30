@@ -4,7 +4,7 @@ class NewComponentEvent < AggregatedEvent
 
   validate :name_is_present
   validates_inclusion_of :component_type, in: %w[VSP MSA SP]
-  validate :component_is_new, :msa_has_entity_id, on: :create
+  validate :component_is_new, on: :create
 
   def build_component
     Component.new
@@ -14,7 +14,6 @@ class NewComponentEvent < AggregatedEvent
     {
       name: name,
       component_type: component_type,
-      entity_id: entity_id,
       created_at: created_at
     }
   end
@@ -31,14 +30,5 @@ private
 
   def name_present?
     name.present?
-  end
-
-  def msa_has_entity_id
-    if component_type == 'MSA'
-      errors.add(:entity_id, 'id is required for MSA component') unless entity_id.present?
-      entity_id.present?
-    else
-      self.assign_attributes(entity_id: nil)
-    end
   end
 end
