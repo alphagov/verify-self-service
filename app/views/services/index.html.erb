@@ -1,0 +1,22 @@
+<h1 class="govuk-heading-xl">Services</h1>
+
+<% if @services.present? %>
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Name</th>
+        <th class="govuk-table__header" scope="col">Entity ID</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% for service in @services.reverse %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell" scope="row"><%= service.name %></td>
+          <td class="govuk-table__cell"><%= service.entity_id %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<%= link_to 'Add new service', new_service_path, class: "govuk-button govuk-button--start", role:"button", draggable:"false" %>

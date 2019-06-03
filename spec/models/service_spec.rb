@@ -13,7 +13,6 @@ RSpec.describe Service, type: :model do
 
     it 'should be able to have an sp and msa component' do
       service.msa_component = msa_component
-
       expect(service).to be_valid
       expect(service).to be_persisted
     end
