@@ -9,22 +9,20 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
   entity_id = 'http://test-entity-id'
   let(:component_name) { 'test component' }
   let(:component) do
-    component_params = { component_type: 'MSA', name: component_name, entity_id: entity_id }
-    NewComponentEvent.create(component_params).component
+    component_params = { name: component_name, entity_id: entity_id }
+    NewMsaComponentEvent.create(component_params).msa_component
   end
   let(:root) { PKI.new }
   let(:x509_cert) { root.generate_encoded_cert(expires_in: 9.months) }
   let(:upload_encryption_cert) do
-    UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
-    ).certificate
+    UploadCertificateEvent.create( usage: CONSTANTS::ENCRYPTION, value: x509_cert, component: component).certificate
   end
 
   def certificate_created_with(params = {})
     defaults = {
       usage: CONSTANTS::ENCRYPTION,
       value: x509_cert,
-      component_id: component.id
+      component: component
     }
     Certificate.create(**defaults.merge(params))
   end
@@ -55,7 +53,9 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
 
   it 'replace current encryption certificate with another' do
     new_encryption_certificate = UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
+      usage: CONSTANTS::ENCRYPTION,
+      value: x509_cert,
+      component: component,
     ).certificate
     expect(component.encryption_certificate_id).not_to eq(new_encryption_certificate.id)
 

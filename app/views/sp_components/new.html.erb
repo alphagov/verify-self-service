@@ -1,32 +1,23 @@
 <fieldset class="govuk-fieldset">
   <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-    <h1 class="govuk-fieldset__heading">Upload your component</h1>
+    <h1 class="govuk-fieldset__heading">Upload your SP component</h1>
   </legend>
 
   <%= error_messages_for(@component&.errors)%>
-  <%= form_for @component, url: components_path, as: :component do |f| %>
+  <%= form_for @component, url: sp_components_path, as: :component do |f| %>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:name) %>">
-      <h3 class="govuk-heading-m">Component name</h3>
+      <h3 class="govuk-heading-m">SP Component name</h3>
       <%=error_message_on(f.object.errors, :name) %>
       <%= f.text_field :name, class: "govuk-input#{@component.errors.key?(:name) ? ' govuk-input--error' : ''}" %>
     </div>
-    <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:entity_id) %>">
-      <h3 class="govuk-heading-m">Component entity id</h3>
-      <%=error_message_on(f.object.errors, :entity_id) %>
-      <%= f.text_field :entity_id, class: "govuk-input#{@component.errors.key?(:entity_id) ? ' govuk-input--error' : ''}" %>
-    </div>
-    <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:component_type) %>">
-      <h3 class="govuk-heading-m">Component type</h3>
 
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:component_type) %>">
+      <h3 class="govuk-heading-m">SP Component type</h3>
       <%=error_message_on(f.object.errors, :component_type) %>
       <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item ">
           <%= f.radio_button :component_type, 'VSP', class: 'govuk-radios__input'  %>
           <%= f.label :component_type, 'VSP', class: 'govuk-label govuk-radios__label' %>
-        </div>
-        <div class="govuk-radios__item">
-          <%= f.radio_button :component_type, 'MSA', class: 'govuk-radios__input'  %>
-          <%= f.label :component_type, 'MSA', class: 'govuk-label govuk-radios__label' %>
         </div>
         <div class="govuk-radios__item">
           <%= f.radio_button :component_type, 'SP', class: 'govuk-radios__input'  %>
@@ -35,7 +26,7 @@
       </div>
     </div>
     <div class="govuk-form-group">
-        <%=f.submit "Create component", class: "govuk-button" %>
+        <%=f.submit "Create SP component", class: "govuk-button" %>
     </div>
   <% end %>
 </fieldset>

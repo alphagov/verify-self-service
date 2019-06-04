@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_28_114026) do
+ActiveRecord::Schema.define(version: 2019_06_04_153917) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -40,16 +40,8 @@ ActiveRecord::Schema.define(version: 2019_05_28_114026) do
     t.datetime "updated_at", null: false
     t.integer "component_id"
     t.boolean "enabled", default: true
-    t.index ["component_id"], name: "index_certificates_on_component_id"
-  end
-
-  create_table "components", force: :cascade do |t|
-    t.string "name"
     t.string "component_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "encryption_certificate_id"
-    t.string "entity_id"
+    t.index ["component_id"], name: "index_certificates_on_component_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -62,6 +54,15 @@ ActiveRecord::Schema.define(version: 2019_05_28_114026) do
     t.index ["aggregate_type", "aggregate_id"], name: "index_events_on_aggregate_type_and_aggregate_id"
   end
 
+  create_table "msa_components", force: :cascade do |t|
+    t.string "name"
+    t.string "component_type"
+    t.integer "encryption_certificate_id"
+    t.string "entity_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "services", force: :cascade do |t|
     t.string "entity_id", null: false
     t.string "name"
@@ -70,6 +71,14 @@ ActiveRecord::Schema.define(version: 2019_05_28_114026) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["entity_id"], name: "index_services_on_entity_id", unique: true
+  end
+
+  create_table "sp_components", force: :cascade do |t|
+    t.string "name"
+    t.string "component_type"
+    t.integer "encryption_certificate_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

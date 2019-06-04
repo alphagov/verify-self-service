@@ -18,7 +18,11 @@
           <td class="govuk-table__cell">
               <% if certificate.encryption? && heading.start_with?('Previous') %>
                   <%= form_for [@component, certificate],
-                    url: replace_component_certificate_path(@component,certificate) do |f| %>
+                    url: polymorphic_url(
+                      [:replace, @component, certificate],
+                      component: @component,
+                      certificate: certificate
+                    ) do |f| %>
                       <%= f.submit 'Replace', class: 'govuk-button' %>
                   <% end %>
               <% end %>

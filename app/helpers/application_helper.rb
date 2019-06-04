@@ -7,9 +7,9 @@ module ApplicationHelper
   def logout_url
     if session[:provider] == 'cognito-idp'
       query_params = {
-              "client_id": Rails.application.secrets.cognito_client_id,
-              "logout_uri": logout_callback_url
-          }.to_query
+        "client_id": Rails.application.secrets.cognito_client_id,
+        "logout_uri": logout_callback_url
+      }.to_query
       URI.join(
         Rails.application.secrets.cognito_user_pool_site,
         "logout?#{query_params}"

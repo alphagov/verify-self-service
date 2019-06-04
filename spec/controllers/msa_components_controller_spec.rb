@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'auth_test_helper'
 
-RSpec.describe ComponentsController, type: :controller do
+RSpec.describe MsaComponentsController, type: :controller do
   before(:each) do
     populate_session
   end

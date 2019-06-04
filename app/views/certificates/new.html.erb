@@ -3,28 +3,10 @@
     <h1 class="govuk-fieldset__heading">Upload your certificate</h1>
   </legend>
 
-  <%= error_messages_for(@upload&.errors)%>
-  <%= form_for @upload, url: component_certificates_path, as: :certificate do |f| %>
-    <div class="govuk-form-group <%= 'govuk-form-group--error' if @upload.errors.key?(:usage) %>">
-      <h3 class="govuk-heading-m">Certificate usage</h3>
-
-      <%=error_message_on(f.object.errors, :usage) %>
-      <div class="govuk-radios govuk-radios--inline">
-        <div class="govuk-radios__item ">
-          <%= f.radio_button :usage, CONSTANTS::SIGNING, class: 'govuk-radios__input'  %>
-          <%= f.label :usage, CONSTANTS::SIGNING, class: 'govuk-label govuk-radios__label' %>
-        </div>
-        <div class="govuk-radios__item">
-          <%= f.radio_button :usage, CONSTANTS::ENCRYPTION, class: 'govuk-radios__input'  %>
-          <%= f.label :usage, CONSTANTS::ENCRYPTION, class: 'govuk-label govuk-radios__label' %>
-        </div>
-      </div>
-    </div>
-    <div class="govuk-form-group <%= 'govuk-form-group--error' if @upload.errors.key?(:certificate) %>">
-      <h3 class="govuk-heading-m">Certificate value</h3>
-      <%= error_message_on(f.object.errors, :certificate) %>
-      <%= f.text_area :value, placeholder: 'Paste your certificate here', class: "govuk-textarea#{@upload.errors.key?(:certificate) ? ' govuk-textarea--error' : ''}", rows: "6" %>
-      <%= f.submit "Upload", class: "govuk-button" %>
-    </div>
+  <%= error_messages_for(@upload&.errors) %>
+  <% if @upload.data['component_type'] == 'MsaComponent' %>
+  <%= render 'certificates/new/msa_cert' %>
+  <% else %>
+  <%= render 'certificates/new/sp_cert' %>
   <% end %>
 </fieldset>

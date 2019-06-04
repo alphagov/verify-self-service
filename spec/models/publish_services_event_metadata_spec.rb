@@ -6,10 +6,8 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
 
   let(:published_at) { Time.now }
   let(:event_id) { 0 }
-  let(:component) { Component.create(name: 'lala', component_type: 'MSA') }
-  let(:event) do
-    PublishServicesMetadataEvent.create(event_id: event_id)
-  end
+  let(:component) { MsaComponent.create(name: 'lala', entity_id: 'https//test-entity') }
+  let(:event) { PublishServicesMetadataEvent.create(event_id: event_id) }
 
   context '#create' do
     it 'creates a valid event which contains hard-coded data' do

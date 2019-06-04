@@ -4,7 +4,8 @@ require 'json'
 RSpec.describe Component, type: :model do
   context '#to_service_metadata' do
     before(:each) do
-      Component.destroy_all
+      SpComponent.destroy_all
+      MsaComponent.destroy_all
     end
     let(:root) { PKI.new }
     let(:published_at) { Time.now }
@@ -12,26 +13,32 @@ RSpec.describe Component, type: :model do
     let(:certificate) { root.generate_encoded_cert(expires_in: 2.months) }
     entity_id = 'http://test-entity-id'
     component_name = 'test component'
-    component_params = { component_type: 'MSA', name: component_name, entity_id: entity_id }
-    let(:component) { NewMsaComponentEvent.create(component_params).component }
+    component_params = { name: component_name, entity_id: entity_id }
+    let(:component) { NewMsaComponentEvent.create(component_params).msa_component }
     let(:root) { PKI.new }
     let(:x509_cert_1) { root.generate_encoded_cert(expires_in: 2.months) }
     let(:x509_cert_2) { root.generate_encoded_cert(expires_in: 9.months) }
     let(:x509_cert_3) { root.generate_encoded_cert(expires_in: 9.months) }
     let(:upload_signing_certificate_event_1) do
       UploadCertificateEvent.create(
-        usage: CONSTANTS::SIGNING, value: x509_cert_1, component_id: component.id
+        usage: CONSTANTS::SIGNING,
+        value: x509_cert_1,
+        component: component,
       )
     end
     let(:upload_signing_certificate_event_2) do
       UploadCertificateEvent.create(
-        usage: CONSTANTS::SIGNING, value: x509_cert_2, component_id: component.id
+        usage: CONSTANTS::SIGNING,
+        value: x509_cert_2,
+        component: component,
       )
     end
 
     let(:upload_encryption_event) do
       event = UploadCertificateEvent.create(
-        usage: CONSTANTS::ENCRYPTION, value: x509_cert_3, component_id: component.id
+        usage: CONSTANTS::ENCRYPTION,
+        value: x509_cert_3,
+        component: component,
       )
       ReplaceEncryptionCertificateEvent.create(
         component: component,
@@ -44,7 +51,7 @@ RSpec.describe Component, type: :model do
       signing1 = upload_signing_certificate_event_1
       signing2 = upload_signing_certificate_event_2
       encryption = upload_encryption_event
-      actual_config = Component.to_service_metadata(event_id, published_at)
+      actual_config = MsaComponent.to_service_metadata(event_id, published_at)
 
       expected_config = {
         published_at: published_at,
@@ -72,8 +79,7 @@ RSpec.describe Component, type: :model do
     end
 
     it 'produces required output structure' do
-      Component.destroy_all
-      actual_config = Component.to_service_metadata(event_id, published_at)
+      actual_config = SpComponent.to_service_metadata(event_id, published_at)
       expected_config = {
         published_at: published_at,
         event_id: event_id,
@@ -85,43 +91,18 @@ RSpec.describe Component, type: :model do
     end
 
     it 'entity id is required MSA component' do
-      component_params = {
-        component_type: 'MSA',
-        name: component_name
-      }
-      new_component = NewMsaComponentEvent.create(component_params).component
+      new_component = NewMsaComponentEvent.create(name: component_name).msa_component
       expect(new_component).not_to be_persisted
     end
 
     it 'can set entity id on MSA component' do
       component_params = {
-        component_type: 'MSA',
         name: component_name,
         entity_id: entity_id
       }
-      new_component = NewMsaComponentEvent.create(component_params).component
+      new_component = NewMsaComponentEvent.create(component_params).msa_component
       expect(new_component).to be_persisted
       expect(new_component.entity_id).to eq(entity_id)
-    end
-
-    it 'cannot set entity id on VSP component' do
-      component_params = {
-        component_type: 'VSP',
-        name: component_name,
-        entity_id: entity_id
-      }
-      new_component = NewComponentEvent.create(component_params).component
-      expect(new_component).to be_persisted
-      expect(new_component.entity_id).to be nil
-    end
-
-    it 'entity id not required on VSP component' do
-      component_params = {
-        component_type: 'VSP',
-        name: component_name
-      }
-      new_component = NewComponentEvent.create(component_params).component
-      expect(new_component).to be_persisted
     end
   end
 end
