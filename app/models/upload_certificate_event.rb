@@ -24,7 +24,7 @@ class UploadCertificateEvent < AggregatedEvent
       usage: self.usage,
       value: self.value,
       component_id: self.component_id,
-      component_type: klass_name(self.component_type),
+      component_type: self.component_type,
       created_at: self.created_at
     }
   end
@@ -33,8 +33,7 @@ class UploadCertificateEvent < AggregatedEvent
     if @component.present?
       @component
     elsif component_id.present? && component_type.present?
-      name = klass_name(component_type)
-      @component = klass_component(name).find_by_id(component_id)
+      @component = klass_component(component_type).find_by_id(component_id)
     end
   end
 

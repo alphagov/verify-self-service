@@ -12,7 +12,7 @@ class NewMsaComponentEvent < AggregatedEvent
   def attributes_to_apply
     {
       name: name,
-      component_type: 'MSA',
+      component_type: CONSTANTS::MSA,
       entity_id: entity_id,
       created_at: created_at
     }

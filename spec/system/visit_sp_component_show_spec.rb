@@ -8,7 +8,7 @@ RSpec.describe 'Components Page', type: :system do
 
   entity_id = 'http://test-entity-id'
   component_name = 'test component'
-  component_params = { name: component_name, component_type: 'VSP' }
+  component_params = { name: component_name, component_type: CONSTANTS::SP }
 
   let(:component) { NewSpComponentEvent.create(component_params).sp_component }
   let(:root) { PKI.new }

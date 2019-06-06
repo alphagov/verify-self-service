@@ -45,7 +45,7 @@ class Component < Aggregate
       signing_certificates: signing
     }
 
-    metadata.merge!(entity_id: entity_id) if component_type == 'MSA'
+    metadata.merge!(entity_id: entity_id) if component_type == CONSTANTS::MSA
 
     metadata
   end

@@ -5,7 +5,7 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
   root = PKI.new
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
   expired_cert_value = root.generate_encoded_cert(expires_in: -2.months)
-  component_params = { component_type: 'SP', name: 'Test Service Provider' }
+  component_params = { component_type: CONSTANTS::SP, name: 'Test Service Provider' }
   component = NewSpComponentEvent.create(component_params).sp_component
 
   let(:signing_certificate) do

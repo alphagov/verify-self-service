@@ -6,7 +6,7 @@ RSpec.describe 'New SP Component Page', type: :system do
     it 'when required input is specified' do
       component_name = 'test component'
       visit new_sp_component_path
-      choose 'component_component_type_vsp', allow_label_click: true
+      choose 'component_component_type_vspcomponent', allow_label_click: true
       fill_in 'component_name', with: component_name
       click_button 'Create SP component'
 
@@ -18,7 +18,7 @@ RSpec.describe 'New SP Component Page', type: :system do
     it 'when name is not specified' do
       component_name = ''
       visit new_sp_component_path
-      choose 'component_component_type_vsp', allow_label_click: true
+      choose 'component_component_type_vspcomponent', allow_label_click: true
       fill_in 'component_name', with: component_name
       click_button 'Create SP component'
 

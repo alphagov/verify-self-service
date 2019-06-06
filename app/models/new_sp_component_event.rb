@@ -3,7 +3,6 @@ class NewSpComponentEvent < AggregatedEvent
   data_attributes :name, :component_type
 
   validate :name_is_present
-  validates_inclusion_of :component_type, in: %w[VSP SP]
   validate :component_is_new, on: :create
 
   def build_sp_component
@@ -13,7 +12,8 @@ class NewSpComponentEvent < AggregatedEvent
   def attributes_to_apply
     {
       name: name,
-      component_type: component_type,
+      component_type: CONSTANTS::SP,
+      vsp: component_type == CONSTANTS::VSP,
       created_at: created_at
     }
   end

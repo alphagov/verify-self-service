@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_04_153917) do
+ActiveRecord::Schema.define(version: 2019_06_06_104643) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 2019_06_04_153917) do
     t.integer "encryption_certificate_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "vsp", default: false
   end
 
 end
