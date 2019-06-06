@@ -1,4 +1,4 @@
-module Componerator
+module ComponentConcern
   extend ActiveSupport::Concern
 
   def klass_component(name)

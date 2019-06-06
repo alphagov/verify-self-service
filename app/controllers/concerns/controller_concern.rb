@@ -1,4 +1,4 @@
-module Controlotron
+module ControllerConcern
   extend ActiveSupport::Concern
 
   def component_key(params)

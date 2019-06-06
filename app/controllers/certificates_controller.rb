@@ -1,6 +1,6 @@
 class CertificatesController < ApplicationController
-  include Controlotron
-  include Componerator
+  include ControllerConcern
+  include ComponentConcern
 
   def new
     component_id = params[component_key(params)]
