@@ -1,51 +1,5 @@
 <h1 class="govuk-heading-xl">Components</h1>
 
-<h2 class="govuk-heading-l">SP Components</h2>
-<% if @sp_components.present? %>
-  <table class="govuk-table">
-    <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col">Name</th>
-        <th class="govuk-table__header" scope="col">Type</th>
-        <th class="govuk-table__header" scope="col">View</th>
-      </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-      <% for component in @sp_components.reverse %>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell" scope="row"><%= component.name %></td>
-          <td class="govuk-table__cell">
-            <%= component.view_component_type(component.vsp) %>
-          </td>
-          <td class="govuk-table__cell"><%= link_to 'View component', sp_component_path(component) %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
+<%= render "sp_components/all_sp_components"%>
 
-<%= link_to 'Create new SP component', new_sp_component_path, class: "govuk-button govuk-button--start", role:"button", draggable:"false" %>
-
-<h2 class="govuk-heading-l">MSA Components</h2>
-<% if @msa_components.present? %>
-  <table class="govuk-table">
-    <thead class="govuk-table__head">
-      <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col">Name</th>
-        <th class="govuk-table__header" scope="col">Entity ID</th>
-        <th class="govuk-table__header" scope="col">View</th>
-      </tr>
-    </thead>
-    <tbody class="govuk-table__body">
-      <% for component in @msa_components.reverse %>
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell" scope="row"><%= component.name %></td>
-          <td class="govuk-table__cell"><%= component.entity_id %></td>
-          <td class="govuk-table__cell"><%= link_to 'View component', msa_component_path(component) %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
-
-<%= link_to 'Create new MSA component', new_msa_component_path, class: "govuk-button govuk-button--start", role:"button", draggable:"false" %>
+<%= render "msa_components/all_msa_components"%>

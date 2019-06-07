@@ -1,6 +1,6 @@
 class MsaComponentsController < ApplicationController
   def index
-    @components = MsaComponent.all
+    @msa_components = MsaComponent.all
   end
 
   def new

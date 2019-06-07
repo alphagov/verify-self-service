@@ -1,6 +1,6 @@
 class SpComponentsController < ApplicationController
   def index
-    @components = SpComponent.all
+    @sp_components = SpComponent.all
   end
 
   def new
