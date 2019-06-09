@@ -1,2 +1,0 @@
-class MsaComponent < Component
-end
