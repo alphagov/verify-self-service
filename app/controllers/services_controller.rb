@@ -9,22 +9,20 @@ class ServicesController < ApplicationController
 
   def new
     @component = component_by_klass_name(params)
-    @service = NewServiceEvent.new
+    @service_event = NewServiceEvent.new
   end
 
   def create
     @component = component_by_klass_name(params)
-    @service = NewServiceEvent.create(service_params)
+    @service_event = NewServiceEvent.create(service_params)
 
-    if @service.valid?
+    if @service_event.valid? && @service_event.service.valid?
       redirect_to polymorphic_url(@component)
     else
-      Rails.logger.info(@service.errors.full_messages)
+      @service_event.errors.merge!(@service_event.service.errors)
+      Rails.logger.info(@service_event.errors.full_messages)
       render :new
     end
-  rescue ActiveRecord::RecordNotUnique
-    Rails.logger.info('Entity ID exists')
-    render :new
   end
 
 private

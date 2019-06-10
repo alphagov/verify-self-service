@@ -35,5 +35,19 @@ RSpec.shared_examples "new component page" do |component_name|
 
       expect(page).to have_content 'Name can\'t be blank'
     end
+
+    it 'when entity id is not unique' do
+      visit polymorphic_url([:new, component, :service], component: component)
+      fill_in 'service_name', with: service_name
+      fill_in 'service_entity_id', with: service_entity_id
+      click_button 'Create service'
+
+      visit polymorphic_url([:new, component, :service], component: component)
+      fill_in 'service_name', with: service_name
+      fill_in 'service_entity_id', with: service_entity_id
+      click_button 'Create service'
+
+      expect(page).to have_content 'Entity has already been taken'
+    end
   end
 end

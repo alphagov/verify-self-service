@@ -26,6 +26,5 @@ private
 
   def msa_has_entity_id
     errors.add(:entity_id, 'id is required for MSA component') unless entity_id.present?
-    entity_id.present?
   end
 end
