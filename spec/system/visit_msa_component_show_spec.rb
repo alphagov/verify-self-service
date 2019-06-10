@@ -1,31 +1,31 @@
 require 'rails_helper'
 require 'auth_test_helper'
 
-RSpec.describe 'New Component Page', type: :system do
+RSpec.describe 'Components Page', type: :system do
   before(:each) do
     stub_auth
   end
 
   entity_id = 'http://test-entity-id'
   component_name = 'test component'
-  component_params = { component_type: 'MSA', name: component_name, entity_id: entity_id }
+  component_params = { name: component_name, entity_id: entity_id }
 
-  let(:component) { NewComponentEvent.create(component_params).component }
+  let(:component) { NewMsaComponentEvent.create(component_params).msa_component }
   let(:root) { PKI.new }
   let(:upload_certs) do
     x509_cert_1 = root.generate_encoded_cert(expires_in: 2.months)
     x509_cert_2 = root.generate_encoded_cert(expires_in: 9.months)
     UploadCertificateEvent.create(
-      usage: CONSTANTS::SIGNING, value: x509_cert_1, component_id: component.id
+      usage: CONSTANTS::SIGNING, value: x509_cert_1, component: component
     ).certificate
     UploadCertificateEvent.create(
-      usage: CONSTANTS::SIGNING, value: x509_cert_2, component_id: component.id
+      usage: CONSTANTS::SIGNING, value: x509_cert_2, component: component
     ).certificate
   end
   let(:x509_cert) { root.generate_encoded_cert(expires_in: 2.months) }
   let(:upload_encryption_cert) do
     encryption_cert = UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
+      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component: component
     ).certificate
     ReplaceEncryptionCertificateEvent.create(
       component: component,
@@ -36,7 +36,7 @@ RSpec.describe 'New Component Page', type: :system do
   let(:show_page) { ShowComponentCertificatesForm.new }
 
   it 'successfully displays an existing component' do
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
 
     expect(page).to have_selector('h1', text: component_name)
     expect(page).to have_link 'Upload'
@@ -45,7 +45,7 @@ RSpec.describe 'New Component Page', type: :system do
   it 'shows list of enabled signing certificates' do
     upload_certs
     certs = component.certificates
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
     expect(show_page).to have_enabled_signing_certificate(certs[0])
     expect(show_page).to have_enabled_signing_certificate(certs[1])
   end
@@ -53,7 +53,7 @@ RSpec.describe 'New Component Page', type: :system do
   it 'successfully disables a certificate' do
     upload_certs
     certs = component.enabled_signing_certificates
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
 
     expect(show_page).to have_enabled_signing_certificate(certs[0])
     show_page.disable_signing_certificate(certs[0])
@@ -66,7 +66,7 @@ RSpec.describe 'New Component Page', type: :system do
   it 'shows list of disabled certificates' do
     upload_certs
     certs = component.enabled_signing_certificates
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
 
     certs.each do |certificate|
       show_page.disable_signing_certificate(certificate)
@@ -81,7 +81,7 @@ RSpec.describe 'New Component Page', type: :system do
 
   it 'displays encryption certificate for component' do
     upload_encryption_cert
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
     certificate = component.encryption_certificate
     expect(show_page).to have_encryption_certificate(certificate)
   end
@@ -91,7 +91,7 @@ RSpec.describe 'New Component Page', type: :system do
       component: component,
       encryption_certificate_id: nil
     )
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
     certificate = component.encryption_certificate
     expect(certificate).to be_nil
     expect(show_page).not_to have_encryption_certificate(certificate)
@@ -100,9 +100,9 @@ RSpec.describe 'New Component Page', type: :system do
   it 'can replace encryption certificate with a different one' do
     upload_encryption_cert
     new_cert = UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component_id: component.id
+      usage: CONSTANTS::ENCRYPTION, value: x509_cert, component: component
     ).certificate
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
     current_cert = component.encryption_certificate
     expect(show_page).to have_encryption_certificate(current_cert)
 
@@ -113,9 +113,9 @@ RSpec.describe 'New Component Page', type: :system do
   it 'will not replace encryption certificate with an invalid certificate' do
     upload_encryption_cert
     invalid_cert = Certificate.create(
-      usage: CONSTANTS::ENCRYPTION, value: "invalid", component_id: component.id
+      usage: CONSTANTS::ENCRYPTION, value: "invalid", component: component
     )
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
 
     expect(show_page).to have_previous_encryption_certificate(invalid_cert)
 
@@ -127,7 +127,7 @@ RSpec.describe 'New Component Page', type: :system do
   it 'successfully enables a certificate' do
     upload_certs
     certs = component.enabled_signing_certificates
-    visit component_path(component.id)
+    visit msa_component_path(component.id)
 
     certs.each do |certificate|
       show_page.disable_signing_certificate(certificate)

@@ -8,8 +8,8 @@ ActiveRecord::Base.class_eval do
     validate :value, :certificate_is_new, on: :create, if: :value_present?
   end
 
-  def self.component_is_persisted(component_id)
-    validate :component_id, :component_is_persisted
+  def self.component_is_persisted(component)
+    validate :component, :component_is_persisted
   end
 
   def self.certificate_is_valid(value)
@@ -25,13 +25,11 @@ ActiveRecord::Base.class_eval do
   end
 
   def convert_value_to_x509_certificate
-    begin
-      OpenSSL::X509::Certificate.new(value)
-    rescue
-      OpenSSL::X509::Certificate.new(Base64.decode64(value))
-    end
+    OpenSSL::X509::Certificate.new(value)
+  rescue
+    OpenSSL::X509::Certificate.new(Base64.decode64(value))
   end
-  
+
   def x509_certificate
     convert_value_to_x509_certificate
   rescue
@@ -63,7 +61,7 @@ ActiveRecord::Base.class_eval do
 
   def certificate_is_strong
     return if @x509.public_key.params['n'].num_bits >= 2048
-    
+
     errors.add(:certificate, 'key size is less than 2048')
   end
 

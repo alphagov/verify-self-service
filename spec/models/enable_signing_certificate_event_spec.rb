@@ -2,27 +2,28 @@ require 'rails_helper'
 
 RSpec.describe EnableSigningCertificateEvent, type: :model do
   include CertificateSupport
+
   root = PKI.new
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
   expired_cert_value = root.generate_encoded_cert(expires_in: -2.months)
-  component_params = { component_type: 'SP', name: 'Test Service Provider' }
-  component = NewComponentEvent.create(component_params).component
+  component_params = { component_type: CONSTANTS::SP, name: 'Test Service Provider' }
+  component = NewSpComponentEvent.create(component_params).sp_component
 
   let(:signing_certificate) do
     UploadCertificateEvent.create(
-      usage: CONSTANTS::SIGNING, value: good_cert_value, component_id: component.id
+      usage: CONSTANTS::SIGNING, value: good_cert_value, component: component
     ).certificate
   end
 
   let(:expired_signing_certificate) do
     UploadCertificateEvent.create(
-      usage: CONSTANTS::SIGNING, value: expired_cert_value, component_id: component.id
+      usage: CONSTANTS::SIGNING, value: expired_cert_value, component: component
     ).certificate
   end
 
   let(:encryption_certificate) do
     UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION, value: good_cert_value, component_id: component.id
+      usage: CONSTANTS::ENCRYPTION, value: good_cert_value, component: component
     ).certificate
   end
 

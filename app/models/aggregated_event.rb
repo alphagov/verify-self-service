@@ -32,4 +32,8 @@ class AggregatedEvent < Event
   def attributes_to_apply
     raise NotImplementedError
   end
+
+  def name_is_present
+    errors.add(:name, "can't be blank") unless name.present?
+  end
 end

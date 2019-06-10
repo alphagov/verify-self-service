@@ -20,8 +20,16 @@
         <% unless certificate.encryption? %>
             <%= form_for [@component, certificate],
               url: certificate.enabled ?
-                disable_component_certificate_path(@component, certificate) :
-                enable_component_certificate_path(@component, certificate) do |f| %>
+                polymorphic_url(
+                  [:disable, @component, certificate],
+                  component: @component,
+                  certificate: certificate
+                ) :
+                polymorphic_url(
+                  [:enable, @component, certificate],
+                  component: @component,
+                  certificate: certificate
+                ) do |f| %>
                   <%= f.submit certificate.enabled ? 'Disable': 'Enable', class: 'govuk-button' %>
             <% end %>
         <% end %>
