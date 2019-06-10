@@ -7,8 +7,9 @@
   <%= form_for @service,
       url: polymorphic_url([@component, :services], component: @component),
       as: :service do |f| %>
-    <div class="govuk-form-group">
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service.errors.key?(:name) %>">
       <h3 class="govuk-heading-m">Service name</h3>
+      <%=error_message_on(f.object.errors, :name) %>
       <%= f.text_field :name, class: 'govuk-input' %>
     </div>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @service.errors.key?(:entity_id) %>">
