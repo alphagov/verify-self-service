@@ -4,6 +4,10 @@ class NewSpComponentEvent < AggregatedEvent
 
   validate :name_is_present
   validate :component_is_new, on: :create
+  validates_inclusion_of :component_type,
+                         in: [CONSTANTS::SP, CONSTANTS::VSP],
+                         message: "must be either VSP or SP"
+
 
   def build_sp_component
     SpComponent.new
