@@ -9,7 +9,7 @@
       </tr>
     </thead>
     <tbody class="govuk-table__body">
-      <% for component in @sp_components.reverse %>
+      <% @sp_components.reverse.each do |component| %>
         <tr class="govuk-table__row">
           <td class="govuk-table__cell" scope="row"><%= component.name %></td>
           <td class="govuk-table__cell">

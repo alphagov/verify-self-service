@@ -9,7 +9,7 @@
       </tr>
     </thead>
     <tbody class="govuk-table__body">
-      <% for service in @services.reverse %>
+      <% @services.reverse do |service| %>
         <tr class="govuk-table__row">
           <td class="govuk-table__cell" scope="row"><%= service.name %></td>
           <td class="govuk-table__cell"><%= service.entity_id %></td>
