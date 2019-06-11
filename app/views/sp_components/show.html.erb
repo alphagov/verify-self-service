@@ -64,3 +64,11 @@
     </div>
   </div>
 <% end %>
+
+<% if @component.services.present? %>
+  <%= render "services/list/services_table" %>
+<% end %>
+
+<%= link_to 'Add service',
+    polymorphic_url([:new, @component, :service], component: @component),
+    class: 'govuk-button' %>

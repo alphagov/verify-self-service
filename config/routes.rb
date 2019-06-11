@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   root 'components#index'
   resources :sp_components, path: 'sp-components' do
+    resources :services
     resources :certificates do
       member do
         patch 'enable'
@@ -12,6 +13,7 @@ Rails.application.routes.draw do
   end
 
   resources :msa_components, path: 'msa-components' do
+    resources :services
     resources :certificates do
       member do
         patch 'enable'

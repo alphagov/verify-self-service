@@ -1,0 +1,24 @@
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">Add a Service</h1>
+  </legend>
+
+  <%= error_messages_for(@service_event&.errors) %>
+  <%= form_for @service_event,
+      url: polymorphic_url([@component, :services], component: @component),
+      as: :service do |f| %>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service_event.errors.key?(:name) %>">
+      <h3 class="govuk-heading-m">Service name</h3>
+      <%=error_message_on(f.object.errors, :name) %>
+      <%= f.text_field :name, class: 'govuk-input' %>
+    </div>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service_event.errors.key?(:entity_id) %>">
+      <h3 class="govuk-heading-m">Service Entity ID</h3>
+      <%=error_message_on(f.object.errors, :entity_id) %>
+      <%= f.text_field :entity_id, class: 'govuk-input' %>
+    </div>
+    <div class="govuk-form-group">
+        <%=f.submit "Create service", class: "govuk-button" %>
+    </div>
+  <% end %>
+</fieldset>

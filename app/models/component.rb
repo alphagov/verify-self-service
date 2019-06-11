@@ -1,8 +1,6 @@
 class Component < Aggregate
   self.abstract_class = true
 
-  has_many :certificates
-  has_many :services
   has_many :signing_certificates,
            -> { where(usage: CONSTANTS::SIGNING) }, class_name: 'Certificate'
   has_many :encryption_certificates,
