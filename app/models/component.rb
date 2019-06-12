@@ -20,12 +20,24 @@ class Component < Aggregate
                                                       :encryption_certificate)
     service_providers = SpComponent.includes(:enabled_signing_certificates,
                                              :encryption_certificate)
+    components = matching_service_adapters + service_providers
+
     {
       published_at: published_at,
       event_id: event_id,
+      connected_services: components.map(&:services_to_metadata).flatten,
       matching_service_adapters: matching_service_adapters.map(&:to_metadata),
       service_providers: service_providers.map(&:to_metadata)
     }
+  end
+
+  def services_to_metadata
+    services.map do |service|
+      {
+        entity_id: service.entity_id,
+        service_provider_id: service.sp_component_id
+      }
+    end
   end
 
   def previous_encryption_certificates
@@ -33,18 +45,10 @@ class Component < Aggregate
   end
 
   def to_metadata
-    signing = self.enabled_signing_certificates.map(&:to_metadata)
-
-    encryption = self.encryption_certificate&.to_metadata
-
-    metadata = {
-      name: self.name,
-      encryption_certificate: encryption,
-      signing_certificates: signing
-    }
-
-    metadata.merge!(entity_id: entity_id) if component_type == CONSTANTS::MSA
-
-    metadata
+    {
+      name: name,
+      encryption_certificate: encryption_certificate&.to_metadata,
+      signing_certificates: enabled_signing_certificates.map(&:to_metadata)
+    }.merge(additional_metadata)
   end
 end

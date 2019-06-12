@@ -15,6 +15,10 @@ RSpec.describe Component, type: :model do
     component_name = 'test component'
     component_params = { name: component_name, entity_id: entity_id }
     let(:component) { NewMsaComponentEvent.create(component_params).msa_component }
+    let(:sp_component) { NewSpComponentEvent.create(name: component_name, component_type: CONSTANTS::SP).sp_component }
+    let(:msa_service) { create(:service, name: "msa-service", msa_component: component) }
+    let(:sp_service) { create(:service, name: "sp-service", sp_component: sp_component) }
+
     let(:root) { PKI.new }
     let(:x509_cert_1) { root.generate_encoded_cert(expires_in: 2.months) }
     let(:x509_cert_2) { root.generate_encoded_cert(expires_in: 9.months) }
@@ -48,6 +52,7 @@ RSpec.describe Component, type: :model do
     end
 
     it 'is an MSA component with signing and encryption certs' do
+      component.services << msa_service
       signing1 = upload_signing_certificate_event_1
       signing2 = upload_signing_certificate_event_2
       encryption = upload_encryption_event
@@ -56,6 +61,10 @@ RSpec.describe Component, type: :model do
       expected_config = {
         published_at: published_at,
         event_id: event_id,
+        connected_services: [{
+          entity_id: 'https://not-a-real-entity-id',
+          service_provider_id: nil
+        }],
         matching_service_adapters: [{
           name: component_name,
           entity_id: entity_id,
@@ -74,8 +83,31 @@ RSpec.describe Component, type: :model do
         service_providers: []
       }
 
-      expect(actual_config).to include(:matching_service_adapters)
-      expect(actual_config).to include(expected_config)
+      expect(expected_config).to eq(actual_config)
+    end
+
+    it 'is an SP component with a service' do
+      sp_component.services << sp_service
+      actual_config = SpComponent.to_service_metadata(event_id, published_at)
+      expected_config = {
+        published_at: published_at,
+        event_id: event_id,
+        connected_services: [
+          {
+            entity_id: "https://not-a-real-entity-id",
+            service_provider_id: sp_component.id
+          }
+        ],
+        matching_service_adapters: [],
+        service_providers: [{
+          id: sp_component.id,
+          encryption_certificate: nil,
+          name: component_name,
+          signing_certificates: []
+        }]
+      }
+
+      expect(expected_config).to eq(actual_config)
     end
 
     it 'produces required output structure' do
@@ -83,14 +115,15 @@ RSpec.describe Component, type: :model do
       expected_config = {
         published_at: published_at,
         event_id: event_id,
+        connected_services: [],
         matching_service_adapters: [],
         service_providers: []
       }
-      expect(actual_config).to include(:published_at, :service_providers)
-      expect(actual_config).to eq(expected_config)
+
+      expect(expected_config).to eq(actual_config)
     end
 
-    it 'entity id is required MSA component' do
+    it 'entity id is required for an MSA component' do
       new_component = NewMsaComponentEvent.create(name: component_name).msa_component
       expect(new_component).not_to be_persisted
     end
