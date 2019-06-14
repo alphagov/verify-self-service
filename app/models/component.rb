@@ -16,19 +16,21 @@ class Component < Aggregate
              -> { where(usage: CONSTANTS::ENCRYPTION) }, class_name: 'Certificate', optional: true
 
   def self.to_service_metadata(event_id, published_at = Time.now)
-    matching_service_adapters = MsaComponent.includes(:enabled_signing_certificates,
-                                                      :encryption_certificate)
-    service_providers = SpComponent.includes(:enabled_signing_certificates,
-                                             :encryption_certificate)
-    components = matching_service_adapters + service_providers
+    service_providers = SpComponent.all_components_for_metadata
 
     {
       published_at: published_at,
       event_id: event_id,
-      connected_services: components.map(&:services_to_metadata).flatten,
-      matching_service_adapters: matching_service_adapters.map(&:to_metadata),
+      connected_services: service_providers.map(&:services_to_metadata).flatten,
+      matching_service_adapters: MsaComponent.all_components_for_metadata.map(&:to_metadata),
       service_providers: service_providers.map(&:to_metadata)
     }
+  end
+
+  def self.all_components_for_metadata
+    self.includes(:services)
+        .includes(:enabled_signing_certificates)
+        .includes(:encryption_certificate)
   end
 
   def services_to_metadata

@@ -11,7 +11,7 @@ class PublishServicesMetadataEvent < Event
   after_create :upload
 
   def populate_data_attributes
-    @metadata = services_metadata
+    metadata = services_metadata
     assign_attributes(services_metadata: metadata)
   end
 

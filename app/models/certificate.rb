@@ -1,6 +1,6 @@
 class Certificate < Aggregate
   validates_inclusion_of :usage, in: %w[signing encryption]
-  validates_presence_of :usage, :value, :component_id, :component_type
+  validates_presence_of :usage, :value, :component
   belongs_to :component, polymorphic: true
 
   def to_metadata
