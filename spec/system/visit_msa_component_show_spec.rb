@@ -140,4 +140,19 @@ RSpec.describe 'Components Page', type: :system do
     expect(show_page).to have_selector('h1', text: component_name)
     expect(show_page).to have_enabled_signing_certificate(disabled_certs[0])
   end
+
+  it 'does not show certificates for another component with the same id' do
+    upload_certs
+    certs = component.certificates
+    sp_component = create(:new_sp_component_event).sp_component
+    sp_component.id = component.id
+    sp_component.save!
+
+    show_page = ShowComponentCertificatesForm.new
+    visit sp_component_path(sp_component.id)
+
+    certs.each do |cert|
+      expect(show_page).to_not have_enabled_signing_certificate(cert)
+    end
+  end
 end
