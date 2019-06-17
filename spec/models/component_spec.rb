@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'json'
 
 RSpec.describe Component, type: :model do
   context '#to_service_metadata' do
@@ -7,135 +6,126 @@ RSpec.describe Component, type: :model do
       SpComponent.destroy_all
       MsaComponent.destroy_all
     end
-    let(:root) { PKI.new }
+
     let(:published_at) { Time.now }
-    let(:event_id) { 0 }
-    let(:certificate) { root.generate_encoded_cert(expires_in: 2.months) }
-    entity_id = 'http://test-entity-id'
-    component_name = 'test component'
-    component_params = { name: component_name, entity_id: entity_id }
-    let(:component) { NewMsaComponentEvent.create(component_params).msa_component }
-    let(:sp_component) { NewSpComponentEvent.create(name: component_name, component_type: CONSTANTS::SP).sp_component }
-    let(:msa_service) { create(:service, name: "msa-service", msa_component: component) }
-    let(:sp_service) { create(:service, name: "sp-service", sp_component: sp_component) }
-
+    let(:msa_component) { create(:new_msa_component_event).msa_component }
+    let(:sp_component) { create(:new_sp_component_event).sp_component }
     let(:root) { PKI.new }
-    let(:x509_cert_1) { root.generate_encoded_cert(expires_in: 2.months) }
-    let(:x509_cert_2) { root.generate_encoded_cert(expires_in: 9.months) }
-    let(:x509_cert_3) { root.generate_encoded_cert(expires_in: 9.months) }
-    let(:upload_signing_certificate_event_1) do
+    let!(:upload_signing_certificate_event_1) do
       UploadCertificateEvent.create(
         usage: CONSTANTS::SIGNING,
-        value: x509_cert_1,
-        component: component,
+        value: root.generate_encoded_cert(expires_in: 2.months),
+        component: msa_component,
       )
     end
-    let(:upload_signing_certificate_event_2) do
+    let!(:upload_signing_certificate_event_2) do
       UploadCertificateEvent.create(
         usage: CONSTANTS::SIGNING,
-        value: x509_cert_2,
-        component: component,
+        value: root.generate_encoded_cert(expires_in: 2.months),
+        component: msa_component,
       )
     end
-
-    let(:upload_encryption_event) do
+    let!(:upload_signing_certificate_event_3) do
+      UploadCertificateEvent.create(
+        usage: CONSTANTS::SIGNING,
+        value: root.generate_encoded_cert(expires_in: 2.months),
+        component: sp_component,
+      )
+    end
+    let!(:upload_signing_certificate_event_4) do
+      UploadCertificateEvent.create(
+        usage: CONSTANTS::SIGNING,
+        value: root.generate_encoded_cert(expires_in: 2.months),
+        component: sp_component,
+      )
+    end
+    let!(:upload_encryption_event_1) do
       event = UploadCertificateEvent.create(
         usage: CONSTANTS::ENCRYPTION,
-        value: x509_cert_3,
-        component: component,
+        value: root.generate_encoded_cert(expires_in: 2.months),
+        component: msa_component,
       )
       ReplaceEncryptionCertificateEvent.create(
-        component: component,
+        component: msa_component,
         encryption_certificate_id: event.certificate.id
       )
       event
     end
+    let!(:upload_encryption_event_2) do
+      event = UploadCertificateEvent.create(
+        usage: CONSTANTS::ENCRYPTION,
+        value: root.generate_encoded_cert(expires_in: 2.months),
+        component: sp_component,
+      )
+      ReplaceEncryptionCertificateEvent.create(
+        component: sp_component,
+        encryption_certificate_id: event.certificate.id
+      )
+      event
+    end
+    let(:msa_service) { create(:service, entity_id: 'https://old-and-boring') }
+    let(:sp_service) { create(:service, entity_id: 'https://new-hotness') }
 
-    it 'is an MSA component with signing and encryption certs' do
-      component.services << msa_service
-      signing1 = upload_signing_certificate_event_1
-      signing2 = upload_signing_certificate_event_2
-      encryption = upload_encryption_event
-      actual_config = MsaComponent.to_service_metadata(event_id, published_at)
+    it "publishes all the components and services metadata correctly" do
+      msa_component.services << msa_service
+      sp_component.services << sp_service
+      event_id = Event.last.id
+      actual_config = Component.to_service_metadata(event_id, published_at)
 
-      expected_config = {
-        published_at: published_at,
-        event_id: event_id,
-        connected_services: [{
-          entity_id: 'https://not-a-real-entity-id',
-          service_provider_id: nil
-        }],
-        matching_service_adapters: [{
-          name: component_name,
-          entity_id: entity_id,
-          encryption_certificate: {
-            name: encryption.certificate.x509.subject.to_s,
-            value: encryption.certificate.value
-          },
-          signing_certificates: [{
-            name: signing1.certificate.x509.subject.to_s,
-            value: signing1.certificate.value
-          }, {
-            name: signing2.certificate.x509.subject.to_s,
-            value: signing2.certificate.value
-          }]
-        }],
-        service_providers: []
-      }
-
-      expect(expected_config).to eq(actual_config)
+      expect(expected_config(event_id)).to eq(actual_config)
     end
 
-    it 'is an SP component with a service' do
-      sp_component.services << sp_service
-      actual_config = SpComponent.to_service_metadata(event_id, published_at)
-      expected_config = {
+    def expected_config(event_id)
+      {
         published_at: published_at,
         event_id: event_id,
         connected_services: [
           {
-            entity_id: "https://not-a-real-entity-id",
+            entity_id: sp_service.entity_id,
             service_provider_id: sp_component.id
           }
         ],
-        matching_service_adapters: [],
-        service_providers: [{
-          id: sp_component.id,
-          encryption_certificate: nil,
-          name: component_name,
-          signing_certificates: []
-        }]
+        matching_service_adapters: [
+          {
+            name: msa_component.name,
+            entity_id: msa_component.entity_id,
+            encryption_certificate: {
+              name: upload_encryption_event_1.certificate.x509.subject.to_s,
+              value: upload_encryption_event_1.certificate.value
+            },
+            signing_certificates: [
+              {
+                name: upload_signing_certificate_event_1.certificate.x509.subject.to_s,
+                value: upload_signing_certificate_event_1.certificate.value
+              },
+              {
+                name: upload_signing_certificate_event_2.certificate.x509.subject.to_s,
+                value: upload_signing_certificate_event_2.certificate.value
+              }
+            ]
+          }
+        ],
+        service_providers: [
+          {
+            id: sp_component.id,
+            encryption_certificate: {
+              name: upload_encryption_event_2.certificate.x509.subject.to_s,
+              value: upload_encryption_event_2.certificate.value
+            },
+            name: sp_component.name,
+            signing_certificates: [
+              {
+                name: upload_signing_certificate_event_3.certificate.x509.subject.to_s,
+                value: upload_signing_certificate_event_3.certificate.value
+              },
+              {
+                name: upload_signing_certificate_event_4.certificate.x509.subject.to_s,
+                value: upload_signing_certificate_event_4.certificate.value
+              }
+            ]
+          }
+        ]
       }
-
-      expect(expected_config).to eq(actual_config)
-    end
-
-    it 'produces required output structure' do
-      actual_config = SpComponent.to_service_metadata(event_id, published_at)
-      expected_config = {
-        published_at: published_at,
-        event_id: event_id,
-        connected_services: [],
-        matching_service_adapters: [],
-        service_providers: []
-      }
-
-      expect(expected_config).to eq(actual_config)
-    end
-
-    it 'entity id is required for an MSA component' do
-      new_component = NewMsaComponentEvent.create(name: component_name).msa_component
-      expect(new_component).not_to be_persisted
-    end
-
-    it 'can set entity id on MSA component' do
-      component_params = {
-        name: component_name,
-        entity_id: entity_id
-      }
-      new_component = NewMsaComponentEvent.create(component_params).msa_component
-      expect(new_component).to be_persisted
-      expect(new_component.entity_id).to eq(entity_id)
     end
   end
 end
