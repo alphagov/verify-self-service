@@ -2,15 +2,21 @@ class Component < Aggregate
   self.abstract_class = true
 
   has_many :signing_certificates,
-           -> { where(usage: CONSTANTS::SIGNING) }, class_name: 'Certificate'
+           -> {
+             where(usage: CONSTANTS::SIGNING)
+           }, class_name: 'Certificate', as: :component
   has_many :encryption_certificates,
            -> {
              where(usage: CONSTANTS::ENCRYPTION).order(created_at: 'desc')
-           }, class_name: 'Certificate'
+           }, class_name: 'Certificate', as: :component
   has_many :enabled_signing_certificates,
-           -> { where(usage: CONSTANTS::SIGNING, enabled: true) }, class_name: 'Certificate'
+           -> {
+             where(usage: CONSTANTS::SIGNING, enabled: true)
+           }, class_name: 'Certificate', as: :component
   has_many :disabled_signing_certificates,
-           -> { where(usage: CONSTANTS::SIGNING, enabled: false) }, class_name: 'Certificate'
+           -> {
+             where(usage: CONSTANTS::SIGNING, enabled: false)
+           }, class_name: 'Certificate', as: :component
 
   belongs_to :encryption_certificate,
              -> { where(usage: CONSTANTS::ENCRYPTION) }, class_name: 'Certificate', optional: true
