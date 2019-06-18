@@ -264,6 +264,8 @@ Resources:
     Properties:
       Name: RailsAPI
       StageName: Prod
+      BinaryMediaTypes:
+        - '*~1*'
       DefinitionBody:
         swagger: '2.0'
         basePath: '/Prod'

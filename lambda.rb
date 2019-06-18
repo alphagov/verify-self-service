@@ -65,12 +65,18 @@ def handler(event:, context:)
       body_content += item.to_s
     end
 
+    if ['apllication/json', 'text/html; charset=UTF-8', 'text/html; charset=utf-8', 'text/css'].include?(headers["Content-Type"])
+      body_content = body_content.force_encoding(Encoding::UTF_8)
+    else
+      body_content = Base64.encode64(body_content)
+    end
+
     # We return the structure required by AWS API Gateway since we integrate with it
     # https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     response = {
       'statusCode' => status,
       'headers' => headers,
-      'body' => body_content.force_encoding(Encoding::UTF_8)
+      'body' => body_content
     }
     if event['requestContext'].key?('elb')
       # Required if we use Application Load Balancer instead of API Gateway
