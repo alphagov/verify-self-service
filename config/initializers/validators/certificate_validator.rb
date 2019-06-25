@@ -1,4 +1,5 @@
 ActiveRecord::Base.class_eval do
+  include CertificateConcern
 
   def self.value_is_present(value)
     validate :value, :value_is_present
@@ -24,21 +25,11 @@ ActiveRecord::Base.class_eval do
     certificate_key_is_supported
   end
 
-  def convert_value_to_x509_certificate
-    OpenSSL::X509::Certificate.new(value)
-  rescue
-    OpenSSL::X509::Certificate.new(Base64.decode64(value))
-  end
-
   def x509_certificate
-    convert_value_to_x509_certificate
+    to_x509(value)
   rescue
     errors.add(:certificate, 'is not a valid x509 certificate')
     nil
-  end
-
-  def convert_value_to_inline_der
-    Base64.strict_encode64(@x509.to_der)
   end
 
   def certificate_has_appropriate_not_after

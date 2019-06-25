@@ -33,14 +33,16 @@ RSpec.describe UploadCertificateEvent, type: :model do
       cert = root.generate_encoded_cert(expires_in: 2.months)
 
       event = UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: cert, component: component)
+      expect(event.certificate.value).to eql(cert)
       expect(event).to be_valid
       expect(event.errors[:certificate]).to be_empty
     end
 
-    it 'must allow PEM format x509 certificate' do
+    it 'must allow PEM format x509 certificate and be stored as base64 encoded DER' do
       cert = root.generate_signed_cert(expires_in: 2.months)
 
       event = UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: cert.to_pem, component: component)
+      expect(event.certificate.value).to eql(Base64.strict_encode64(cert.to_der))
       expect(event).to be_valid
       expect(event.errors[:certificate]).to be_empty
     end
