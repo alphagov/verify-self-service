@@ -8,11 +8,9 @@ class UploadCertificateEvent < AggregatedEvent
   before_save { |event| event.value = convert_to_inline_der(value) }
   after_save TriggerMetadataEventCallback.publish
 
-  value_is_present :value
-  certificate_is_new :value
-  certificate_is_valid :value
-
-  component_is_persisted :component
+  validates :value, presence: true, certificate: true
+  validate :certificate_is_new, on: :create
+  validate :component_is_persisted
 
   validates_inclusion_of :usage, in: [CERTIFICATE_USAGE::SIGNING, CERTIFICATE_USAGE::ENCRYPTION]
 
@@ -48,5 +46,13 @@ private
 
   def convert_to_inline_der(value)
     Base64.strict_encode64(to_x509(value).to_der)
+  end
+
+  def certificate_is_new
+    errors.add(:certificate, 'already exists') if certificate.persisted?
+  end
+
+  def component_is_persisted
+    errors.add(:component, 'must exist') unless component&.persisted?
   end
 end

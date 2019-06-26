@@ -48,7 +48,7 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     )
     expect(event).not_to be_valid
     expect(event).not_to be_persisted
-    expect(event.errors.messages[:certificate]).to eq(["can't be blank"])
+    expect(event.errors.messages[:certificate]).to eq(["is not a valid x509 certificate"])
   end
 
   it 'replace current encryption certificate with another' do
