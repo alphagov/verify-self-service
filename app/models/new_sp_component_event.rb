@@ -5,7 +5,7 @@ class NewSpComponentEvent < AggregatedEvent
   validate :name_is_present
   validate :component_is_new, on: :create
   validates_inclusion_of :component_type,
-                         in: [CONSTANTS::SP, CONSTANTS::VSP],
+                         in: [COMPONENT_TYPE::SP, COMPONENT_TYPE::VSP],
                          message: "must be either VSP or SP"
 
 
@@ -16,8 +16,8 @@ class NewSpComponentEvent < AggregatedEvent
   def attributes_to_apply
     {
       name: name,
-      component_type: CONSTANTS::SP,
-      vsp: component_type == CONSTANTS::VSP,
+      component_type: COMPONENT_TYPE::SP,
+      vsp: component_type == COMPONENT_TYPE::VSP,
       created_at: created_at
     }
   end

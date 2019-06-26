@@ -4,7 +4,7 @@
   </legend>
 
   <%= error_messages_for(@upload&.errors) %>
-  <% if @upload.data['component_type'] == CONSTANTS::MSA %>
+  <% if @upload.data['component_type'] == COMPONENT_TYPE::MSA %>
     <%= render 'certificates/new/msa_cert' %>
   <% else %>
     <%= render 'certificates/new/sp_cert' %>

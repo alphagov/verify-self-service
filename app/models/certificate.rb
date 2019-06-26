@@ -9,11 +9,11 @@ class Certificate < Aggregate
   end
 
   def encryption?
-    usage == CONSTANTS::ENCRYPTION
+    usage == CERTIFICATE_USAGE::ENCRYPTION
   end
 
   def signing?
-    usage == CONSTANTS::SIGNING
+    usage == CERTIFICATE_USAGE::SIGNING
   end
 
   def x509

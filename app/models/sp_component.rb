@@ -3,7 +3,7 @@ class SpComponent < Component
   has_many :services
 
   def view_component_type(vsp)
-    vsp ? CONSTANTS::VSP_SHORT : CONSTANTS::SP_SHORT
+    vsp ? COMPONENT_TYPE::VSP_SHORT : COMPONENT_TYPE::SP_SHORT
   end
 
 private

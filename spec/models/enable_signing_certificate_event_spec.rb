@@ -6,24 +6,24 @@ RSpec.describe EnableSigningCertificateEvent, type: :model do
   root = PKI.new
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
   expired_cert_value = root.generate_encoded_cert(expires_in: -2.months)
-  component_params = { component_type: CONSTANTS::SP, name: 'Test Service Provider' }
+  component_params = { component_type: COMPONENT_TYPE::SP, name: 'Test Service Provider' }
   component = NewSpComponentEvent.create(component_params).sp_component
 
   let(:signing_certificate) do
     UploadCertificateEvent.create(
-      usage: CONSTANTS::SIGNING, value: good_cert_value, component: component
+      usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: component
     ).certificate
   end
 
   let(:expired_signing_certificate) do
     UploadCertificateEvent.create(
-      usage: CONSTANTS::SIGNING, value: expired_cert_value, component: component
+      usage: CERTIFICATE_USAGE::SIGNING, value: expired_cert_value, component: component
     ).certificate
   end
 
   let(:encryption_certificate) do
     UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION, value: good_cert_value, component: component
+      usage: CERTIFICATE_USAGE::ENCRYPTION, value: good_cert_value, component: component
     ).certificate
   end
 
@@ -67,7 +67,7 @@ RSpec.describe EnableSigningCertificateEvent, type: :model do
       certificate: encryption_certificate
     )
     cert = event.certificate
-    expect(cert.usage).to eq(CONSTANTS::ENCRYPTION)
+    expect(cert.usage).to eq(CERTIFICATE_USAGE::ENCRYPTION)
     expect(event).not_to be_persisted
   end
 

@@ -15,12 +15,12 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
   let(:root) { PKI.new }
   let(:x509_cert) { root.generate_encoded_cert(expires_in: 9.months) }
   let(:upload_encryption_cert) do
-    UploadCertificateEvent.create( usage: CONSTANTS::ENCRYPTION, value: x509_cert, component: component).certificate
+    UploadCertificateEvent.create( usage: CERTIFICATE_USAGE::ENCRYPTION, value: x509_cert, component: component).certificate
   end
 
   def certificate_created_with(params = {})
     defaults = {
-      usage: CONSTANTS::ENCRYPTION,
+      usage: CERTIFICATE_USAGE::ENCRYPTION,
       value: x509_cert,
       component: component
     }
@@ -53,7 +53,7 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
 
   it 'replace current encryption certificate with another' do
     new_encryption_certificate = UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION,
+      usage: CERTIFICATE_USAGE::ENCRYPTION,
       value: x509_cert,
       component: component,
     ).certificate

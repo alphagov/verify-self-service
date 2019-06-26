@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe NewSpComponentEvent, type: :model do
 
   include_examples 'has data attributes', NewSpComponentEvent, %i[name component_type]
-  include_examples 'is aggregated', NewSpComponentEvent, name: 'New SP component', component_type: CONSTANTS::SP
-  include_examples 'is a creation event', NewSpComponentEvent, name: 'New component', component_type: CONSTANTS::SP
+  include_examples 'is aggregated', NewSpComponentEvent, name: 'New SP component', component_type: COMPONENT_TYPE::SP
+  include_examples 'is a creation event', NewSpComponentEvent, name: 'New component', component_type: COMPONENT_TYPE::SP
 
   context 'name' do
     it 'must be provided' do

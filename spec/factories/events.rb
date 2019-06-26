@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :new_sp_component_event do
     name { SecureRandom.alphanumeric }
-    component_type { CONSTANTS::SP }
+    component_type { COMPONENT_TYPE::SP }
   end
 
   factory :new_msa_component_event do

@@ -13,8 +13,8 @@ RSpec.describe Certificate, type: :model do
   let(:component) { NewMsaComponentEvent.create(component_params).msa_component }
 
   it 'is valid with valid attributes' do
-    expect(Certificate.new(usage: CONSTANTS::SIGNING, value: good_cert_value, component: component)).to be_valid
-    expect(Certificate.new(usage: CONSTANTS::ENCRYPTION, value: good_cert_value, component: component)).to be_valid
+    expect(Certificate.new(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: component)).to be_valid
+    expect(Certificate.new(usage: CERTIFICATE_USAGE::ENCRYPTION, value: good_cert_value, component: component)).to be_valid
   end
 
   it 'is not valid with non-valid attributes' do
@@ -23,19 +23,19 @@ RSpec.describe Certificate, type: :model do
 
   it 'is not valid without a usage and/or value' do
     expect(Certificate.new(usage: nil, value: good_cert_value, component: component)).to_not be_valid
-    expect(Certificate.new(usage: CONSTANTS::SIGNING, value: nil, component: component)).to_not be_valid
+    expect(Certificate.new(usage: CERTIFICATE_USAGE::SIGNING, value: nil, component: component)).to_not be_valid
     expect(Certificate.new(usage: nil, value: nil, component: component)).to_not be_valid
   end
 
   it 'has events' do
-    event = UploadCertificateEvent.create!(usage: CONSTANTS::SIGNING, value: good_cert_value, component: component)
+    event = UploadCertificateEvent.create!(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: component)
     certificate = event.certificate
     expect([certificate.events.last]).to eql [event]
   end
 
   it 'holds valid metadata' do
     cert = Base64.encode64(good_cert_value)
-    certificate = Certificate.new(usage: CONSTANTS::SIGNING, value: cert, component: component)
+    certificate = Certificate.new(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: component)
     subject = certificate.x509.subject.to_s
     expect(certificate).not_to be_nil
     expect(certificate.to_metadata).to include(name: subject, value: cert)
