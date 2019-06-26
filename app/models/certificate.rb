@@ -1,4 +1,5 @@
 class Certificate < Aggregate
+  include CertificateConcern
   validates_inclusion_of :usage, in: %w[signing encryption]
   validates_presence_of :usage, :value, :component
   belongs_to :component, polymorphic: true
@@ -16,8 +17,6 @@ class Certificate < Aggregate
   end
 
   def x509
-    OpenSSL::X509::Certificate.new(value)
-  rescue # rubocop:disable Style/RescueStandardError
-    OpenSSL::X509::Certificate.new(Base64.decode64(value))
+    to_x509(value)
   end
 end
