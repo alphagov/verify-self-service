@@ -10,19 +10,19 @@ RSpec.shared_examples "show component page" do |component_type|
   let(:root) { PKI.new }
   let(:upload_certs) do
     UploadCertificateEvent.create(
-      usage: CONSTANTS::SIGNING,
+      usage: CERTIFICATE_USAGE::SIGNING,
       value: root.generate_encoded_cert(expires_in: 2.months),
       component: component
     ).certificate
     UploadCertificateEvent.create(
-      usage: CONSTANTS::SIGNING,
+      usage: CERTIFICATE_USAGE::SIGNING,
       value: root.generate_encoded_cert(expires_in: 2.months),
       component: component
     ).certificate
   end
   let(:upload_encryption_cert) do
     encryption_cert = UploadCertificateEvent.create(
-      usage: CONSTANTS::ENCRYPTION,
+      usage: CERTIFICATE_USAGE::ENCRYPTION,
       value: root.generate_encoded_cert(expires_in: 2.months),
       component: component
     ).certificate
@@ -101,7 +101,7 @@ RSpec.shared_examples "show component page" do |component_type|
     it 'can replace encryption certificate with a different one' do
       upload_encryption_cert
       new_cert = UploadCertificateEvent.create(
-        usage: CONSTANTS::ENCRYPTION,
+        usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: 2.months),
         component: component
       ).certificate
@@ -116,7 +116,7 @@ RSpec.shared_examples "show component page" do |component_type|
     it 'will not replace encryption certificate with an invalid certificate' do
       upload_encryption_cert
       invalid_cert = Certificate.create(
-        usage: CONSTANTS::ENCRYPTION, value: "invalid", component: component
+        usage: CERTIFICATE_USAGE::ENCRYPTION, value: "invalid", component: component
       )
       visit polymorphic_url(component)
 

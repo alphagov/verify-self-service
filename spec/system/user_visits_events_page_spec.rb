@@ -17,9 +17,9 @@ RSpec.describe 'the events page', type: :system do
     good_cert_2 = root.generate_encoded_cert(expires_in: 2.months)
     good_cert_3 = root.generate_encoded_cert(expires_in: 2.months)
 
-    UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: good_cert_1, component: component)
-    UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: good_cert_2, component: component)
-    UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: good_cert_3, component: component)
+    UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_1, component: component)
+    UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_2, component: component)
+    UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_3, component: component)
 
     visit events_path
     expect(page).to have_content good_cert_1
@@ -29,7 +29,7 @@ RSpec.describe 'the events page', type: :system do
 
   it 'is paginated' do
     55.times.each do
-      UploadCertificateEvent.create(usage: CONSTANTS::SIGNING, value: root.generate_encoded_cert(expires_in: 2.months), component: component)
+      UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: root.generate_encoded_cert(expires_in: 2.months), component: component)
     end
 
     visit events_path

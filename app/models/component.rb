@@ -3,23 +3,23 @@ class Component < Aggregate
 
   has_many :signing_certificates,
            -> {
-             where(usage: CONSTANTS::SIGNING)
+             where(usage: CERTIFICATE_USAGE::SIGNING)
            }, class_name: 'Certificate', as: :component
   has_many :encryption_certificates,
            -> {
-             where(usage: CONSTANTS::ENCRYPTION).order(created_at: 'desc')
+             where(usage: CERTIFICATE_USAGE::ENCRYPTION).order(created_at: 'desc')
            }, class_name: 'Certificate', as: :component
   has_many :enabled_signing_certificates,
            -> {
-             where(usage: CONSTANTS::SIGNING, enabled: true)
+             where(usage: CERTIFICATE_USAGE::SIGNING, enabled: true)
            }, class_name: 'Certificate', as: :component
   has_many :disabled_signing_certificates,
            -> {
-             where(usage: CONSTANTS::SIGNING, enabled: false)
+             where(usage: CERTIFICATE_USAGE::SIGNING, enabled: false)
            }, class_name: 'Certificate', as: :component
 
   belongs_to :encryption_certificate,
-             -> { where(usage: CONSTANTS::ENCRYPTION) }, class_name: 'Certificate', optional: true
+             -> { where(usage: CERTIFICATE_USAGE::ENCRYPTION) }, class_name: 'Certificate', optional: true
 
   def self.to_service_metadata(event_id, published_at = Time.now)
     service_providers = SpComponent.all_components_for_metadata

@@ -13,35 +13,35 @@ RSpec.describe Component, type: :model do
     let(:root) { PKI.new }
     let!(:upload_signing_certificate_event_1) do
       UploadCertificateEvent.create(
-        usage: CONSTANTS::SIGNING,
+        usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
         component: msa_component,
       )
     end
     let!(:upload_signing_certificate_event_2) do
       UploadCertificateEvent.create(
-        usage: CONSTANTS::SIGNING,
+        usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
         component: msa_component,
       )
     end
     let!(:upload_signing_certificate_event_3) do
       UploadCertificateEvent.create(
-        usage: CONSTANTS::SIGNING,
+        usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
         component: sp_component,
       )
     end
     let!(:upload_signing_certificate_event_4) do
       UploadCertificateEvent.create(
-        usage: CONSTANTS::SIGNING,
+        usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
         component: sp_component,
       )
     end
     let!(:upload_encryption_event_1) do
       event = UploadCertificateEvent.create(
-        usage: CONSTANTS::ENCRYPTION,
+        usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: 2.months),
         component: msa_component,
       )
@@ -53,7 +53,7 @@ RSpec.describe Component, type: :model do
     end
     let!(:upload_encryption_event_2) do
       event = UploadCertificateEvent.create(
-        usage: CONSTANTS::ENCRYPTION,
+        usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: 2.months),
         component: sp_component,
       )

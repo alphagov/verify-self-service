@@ -1,9 +1,7 @@
-module CONSTANTS
-  SIGNING = 'signing'.freeze
-  ENCRYPTION = 'encryption'.freeze
+module COMPONENT_TYPE
   SP = 'SpComponent'.freeze
   SP_SHORT = 'SP'.freeze
-  MSA = 'MsaComponent'.freeze
   VSP = 'VspComponent'.freeze
   VSP_SHORT = 'VSP'.freeze
+  MSA = 'MsaComponent'.freeze
 end
