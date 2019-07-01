@@ -16,7 +16,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     it 'must be present' do
       event = UploadCertificateEvent.create
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['can\'t be blank']
+      expect(event.errors[:certificate]).to eql ['is not a valid x509 certificate']
     end
   end
 
@@ -160,7 +160,6 @@ RSpec.describe UploadCertificateEvent, type: :model do
       expect(event.errors[:component]).to eql ['must exist', 'must exist']
     end
   end
-
 
   context '#trigger_publish_event' do
     it 'is triggered on creation' do
