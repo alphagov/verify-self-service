@@ -1,6 +1,4 @@
-require 'auth_test_helper'
 RSpec.shared_examples "new component page" do |component_name|
-  before(:each) { stub_auth }
 
   let(:service_name) { 'Here to serve'}
   let(:service_entity_id) { 'service-entity-id'}

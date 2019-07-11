@@ -1,10 +1,7 @@
 require 'rails_helper'
-require 'auth_test_helper'
 
 RSpec.shared_examples "show component page" do |component_type|
   include ComponentSupport
-
-  before(:each) { stub_auth }
 
   let(:component) { component_by_type(component_type) }
   let(:root) { PKI.new }

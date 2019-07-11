@@ -1,12 +1,7 @@
 require 'rails_helper'
-require 'auth_test_helper'
 
 RSpec.describe 'UploadPage', type: :system do
   include CertificateSupport
-
-  before(:each) do
-    stub_auth
-  end
 
   entity_id = 'http://test-entity-id'
   component_params = { name: 'fake_name', entity_id: entity_id }

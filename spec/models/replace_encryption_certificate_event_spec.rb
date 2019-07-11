@@ -1,10 +1,6 @@
 require 'rails_helper'
-require 'auth_test_helper'
 
 RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
-  before(:each) do
-    stub_auth
-  end
 
   entity_id = 'http://test-entity-id'
   let(:component_name) { 'test component' }
