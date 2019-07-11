@@ -33,6 +33,21 @@
             </span>
           </a>
         </div>
+        <div class="govuk-header__content">
+
+      <a href="#" class="govuk-header__link govuk-header__link--service-name">
+        Verify Self Service Tool
+      </a>
+
+      <button type="button" role="button" class="govuk-header__menu-button js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
+      <nav>
+        <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
+          <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
+            <%= link_to 'Destroy', user_registration_path, :confirm => 'Sign Out', :method => :delete %>
+          </li>
+        </ul>
+      </nav>
+    </div>
       </div>
     </header>
 
