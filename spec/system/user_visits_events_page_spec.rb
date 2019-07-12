@@ -2,11 +2,13 @@ require 'rails_helper'
 
 RSpec.describe 'the events page', type: :system do
   include CertificateSupport
-
   entity_id = 'http://test-entity-id'
   component_params = { name: 'fake_name', entity_id: entity_id }
   let(:component) { NewMsaComponentEvent.create(component_params).msa_component }
   let(:root) { PKI.new }
+  before(:each) do
+    login_user
+  end
 
   it 'there are some events' do
     good_cert_1 = root.generate_encoded_cert(expires_in: 2.months)

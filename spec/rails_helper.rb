@@ -6,11 +6,15 @@ require File.expand_path('../config/environment', __dir__)
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
+require 'devise'
 
 # Load shared examples
 Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].each { |f| require f }
 
 Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].each { |f| require f }
+
+# Load Session helper
+Dir[Rails.root.join("spec/support/helpers/*.rb")].each{ |f| require f }
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -66,4 +70,6 @@ RSpec.configure do |config|
 
   # Silence puma output during tests
   Capybara.server = :puma, { Silent: true }
+  config.include Warden::Test::Helpers
+  config.include Devise::Test::ControllerHelpers, :type => :controller
 end

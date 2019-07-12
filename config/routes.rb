@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   devise_for :users
+  
   root 'components#index'
   resources :sp_components, path: 'sp-components' do
     resources :services
@@ -31,4 +32,5 @@ Rails.application.routes.draw do
     # Dashboard
     get 'dashboard' =>'dashboard#show'
   end
+
 end
