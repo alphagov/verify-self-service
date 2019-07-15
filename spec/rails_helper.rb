@@ -1,4 +1,4 @@
-:q# This file is copied to spec/ when you run 'rails generate rspec:install'
+# This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
@@ -14,11 +14,7 @@ Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].each { |f| require f
 Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].each { |f| require f }
 
 # Load Session helper
-<<<<<<< HEAD
 Dir[Rails.root.join("spec/support/helpers/*.rb")].each{ |f| require f }
-=======
-Dir[Rails.root.join("spec/support/helpers/session_helpers.rb")].each{ |f| require f }
->>>>>>> 93c451e... Implement Devise within Self Service
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
