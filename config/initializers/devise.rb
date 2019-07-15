@@ -64,7 +64,13 @@ Devise.setup do |config|
   # given strategies, for example, `config.params_authenticatable = [:database]` will
   # enable it only for database (email + password) authentication.
   # config.params_authenticatable = true
-
+  if %w(test development).include? Rails.env
+    # Enables local database logins
+    config.params_authenticatable = true
+  else
+    # Locks logins down to cognito only
+    config.params_authenticatable = [:cognito]
+  end
   # Tell if authentication through HTTP Auth is enabled. False by default.
   # It can be set to an array that will enable http authentication only for the
   # given strategies, for example, `config.http_authenticatable = [:database]` will
@@ -269,6 +275,11 @@ Devise.setup do |config|
   #   manager.intercept_401 = false
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
+
+  config.warden do |manager|
+    manager.strategies.add(:cognito, Devise::Strategies::CognitoAuthenticatable)
+    manager.default_strategies(:scope => :user).unshift :cognito
+  end
 
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
