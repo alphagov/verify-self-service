@@ -5,7 +5,7 @@ RSpec.describe 'Homepage', type: :feature, acceptance: true do
     visit "https://#{ENV['TEST_DOMAIN']}"
     fill_in('user_email', with: 'test@test.test')
     fill_in('user_password', with: 'Password!1')
-    find("[name='signInSubmitButton']").click
+    find("[name='commit']").click
     expect(page).to have_content 'Components'
   end
 end
