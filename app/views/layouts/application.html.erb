@@ -43,13 +43,15 @@
       <nav>
         <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
           <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
-            <%= link_to 'Destroy', user_registration_path, :confirm => 'Sign Out', :method => :delete %>
+            <% if user_signed_in? %>
+              <%= link_to 'Sign out', destroy_user_session_path, confirm: 'Sign Out', method: :delete, class: "govuk-header__link" %>
+            <% end %>
           </li>
         </ul>
       </nav>
     </div>
-      </div>
-    </header>
+  </div>
+</header>
 
     <div class="govuk-width-container">
       <main class="govuk-main-wrapper " id="main-content" role="main">

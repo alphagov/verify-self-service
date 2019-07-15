@@ -10,14 +10,7 @@
     <%= f.label :password, class: "govuk-label" %>
     <%= f.password_field :password, autocomplete: "current-password", class: "govuk-input" %>
   </div>
-<!--
-  <% if devise_mapping.rememberable? %>
-    <div class="class="govuk-form-group">
-      <%= f.check_box :remember_me, class: "govuk-label" %>
-      <%= f.label :remember_me %>
-    </div>
-  <% end %>
--->
+
   <div class="actions">
     <%= f.submit "Log in", class: "govuk-button" %>
   </div>

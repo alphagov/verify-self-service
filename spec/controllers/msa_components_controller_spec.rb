@@ -1,10 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe MsaComponentsController, type: :controller do
+  include AuthSupport
   before(:each) do
-    @request.env["devise.mapping"] = Devise.mappings[:user]
-    user = FactoryBot.create(:user)
-    sign_in user
+    stub_auth
   end
 
   describe "GET #index" do

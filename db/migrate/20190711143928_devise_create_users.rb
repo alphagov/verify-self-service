@@ -8,11 +8,11 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.string :encrypted_password, null: false, default: ""
 
       ## Recoverable
-      t.string   :reset_password_token
+      # t.string   :reset_password_token
       t.datetime :reset_password_sent_at
 
-      ## Rememberable
-      t.datetime :remember_created_at
+      # Please note - we are keeping these fields in for reference.
+      # When we come to implement these features we will need to create a new migration that includes these fields, rather than uncommenting these.
 
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false

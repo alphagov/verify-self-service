@@ -37,7 +37,8 @@ gem 'colorize'
 
 gem 'kaminari', '~> 1.1'
 
-gem 'aws-sdk'
+gem 'aws-sdk-s3'
+gem 'aws-sdk-cognitoidentityprovider'
 
 gem 'devise'
 

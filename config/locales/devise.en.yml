@@ -16,7 +16,7 @@ en:
       timeout: "Your session expired. Please sign in again to continue."
       unauthenticated: "You need to sign in or sign up before continuing."
       unconfirmed: "You have to confirm your email address before continuing."
-      unknow_cognito_error: "Sorry an error occured trying to talk to our Authentication Backend."
+      unknown_cognito_error: "Sorry an error occured trying to talk to our Authentication Backend."
       user:
         invalid_login: "Invalid Username or Password.  Please try again."
     mailer:
