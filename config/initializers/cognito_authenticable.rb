@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 require 'aws-sdk-cognitoidentityprovider'
+=======
+require 'aws-sdk'
+>>>>>>> ef19bbd... Added cognito login
 require 'devise/strategies/authenticatable'
 
 module Devise
   module Strategies
     class CognitoAuthenticatable < Authenticatable
       def authenticate!
+<<<<<<< HEAD
         if params[:user]
           if Rails.application.secrets.cognito_aws_access_key_id.present? &&
               Rails.application.secrets.cognito_aws_secret_access_key.present?
@@ -20,13 +25,29 @@ module Devise
           begin
             resp = client.initiate_auth(
               client_id: Rails.application.secrets.cognito_client_id,
+=======
+
+        if params[:user]
+
+          client = Aws::CognitoIdentityProvider::Client.new()
+          
+          begin
+            
+            resp = client.initiate_auth({
+              client_id: ENV["AWS_COGNITO_CLIENT_ID"],
+>>>>>>> ef19bbd... Added cognito login
               auth_flow: "USER_PASSWORD_AUTH",
               auth_parameters: {
                 "USERNAME" => email,
                 "PASSWORD" => password
               }
+<<<<<<< HEAD
             )
 
+=======
+            })
+            
+>>>>>>> ef19bbd... Added cognito login
             if resp
               user = User.where(email: email).try(:first)
               if user
@@ -60,6 +81,14 @@ module Devise
       def password
         params[:user][:password]
       end
+<<<<<<< HEAD
     end
   end
 end
+=======
+
+    end
+  end
+end
+
+>>>>>>> ef19bbd... Added cognito login
