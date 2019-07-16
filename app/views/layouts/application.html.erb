@@ -33,26 +33,43 @@
             </span>
           </a>
         </div>
+        <div class="govuk-header__content">
+
+          <a href="#" class="govuk-header__link govuk-header__link--service-name">
+            Verify Self Service Tool
+          </a>
+
+          <button type="button" role="button" class="govuk-header__menu-button js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
+          <nav>
+            <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
+              <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
+                <% if user_signed_in? %>
+                <%= link_to 'Sign out', destroy_user_session_path, confirm: 'Sign Out', method: :delete, class: "govuk-header__link" %>
+                <% end %>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </header>
 
     <div class="govuk-width-container">
       <main class="govuk-main-wrapper " id="main-content" role="main">
-       <% if flash.present? %>
+        <% if flash.present? %>
           <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
               <span class="govuk-warning-text__assistive">Warning</span>
-                <% flash.each do |name, msg| -%>
-                   <%=msg%>
+              <% flash.each do |name, msg| -%>
+                <%=msg%>
                 <% end -%>
             </strong>
           </div>
-       <% end %>
-      <%= content_for?(:main) ? yield(:main) : yield %>  
+        <% end %>
+        <%= content_for?(:main) ? yield(:main) : yield %>  
       </main>
     </div>
-
+      
     <footer class="govuk-footer " role="contentinfo">
       <div class="govuk-width-container ">
         <div class="govuk-footer__meta">
@@ -72,7 +89,7 @@
         </div>
       </div>
     </footer>
-  
+      
     <script>window.GOVUKFrontend.initAll()</script>
   </body>
 </html>

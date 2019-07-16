@@ -1,10 +1,12 @@
 require 'rails_helper'
-require 'auth_test_helper'
 
 RSpec.describe SpComponentsController, type: :controller do
+  include AuthSupport
+  
   before(:each) do
-    populate_session
+    stub_auth
   end
+
   describe "GET #index" do
     it "returns http success" do
       get :index

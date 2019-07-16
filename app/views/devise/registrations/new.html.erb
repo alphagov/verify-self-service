@@ -1,0 +1,29 @@
+<h2 class="govuk-heading-l">Sign up</h2>
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <div class="govuk-form-group">
+    <%= f.label :email, class: "govuk-label" %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "govuk-input" %>
+  </div>
+
+  <div class="govuk-form-group">
+    <%= f.label :password, class: "govuk-label" %>
+    <% if @minimum_password_length %>
+    <em>(<%= @minimum_password_length %> characters minimum)</em>
+    <% end %>
+    <%= f.password_field :password, autocomplete: "new-password", class: "govuk-input" %>
+  </div>
+
+  <div class="govuk-form-group">
+    <%= f.label :password_confirmation, class: "govuk-label" %>
+    <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "govuk-input" %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Sign up", class: "govuk-button" %>
+  </div>
+<% end %>
+
+<%= render "devise/shared/links" %>

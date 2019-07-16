@@ -38,6 +38,9 @@ gem 'colorize'
 gem 'kaminari', '~> 1.1'
 
 gem 'aws-sdk-s3'
+gem 'aws-sdk-cognitoidentityprovider'
+
+gem 'devise'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -62,7 +65,4 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-gem 'omniauth'
-gem 'omniauth_openid_connect'
-gem 'omniauth-cognito-idp'
 gem 'dotenv-rails', require: 'dotenv/rails-now', group: [:development, :test]

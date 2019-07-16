@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe 'New MSA Component Page', type: :system do
+  before(:each) do
+    login_user
+  end
   let(:entity_id) { 'http://test-entity-id' }
   context 'creation is successful' do
     it 'when required input with entity id for msa is specified' do
