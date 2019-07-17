@@ -5,6 +5,7 @@ module Devise
   module Strategies
     class CognitoAuthenticatable < Authenticatable
       def authenticate!
+        clean_up_session
         if params[:user]
           if Rails.application.secrets.cognito_aws_access_key_id.present? &&
               Rails.application.secrets.cognito_aws_secret_access_key.present?
@@ -16,27 +17,43 @@ module Devise
           else
             client = Aws::CognitoIdentityProvider::Client.new
           end
-
+         
           begin
-            resp = client.initiate_auth(
-              client_id: Rails.application.secrets.cognito_client_id,
-              auth_flow: "USER_PASSWORD_AUTH",
-              auth_parameters: {
-                "USERNAME" => email,
-                "PASSWORD" => password
-              }
-            )
-
+            unless params.dig(:user,:cognito_session_id).nil?
+                resp = client.respond_to_auth_challenge(
+                  {client_id: Rails.application.secrets.cognito_client_id,
+                  session: params[:user][:cognito_session_id], challenge_name: "SOFTWARE_TOKEN_MFA",
+                  challenge_responses: { "USERNAME": params[:user][:email], "SOFTWARE_TOKEN_MFA_CODE": params[:user][:totp_code] }}
+                )
+            else
+              resp = client.initiate_auth(
+                client_id: Rails.application.secrets.cognito_client_id,
+                auth_flow: "USER_PASSWORD_AUTH",
+                auth_parameters: {
+                  "USERNAME" => email,
+                  "PASSWORD" => password
+                }
+              )
+            end
+            
             if resp
-              user = User.where(email: email).try(:first)
-              if user
-                success!(user)
+              if resp.challenge_name.present? && !resp.challenge_name.nil?
+                session[:challenge_name] = resp.challenge_name
+                session[:cognito_session_id] = resp.session
+                session[:challenge_parameters] = resp.challenge_parameters
+                session[:username] = email
+                redirect!(Rails.application.routes.url_helpers.new_user_session_path)
               else
-                user = User.create(email: email, password: password, password_confirmation: password)
-                if user.valid?
+                user = User.where(email: email).try(:first)
+                if user
                   success!(user)
                 else
-                  return fail(:failed_to_create_user)
+                  user = User.create(email: email, password: "", password_confirmation: "")
+                  if user.valid?
+                    success!(user)
+                  else
+                    return fail(:failed_to_create_user)
+                  end
                 end
               end
             else
@@ -59,6 +76,17 @@ module Devise
 
       def password
         params[:user][:password]
+      end
+
+      private 
+
+      def clean_up_session
+        unless params.dig(:user,:cognito_session_id).nil?
+          session.delete(:challenge_name)
+          session.delete(:cognito_session_id)
+          session.delete(:challenge_parameters)
+          session.delete(:username)
+        end
       end
     end
   end

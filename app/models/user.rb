@@ -10,4 +10,5 @@ class User < ApplicationRecord
   else
     devise :database_authenticatable, :validatable
   end
+  attr_accessor :username, :email, :password, :password_confirmation, :remember_me, :totp_code, :cognito_session_id, :challenge_parameters
 end
