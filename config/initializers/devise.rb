@@ -276,12 +276,16 @@ Devise.setup do |config|
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
+
+
+  Devise.add_module :remote_authenticatable, :controller => :sessions, :route => { :session => :routes }
+
   if Rails.env == 'production' || 
     (Rails.application.secrets.cognito_aws_access_key_id.present? &&
       Rails.application.secrets.cognito_aws_secret_access_key.present?)
     config.warden do |manager|
-      manager.strategies.add(:cognito, Devise::Strategies::CognitoAuthenticatable)
-      manager.default_strategies(:scope => :user).unshift :cognito
+      manager.strategies.add(:remote, Devise::Strategies::RemoteAuthenticatable)
+      manager.default_strategies(:scope => :user).unshift :remote
     end 
   end
   # ==> Mountable engine configurations

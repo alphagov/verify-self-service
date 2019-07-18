@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
 
   devise_for :users
-  get 'totp' =>'totp#show'
   
   root 'components#index'
   resources :sp_components, path: 'sp-components' do
