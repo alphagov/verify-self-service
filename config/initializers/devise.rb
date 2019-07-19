@@ -288,12 +288,25 @@ Devise.setup do |config|
       manager.default_strategies(:scope => :user).unshift :remote
     end 
   end
+  # Add in TestAuthenticatable if we're running in test
   if Rails.env == 'test'
     config.warden do |manager|
       manager.strategies.add(:test, Devise::Strategies::TestAuthenticatable)
       manager.default_strategies(:scope => :user).unshift :test
     end
   end
+  # Include TestAuthenticatable in development if AWS not configured.
+  # Because TestAuthenticatable will let almost any request in it would
+  # make it difficult to work with the cognito authenticatable.
+  if Rails.env == 'development' && 
+    !(Rails.application.secrets.cognito_aws_access_key_id.present? &&
+      Rails.application.secrets.cognito_aws_secret_access_key.present?)
+    config.warden do |manager|
+      manager.strategies.add(:test, Devise::Strategies::TestAuthenticatable)
+      manager.default_strategies(:scope => :user).unshift :test
+    end
+  end
+
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
   # is mountable, there are some extra configurations to be taken into account.

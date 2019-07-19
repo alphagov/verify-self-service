@@ -30,7 +30,6 @@ module Devise
                   success!(resource)
                 end
             rescue StandardError => e
-              puts "Error #{e.message}"
               return fail(:unknown_cognito_response)
             end
           end

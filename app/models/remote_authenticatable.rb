@@ -24,11 +24,11 @@ module Devise
           client = Aws::CognitoIdentityProvider::Client.new
         end
 
-        if params.dig(:cognito_session_id).present?
+        if params.has_key?(:cognito_session_id)
           resp = client.respond_to_auth_challenge(
             client_id: Rails.application.secrets.cognito_client_id,
-             session: params[:cognito_session_id], challenge_name: "SOFTWARE_TOKEN_MFA",
-             challenge_responses: { "USERNAME": params[:email], "SOFTWARE_TOKEN_MFA_CODE": params[:totp_code] }
+            session: params[:cognito_session_id], challenge_name: "SOFTWARE_TOKEN_MFA",
+            challenge_responses: { "USERNAME": params[:email], "SOFTWARE_TOKEN_MFA_CODE": params[:totp_code] }
           )
         else
           resp = client.initiate_auth(
@@ -40,7 +40,8 @@ module Devise
               }
           )
         end
-        if resp.challenge_name.present? && !resp.challenge_name.nil?
+
+        if resp.challenge_name.present?
           self.challenge_name = resp[:challenge_name]
           self.cognito_session_id = resp[:session]
           self.challenge_parameters = resp[:challenge_parameters]
@@ -48,10 +49,7 @@ module Devise
         else
           # Get User Information
           aws_user = client.get_user(access_token: resp[:authentication_result][:access_token])
-          user_attributes = {}
-          aws_user.user_attributes.each do |attribute|
-            user_attributes[attribute.name] = attribute.value
-          end
+          user_attributes = aws_user.user_attributes.map { |attribute| [attribute.name, attribute.value] }.to_h
           self.login_id = params[:email]
           self.user_id = aws_user.username
           self.email = user_attributes["email"]
@@ -111,6 +109,7 @@ module Devise
                   given_name: record.given_name,
                   family_name: record.family_name,
               },
+              # Used for salt in serialize_from_session, causes error if missing
               nil
           ]
         end
