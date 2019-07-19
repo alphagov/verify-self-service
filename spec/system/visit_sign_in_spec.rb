@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe 'Sign in', type: :system do
   scenario 'user cannot sign in if not registered' do
-    sign_in('test@example.com', 'testtest')
+    sign_in('unregistered@example.com', 'testtest')
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Invalid Email or password.'
+    expect(page).to have_content 'Invalid Username or Password.'
   end
 
   scenario 'user can sign in with valid credentials' do
@@ -21,15 +21,15 @@ RSpec.describe 'Sign in', type: :system do
     sign_in('invalid@email.com', user.password)
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Invalid Email or password.'
+    expect(page).to have_content 'Invalid Username or Password.'
   end
 
   scenario 'user cannot sign in with wrong password' do
     user = FactoryBot.create(:user)
-    sign_in(user.email, 'invalidpw')
+    sign_in(user.email, 'invalidpassword')
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Invalid Email or password.'
+    expect(page).to have_content 'Invalid Username or Password.'
   end
 
   scenario 'user cannot access pages if not signed in' do

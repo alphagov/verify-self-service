@@ -6,8 +6,6 @@ module Devise
       def authenticate!
         clean_up_session
         if params[:user]
-          puts "Params = #{params}"
-          puts "authentication_hash = #{authentication_hash}"
           # auth_params = authentication_hash
           # auth_params[:password] = password
           auth_params = params[:user]
@@ -31,6 +29,7 @@ module Devise
                     username:resource.email,
                   })
               else
+                binding.pry
                 success!(resource)
               end
             else
@@ -44,7 +43,6 @@ module Devise
             return fail(:invalid_login)
           rescue StandardError => e
             puts "Error #{e.message}"
-            binding.pry
             return fail(:unknown_cognito_response)
           end
         end

@@ -40,15 +40,27 @@ module Devise
               }
           )
         end
-
         if resp.challenge_name.present? && !resp.challenge_name.nil?
           self.challenge_name = resp[:challenge_name]
           self.cognito_session_id = resp[:session]
           self.challenge_parameters = resp[:challenge_parameters]
           self.email = params[:email]
         else
-          self.email = params[:email]
+          # Get User Information
+          aws_user = client.get_user(access_token: resp[:authentication_result][:access_token])
+          user_attributes = {}
+          aws_user.user_attributes.each do |attribute|
+            user_attributes[attribute.name] = attribute.value
+          end
+          self.login_id = params[:email]
+          self.user_id = aws_user.username
+          self.email = user_attributes["email"]
           self.access_token = resp[:authentication_result][:access_token]
+          self.organisation = user_attributes["custom:organisation"]
+          self.roles = user_attributes["custom:roles"]
+          self.full_name = "#{user_attributes['given_name']} #{user_attributes['family_name']}"
+          self.given_name = user_attributes["given_name"]
+          self.family_name = user_attributes["family_name"]
         end
         self
       end
@@ -69,13 +81,20 @@ module Devise
         #
         def serialize_from_session(data, _salt)
           resource = self.new
+          resource.login_id = data['login_id']
+          resource.user_id = data['user_id']
           resource.email = data['email']
           resource.access_token = data['access_token']
+          resource.organisation = data['organisation']
+          resource.roles = data['roles']
+          resource.full_name = "#{data['given_name']} #{data['family_name']}"
+          resource.given_name = data['given_name']
+          resource.family_name = data['family_name']
           resource
         end
 
         #
-        # Here you have to return and array with the data of your resource
+        # Here you have to return an array with the data of your resource
         # that you want to serialize into the session
         #
         # You might want to include some authentication data
@@ -84,7 +103,13 @@ module Devise
           [
               {
                   email: record.email,
-                  access_token: record.access_token
+                  access_token: record.access_token,
+                  login_id: record.login_id,
+                  user_id: record.user_id,
+                  organisation: record.organisation,
+                  roles: record.roles,
+                  given_name: record.given_name,
+                  family_name: record.family_name,
               },
               nil
           ]

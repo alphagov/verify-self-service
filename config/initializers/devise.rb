@@ -288,6 +288,12 @@ Devise.setup do |config|
       manager.default_strategies(:scope => :user).unshift :remote
     end 
   end
+  if Rails.env == 'test'
+    config.warden do |manager|
+      manager.strategies.add(:test, Devise::Strategies::TestAuthenticatable)
+      manager.default_strategies(:scope => :user).unshift :test
+    end
+  end
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
   # is mountable, there are some extra configurations to be taken into account.
