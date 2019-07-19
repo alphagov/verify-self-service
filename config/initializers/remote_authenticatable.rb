@@ -27,11 +27,11 @@ module Devise
                 redirect!(Rails.application.routes.url_helpers.new_user_session_path)
               else
                 success!(resource)
-                clean_up_session
+  
               end
             else
               return fail(:unknown_cognito_response)
-              clean_up_session
+
             end
           rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException,
                  Aws::CognitoIdentityProvider::Errors::UserNotFoundException,

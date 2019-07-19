@@ -3,6 +3,19 @@ module Devise
     module RemoteAuthenticatable
       extend ActiveSupport::Concern
 
+      def setup_cognito_client
+        if Rails.application.secrets.cognito_aws_access_key_id.present? &&
+            Rails.application.secrets.cognito_aws_secret_access_key.present?
+          Aws::CognitoIdentityProvider::Client.new(
+            region: Rails.application.secrets.aws_region,
+            access_key_id: Rails.application.secrets.cognito_aws_access_key_id,
+            secret_access_key: Rails.application.secrets.cognito_aws_secret_access_key
+          )
+        else
+          Aws::CognitoIdentityProvider::Client.new
+        end
+      end
+
       #
       # Here you do the request to the external webservice
       #
@@ -11,18 +24,8 @@ module Devise
       #
       # If the authentication fails you should return false
       #
-      #def remote_authentication(authentication_hash)
       def remote_authentication(params)
-        if Rails.application.secrets.cognito_aws_access_key_id.present? &&
-            Rails.application.secrets.cognito_aws_secret_access_key.present?
-          client = Aws::CognitoIdentityProvider::Client.new(
-            region: Rails.application.secrets.aws_region,
-            access_key_id: Rails.application.secrets.cognito_aws_access_key_id,
-            secret_access_key: Rails.application.secrets.cognito_aws_secret_access_key
-          )
-        else
-          client = Aws::CognitoIdentityProvider::Client.new
-        end
+        client = setup_cognito_client
 
         if params.has_key?(:cognito_session_id)
           resp = client.respond_to_auth_challenge(
