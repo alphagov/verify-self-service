@@ -6,6 +6,6 @@ class ApplicationController < ActionController::Base
 protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_in, keys: %i[totp_code cognito_session_id challenge_parameters])
+    devise_parameter_sanitizer.permit(:sign_in, keys: %i[totp_code])
   end
 end
