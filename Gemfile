@@ -54,6 +54,7 @@ group :development, :test do
   gem 'pry'
   gem 'govuk-lint'
   gem 'factory_bot_rails'
+  gem 'rack_session_access'
 end
 
 group :development do

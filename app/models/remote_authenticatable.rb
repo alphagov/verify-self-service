@@ -33,20 +33,18 @@ module Devise
       end
 
       def initiate_auth(email, password)
-        client = SelfService.service(:cognito_client)
-        client.initiate_auth(
+        SelfService.service(:cognito_client).initiate_auth(
           client_id: cognito_client_id,
           auth_flow: 'USER_PASSWORD_AUTH',
           auth_parameters: {
             'USERNAME' => email,
             'PASSWORD' => password
           }
-          )
+        )
       end
 
       def send_2fa(email, session_id, totp_code)
-        client = SelfService.service(:cognito_client)
-        client.respond_to_auth_challenge(
+        SelfService.service(:cognito_client).respond_to_auth_challenge(
           client_id: cognito_client_id,
           session: session_id,
           challenge_name: 'SOFTWARE_TOKEN_MFA',
@@ -54,7 +52,7 @@ module Devise
             "USERNAME": email,
             "SOFTWARE_TOKEN_MFA_CODE": totp_code
           }
-          )
+        )
       end
 
       def create_2fa_flow(resp, params)
@@ -82,8 +80,7 @@ module Devise
       end
 
       def get_user_info(access_token)
-        client = SelfService.service(:cognito_client)
-        client.get_user(access_token: access_token)
+        SelfService.service(:cognito_client).get_user(access_token: access_token)
       end
 
       def get_user_attributes(aws_user)

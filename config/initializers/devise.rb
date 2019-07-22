@@ -280,31 +280,9 @@ Devise.setup do |config|
 
   Devise.add_module :remote_authenticatable, :controller => :sessions, :route => { :session => :routes }
 
-  if Rails.env == 'production' || 
-    (Rails.application.secrets.cognito_aws_access_key_id.present? &&
-      Rails.application.secrets.cognito_aws_secret_access_key.present?)
-    config.warden do |manager|
-      manager.strategies.add(:remote, Devise::Strategies::RemoteAuthenticatable)
-      manager.default_strategies(:scope => :user).unshift :remote
-    end 
-  end
-  # Add in TestAuthenticatable if we're running in test
-  if Rails.env == 'test'
-    config.warden do |manager|
-      manager.strategies.add(:test, Devise::Strategies::TestAuthenticatable)
-      manager.default_strategies(:scope => :user).unshift :test
-    end
-  end
-  # Include TestAuthenticatable in development if AWS not configured.
-  # Because TestAuthenticatable will let almost any request in it would
-  # make it difficult to work with the cognito authenticatable.
-  if Rails.env == 'development' && 
-    !(Rails.application.secrets.cognito_aws_access_key_id.present? &&
-      Rails.application.secrets.cognito_aws_secret_access_key.present?)
-    config.warden do |manager|
-      manager.strategies.add(:test, Devise::Strategies::TestAuthenticatable)
-      manager.default_strategies(:scope => :user).unshift :test
-    end
+  config.warden do |manager|
+    manager.strategies.add(:remote, Devise::Strategies::RemoteAuthenticatable)
+    manager.default_strategies(:scope => :user).unshift :remote
   end
 
   # ==> Mountable engine configurations

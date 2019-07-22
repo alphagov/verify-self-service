@@ -9,7 +9,7 @@ module Devise
           resource = mapping.to.new
           populate_auth_params(auth_params) if session.key?('cognito_session_id')
           return fail! unless resource
-
+          
           begin
             if validate(resource)
               resource = resource.remote_authentication(auth_params)
@@ -17,6 +17,7 @@ module Devise
                 populate_session_for_2fa(resource)
                 redirect!(Rails.application.routes.url_helpers.new_user_session_path)
               else
+                clean_up_session
                 success!(resource)
               end
             else
