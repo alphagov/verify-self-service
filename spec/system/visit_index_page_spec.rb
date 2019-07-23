@@ -6,11 +6,11 @@ RSpec.describe 'IndexPage', type: :system do
   end
   it 'shows greeting without JS' do
     visit '/'
-    expect(page).to have_content 'Components'
+    expect(page).to have_content 'Manage certificates'
   end
 
   it 'shows greeting with JS', js: true do
     visit '/'
-    expect(page).to have_content 'Components'
+    expect(page).to have_content 'Manage certificates'
   end
 end

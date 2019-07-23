@@ -1,0 +1,16 @@
+// Place all the styles related to the components controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.app-certificate-tag-expiring .govuk-tag {
+  background-color: #b10e1e;
+}
+.app-certificate-tag .govuk-tag {
+  float: right;
+}
+.side-navigation ul .active {
+  font-weight: bold;
+}
+.side-navigation ul li a {
+  text-decoration: none;
+}
