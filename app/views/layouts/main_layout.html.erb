@@ -3,10 +3,10 @@
     <div class="govuk-grid-column-one-third">
     <div class="side-navigation">
       <ul class="govuk-list">
-        <li class="active">
+        <li class="<%= 'active' if current_page?(root_path) %>">
           <a href="/" class="govuk-link--no-visited-state">Manage certificates</a>
         </li>
-        <li>
+        <li class="<%= 'active' if current_page?("") %>"> <!-- path to be declared when created -->
           <a href="#" class="govuk-link--no-visited-state">Team members</a>
         </li>
       </ul>
