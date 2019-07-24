@@ -69,7 +69,7 @@ Devise.setup do |config|
     config.params_authenticatable = true
   else
     # Locks logins down to cognito only
-    config.params_authenticatable = [:cognito]
+    config.params_authenticatable = [:remote]
   end
   # Tell if authentication through HTTP Auth is enabled. False by default.
   # It can be set to an array that will enable http authentication only for the
@@ -276,14 +276,15 @@ Devise.setup do |config|
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
-  if Rails.env == 'production' || 
-    (Rails.application.secrets.cognito_aws_access_key_id.present? &&
-      Rails.application.secrets.cognito_aws_secret_access_key.present?)
-    config.warden do |manager|
-      manager.strategies.add(:cognito, Devise::Strategies::CognitoAuthenticatable)
-      manager.default_strategies(:scope => :user).unshift :cognito
-    end 
+
+
+  Devise.add_module :remote_authenticatable, :controller => :sessions, :route => { :session => :routes }
+
+  config.warden do |manager|
+    manager.strategies.add(:remote, Devise::Strategies::RemoteAuthenticatable)
+    manager.default_strategies(:scope => :user).unshift :remote
   end
+
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
   # is mountable, there are some extra configurations to be taken into account.
