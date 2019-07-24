@@ -18,6 +18,7 @@ module Devise
                 redirect!(Rails.application.routes.url_helpers.new_user_session_path)
               else
                 clean_up_session
+                UserSignInEvent.create(user_id: resource.user_id)
                 success!(resource)
               end
             else
