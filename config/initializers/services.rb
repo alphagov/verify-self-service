@@ -24,7 +24,8 @@ end
 def stub_client
   Rails.application.secrets.cognito_client_id = SecureRandom.uuid
   client = Aws::CognitoIdentityProvider::Client.new(stub_responses: true)
-  client.stub_responses(:initiate_auth, { challenge_name: nil, authentication_result: {access_token: "valid-token" }})
+  client.stub_responses(:initiate_auth, { challenge_name: nil, authentication_result: { access_token: "valid-token" }})
+  client.stub_responses(:respond_to_auth_challenge, { challenge_name: nil, authentication_result: {access_token: "valid-token" }})
   client.stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
     [
       { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
