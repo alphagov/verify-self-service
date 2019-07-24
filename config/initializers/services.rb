@@ -25,20 +25,20 @@ def stub_client
   Rails.application.secrets.cognito_client_id = SecureRandom.uuid
   client = Aws::CognitoIdentityProvider::Client.new(stub_responses: true)
   client.stub_responses(:initiate_auth, { challenge_name: nil, authentication_result: {access_token: "valid-token" }})
-  client.stub_responses(:get_user, {username: "2dc8b36a-67c6-4d01-a862-67416e507979", user_attributes:
+  client.stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
     [
-      {name: "sub", value: "2dc8b36a-67c6-4d01-a862-67416e507979"},
-      {name: "custom:roles", value: "dev"},
-      {name: "email_verified", value: "true"},
-      {name: "custom:organisation", value: "GDS"},
-      {name: "phone_number_verified", value: "true"},
-      {name: "phone_number", value: "+447000000000"},
-      {name: "given_name", value: "Test"},
-      {name: "family_name", value: "User"},
-      {name: "email", value: "test@test.test"}
+      { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
+      { name: 'custom:roles', value: 'test' },
+      { name: 'email_verified', value: 'true' },
+      { name: 'custom:organisation', value: 'Dummy Org' },
+      { name: 'phone_number_verified', value: 'true' },
+      { name: 'phone_number', value: '+447000000000' },
+      { name: 'given_name', value: 'Test' },
+      { name: 'family_name', value: 'User' },
+      { name: 'email', value: 'test@test.test' }
     ],
-  preferred_mfa_setting: "SOFTWARE_TOKEN_MFA",
-  user_mfa_setting_list: ["SOFTWARE_TOKEN_MFA"]})
+  preferred_mfa_setting: 'SOFTWARE_TOKEN_MFA',
+  user_mfa_setting_list: ['SOFTWARE_TOKEN_MFA'] })
   client
 end
 

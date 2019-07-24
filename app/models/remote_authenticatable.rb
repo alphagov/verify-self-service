@@ -70,6 +70,7 @@ module Devise
         self.login_id = params[:email]
         self.user_id = aws_user.username
         self.email = user_attributes['email']
+        self.phone_number = user_attributes['phone_number']
         self.access_token = access_token
         self.organisation = user_attributes['custom:organisation']
         self.roles = user_attributes['custom:roles']
@@ -112,6 +113,7 @@ module Devise
           resource.login_id = data['login_id']
           resource.user_id = data['user_id']
           resource.email = data['email']
+          resource.phone_number = data['phone_number']
           resource.access_token = data['access_token']
           resource.organisation = data['organisation']
           resource.roles = data['roles']
@@ -131,6 +133,7 @@ module Devise
           [
             {
               email: record.email,
+              phone_number: record.phone_number,
               access_token: record.access_token,
               login_id: record.login_id,
               user_id: record.user_id,
