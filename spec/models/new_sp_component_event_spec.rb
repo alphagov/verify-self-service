@@ -21,4 +21,16 @@ RSpec.describe NewSpComponentEvent, type: :model do
       expect(event.errors[:component_type]).to eql ['must be either VSP or SP']
     end
   end
+
+  context 'user_id' do
+    it 'must exist' do
+      user_id = SecureRandom.uuid
+      user = User.new
+      user.user_id = user_id
+      Thread.current[:user] = user
+      event = NewSpComponentEvent.create(name: 'New SP component', component_type: COMPONENT_TYPE::SP)
+
+      expect(event.user_id).to eql user_id
+    end
+  end
 end
