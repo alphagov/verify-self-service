@@ -1,16 +1,16 @@
 <% if components.present? %>
   <% components.reverse.each do |component| %>
   <table class="govuk-table">
-    <caption class="govuk-table__caption">
+    <caption class="govuk-table__caption govuk-!-margin-bottom-1">
       <%= component.component_type == COMPONENT_TYPE::MSA ? "Matching Service Adapter" : "Verify Service Provider" %>
     </caption>
-    <thead class="govuk-table__head">
+    <thead class="govuk-table__head govuk-visually-hidden">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col"></th>
-        <th class="govuk-table__header" scope="col"></th>
+        <th class="govuk-table__header" scope="col">Certificate</th>
+        <th class="govuk-table__header" scope="col">Status</th>
       </tr>
     </thead>
-    <tbody class="govuk-table__body">
+    <tbody class="govuk-table__body app-table__body--noheading">
       <tr class="govuk-table__row">
         <td class="govuk-table__cell"><%= link_to "Encryption certificate" , polymorphic_url(component) %></td> 
         <td class="govuk-table__cell">

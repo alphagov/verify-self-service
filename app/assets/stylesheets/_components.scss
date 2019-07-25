@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .app-certificate-tag-expiring .govuk-tag {
-  background-color: #b10e1e;
+  background-color: #CB4B0B;
 }
 .app-certificate-tag .govuk-tag {
   float: right;
@@ -13,4 +13,7 @@
 }
 .side-navigation ul li a {
   text-decoration: none;
+}
+.app-table__body--noheading { 
+  border-top: 1px solid $govuk-border-colour 
 }
