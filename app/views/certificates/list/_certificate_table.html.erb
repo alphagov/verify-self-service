@@ -1,11 +1,11 @@
 <table class="govuk-table">
-  <caption class="govuk-table__caption govuk-heading-m"><%=heading%></caption>
+  <caption class="govuk-table__caption govuk-heading-m"><%= t('certificates.caption', heading: heading) %></caption>
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th class="govuk-table__header">ID</th>
-      <th class="govuk-table__header">Usage</th>
-      <th class="govuk-table__header">Enabled</th>
-      <th class="govuk-table__header">Last updated</th>
+      <th class="govuk-table__header"><%= t 'certificates.header_id' %></th>
+      <th class="govuk-table__header"><%= t 'certificates.header_usage' %></th>
+      <th class="govuk-table__header"><%= t 'certificates.enabled' %></th>
+      <th class="govuk-table__header"><%= t 'certificates.header_last_updated' %></th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
@@ -16,17 +16,17 @@
           <td class="govuk-table__cell"><%= certificate.enabled %></td>
           <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
           <td class="govuk-table__cell">
-              <% if certificate.encryption? && heading.start_with?('Previous') %>
+              <% if certificate.encryption? && heading.start_with?('Previous') %> <!-- does this need to be put in en -->
                   <%= form_for [@component, certificate],
                     url: polymorphic_url(
                       [:replace, @component, certificate],
                       component: @component,
                       certificate: certificate
                     ) do |f| %>
-                      <%= f.submit 'Replace', class: 'govuk-button', data: { module: "govuk-button" } %>
+                      <%= f.submit t('certificates.replace_button'), class: 'govuk-button', data: { module: "govuk-button" } %>
                   <% end %>
               <% end %>
-              </td>
+          </td>
       </tr>
     <%end %>
   </tbody>

@@ -30,5 +30,97 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  certificates:
+    caption: "%{heading}"
+    header_id: ID
+    header_usage: Usage
+    header_enabled: Enabled
+    header_last_updated: Last updated
+    replace_button: Replace
+    upload_certificate:
+      usage: Certificate usage
+      value: Certificate value
+      paste_cert: Paste your certificate here
+    enabled: Enabled
+    disabled: Disabled
+    upload: Upload your certificate
+  dashboard: 
+    title: Dashboard
+    welcome: Welcome
+    profile: "Profile"
+    id: "User ID: "
+    given_name: "Given Name: "
+    family_name: "Family Name: "
+    organisation: "Organisation: "
+    roles: "Roles: "
+    email: "E-mail address: "
+    phone: "Phone number: " 
+    logout: logout
+  events: 
+    title: Events
+    type: Type
+    data: Data
+    created: Created at
+    aggregate_id: Aggregate ID
+    aggregate_type: Aggregate Type
+    details: Event details
+    user_id: User ID
+  layout:
+    application:
+      title: Verify Self-Service
+      skip_link: Skip to main content
+      logo_text: GOV.UK
+      service_name:  Verify Self Service Tool
+      menu: Menu
+      warning: Warning
+      message: "%{message}"
+      copyright: Crown copyright
+    main_layout:
+      manage_certs: Manage certificates
+      team_members: Team Members
+  services: 
+    all_services: All services
+    add_new: Add new service
+    title: Add a Service
+    service_name: Service name
+    service_id: Service Entity ID
+    create_service: Create service
+  shared:
+    languages:
+      english: English
+      cymraeg: Cymraeg
+    errors:
+      error: Error
+      message: "%{message}"
+      problem: There is a problem
   components:
-    title: Components 
+    home_title: Components
+    sp_title: SP components
+    name: Name
+    create_sp_component: Create new SP component
+    view: View
+    view_link: View component
+    msa_title: MSA Components
+    entity_id: Entity ID
+    create_sp_component: Create new MSA component
+    upload_sp: Upload your SP component
+    sp_component_name: SP Component name
+    sp_component_type: SP Component type
+    sp_create_component: Create SP component
+    upload_msa: Upload your MSA component
+    msa_component_name: MSA Component name
+    msa_component_entity_id: MSA Component Entity ID
+    msa_create_component: Create MSA component
+    upload: Upload
+    sign_cert_enabled: Signing Certificates (Enabled)
+    sign_cert_disabled: Signing Certificates (Disabled)
+    assigned_encryption_cert: Encryption Certificate assigned to component
+    previous_encryption_cert: Previous encryption Certificates
+    previous_assigned_encryption_cert: Previous Encryption Certificates for this component
+    all_certs: All certificates
+    all_certs_for_componenet: All certificates for this component
+    add_service: Add service
+      
+
+
+  

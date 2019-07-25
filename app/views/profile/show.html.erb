@@ -1,15 +1,15 @@
-<h1  class="govuk-heading-l">Dashboard</h1>
+<h1  class="govuk-heading-l"><%= t 'dashboard.title' %></h1>
 
 <div>
-  <h2  class="govuk-heading-m">Welcome <%= @user.full_name %></h2>
+  <h2  class="govuk-heading-m"><%= t 'dashboard.welcome' %> <%= @user.full_name %></h2>
 
-  <h3 class="govuk-heading-m">Profile:</h3>
-  <p class="govuk-body">User ID: <%= @user.user_id %></p>
-  <p class="govuk-body">Given Name: <%= @user.given_name %></p>
-  <p class="govuk-body">Family Name: <%= @user.family_name %></p>
-  <p class="govuk-body">Organisation: <%= @user.organisation %></p>
-  <p class="govuk-body">Roles: <%= @user.roles %></p>
-  <p class="govuk-body">E-mail address: <%= @user.email %></p>
-  <p class="govuk-body">Phone number: <%= @user.phone_number %></p>
-  <a href="/users/sign_out" data-method="delete" class="govuk-button" data-module="govuk-button">Logout</a>
+  <h3 class="govuk-heading-m"><%= t 'dashboard.profile' %></h3>
+  <p class="govuk-body"><%= t 'dashboard.id' %><%= @user.user_id %></p>
+  <p class="govuk-body"><%= t 'dashboard.given_name' %><%= @user.given_name %></p>
+  <p class="govuk-body"><%= t 'dashboard.family_name' %><%= @user.family_name %></p>
+  <p class="govuk-body"><%= t 'dashboard.organisation' %><%= @user.organisation %></p>
+  <p class="govuk-body"><%= t 'dashboard.roles' %><%= @user.roles %></p>
+  <p class="govuk-body"><%= t 'dashboard.email' %><%= @user.email %></p>
+  <p class="govuk-body"><%= t 'dashboard.phone' %><%= @user.phone_number %></p>
+  <a href="/users/sign_out" data-method="delete" class="govuk-button", data-module="govuk-button"><%= t 'dashboard.logout' %></a>
 </div>

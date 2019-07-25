@@ -1,13 +1,13 @@
-<h1 class="govuk-heading-l">Events</h3>
+<h1 class="govuk-heading-l"><%= t 'events.title' %></h3>
 <table class="govuk-table">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
-      <th class="govuk-table__header" scope="col">Type</th>
-      <th class="govuk-table__header" scope="col">Data</th>
-      <th class="govuk-table__header" scope="col">Created at</th>
-      <th class="govuk-table__header" scope="col">Aggregate ID</th>
-      <th class="govuk-table__header" scope="col">Aggregate Type</th>
-      <th class="govuk-table__header" scope="col">User ID</th>
+      <th class="govuk-table__header" scope="col"><%= t 'events.type' %></th>
+      <th class="govuk-table__header" scope="col"><%= t 'events.data' %></th>
+      <th class="govuk-table__header" scope="col"><%= t 'events.created' %></th>
+      <th class="govuk-table__header" scope="col"><%= t 'events.aggregate_id' %></th>
+      <th class="govuk-table__header" scope="col"><%= t 'events.aggregate_type' %></th>
+      <th class="govuk-table__header" scope="col"><%= t 'events.user_id' %></th>
     </tr>
   </thead>
   <tbody class="govuk-table__body">
@@ -16,7 +16,7 @@
         <td class="govuk-table__cell" scope="row"><%= event.type %></th>
         <td class="govuk-table__cell" scope="row">
           <details data-module="govuk-details">
-            <summary>Event details</summary>
+            <summary><%= t 'events.details' %></summary>
             <code><pre><%= JSON.pretty_generate(event.data) %></pre></code>
           </details>
         </td>

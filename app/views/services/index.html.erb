@@ -4,8 +4,8 @@
   <table class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col">Name</th>
-        <th class="govuk-table__header" scope="col">Entity ID</th>
+        <th class="govuk-table__header" scope="col"><%= t 'certificates.header_name' %></th><!-- should i be reusing this -->
+        <th class="govuk-table__header" scope="col"><%= t 'msa_component.id' %></th><!-- should i be reusing this -->
       </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -19,4 +19,4 @@
   </table>
 <% end %>
 
-<%= link_to 'Add new service', new_service_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %>
+<%= link_to t('services.add_new'), new_service_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %>

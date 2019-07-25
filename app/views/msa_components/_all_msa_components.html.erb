@@ -1,11 +1,11 @@
-<h2 class="govuk-heading-l">MSA Components</h2>
+<h2 class="govuk-heading-l"><%= t 'components.msa_title' %></h2>
 <% if @msa_components.present? %>
   <table class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col">Name</th>
-        <th class="govuk-table__header" scope="col">Entity ID</th>
-        <th class="govuk-table__header" scope="col">View</th>
+        <th class="govuk-table__header" scope="col"><%= t 'components.name' %></th>
+        <th class="govuk-table__header" scope="col"><%= t 'components.entity_id' %></th>
+        <th class="govuk-table__header" scope="col"><%= t 'components.view' %></th>
       </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -13,11 +13,11 @@
         <tr class="govuk-table__row">
           <td class="govuk-table__cell" scope="row"><%= component.name %></td>
           <td class="govuk-table__cell"><%= component.entity_id %></td>
-          <td class="govuk-table__cell"><%= link_to 'View component', msa_component_path(component) %></td>
+          <td class="govuk-table__cell"><%= link_to t('components.view_link'), msa_component_path(component) %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
 <% end %>
 
-<%= link_to 'Create new MSA component', new_msa_component_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %>
+<%= link_to t('components.create_msa_component'), new_msa_component_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %>
