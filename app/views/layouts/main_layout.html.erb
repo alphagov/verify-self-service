@@ -1,14 +1,16 @@
 <% content_for :main do %>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
-    <ul class="govuk-list">
-      <li>
-        <a class="govuk-link" href="#">Manage certificates</a>
-      </li>
-      <li>
-        <a class="govuk-link" href="#">Team Members</a>
-      </li>
-    </ul>
+    <div class="side-navigation">
+      <ul class="govuk-list">
+        <li class="<%= 'active' if current_page?(root_path) %>">
+          <a href="/" class="govuk-link--no-visited-state">Manage certificates</a>
+        </li>
+        <li class="<%= 'active' if current_page?("") %>"> <!-- path to be declared when created -->
+          <a href="#" class="govuk-link--no-visited-state">Team members</a>
+        </li>
+      </ul>
+    </div>
     </div>
     <div class="govuk-grid-column-two-thirds">
       <%= yield %>

@@ -1,5 +1,4 @@
-<h1 class="govuk-heading-xl">Components</h1>
+<h1 class="govuk-heading-l">Manage certificates</h1>
 
-<%= render "sp_components/all_sp_components"%>
-
-<%= render "msa_components/all_msa_components"%>
+<%= render "shared/component_certificates", components: @msa_components, name: COMPONENT_TYPE::MSA %>
+<%= render "shared/component_certificates", components: @sp_components, name: COMPONENT_TYPE::SP %>
