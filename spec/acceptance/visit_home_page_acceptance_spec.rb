@@ -6,6 +6,6 @@ RSpec.describe 'Homepage', type: :feature, acceptance: true do
     fill_in('user_email', with: 'test@test.test')
     fill_in('user_password', with: 'Password!1')
     find("[name='commit']").click
-    expect(page).to have_content 'Components'
+    expect(page).to have_content 'Manage certificates'
   end
 end
