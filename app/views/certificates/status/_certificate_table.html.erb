@@ -5,7 +5,7 @@
     <th class="govuk-table__header"><%= t 'certificates.header_last_updated' %></th>
     <th class="govuk-table__header"><%= t 'certificates.header_id' %></th>
     <th class="govuk-table__header"><%= t 'certificates.header_usage' %></th>
-    <th class="govuk-table__header"><%= t 'certificates.enabled' %></th>
+    <th class="govuk-table__header"><%= t 'certificates.header_enabled' %></th>
     <th class="govuk-table__header" scope="col"></th>
   </tr>
   </thead>
@@ -30,7 +30,7 @@
                   component: @component,
                   certificate: certificate
                 ) do |f| %>
-                  <%= f.submit certificate.enabled ? t('certificates.disabled') : t('certificates.enabled'), class: 'govuk-button', data: { module: "govuk-button" } %>
+                  <%= f.submit certificate.enabled ? t('certificates.disable') : t('certificates.enable'), class: 'govuk-button', data: { module: "govuk-button" } %>
             <% end %>
         <% end %>
         </td>

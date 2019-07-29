@@ -1,6 +1,4 @@
 <h1 class="govuk-heading-xl"><%= t 'components.home_title' %></h1>
 
-<%= render "shared/available_languages"%>
-
 <%= render "shared/component_certificates", components: @msa_components, name: COMPONENT_TYPE::MSA %>
 <%= render "shared/component_certificates", components: @sp_components, name: COMPONENT_TYPE::SP %>

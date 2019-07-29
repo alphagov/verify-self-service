@@ -2,7 +2,7 @@
 
 <h2 class="govuk-heading-l"><%= @component.component_type %></h2>
 
-<%= link_to 'Upload', new_sp_component_certificate_path(@component), class: 'govuk-button' %>
+<%= link_to t('components.upload'), new_sp_component_certificate_path(@component), class: 'govuk-button' %>
 
 <%= render partial: "certificates/status/certificate_table",
   locals: { certificates: @component.enabled_signing_certificates,

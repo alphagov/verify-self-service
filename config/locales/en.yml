@@ -41,9 +41,10 @@ en:
       usage: Certificate usage
       value: Certificate value
       paste_cert: Paste your certificate here
-    enabled: Enabled
-    disabled: Disabled
+    enable: Enable
+    disable: Disable
     upload: Upload your certificate
+    previous: Previous
   dashboard: 
     title: Dashboard
     welcome: Welcome
@@ -74,7 +75,6 @@ en:
       menu: Menu
       warning: Warning
       message: "%{message}"
-      copyright: Crown copyright
     main_layout:
       manage_certs: Manage certificates
       team_members: Team Members
@@ -94,7 +94,7 @@ en:
       message: "%{message}"
       problem: There is a problem
   components:
-    home_title: Components
+    home_title: Manage certificates
     sp_title: SP components
     name: Name
     create_sp_component: Create new SP component
