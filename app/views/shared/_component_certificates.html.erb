@@ -34,4 +34,4 @@
   </table>
 <% end %>
 
-<%= link_to "Create new #{(name == COMPONENT_TYPE::MSA ? 'msa' : 'sp')} component", (name == COMPONENT_TYPE::MSA ? new_msa_component_path : new_sp_component_path) , class: "govuk-button", role:"button", draggable:"false" %> <!-- to be moved to a dev version of this page -->
+<%= link_to "Create new #{(name == COMPONENT_TYPE::MSA ? 'msa' : 'sp')} component", (name == COMPONENT_TYPE::MSA ? new_msa_component_path : new_sp_component_path) , class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %> <!-- to be moved to a dev version of this page -->

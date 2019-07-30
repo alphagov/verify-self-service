@@ -30,7 +30,7 @@
                   component: @component,
                   certificate: certificate
                 ) do |f| %>
-                  <%= f.submit certificate.enabled ? 'Disable': 'Enable', class: 'govuk-button' %>
+                  <%= f.submit certificate.enabled ? 'Disable': 'Enable', class: 'govuk-button', data: { module: "govuk-button" } %>
             <% end %>
         <% end %>
         </td>

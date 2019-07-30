@@ -17,7 +17,7 @@
       <%= f.text_field :entity_id, class: "govuk-input#{@component.errors.key?(:entity_id) ? ' govuk-input--error' : ''}" %>
     </div>
     <div class="govuk-form-group">
-        <%=f.submit "Create MSA component", class: "govuk-button" %>
+        <%=f.submit "Create MSA component", class: "govuk-button", data: { module: "govuk-button" } %>
     </div>
   <% end %>
 </fieldset>

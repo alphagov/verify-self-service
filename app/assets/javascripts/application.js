@@ -14,4 +14,4 @@
 //= require activestorage
 //= require turbolinks
 //= require_tree .
-//= require govuk-frontend/all
+//= require govuk-frontend/govuk/all

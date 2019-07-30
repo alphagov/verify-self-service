@@ -2,6 +2,6 @@
   "name": "verify-self-service",
   "private": true,
   "dependencies": {
-    "govuk-frontend": "^2.5.1"
+    "govuk-frontend": "^3.0.0"
   }
 }

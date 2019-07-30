@@ -71,4 +71,4 @@
 
 <%= link_to 'Add service',
     polymorphic_url([:new, @component, :service], component: @component),
-    class: 'govuk-button' %>
+    class: 'govuk-button', data: { module: "govuk-button" } %>
