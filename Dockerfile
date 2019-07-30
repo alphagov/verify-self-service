@@ -3,7 +3,7 @@ FROM ruby:2.6.2
 ADD Gemfile Gemfile
 ADD Gemfile.lock Gemfile.lock
 
-EXPOSE 3000
+EXPOSE 8080
 
 ENV RAILS_LOG_TO_STDOUT true
 
@@ -15,6 +15,6 @@ ADD . /verify-self-service/
 
 WORKDIR /verify-self-service
 
-CMD bundle exec puma -p 3000
+CMD bundle exec puma -p 8080
 
 
