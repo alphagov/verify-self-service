@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_24_164118) do
+ActiveRecord::Schema.define(version: 2019_07_31_143027) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -81,6 +81,13 @@ ActiveRecord::Schema.define(version: 2019_07_24_164118) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "vsp", default: false
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_teams_on_name", unique: true
   end
 
 end
