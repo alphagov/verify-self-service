@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  devise_for :users
+  devise_for :users, controllers: {sessions: "sessions"}
   
   root 'components#index'
   resources :sp_components, path: 'sp-components' do

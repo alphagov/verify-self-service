@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Devise::SessionsController, type: :controller do
+RSpec.describe SessionsController, type: :controller do
   it 'Get to signin page' do
     @request.env['devise.mapping'] = Devise.mappings[:user]
     get :new

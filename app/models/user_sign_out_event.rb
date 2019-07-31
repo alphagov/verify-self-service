@@ -1,0 +1,2 @@
+class UserSignOutEvent < Event
+end
