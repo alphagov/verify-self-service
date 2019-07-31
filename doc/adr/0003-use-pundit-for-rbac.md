@@ -4,7 +4,7 @@ Date: 2019-07-30
 
 ## Status
 
-Pending
+Accepted
 
 ## Context
 
@@ -18,7 +18,7 @@ information and define teams to support our use of RBAC.
 ## Decision
 
 After some investigation and discussion into various ways of implementing RBAC
-within ruby we have decided to implement the Pundit Ruby gem within the Verify
+within Ruby we have decided to implement the Pundit Ruby gem within the Verify
 Self Service application. This gem provides us with a way of creating policies
 which apply to the app as a whole and to individual classes within the
 application.
@@ -27,7 +27,7 @@ We have chosen pundit for a number of reasons. The first is that it seems
 relatively easy to implement within our application. A proof of concept was
 created in a few hours which restricted creating new components within the
 application to those who hold the `gds` or `dev` roles. Policies and permissions
-are defined in code as plain ruby objects which are easy to understand and
+are defined in code as plain Ruby objects which are easy to understand and
 simple to implement. This ease of implementation and an appearance of providing
 the fuctionality we are seeking we believe makes pundit a good candidate for
 implementing RBAC within our application.
@@ -54,4 +54,6 @@ users membership to a specific group.
 * AWS Cognito groups don't have unique identifiers other than name which means
   all team names must be unique
 * Roles aren't specifically defined within the model of the application
+* We don't need to store user roles or mappings within our application but it's 
+managed in a single place (Cognito)
 
