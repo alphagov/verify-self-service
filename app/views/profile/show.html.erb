@@ -1,4 +1,4 @@
-<h1  class="govuk-heading-l">Dashboard</h1>
+<h1  class="govuk-heading-l">User Profile</h1>
 
 <div>
   <h2  class="govuk-heading-m">Welcome <%= @user.full_name %></h2>
@@ -8,7 +8,7 @@
   <p class="govuk-body">Given Name: <%= @user.given_name %></p>
   <p class="govuk-body">Family Name: <%= @user.family_name %></p>
   <p class="govuk-body">Organisation: <%= @user.organisation %></p>
-  <p class="govuk-body">Roles: <%= @user.roles %></p>
+  <p class="govuk-body">Roles: <%= @user.roles.join(",") %></p>
   <p class="govuk-body">E-mail address: <%= @user.email %></p>
   <p class="govuk-body">Phone number: <%= @user.phone_number %></p>
   <a href="/users/sign_out" data-method="delete" class="govuk-button" data-module="govuk-button">Logout</a>

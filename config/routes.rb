@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
 
   devise_for :users, controllers: {sessions: "sessions"}
+  # as :user do
+  #   get 'users/edit' => 'devise/registrations#edit', :as => 'edit_user_registration'    
+  #   put 'users' => 'devise/registrations#update', :as => 'user_registration'            
+  # end
   
   root 'components#index'
   resources :sp_components, path: 'sp-components' do
@@ -29,8 +33,11 @@ Rails.application.routes.draw do
   get '/events/:page', to: 'events#page'
 
   if %w(test development).include? Rails.env
-    # Dashboard
-    get 'profile', to: 'profile#show'
+
+    # Profile Page
+    get '/profile/', to: 'profile#show'
+    get '/profile/edit', to: 'profile#edit'
+    post '/profile/edit', to: 'profile#update'
   end
 
 end
