@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe UserSignInEvent, type: :model do
+RSpec.describe UserSignOutEvent, type: :model do
   let(:user_id) { SecureRandom.uuid }
-  let(:event) { UserSignInEvent.create(user_id: user_id) }
+  let(:event) { UserSignOutEvent.create(user_id: user_id) }
   let(:event_with_nil_user_id) {
     UserInfo.current_user = nil
     UserSignInEvent.create(user_id: nil)
