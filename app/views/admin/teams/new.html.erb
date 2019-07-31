@@ -1,0 +1,17 @@
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading">Add a Team</h1>
+  </legend>
+
+  <%= error_messages_for(@team&.errors) %>
+  <%= form_for @team,  url:  admin_teams_path, as: :team do |f| %>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @team.errors.key?(:name) %>">
+      <h3 class="govuk-heading-m">Team name</h3>
+      <%=error_message_on(f.object.errors, :name) %>
+      <%= f.text_field :name, class: 'govuk-input' %>
+    </div>
+    <div class="govuk-form-group">
+        <%=f.submit "Create Team", class: "govuk-button" %>
+    </div>
+  <% end %>
+</fieldset>

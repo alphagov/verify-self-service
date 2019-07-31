@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
 
-  devise_for :users, controllers: {sessions: "sessions"}
-  
+  namespace :admin do
+    resources :teams, only: %i[index new create]
+  end
+
+  devise_for :users, controllers: { sessions: 'sessions' }
+
   root 'components#index'
 
   get '/admin', to: 'components#index'
@@ -39,5 +43,4 @@ Rails.application.routes.draw do
     # Dashboard
     get 'profile', to: 'profile#show'
   end
-
 end
