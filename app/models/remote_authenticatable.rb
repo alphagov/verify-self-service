@@ -72,7 +72,6 @@ module Devise
         self.email = user_attributes['email']
         self.phone_number = user_attributes['phone_number']
         self.access_token = access_token
-        self.organisation = user_attributes['custom:organisation']
         self.roles = user_attributes['custom:roles']
         self.full_name = "#{user_attributes['given_name']} #{user_attributes['family_name']}"
         self.given_name = user_attributes['given_name']
@@ -92,6 +91,64 @@ module Devise
 
       def cognito_client_id
         Rails.application.secrets.cognito_client_id
+      end
+
+      def update(params, *_options)
+        self.user_id = params[:user_id] if params.has_key?("user_id")
+        self.email = params[:email] if params.has_key?("email")
+        self.family_name = params[:family_name] if params.has_key?("family_name")
+        self.given_name = params[:given_name] if params.has_key?("given_name")
+        self.full_name = "#{self.given_name} #{self.family_name}"
+        self.roles = params[:roles] if params.has_key?("roles")
+        self.phone_number = params[:phone_number] if params.has_key?("phone_number")
+        self
+      end
+
+      def update_with_password(params, *options)
+        current_password = params.delete(:current_password)
+
+        if params[:password].blank?
+          params.delete(:password)
+          params.delete(:password_confirmation) if params[:password_confirmation].blank?
+        end
+
+        result = if valid_password?(current_password)
+                   update(params, *options)
+                 else
+                   assign_attributes(params, *options)
+                   valid?
+                   errors.add(:current_password, current_password.blank? ? :blank : :invalid)
+                   false
+                 end
+
+        clean_up_passwords
+        result
+      end
+
+      def update_without_password(params, *options)
+        params.delete(:password)
+        params.delete(:password_confirmation)
+
+        result = update(params, *options)
+        clean_up_passwords
+        result
+      end
+
+    # Verifies whether a password (ie from sign in) is the user password.
+      def valid_password?(password)
+        return false if password.blank?
+
+        begin
+          initiate_auth(email, password)
+        rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException
+          return false
+        end
+        true
+      end
+
+    # Set password and password confirmation to nil
+      def clean_up_passwords
+        self.password = self.password_confirmation = nil
       end
 
       module ClassMethods
@@ -115,7 +172,6 @@ module Devise
           resource.email = data['email']
           resource.phone_number = data['phone_number']
           resource.access_token = data['access_token']
-          resource.organisation = data['organisation']
           resource.roles = data['roles']
           resource.full_name = "#{data['given_name']} #{data['family_name']}"
           resource.given_name = data['given_name']
@@ -137,7 +193,6 @@ module Devise
               access_token: record.access_token,
               login_id: record.login_id,
               user_id: record.user_id,
-              organisation: record.organisation,
               roles: record.roles,
               given_name: record.given_name,
               family_name: record.family_name
