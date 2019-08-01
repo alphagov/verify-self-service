@@ -30,7 +30,7 @@ Rails.application.routes.draw do
 
   if %w(test development).include? Rails.env
     # Dashboard
-    get 'dashboard' =>'dashboard#show'
+    get 'profile', to: 'profile#show'
   end
 
 end
