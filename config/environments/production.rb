@@ -32,7 +32,11 @@ Rails.application.configure do
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
-  # config.action_controller.asset_host = 'http://assets.example.com'
+  config.action_controller.asset_host = ENV['ASSET_HOST']
+  # Set the prefix to the correct asset folder for the host above
+  config.assets.prefix = ENV['ASSET_PREFIX']
+  # Turning digests off as the folder name (sha of the image) will serve the same purpose
+  config.assets.digest = false
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
