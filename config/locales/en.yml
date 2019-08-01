@@ -76,42 +76,34 @@ en:
       warning: Warning
       message: "%{message}"
     main_layout:
-      manage_certs: Manage certificates
       team_members: Team Members
   services: 
-    all_services: All services
+    heading: All services
     add_new: Add new service
-    title: Add a Service
+    new:
+      heading: Add a Service
     service_name: Service name
     service_id: Service Entity ID
     create_service: Create service
   shared:
-    languages:
-      english: English
-      cymraeg: Cymraeg
     errors:
       error: Error
       message: "%{message}"
       problem: There is a problem
   components:
-    home_title: Manage certificates
-    sp_title: SP components
+    title: Manage certificates
     name: Name
-    create_sp_component: Create new SP component
     view: View
-    view_link: View component
-    msa_title: MSA Components
     entity_id: Entity ID
-    create_sp_component: Create new MSA component
-    upload_sp: Upload your SP component
-    sp_component_name: SP Component name
-    sp_component_type: SP Component type
-    sp_create_component: Create SP component
-    upload_msa: Upload your MSA component
-    msa_component_name: MSA Component name
-    msa_component_entity_id: MSA Component Entity ID
-    msa_create_component: Create MSA component
+    view_link: View component
     upload: Upload
+    create_new_component: Create new %{type} component
+    component_heading: "%{type} Components"
+    component_name_field: "%{type} Component name"
+    component_type_field: "%{type} Component type"
+    create_component: Create %{type} component
+    upload_component: Upload your %{type} component
+    component_entity_id: "%{type} Component Entity ID"
     sign_cert_enabled: Signing Certificates (Enabled)
     sign_cert_disabled: Signing Certificates (Disabled)
     assigned_encryption_cert: Encryption Certificate assigned to component

@@ -1,4 +1,4 @@
-<h2 class="govuk-heading-l"><%= t 'components.msa_title' %></h2>
+<h2 class="govuk-heading-l"><%= t('components.component_heading', type: COMPONENT_TYPE::MSA_SHORT) %></h2>
 <% if @msa_components.present? %>
   <table class="govuk-table">
     <thead class="govuk-table__head">
@@ -20,4 +20,4 @@
   </table>
 <% end %>
 
-<%= link_to t('components.create_msa_component'), new_msa_component_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %>
+<%= link_to t('components.create_new_component', type: COMPONENT_TYPE::MSA_SHORT), new_msa_component_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %>
