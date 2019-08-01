@@ -6,7 +6,7 @@
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <% errors.each do |key| %>
-          <li>
+          <li data-turbolinks="false">
             <%= link_to "#{errors&.full_messages_for(key).first}" , "#component_#{key}" %>
           </li>
         <% end %>
