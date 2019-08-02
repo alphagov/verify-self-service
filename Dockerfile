@@ -17,7 +17,7 @@ ADD . /verify-self-service/
 
 WORKDIR /verify-self-service
 
-RUN bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile assets:undigest_assets
 
 CMD bundle exec puma -p 8080
 
