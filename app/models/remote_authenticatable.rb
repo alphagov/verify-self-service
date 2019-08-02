@@ -72,8 +72,8 @@ module Devise
         self.email = user_attributes['email']
         self.phone_number = user_attributes['phone_number']
         self.access_token = access_token
-        self.organisation = user_attributes['custom:organisation']
         self.roles = user_attributes['custom:roles']
+        self.permissions = UserRolePermissions.new(user_attributes['custom:roles'], params[:email])
         self.full_name = "#{user_attributes['given_name']} #{user_attributes['family_name']}"
         self.given_name = user_attributes['given_name']
         self.family_name = user_attributes['family_name']
@@ -115,8 +115,8 @@ module Devise
           resource.email = data['email']
           resource.phone_number = data['phone_number']
           resource.access_token = data['access_token']
-          resource.organisation = data['organisation']
           resource.roles = data['roles']
+          resource.permissions = UserRolePermissions.new(data['roles'], data['email'])
           resource.full_name = "#{data['given_name']} #{data['family_name']}"
           resource.given_name = data['given_name']
           resource.family_name = data['family_name']
@@ -137,7 +137,6 @@ module Devise
               access_token: record.access_token,
               login_id: record.login_id,
               user_id: record.user_id,
-              organisation: record.organisation,
               roles: record.roles,
               given_name: record.given_name,
               family_name: record.family_name

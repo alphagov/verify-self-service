@@ -11,5 +11,10 @@ module System
       user = FactoryBot.create(:user)
       login_as(user, :scope => :user)
     end
+
+    def login_certificate_manager_user
+      user = FactoryBot.create(:certificate_manager_user)
+      login_as(user, :scope => :user)
+    end
   end
 end
