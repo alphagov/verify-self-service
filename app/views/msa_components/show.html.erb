@@ -2,22 +2,22 @@
 
 <h2 class="govuk-heading-l"><%= @component.component_type %></h2>
 
-<%= link_to 'Upload', new_msa_component_certificate_path(@component), class: 'govuk-button' %>
+<%= link_to t('components.upload'), new_msa_component_certificate_path(@component), class: 'govuk-button', data: { module: "govuk-button" } %>
 
 <%= render partial: "certificates/status/certificate_table",
   locals: { certificates: @component.enabled_signing_certificates,
-  heading: 'Signing Certificates (Enabled)' }
+  heading: t('components.sign_cert_enabled') }
 %>
 
 <%= render partial: "certificates/status/certificate_table",
   locals: { certificates: @component.disabled_signing_certificates,
-  heading: 'Signing Certificates (Disabled)' }
+  heading: t('components.sign_cert_disabled') }
 %>
 
 <% if @component.encryption_certificate.present? %>
   <%= render partial: "certificates/status/certificate_table",
     locals: { certificates: [@component.encryption_certificate],
-    heading: 'Encryption Certificate assigned to component' }
+    heading: t('components.assigned_encryption_cert') }
   %>
 <% end %>
 
@@ -28,7 +28,7 @@
       <div class="govuk-accordion__section-header">
         <h2 class="govuk-accordion__section-heading">
           <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-            Previous encryption Certificates
+            <%= t 'components.previous_encryption_cert' %>
           </span>
         </h2>
       </div>
@@ -38,7 +38,7 @@
             <%= render partial: "certificates/list/certificate_table",
             locals: {
               certificates: @component.previous_encryption_certificates,
-              heading: 'Previous Encryption Certificates for this component'}
+              heading: t('components.previous_assigned_encryption_cert') }
           %>
           <% end %>
 
@@ -48,7 +48,7 @@
       <div class="govuk-accordion__section-header">
         <h2 class="govuk-accordion__section-heading">
           <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
-            All certificates
+             <%= t 'components.all_certs' %>
           </span>
         </h2>
       </div>
@@ -57,7 +57,7 @@
         <% if @component.certificates.present? %>
           <%= render partial: "certificates/list/certificate_table",
           locals: { certificates: @component.certificates,
-          heading: 'All certificates for this component'}
+          heading: t('components.all_certs_for_componenet') }
           %>
         <% end %>
       </div>
@@ -69,7 +69,7 @@
   <%= render "services/list/services_table" %>
 <% end %>
 
-<%= link_to 'Add service',
+<%= link_to t('components.add_service'),
     polymorphic_url([:new, @component, :service], component: @component),
     class: 'govuk-button', data: { module: "govuk-button" } %>
 

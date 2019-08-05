@@ -4,4 +4,5 @@ module COMPONENT_TYPE
   VSP = 'VspComponent'.freeze
   VSP_SHORT = 'VSP'.freeze
   MSA = 'MsaComponent'.freeze
+  MSA_SHORT = 'MSA'.freeze
 end

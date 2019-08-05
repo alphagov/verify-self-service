@@ -3,7 +3,7 @@
     <div class="govuk-accordion__section-header">
       <h2 class="govuk-accordion__section-heading">
         <span class="govuk-accordion__section-button" id="all-services-accordian">
-          All services
+          <%= t 'services.heading' %>
         </span>
       </h2>
     </div>
@@ -13,10 +13,10 @@
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
-            <th class="govuk-table__header">ID</th>
-            <th class="govuk-table__header">Name</th>
-            <th class="govuk-table__header">Entity ID</th>
-            <th class="govuk-table__header">Last updated</th>
+            <th class="govuk-table__header"><%= t 'certificates.header_id' %></th>
+            <th class="govuk-table__header"><%= t 'certificates.header_name' %></th>
+            <th class="govuk-table__header"><%= t 'components.entity_id' %></th>
+            <th class="govuk-table__header"><%= t 'certificates.header_last_updated' %></th>
           </tr>
         </thead>
         <tbody class="govuk-table__body">

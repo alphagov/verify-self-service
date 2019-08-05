@@ -1,11 +1,11 @@
 <table class="govuk-table">
-  <caption class="govuk-table__caption govuk-heading-m"><%=heading%></caption>
+  <caption class="govuk-table__caption govuk-heading-m"><%= t('certificates.caption', heading: heading) %></caption>
   <thead class="govuk-table__head">
   <tr class="govuk-table__row">
-    <th class="govuk-table__header" scope="col">Last updated</th>
-    <th class="govuk-table__header" scope="col">ID</th>
-    <th class="govuk-table__header" scope="col">Usage</th>
-    <th class="govuk-table__header" scope="col">Enabled</th>
+    <th class="govuk-table__header"><%= t 'certificates.header_last_updated' %></th>
+    <th class="govuk-table__header"><%= t 'certificates.header_id' %></th>
+    <th class="govuk-table__header"><%= t 'certificates.header_usage' %></th>
+    <th class="govuk-table__header"><%= t 'certificates.header_enabled' %></th>
     <th class="govuk-table__header" scope="col"></th>
   </tr>
   </thead>
@@ -30,7 +30,7 @@
                   component: @component,
                   certificate: certificate
                 ) do |f| %>
-                  <%= f.submit certificate.enabled ? 'Disable': 'Enable', class: 'govuk-button', data: { module: "govuk-button" } %>
+                  <%= f.submit certificate.enabled ? t('certificates.disable') : t('certificates.enable'), class: 'govuk-button', data: { module: "govuk-button" } %>
             <% end %>
         <% end %>
         </td>

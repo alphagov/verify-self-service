@@ -1,23 +1,23 @@
 <fieldset class="govuk-fieldset">
   <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-    <h1 class="govuk-fieldset__heading">Upload your MSA component</h1>
+    <h1 class="govuk-fieldset__heading"><%= t('components.upload_component', type: COMPONENT_TYPE::MSA_SHORT) %></h1>
   </legend>
 
   <%= error_messages_for(@component&.errors)%>
   <%= form_for @component, url: msa_components_path, as: :component do |f| %>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:name) %>">
-      <h3 class="govuk-heading-m">MSA Component name</h3>
+      <h3 class="govuk-heading-m"><%= t('components.component_name_field', type: COMPONENT_TYPE::MSA_SHORT) %></h3>
       <%=error_message_on(f.object.errors, :name) %>
       <%= f.text_field :name, class: "govuk-input#{@component.errors.key?(:name) ? ' govuk-input--error' : ''}" %>
     </div>
 
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:entity_id) %>">
-      <h3 class="govuk-heading-m">MSA Component Entity ID</h3>
+      <h3 class="govuk-heading-m"><%= t('components.component_entity_id', type: COMPONENT_TYPE::MSA_SHORT) %></h3>
       <%=error_message_on(f.object.errors, :entity_id) %>
       <%= f.text_field :entity_id, class: "govuk-input#{@component.errors.key?(:entity_id) ? ' govuk-input--error' : ''}" %>
     </div>
     <div class="govuk-form-group">
-        <%=f.submit "Create MSA component", class: "govuk-button", data: { module: "govuk-button" } %>
+        <%=f.submit t('components.create_component', type: COMPONENT_TYPE::MSA_SHORT), class: "govuk-button", data: { module: "govuk-button" } %>
     </div>
   <% end %>
 </fieldset>

@@ -33,5 +33,7 @@ module VerifySelfService
     # we have our own way of styling errors, so we don't need this behaviour:
     config.action_view.field_error_proc = Proc.new { |html_tag| html_tag }
 
+    config.i18n.default_locale = :en
+
   end
 end
