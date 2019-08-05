@@ -17,17 +17,17 @@ module Devise
         else
           resp = initiate_auth(params[:email], params[:password])
         end
-        return process_response(resp, params) if resp.present?
+        return process_response(resp) if resp.present?
 
         raise StandardError("No Response Back from AWS to process")
       end
 
-      def process_response(resp, params)
+      def process_response(resp)
         if resp.challenge_name.present?
-          create_challenge_flow(resp, params)
+          create_challenge_flow(resp)
         else
-            # Get User Information
-          auth_complete(resp, params)
+          # Get User Information
+          auth_complete(resp)
         end
         self
       end
@@ -67,19 +67,18 @@ module Devise
         )
       end
 
-      def create_challenge_flow(resp, params)
+      def create_challenge_flow(resp)
         self.challenge_name = resp[:challenge_name]
         self.cognito_session_id = resp[:session]
         self.challenge_parameters = resp[:challenge_parameters]
-        self.email = params[:email]
         self
       end
 
-      def auth_complete(resp, params)
+      def auth_complete(resp)
         access_token = resp[:authentication_result][:access_token]
         aws_user = get_user_info(access_token)
         user_attributes = get_user_attributes(aws_user)
-        self.login_id = params[:email]
+        self.login_id = user_attributes['email']
         self.user_id = aws_user.username
         self.email = user_attributes['email']
         self.phone_number = user_attributes['phone_number']

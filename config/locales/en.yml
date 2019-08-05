@@ -52,7 +52,6 @@ en:
     id: "User ID: "
     given_name: "Given Name: "
     family_name: "Family Name: "
-    organisation: "Organisation: "
     roles: "Roles: "
     email: "E-mail address: "
     phone: "Phone number: "

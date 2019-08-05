@@ -20,7 +20,6 @@ RSpec.describe SessionsController, type: :controller do
     post :create, params: { user: { email: username, password: 'validpass' } }
     expect(response).to have_http_status(:redirect)
     expect(session[:cognito_session_id]).to eq(cognito_session_id)
-    expect(session[:username]).to eq(username)
     expect(session[:challenge_name]).to eq(challenge_name)
     expect(subject).to redirect_to(new_user_session_path)
   end
@@ -33,7 +32,6 @@ RSpec.describe SessionsController, type: :controller do
     session[:challenge_name] = 'SOFTWARE_TOKEN_MFA'
     session[:cognito_session_id] = SecureRandom.uuid
     session[:challenge_parameters] = { 'FRIENDLY_DEVICE_NAME' => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }
-    session[:username] = 'test@test.com'
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: 'test@test.com', totp_code: '999999' } }
     expect(response).to have_http_status(:redirect)
@@ -41,6 +39,5 @@ RSpec.describe SessionsController, type: :controller do
     expect(session[:challenge_name]).to be_nil
     expect(session[:cognito_session_id]).to be_nil
     expect(session[:challenge_parameters]).to be_nil
-    expect(session[:username]).to be_nil
   end
 end

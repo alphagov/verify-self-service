@@ -6,5 +6,5 @@
 <div class="govuk-form-group">
   <%= f.label :totp_code, class: "govuk-label" %>
   <%= f.text_field :totp_code, autofocus: true, class: "govuk-input" %>
-  <%= f.hidden_field :email, value: session[:username] %>
+  <%= f.hidden_field :email, value: { email: false } %>
 </div>

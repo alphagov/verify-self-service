@@ -46,11 +46,9 @@ module Devise
         session[:challenge_name] = resource.challenge_name
         session[:cognito_session_id] = resource.cognito_session_id
         session[:challenge_parameters] = resource.challenge_parameters
-        session[:username] = resource.email
       end
 
       def populate_auth_params(auth_params)
-        auth_params[:email] = session[:username]
         auth_params[:cognito_session_id] = session[:cognito_session_id]
         auth_params[:challenge_name] = session[:challenge_name]
         auth_params[:challenge_parameters] = session[:challenge_parameters]
@@ -63,7 +61,6 @@ module Devise
         session.delete(:challenge_name)
         session.delete(:cognito_session_id)
         session.delete(:challenge_parameters)
-        session.delete(:username)
       end
     end
   end

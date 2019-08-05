@@ -34,7 +34,6 @@ RSpec.describe 'Sign in', type: :system do
     expect(current_path).to eql root_path
     expect(page).to have_content 'Signed in successfully.'
     # Ensure session is cleaned up from flow
-    expect(page.get_rack_session.has_key?(:username)).to eql false
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
