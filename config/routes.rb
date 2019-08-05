@@ -4,7 +4,8 @@ Rails.application.routes.draw do
   
   root 'components#index'
 
-  #if Rails.env.development?    TODO: enable in follow up ticket to create the user journey
+  get '/admin', to: 'components#index'
+
   resources :sp_components, path: 'admin/sp-components' do
     resources :services
     resources :certificates do
@@ -26,10 +27,9 @@ Rails.application.routes.draw do
       end
     end
   end
-  #end
 
-  get '/events', to: 'events#index'
-  get '/events/:page', to: 'events#page'
+  get '/admin/events', to: 'events#index'
+  get '/admin/events/:page', to: 'events#page'
 
   if %w(test development).include? Rails.env
     # Dashboard

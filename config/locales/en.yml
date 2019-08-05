@@ -91,7 +91,6 @@ en:
       message: "%{message}"
       problem: There is a problem
       authorisation: You are not authorised to perform this action
-
   components:
     title: Manage certificates
     name: Name
@@ -114,3 +113,6 @@ en:
     all_certs: All certificates
     all_certs_for_componenet: All certificates for this component
     add_service: Add service
+  admin:
+    title: Admin
+    view_components: View components
