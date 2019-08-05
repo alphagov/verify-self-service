@@ -45,10 +45,10 @@ en:
     disable: Disable
     upload: Upload your certificate
     previous: Previous
-  dashboard: 
+  profile: 
     title: Dashboard
     welcome: Welcome
-    profile: "Profile"
+    heading: Profile
     id: "User ID: "
     given_name: "Given Name: "
     family_name: "Family Name: "
