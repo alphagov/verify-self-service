@@ -1,7 +1,6 @@
-<h2 class="govuk-heading-l">Log in - One Time Password Request</h2>
+<h2 class="govuk-heading-l"><%= t('login.mfa_heading') %></h2>
 
-<p class="govuk-body-l">Please enter your one time code from
-<%= session[:challenge_parameters]["FRIENDLY_DEVICE_NAME"] %>.</p>
+<p class="govuk-body-l"><%= t('login.mfa_heading', device_name: session[:challenge_parameters]["FRIENDLY_DEVICE_NAME"]) %></p>
 
 <div class="govuk-form-group">
   <%= f.label :totp_code, class: "govuk-label" %>
