@@ -1,11 +1,12 @@
  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <% if session[:challenge_name].present? %>
+  <% if session[:challenge_name] == "SOFTWARE_TOKEN_MFA" %>
       <%= render "mfa_form", f:f %>
+  <% elsif session[:challenge_name] == "NEW_PASSWORD_REQUIRED" %>
+      <%= render "new_password_required_form", f:f %>
   <% else %>
       <%= render "sign_in_form", f:f %>
   <% end %>
     <div class="actions">
-      <%= button_tag "Reset", type: :reset, class: "govuk-button--warning govuk-button", data: { module: "govuk-button" } %>
       <%= f.submit "Log in", class: "govuk-button", data: { module: "govuk-button" } %>
     </div>
 <% end %>

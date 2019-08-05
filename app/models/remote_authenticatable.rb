@@ -13,7 +13,7 @@ module Devise
       #
       def remote_authentication(params)
         if params.key?(:cognito_session_id)
-          resp = send_2fa(params[:email], params[:cognito_session_id], params[:totp_code])
+          resp = respond_to_challenge(params)
         else
           resp = initiate_auth(params[:email], params[:password])
         end
@@ -24,7 +24,7 @@ module Devise
 
       def process_response(resp, params)
         if resp.challenge_name.present?
-          create_2fa_flow(resp, params)
+          create_challenge_flow(resp, params)
         else
             # Get User Information
           auth_complete(resp, params)
@@ -43,19 +43,31 @@ module Devise
         )
       end
 
-      def send_2fa(email, session_id, totp_code)
+      def respond_to_challenge(params)
+        challenge_name = params[:challenge_name]
+        case challenge_name
+        when 'NEW_PASSWORD_REQUIRED'
+          challenge_responses = {
+            "USERNAME": params[:challenge_parameters]['USER_ID_FOR_SRP'],
+            "NEW_PASSWORD": params[:new_password],
+            "userAttributes.given_name": "Tester", #temporary until we can create users with name
+            "userAttributes.family_name": "Testerator"
+          }
+        when 'SOFTWARE_TOKEN_MFA'
+          challenge_responses = {
+            "USERNAME": params[:challenge_parameters]['USER_ID_FOR_SRP'],
+            "SOFTWARE_TOKEN_MFA_CODE": params[:totp_code]
+          }
+        end
         SelfService.service(:cognito_client).respond_to_auth_challenge(
           client_id: cognito_client_id,
-          session: session_id,
-          challenge_name: 'SOFTWARE_TOKEN_MFA',
-          challenge_responses: {
-            "USERNAME": email,
-            "SOFTWARE_TOKEN_MFA_CODE": totp_code
-          }
+          session: params[:cognito_session_id],
+          challenge_name: challenge_name,
+          challenge_responses: challenge_responses
         )
       end
 
-      def create_2fa_flow(resp, params)
+      def create_challenge_flow(resp, params)
         self.challenge_name = resp[:challenge_name]
         self.cognito_session_id = resp[:session]
         self.challenge_parameters = resp[:challenge_parameters]

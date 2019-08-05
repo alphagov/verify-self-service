@@ -11,7 +11,7 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user can sign in with valid credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: nil, authentication_result: {access_token: "valid-token" }})
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { authentication_result: {access_token: "valid-token" }})
 
     user = FactoryBot.create(:user)
     sign_in(user.email, user.password)
@@ -21,8 +21,8 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user can sign in with valid 2FA credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { "FRIENDLY_DEVICE_NAME" => 'Authy' }})
-    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { challenge_name: nil, authentication_result: {access_token: "valid-token" }})
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'FRIENDLY_DEVICE_NAME' => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }})
+    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { authentication_result: {access_token: 'valid-token' }})
 
     user = FactoryBot.create(:user)
     sign_in(user.email, user.password)
@@ -41,7 +41,7 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user cant sign in with wrong 2FA credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { "FRIENDLY_DEVICE_NAME" => 'Authy' }})
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { "FRIENDLY_DEVICE_NAME" => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }})
     SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, "Stub Response"))
 
     user = FactoryBot.create(:user)

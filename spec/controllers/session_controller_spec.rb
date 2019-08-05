@@ -27,12 +27,12 @@ RSpec.describe SessionsController, type: :controller do
 
   it 'Return to index if users successfully responds to TOTP request' do
     strategy = Devise::Strategies::RemoteAuthenticatable.new(nil)
-    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, challenge_name: nil, authentication_result: { access_token: 'valid-token' })
+    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, authentication_result: { access_token: 'valid-token' })
     allow(request).to receive(:headers).and_return(user: 'name')
     allow(strategy).to receive(:params).at_least(:once).and_return(user: 'name')
-    session[:challenge_name] = 'MFA'
+    session[:challenge_name] = 'SOFTWARE_TOKEN_MFA'
     session[:cognito_session_id] = SecureRandom.uuid
-    session[:challenge_parameters] = { 'FRIENDLY_DEVICE_NAME' => 'Authy' }
+    session[:challenge_parameters] = { 'FRIENDLY_DEVICE_NAME' => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }
     session[:username] = 'test@test.com'
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: 'test@test.com', totp_code: '999999' } }
