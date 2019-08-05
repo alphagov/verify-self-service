@@ -56,7 +56,7 @@ RSpec.describe SessionsController, type: :controller do
     expect(subject).to redirect_to(new_user_session_path)
   end
 
-  it 'Return to index if users successfully responds to TOTP request' do
+  it 'Return to index if users successfully set their new password' do
     strategy = Devise::Strategies::RemoteAuthenticatable.new(nil)
     SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, authentication_result: { access_token: 'valid-token' })
     allow(request).to receive(:headers).and_return(user: 'name')

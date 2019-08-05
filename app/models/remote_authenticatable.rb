@@ -84,7 +84,7 @@ module Devise
         self.phone_number = user_attributes['phone_number']
         self.access_token = access_token
         self.roles = user_attributes['custom:roles']
-        self.permissions = UserRolePermissions.new(user_attributes['custom:roles'], params[:email])
+        self.permissions = UserRolePermissions.new(user_attributes['custom:roles'], user_attributes['email'])
         self.full_name = "#{user_attributes['given_name']} #{user_attributes['family_name']}"
         self.given_name = user_attributes['given_name']
         self.family_name = user_attributes['family_name']
