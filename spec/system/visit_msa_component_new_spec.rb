@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'New MSA Component Page', type: :system do
   before(:each) do
-    login_user
+    login_certificate_manager_user
   end
   let(:entity_id) { 'http://test-entity-id' }
   context 'creation is successful' do

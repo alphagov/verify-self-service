@@ -1,14 +1,16 @@
 require_relative 'remote_authenticatable'
 
 class User
+  include ActiveModel::Serialization
+  include ActiveModel::AttributeAssignment
   include ActiveModel::Validations #required because some before_validations are defined in devise
   extend ActiveModel::Callbacks #required to define callbacks
   extend Devise::Models
 
   # create getter and setter methods internally for the fields below
-  attr_accessor :email, :access_token, :challenge_name, :cognito_session_id, :challenge_parameters,
-                :organisation, :roles, :full_name, :family_name, :given_name, :phone_number,
-                :user_id, :login_id, :password, :totp_code
+  attr_accessor :email, :access_token, :challenge_name, :cognito_session_id,
+                :challenge_parameters, :roles, :full_name, :family_name, :given_name,
+                :phone_number, :user_id, :login_id, :password, :totp_code, :permissions
 
   #required by Devise
   define_model_callbacks :validation
@@ -20,4 +22,8 @@ class User
   def initialize(options = {}); end
 
   def save!; end
+
+  def attributes
+    super.merge(roles: nil, permissions: nil)
+  end
 end

@@ -41,6 +41,7 @@ gem 'aws-sdk-s3'
 gem 'aws-sdk-cognitoidentityprovider'
 
 gem 'devise'
+gem 'pundit'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
