@@ -1,0 +1,56 @@
+<h1 class="govuk-heading-xl"><%= t 'users.invite.title' %></h1>
+
+<%= form_for @form, url: invite_new_user_path, class: 'govuk-form-group' do |f| %>
+
+  <div class="govuk-form-group">
+    <%= f.label :email, class: "govuk-label" %>
+    <%= f.email_field :email, autofocus: true, class: "govuk-input" %>
+  </div>
+
+  <div class="govuk-form-group">
+    <%= f.label :given_name, class: "govuk-label" %>
+    <%= f.text_field :given_name, class: "govuk-input" %>
+  </div>
+
+  <div class="govuk-form-group">
+    <%= f.label :family_name, class: "govuk-label" %>
+    <%= f.text_field :family_name, class: "govuk-input" %>
+  </div>
+
+  <div class="govuk-radios govuk-radios--inline">
+    <div class="govuk-radios__item">
+      <%= f.radio_button :mfa, 'SOFTWARE_TOKEN_MFA', checked: true, class: 'govuk-radios__input'  %>
+      <%= f.label :mfa, 'SOFTWARE_TOKEN_MFA', class: 'govuk-label govuk-radios__label' %>
+    </div>
+    <div class="govuk-radios__item">
+      <%= f.radio_button :mfa, 'SMS', disabled: true, class: 'govuk-radios__input'  %>
+      <%= f.label :mfa, 'SMS', class: 'govuk-label govuk-radios__label' %>
+    </div>
+  </div>
+
+  <div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <div class="govuk-checkboxes">
+      <div class="govuk-checkboxes__item">
+        <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::CERTIFICATE_MANAGER, nil) %>
+        <%= f.label :roles, t("users.roles.#{ROLE::CERTIFICATE_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
+      </div>
+      <div class="govuk-checkboxes__item">
+        <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::USER_MANAGER, nil) %>
+        <%= f.label :roles, t("users.roles.#{ROLE::USER_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
+      </div>
+      <!-- TODO: hide or move away for non-gds users -->
+      <div class="govuk-checkboxes__item">
+        <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::GDS, nil) %>
+        <%= f.label :roles, 'GDS', class: 'govuk-label govuk-checkboxes__label' %>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+  <!-- TODO: Add team once ready -->
+
+  <div class="actions">
+    <%= f.submit t('users.invite.button'), class: "govuk-button", data: { module: "govuk-button" } %>
+  </div>
+<% end %>

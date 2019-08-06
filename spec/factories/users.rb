@@ -12,7 +12,7 @@ FactoryBot.define do
     family_name  { "Smith" }
     email { "test@test.test" }
     password { "validpassword" }
-    roles { "certmgr" }
-    permissions { UserRolePermissions.new("certmgr", nil) }
+    roles { ROLE::CERTIFICATE_MANAGER }
+    permissions { UserRolePermissions.new(ROLE::CERTIFICATE_MANAGER, nil) }
   end
 end

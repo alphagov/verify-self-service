@@ -36,6 +36,15 @@ en:
     mfa_description: "Please enter your one time code from %{device_name}."
     new_password_heading: Set up your new password
     new_password_description: This is first time you're logging in, please set your password.
+  users:
+    title: Team members
+    invite_button: Invite a new user
+    invite:
+      title: Invite a new user
+      button: Invite user
+    roles:
+      certmgr: Manage certificates
+      usermgr: Add, edit and remove team members
   certificates:
     caption: "%{heading}"
     header_id: ID

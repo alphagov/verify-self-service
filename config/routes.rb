@@ -28,6 +28,10 @@ Rails.application.routes.draw do
   get '/events', to: 'events#index'
   get '/events/:page', to: 'events#page'
 
+  get '/users', to: 'users#index', as: :users
+  get '/users/invite', to: 'users#invite', as: :invite_user
+  post '/users/invite', to: 'users#new', as: :invite_new_user
+
   if %w(test development).include? Rails.env
     # Dashboard
     get 'profile', to: 'profile#show'
