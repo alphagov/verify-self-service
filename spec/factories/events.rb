@@ -10,6 +10,6 @@ FactoryBot.define do
   end
 
   factory :new_team_event do
-    name { 'fake team name' }
+    name { 'Team Awesome' }
   end
 end

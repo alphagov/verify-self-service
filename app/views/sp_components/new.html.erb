@@ -3,7 +3,7 @@
     <h1 class="govuk-fieldset__heading"><%= t('components.upload_component', type: COMPONENT_TYPE::SP_SHORT) %></h1>
   </legend>
 
-  <%= error_messages_for(@component&.errors)%>
+  <%= error_messages_for(@component.errors)%>
   <%= form_for @component, url: sp_components_path, as: :component do |f| %>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:name) %>">
       <h3 class="govuk-heading-m"><%= t('components.component_name_field', type: COMPONENT_TYPE::SP_SHORT) %></h3>

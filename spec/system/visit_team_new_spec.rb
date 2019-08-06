@@ -9,9 +9,9 @@ RSpec.describe 'New Team Page', type: :system do
     it 'when a valid name' do
       visit new_admin_team_path
       fill_in 'team_name', with: team_name
-      click_button 'Create Team'
+      click_button t('team.new.create_team')
 
-      expect(page).to have_content 'Teams'
+      expect(page).to have_content t('team.heading')
       expect(page).to have_content team_name
     end
   end
@@ -19,23 +19,23 @@ RSpec.describe 'New Team Page', type: :system do
   context 'creation fails' do
     it 'when name is not specified' do
       visit new_admin_team_path
-      click_button 'Create Team'
+      click_button t('team.new.create_team')
 
-      expect(page).to have_content 'Add a Team'
-      expect(page).to have_content "Name can't be blank"
+      expect(page).to have_content t('team.new.heading')
+      expect(page).to have_content t('common.error_blank_name')
     end
 
     it 'when name is not unique' do
       visit new_admin_team_path
       fill_in 'team_name', with: team_name
-      click_button 'Create Team'
+      click_button t('team.new.create_team')
 
       visit new_admin_team_path
       fill_in 'team_name', with: team_name
-      click_button 'Create Team'
+      click_button t('team.new.create_team')
 
-      expect(page).to have_content 'Add a Team'
-      expect(page).to have_content 'Name has already been taken'
+      expect(page).to have_content t('team.new.heading')
+      expect(page).to have_content t('common.error_name_not_unique')
     end
   end
 end

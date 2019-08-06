@@ -21,7 +21,7 @@ class AggregatedEvent < Event
   end
 
   def apply_and_persist_changes_to_aggregate
-    self.aggregate.lock! if self.aggregate.persisted?
+    self.aggregate.lock! if aggregate_exists_and_unchanged?
 
     self.aggregate.assign_attributes(attributes_to_apply)
 
@@ -35,5 +35,11 @@ class AggregatedEvent < Event
 
   def name_is_present
     errors.add(:name, "can't be blank") unless name.present?
+  end
+
+private
+
+  def aggregate_exists_and_unchanged?
+    self.aggregate.persisted? && !self.aggregate.changed?
   end
 end

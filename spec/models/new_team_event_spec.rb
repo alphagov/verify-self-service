@@ -17,8 +17,8 @@ RSpec.describe NewTeamEvent, type: :model do
   context 'creation fails' do
     it 'when name is not given' do
       event = NewTeamEvent.create
-      error_message_on_name = event.errors.full_messages_for(:name)
-      expect(error_message_on_name).to eq ["Name can't be blank"]
+      error_message_on_name = event.errors.full_messages_for(:name).first
+      expect(error_message_on_name).to eq "Name can't be blank"
     end
   end
 end

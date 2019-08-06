@@ -1,0 +1,18 @@
+
+<h1 class="govuk-heading-l"><%=t('admin.edit.heading')%> <%= @msa_component.component_type %></h1>
+
+<%= error_messages_for(@msa_component.errors)%>
+<h1 class="govuk-heading-xl"><%= @msa_component.name %></h1>
+
+<%= form_for  @msa_component , url: msa_component_path, as: :component do |f| %>
+  <div class="govuk-form-group <%= 'govuk-form-group--error' if  @msa_component.errors.key?(:name) %>">
+    <%=error_message_on(f.object.errors, :name) %>
+    <%= f.select(:team_id, @teams.map{|t|[t.name, t.id]},
+      {include_blank: 'Select'},
+      {class: 'govuk-select'}) 
+    %>
+  </div>
+  <div class="govuk-form-group">
+    <%=f.submit t('admin.associate_team'), class: "govuk-button" %>
+ </div>
+<%end %>

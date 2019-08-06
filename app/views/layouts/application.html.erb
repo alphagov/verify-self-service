@@ -44,12 +44,10 @@
             <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
               <% if user_signed_in? %>
               <li class="govuk-header__navigation-item">
-                <a class="govuk-header__link" href="#2">
-                  <%= link_to 'Admin', admin_teams_path, class: "govuk-header__link" %>
-                </a>
+                <%= link_to t('layout.application.admin_link') , admin_teams_path, class: "govuk-header__link" %>
               </li>
               <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
-                <%= link_to 'Sign out', destroy_user_session_path, confirm: 'Sign Out', method: :delete, class: "govuk-header__link" %>
+                <%= link_to t('layout.application.sign_out_link'), destroy_user_session_path, confirm: t('layout.application.sign_out_link'), method: :delete, class: "govuk-header__link" %>
               </li>
               <% end %>
             </ul>

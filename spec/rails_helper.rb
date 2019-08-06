@@ -72,4 +72,5 @@ RSpec.configure do |config|
   Capybara.server = :puma, { Silent: true }
   config.include Warden::Test::Helpers
   config.include Devise::Test::ControllerHelpers, :type => :controller
+  config.include AbstractController::Translation
 end

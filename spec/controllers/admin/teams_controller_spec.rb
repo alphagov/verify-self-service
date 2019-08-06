@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'admin/teams_controller'
 RSpec.describe Admin::TeamsController, type: :controller do
   include AuthSupport
   
@@ -20,5 +19,4 @@ RSpec.describe Admin::TeamsController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
-
 end

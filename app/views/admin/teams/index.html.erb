@@ -1,10 +1,10 @@
-<h1 class="govuk-heading-xl">Teams</h1>
+<h1 class="govuk-heading-xl"><%= t('team.heading') %></h1>
 
 <% if @teams.present? %>
   <table class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col">Name</th>
+        <th class="govuk-table__header" scope="col"><%=t('team.name')%></th>
       </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -18,5 +18,5 @@
   
 <% end %>
 
-<%= link_to 'Add new team', new_admin_team_path, class: "govuk-button govuk-button--start", role:"button", draggable:"false" %>
+<%= link_to t('team.add_team'), new_admin_team_path, class: "govuk-button", role:"button", draggable:"false" %>
 

@@ -9,12 +9,12 @@ class Admin::TeamsController < ApplicationController
   end
 
   def create
-    @team_event = NewTeamEvent.create(team_params)
-    @team = @team_event.team
-    if @team.valid? && @team_event.valid?
-      redirect_to admin_teams_url
+    team_event = NewTeamEvent.create(team_params)
+    @team = team_event.team
+    if @team.valid? && team_event.valid?
+      redirect_to admin_teams_path
     else
-      @team.errors.merge!(@team_event.errors)
+      @team.errors.merge!(team_event.errors)
       Rails.logger.info(@team.errors.full_messages)
       render :new
     end
