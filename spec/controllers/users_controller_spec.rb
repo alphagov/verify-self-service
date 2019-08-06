@@ -4,7 +4,7 @@ RSpec.describe UsersController, type: :controller do
   include AuthSupport
 
   before(:each) do
-    user_stub_auth
+    usermgr_stub_auth
   end
 
   describe '#index' do

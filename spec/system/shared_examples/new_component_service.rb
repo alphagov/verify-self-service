@@ -1,7 +1,7 @@
 RSpec.shared_examples "new component page" do |component_name|
 
   before(:each) do
-    login_user
+    login_component_manager_user
   end
 
   let(:service_name) { 'Here to serve'}

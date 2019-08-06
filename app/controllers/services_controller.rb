@@ -2,6 +2,8 @@ class ServicesController < ApplicationController
   include ControllerConcern
   include ComponentConcern
 
+  before_action :check_authorisation
+
   def index
     component = component_by_klass_name(params)
     @services = component.services
@@ -26,6 +28,13 @@ class ServicesController < ApplicationController
   end
 
 private
+
+  def check_authorisation
+    authorize ServicesController
+  rescue Pundit::NotAuthorizedError
+    flash[:warn] = t('shared.errors.authorisation')
+    redirect_to root_path
+  end
 
   def component_by_klass_name(params)
     component_id = params[component_key(params)]

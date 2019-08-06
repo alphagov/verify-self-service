@@ -1,0 +1,2 @@
+class SpComponentsControllerPolicy < ComponentPolicy
+end

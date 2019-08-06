@@ -7,7 +7,7 @@ RSpec.describe 'the events page', type: :system do
   let(:component) { NewMsaComponentEvent.create(component_params).msa_component }
   let(:root) { PKI.new }
   before(:each) do
-    login_user
+    login_gds_user
   end
 
   it 'there are some events' do

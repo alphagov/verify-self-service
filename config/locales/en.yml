@@ -85,6 +85,7 @@ en:
     email: "E-mail address: "
     phone: "Phone number: "
     logout: logout
+    permissions: "Permissions: "
   events:
     title: Events
     type: Type
