@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'New SP Component Page', type: :system do
   before(:each) do
-    login_certificate_manager_user
+    login_component_manager_user
   end
   let(:entity_id) { 'http://test-entity-id' }
   context 'creation is successful' do

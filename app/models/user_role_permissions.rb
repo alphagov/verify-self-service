@@ -1,5 +1,5 @@
 class UserRolePermissions
-  attr_reader :component_management, :team_management, :user_management,
+  attr_reader :component_management, :team_management, :user_management, :event_management,
               :certificate_management, :read_components, :update_profile, :change_password
 
   # The string roles are defined as follows:
@@ -10,16 +10,21 @@ class UserRolePermissions
   def initialize(roles_str, email)
     all_users
     roles = roles_str.nil? ? [] : roles_str.split(',').map(&:strip)
-<<<<<<< HEAD
     user_manager if roles.include?(ROLE::USER_MANAGER)
     cert_manager if roles.include?(ROLE::CERTIFICATE_MANAGER)
+    component_manager if roles.include?(ROLE::COMPONENT_MANAGER)
     gds_user if roles.include?(ROLE::GDS) && email.ends_with?("@digital.cabinet-office.gov.uk")
-=======
-    user_manager if roles.include?("usermgr")
-    cert_manager if roles.include?("certmgr")
-    component_manager if roles.include?("compmgr")
-    gds_user if roles.include?("gds") && email.ends_with?("@digital.cabinet-office.gov.uk")
->>>>>>> Updated certmgr role and added compmgr role
+  end
+
+  def to_s
+    "read_components = #{read_components}\n" +
+    "update_profile = #{update_profile}\n" +
+    "change_password = #{change_password}\n" +
+    "certificate_management = #{certificate_management}\n" +
+    "component_management = #{component_management}\n" +
+    "team_management = #{team_management}\n" +
+    "user_management = #{user_management}\n" +
+    "event_managemnt = #{event_managemnt}"
   end
 
 private
@@ -32,6 +37,7 @@ private
     @component_management = false
     @team_management = false
     @user_management = false
+    @event_management = false
   end
 
   def cert_manager
@@ -39,6 +45,7 @@ private
   end
 
   def component_manager
+    @certificate_management = true
     @component_management = true
   end
 
@@ -47,9 +54,9 @@ private
   end
 
   def gds_user
+    @event_management = true
     @component_management = true
     @certificate_management = true
-    @component_management = true
     @user_management = true
     @team_management = true
   end

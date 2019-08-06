@@ -4,7 +4,7 @@ RSpec.describe 'UploadPage', type: :system do
   include CertificateSupport
 
   before(:each) do
-    login_user
+    login_certificate_manager_user
   end
 
   entity_id = 'http://test-entity-id'

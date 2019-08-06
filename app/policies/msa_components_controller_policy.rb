@@ -1,0 +1,2 @@
+class MsaComponentsControllerPolicy < ComponentPolicy
+end
