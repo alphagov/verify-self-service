@@ -31,7 +31,6 @@ def stub_client
       { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
       { name: 'custom:roles', value: 'test' },
       { name: 'email_verified', value: 'true' },
-      { name: 'custom:organisation', value: 'Dummy Org' },
       { name: 'phone_number_verified', value: 'true' },
       { name: 'phone_number', value: '+447000000000' },
       { name: 'given_name', value: 'Test' },

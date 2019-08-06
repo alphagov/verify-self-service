@@ -30,6 +30,12 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  login:
+    heading: Log in
+    mfa_heading: Log in - One Time Password Request 
+    mfa_description: "Please enter your one time code from %{device_name}."
+    new_password_heading: Set up your new password
+    new_password_description: This is first time you're logging in, please set your password.
   certificates:
     caption: "%{heading}"
     header_id: ID
@@ -52,7 +58,6 @@ en:
     id: "User ID: "
     given_name: "Given Name: "
     family_name: "Family Name: "
-    organisation: "Organisation: "
     roles: "Roles: "
     email: "E-mail address: "
     phone: "Phone number: "

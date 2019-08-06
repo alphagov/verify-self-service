@@ -10,7 +10,7 @@ class User
   # create getter and setter methods internally for the fields below
   attr_accessor :email, :access_token, :challenge_name, :cognito_session_id,
                 :challenge_parameters, :roles, :full_name, :family_name, :given_name,
-                :phone_number, :user_id, :login_id, :password, :totp_code, :permissions
+                :phone_number, :user_id, :login_id, :password, :new_password, :totp_code, :permissions
 
   #required by Devise
   define_model_callbacks :validation

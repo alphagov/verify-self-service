@@ -13,8 +13,8 @@ module Devise
           begin
             if validate(resource)
               resource = resource.remote_authentication(auth_params)
-              if resource.access_token.nil?
-                populate_session_for_2fa(resource)
+              if resource.challenge_name
+                populate_session_for_auth_challenge(resource)
                 redirect!(Rails.application.routes.url_helpers.new_user_session_path)
               else
                 clean_up_session
@@ -42,15 +42,13 @@ module Devise
 
       private
 
-      def populate_session_for_2fa(resource)
+      def populate_session_for_auth_challenge(resource)
         session[:challenge_name] = resource.challenge_name
         session[:cognito_session_id] = resource.cognito_session_id
         session[:challenge_parameters] = resource.challenge_parameters
-        session[:username] = resource.email
       end
 
       def populate_auth_params(auth_params)
-        auth_params[:email] = session[:username]
         auth_params[:cognito_session_id] = session[:cognito_session_id]
         auth_params[:challenge_name] = session[:challenge_name]
         auth_params[:challenge_parameters] = session[:challenge_parameters]
@@ -63,7 +61,6 @@ module Devise
         session.delete(:challenge_name)
         session.delete(:cognito_session_id)
         session.delete(:challenge_parameters)
-        session.delete(:username)
       end
     end
   end

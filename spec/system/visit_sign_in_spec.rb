@@ -11,7 +11,7 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user can sign in with valid credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: nil, authentication_result: {access_token: "valid-token" }})
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { authentication_result: {access_token: "valid-token" }})
 
     user = FactoryBot.create(:user)
     sign_in(user.email, user.password)
@@ -21,8 +21,8 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user can sign in with valid 2FA credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { "FRIENDLY_DEVICE_NAME" => 'Authy' }})
-    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { challenge_name: nil, authentication_result: {access_token: "valid-token" }})
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'FRIENDLY_DEVICE_NAME' => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }})
+    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { authentication_result: {access_token: 'valid-token' }})
 
     user = FactoryBot.create(:user)
     sign_in(user.email, user.password)
@@ -34,14 +34,13 @@ RSpec.describe 'Sign in', type: :system do
     expect(current_path).to eql root_path
     expect(page).to have_content 'Signed in successfully.'
     # Ensure session is cleaned up from flow
-    expect(page.get_rack_session.has_key?(:username)).to eql false
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
   end
 
   scenario 'user cant sign in with wrong 2FA credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { "FRIENDLY_DEVICE_NAME" => 'Authy' }})
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { "FRIENDLY_DEVICE_NAME" => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }})
     SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, "Stub Response"))
 
     user = FactoryBot.create(:user)
@@ -79,4 +78,24 @@ RSpec.describe 'Sign in', type: :system do
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content 'You need to sign in or sign up before continuing.'
   end
+
+  scenario 'user is forced to change their temporary password' do
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "NEW_PASSWORD_REQUIRED", session: SecureRandom.uuid, challenge_parameters: { 'FRIENDLY_DEVICE_NAME' => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }})
+    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { authentication_result: {access_token: 'valid-token' }})
+
+    user = FactoryBot.create(:user)
+    sign_in(user.email, user.password)
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content 'Set up your new password'
+
+    fill_in "user[new_password]", with: "000000"
+    click_button("commit")
+    expect(current_path).to eql root_path
+    expect(page).to have_content 'Signed in successfully.'
+    # Ensure session is cleaned up from flow
+    expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
+    expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
+    expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
+  end
+
 end

@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_in, keys: %i[totp_code])
+    devise_parameter_sanitizer.permit(:sign_in, keys: %i[totp_code new_password])
   end
 
   # Sets the current user into a named Thread location so that it can be accessed by models and observers
