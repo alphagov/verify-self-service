@@ -43,12 +43,12 @@ class UsersController < ApplicationController
         #TODO: Enroll user to MFA
       rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException,
              Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e
-        flash.now[:errors] = "The user already exists"
+        flash.now[:errors] = t('users.invite.errors.already_exists')
       rescue StandardError => e
-        flash.now[:errors] = "There was an error creating the user"
+        flash.now[:errors] = t('users.invite.errors.generic_error')
       end
       Rails.logger.error e if e
-      flash.now[:success] = "The user has been invited" unless e
+      flash.now[:success] = t('users.invite.success') unless e
       render :invite
     else
       flash.now[:errors] = @form.errors.full_messages.join(', ')

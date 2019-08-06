@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
@@ -9,7 +7,7 @@ RSpec.describe UsersController, type: :controller do
     user_stub_auth
   end
 
-  context '#index' do
+  describe '#index' do
     it 'renders the page' do
       get :index
       expect(response).to have_http_status(:success)
@@ -17,7 +15,7 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  context '#invite' do
+  describe '#invite' do
     it 'renders the invite page' do
       get :invite
       expect(response).to have_http_status(:success)
@@ -25,7 +23,7 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  context '#new' do
+  describe '#new' do
     it 'invites the user when all valid' do
       Rails.application.secrets.cognito_user_pool_id = "dummy"
       SelfService.service(:cognito_client).stub_responses(:admin_create_user, { user: { username:'test@test.test' } })

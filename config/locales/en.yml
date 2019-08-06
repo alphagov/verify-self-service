@@ -42,6 +42,10 @@ en:
     invite:
       title: Invite a new user
       button: Invite user
+      success: The user has been invited
+      errors:
+        already_exists: The user already exists
+        generic_error: There was an error creating the user
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
