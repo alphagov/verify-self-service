@@ -43,4 +43,13 @@ FactoryBot.define do
     roles { ROLE::COMPONENT_MANAGER }
     permissions { UserRolePermissions.new(ROLE::COMPONENT_MANAGER, nil) }
   end
+
+  factory :user_manager_user, class: User do
+    given_name { "Jane" }
+    family_name  { "Smith" }
+    email { "test@test.test" }
+    password { "validpassword" }
+    roles { "usermgr" }
+    permissions { UserRolePermissions.new("usermgr", nil) }
+  end
 end

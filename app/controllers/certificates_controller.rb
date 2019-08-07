@@ -2,8 +2,6 @@ class CertificatesController < ApplicationController
   include ControllerConcern
   include ComponentConcern
 
-  before_action :check_authorization
-
   def new
     component_id = params[component_key(params)]
     component_type = component_name_from_params(params)
@@ -75,13 +73,6 @@ class CertificatesController < ApplicationController
   end
 
 private
-
-  def check_authorization
-    authorize UploadCertificateEvent
-  rescue Pundit::NotAuthorizedError
-    flash[:warn] = t('shared.errors.authorisation')
-    redirect_to root_path
-  end
 
   def upload_params
     component_id = params[component_key(params)]
