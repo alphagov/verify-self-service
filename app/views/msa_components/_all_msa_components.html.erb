@@ -1,11 +1,12 @@
-<h2 class="govuk-heading-l"><%= t('components.component_heading', type: COMPONENT_TYPE::MSA_SHORT) %></h2>
 <% if @msa_components.present? %>
   <table class="govuk-table">
+   <caption class="govuk-table__caption govuk-heading-l"><%= t('components.component_heading', type: COMPONENT_TYPE::MSA_SHORT) %></caption>
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th class="govuk-table__header" scope="col"><%= t 'components.name' %></th>
         <th class="govuk-table__header" scope="col"><%= t 'components.entity_id' %></th>
-        <th class="govuk-table__header" scope="col"><%= t 'components.view' %></th>
+        <th class="govuk-table__header" scope="col"><%= t 'components.team' %></th>
+        <th class="govuk-table__header" scope="col"></th>
       </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -13,7 +14,11 @@
         <tr class="govuk-table__row">
           <td class="govuk-table__cell" scope="row"><%= component.name %></td>
           <td class="govuk-table__cell"><%= component.entity_id %></td>
-          <td class="govuk-table__cell"><%= link_to t('components.view_link'), msa_component_path(component) %></td>
+          <td class="govuk-table__cell"><%= component.team&.name %></td>
+          <td class="govuk-table__cell">
+            <%= link_to t('components.view_link'), msa_component_path(component) , class: 'govuk-button'  %>
+            <%= link_to t('components.associate_team'), edit_msa_component_path(component), class: 'govuk-button' %>
+          </td>
         </tr>
       <% end %>
     </tbody>

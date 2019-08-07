@@ -30,6 +30,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  common:
+    error_blank_name: Name can't be blank
+    error_name_not_unique: Name has already been taken
   login:
     heading: Log in
     mfa_heading: Log in - One Time Password Request 
@@ -87,7 +90,9 @@ en:
   layout:
     application:
       title: Verify Self-Service
+      admin_link: Admin
       skip_link: Skip to main content
+      sign_out_link: Sign out
       logo_text: GOV.UK
       service_name:  Verify Self Service Tool
       menu: Menu
@@ -109,10 +114,21 @@ en:
       message: "%{message}"
       problem: There is a problem
       authorisation: You are not authorised to perform this action
+  team:
+    heading: All teams
+    name: Name
+    add_team: Add new team
+    new:
+      heading: Add a team
+      team_name_field: Team name
+      create_team: Create team
+
+
+
   components:
     title: Manage certificates
     name: Name
-    view: View
+    team: Team
     entity_id: Entity ID
     view_link: View component
     upload: Upload
@@ -134,3 +150,6 @@ en:
   admin:
     title: Admin
     view_components: View components
+    associate_team: Associate team
+    edit:
+      heading: Associate team to 

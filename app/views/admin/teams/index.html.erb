@@ -1,0 +1,22 @@
+<h1 class="govuk-heading-xl"><%= t('team.heading') %></h1>
+
+<% if @teams.present? %>
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col"><%=t('team.name')%></th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <% @teams.reverse.each do |team| %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell" scope="row"><%= team.name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  
+<% end %>
+
+<%= link_to t('team.add_team'), new_admin_team_path, class: "govuk-button", role:"button", draggable:"false" %>
+

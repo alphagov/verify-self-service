@@ -1,6 +1,6 @@
 class MsaComponentsController < ApplicationController
   before_action :check_authorisation, only: %i(new create)
-
+  before_action :find_teams, only: %i[edit]
   def index
     @msa_components = MsaComponent.all
   end
@@ -23,6 +23,23 @@ class MsaComponentsController < ApplicationController
     end
   end
 
+  def edit
+    @msa_component = MsaComponent.find_by_id(params[:id])
+  end
+
+  def update
+    msa_component = MsaComponent.find_by_id(params[:id])
+    msa_component.team_id = params.dig(:component, :team_id)
+    event = ChangeComponentEvent.create(
+      component: msa_component
+    )
+    unless event.valid?
+      error_message = event.errors.full_messages
+      flash[:notice] = error_message
+    end
+    redirect_to msa_components_path
+  end
+
 private
 
   def check_authorisation
@@ -33,6 +50,10 @@ private
   end
 
   def component_params
-    params.require(:component).permit(:name, :entity_id)
+    params.require(:component).permit(:name, :entity_id, :team_id)
+  end
+
+  def find_teams
+    @teams = Team.all
   end
 end

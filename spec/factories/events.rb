@@ -8,4 +8,8 @@ FactoryBot.define do
     name { SecureRandom.alphanumeric }
     entity_id { 'https://test-entity-id' }
   end
+
+  factory :new_team_event do
+    name { 'Team Awesome' }
+  end
 end
