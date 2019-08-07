@@ -27,6 +27,7 @@ class MsaComponentsController < ApplicationController
     @msa_component = MsaComponent.find_by_id(params[:id])
   end
 
+<<<<<<< HEAD
   def update
     msa_component = MsaComponent.find_by_id(params[:id])
     msa_component.team_id = params.dig(:component, :team_id)
@@ -42,6 +43,8 @@ class MsaComponentsController < ApplicationController
 
 private
 
+=======
+>>>>>>> f1ad9cc... Moved RBAC to Application Controller
   def component_params
     params.require(:component).permit(:name, :entity_id, :team_id)
   end

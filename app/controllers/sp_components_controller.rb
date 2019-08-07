@@ -27,6 +27,7 @@ class SpComponentsController < ApplicationController
     @sp_component = SpComponent.find_by_id(params[:id])
   end
 
+<<<<<<< HEAD
   def update
     spcomponent = SpComponent.find_by_id(params[:id])
     spcomponent.team_id = params.dig(:component, :team_id)
@@ -42,6 +43,8 @@ class SpComponentsController < ApplicationController
 
 private
 
+=======
+>>>>>>> f1ad9cc... Moved RBAC to Application Controller
   def component_params
     params.require(:component).permit(:name, :component_type, :team_id)
   end

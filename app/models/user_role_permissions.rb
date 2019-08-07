@@ -17,14 +17,14 @@ class UserRolePermissions
   end
 
   def to_s
-    "read_components = #{read_components}\n" +
-    "update_profile = #{update_profile}\n" +
-    "change_password = #{change_password}\n" +
-    "certificate_management = #{certificate_management}\n" +
-    "component_management = #{component_management}\n" +
-    "team_management = #{team_management}\n" +
-    "user_management = #{user_management}\n" +
-    "event_managemnt = #{event_managemnt}"
+    "read_components = #{read_components}\n" \
+    "update_profile = #{update_profile}\n" \
+    "change_password = #{change_password}\n" \
+    "certificate_management = #{certificate_management}\n" \
+    "component_management = #{component_management}\n" \
+    "team_management = #{team_management}\n" \
+    "user_management = #{user_management}\n" \
+    "event_management = #{event_management}"
   end
 
 private
