@@ -6,8 +6,8 @@
         <li class="<%= 'active' if current_page?(root_path) %>">
           <a href="/" class="govuk-link--no-visited-state"><%= t 'components.title' %></a>
         </li>
-        <li class="<%= 'active' if current_page?("") %>"> <!-- path to be declared when created -->
-          <a href="#" class="govuk-link--no-visited-state"><%= t 'layout.main_layout.team_members' %></a>
+        <li class="<%= 'active' if 'users'.include?(params[:controller]) %>">
+          <a href="<%= users_path %>" class="govuk-link--no-visited-state"><%= t 'layout.main_layout.team_members' %></a>
         </li>
       </ul>
     </div>

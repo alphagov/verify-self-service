@@ -5,9 +5,9 @@ class UserRolePermissions
   def initialize(roles_str, email)
     all_users
     roles = roles_str.nil? ? [] : roles_str.split(',').map(&:strip)
-    user_manager if roles.include?("usermgr")
-    cert_manager if roles.include?("certmgr")
-    gds_user if roles.include?("gds") && email.ends_with?("@digital.cabinet-office.gov.uk")
+    user_manager if roles.include?(ROLE::USER_MANAGER)
+    cert_manager if roles.include?(ROLE::CERTIFICATE_MANAGER)
+    gds_user if roles.include?(ROLE::GDS) && email.ends_with?("@digital.cabinet-office.gov.uk")
   end
 
 private
