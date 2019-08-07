@@ -35,8 +35,8 @@
         </div>
         <div class="govuk-header__content">
 
-          <a href="#" class="govuk-header__link govuk-header__link--service-name">
-            <%= t 'layout.application.service_name' %>
+          <a href="#">
+            <%= link_to t('layout.application.service_name'), root_path, class: "govuk-header__link govuk-header__link--service-name" %>
           </a>
 
           <button type="button" role="button" class="govuk-header__menu-button js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation" data-module="govuk-button"><%= t 'layout.application.menu' %></button>
@@ -69,10 +69,10 @@
             </strong>
           </div>
         <% end %>
-        <%= content_for?(:main) ? yield(:main) : yield %>  
+        <%= content_for?(:main) ? yield(:main) : yield %>
       </main>
     </div>
-      
+
     <footer class="govuk-footer " role="contentinfo">
       <div class="govuk-width-container ">
         <div class="govuk-footer__meta">
@@ -92,7 +92,7 @@
         </div>
       </div>
     </footer>
-      
+
     <script>window.GOVUKFrontend.initAll()</script>
   </body>
 </html>
