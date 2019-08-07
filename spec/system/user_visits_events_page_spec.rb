@@ -19,7 +19,7 @@ RSpec.describe 'the events page', type: :system do
     UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_2, component: component)
     UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_3, component: component)
 
-    visit events_path
+    visit admin_events_path
     expect(page).to have_content good_cert_1
     expect(page).to have_content good_cert_2
     expect(page).to have_content good_cert_3
@@ -30,7 +30,7 @@ RSpec.describe 'the events page', type: :system do
       UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: root.generate_encoded_cert(expires_in: 2.months), component: component)
     end
 
-    visit events_path
+    visit admin_events_path
     expect(page).to have_selector('tbody tr', count: 25)
 
     click_on 'Next ›'

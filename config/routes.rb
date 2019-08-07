@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {sessions: "sessions"}
   
   root 'components#index'
-  resources :sp_components, path: 'sp-components' do
+
+  get '/admin', to: 'components#index'
+
+  resources :sp_components, path: 'admin/sp-components' do
     resources :services
     resources :certificates do
       member do
@@ -14,7 +17,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :msa_components, path: 'msa-components' do
+  resources :msa_components, path: 'admin/msa-components' do
     resources :services
     resources :certificates do
       member do
@@ -25,8 +28,8 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/events', to: 'events#index'
-  get '/events/:page', to: 'events#page'
+  get '/admin/events', to: 'events#index'
+  get '/admin/events/:page', to: 'events#page'
 
   if %w(test development).include? Rails.env
     # Dashboard
