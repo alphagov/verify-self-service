@@ -49,9 +49,7 @@ module Devise
         when 'NEW_PASSWORD_REQUIRED'
           challenge_responses = {
             "USERNAME": params[:challenge_parameters]['USER_ID_FOR_SRP'],
-            "NEW_PASSWORD": params[:new_password],
-            "userAttributes.given_name": "Tester", #temporary until we can create users with name
-            "userAttributes.family_name": "Testerator"
+            "NEW_PASSWORD": params[:new_password]
           }
         when 'SOFTWARE_TOKEN_MFA'
           challenge_responses = {
@@ -88,6 +86,7 @@ module Devise
         self.full_name = "#{user_attributes['given_name']} #{user_attributes['family_name']}"
         self.given_name = user_attributes['given_name']
         self.family_name = user_attributes['family_name']
+        self.mfa = aws_user.preferred_mfa_setting
         self
       end
 
