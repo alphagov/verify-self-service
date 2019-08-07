@@ -12,10 +12,12 @@ class Admin::TeamsController < ApplicationController
     team_event = NewTeamEvent.create(team_params)
     @team = team_event.team
     if @team.valid? && team_event.valid?
+      flash.now[:success] = "#{@team.name} #{t('team.new.success')}."
       redirect_to admin_teams_path
     else
       @team.errors.merge!(team_event.errors)
       Rails.logger.info(@team.errors.full_messages)
+      flash.now[:errors] = "#{@team.name} #{t('team.errors.errored')} - #{@team.errors.full_messages.join(',')}."
       render :new
     end
   end

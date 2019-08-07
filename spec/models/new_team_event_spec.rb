@@ -1,15 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe NewTeamEvent, type: :model do
+  include CognitoSupport
+
   context 'on successful creation' do
     it 'is valid and persisted' do
-      team_event = create(:new_team_event)
+      stub_cognito_response(method: :create_group)
+      team_event = create(:new_team_event, name: 'The O Father')
       expect(team_event).to be_valid
       expect(team_event).to be_persisted
     end
 
     it 'has team event' do
-      team_event = create(:new_team_event)
+      stub_cognito_response(method: :create_group)
+      team_event = create(:new_team_event, name: 'J Snoop')
       expect(team_event).to eq NewTeamEvent.last
     end
   end

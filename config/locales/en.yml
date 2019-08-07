@@ -35,7 +35,7 @@ en:
     error_name_not_unique: Name has already been taken
   login:
     heading: Log in
-    mfa_heading: Log in - One Time Password Request 
+    mfa_heading: Log in - One Time Password Request
     mfa_description: Please enter your one time code from your authenticator app
     new_password_heading: Set up your new password
     new_password_description: This is first time you're logging in, please set your password.
@@ -44,7 +44,7 @@ en:
     no_qr: Unable to scan the QR code?
     no_qr_instructions: "Insert the code below in the authenticator app instead:"
     success: You have been successfully enroled to MFA, please login now
-    errors: 
+    errors:
       generic_error: "There was an error, please try again"
   users:
     title: Team members
@@ -129,6 +129,11 @@ en:
       heading: Add a team
       team_name_field: Team name
       create_team: Create team
+      success: created successfully
+    errors:
+      errored: errored
+      invalid: Invalid team name
+      failed: Failed to create team
 
 
 
@@ -159,4 +164,4 @@ en:
     view_components: View components
     associate_team: Associate team
     edit:
-      heading: Associate team to 
+      heading: Associate team to
