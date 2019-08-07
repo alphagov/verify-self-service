@@ -4,7 +4,8 @@ FactoryBot.define do
     family_name  { "Doe" }
     email { "test@test.test" }
     password { "validpassword" }
-    permissions { UserRolePermissions.new("", nil) }
+    roles { ROLE::USER_MANAGER }
+    permissions { UserRolePermissions.new(ROLE::USER_MANAGER, nil) }
   end
 
   factory :certificate_manager_user, class: User do

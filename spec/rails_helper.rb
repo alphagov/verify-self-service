@@ -73,4 +73,8 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers
   config.include Devise::Test::ControllerHelpers, :type => :controller
   config.include AbstractController::Translation
+
+  config.before(:each, :type => :controller) do
+    RequestStore.clear!
+  end
 end

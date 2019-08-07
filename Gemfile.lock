@@ -208,6 +208,8 @@ GEM
     rb-inotify (0.10.0)
       ffi (~> 1.0)
     regexp_parser (1.5.1)
+    request_store (1.4.1)
+      rack (>= 1.4)
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -322,6 +324,7 @@ DEPENDENCIES
   rack_session_access
   rails (~> 5.2.2)
   rails-controller-testing
+  request_store
   rspec-rails
   sass-rails (~> 5.0)
   selenium-webdriver
