@@ -47,7 +47,7 @@ RSpec.describe 'New Team Page', type: :system do
         method: :create_group,
         payload: Aws::CognitoIdentityProvider::Errors::InvalidParameterException.new(nil, nil, {})
       )
-      visit new_admin_team_path
+      visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 
@@ -60,7 +60,7 @@ RSpec.describe 'New Team Page', type: :system do
         method: :create_group,
         payload: Aws::CognitoIdentityProvider::Errors::ServiceError.new(nil, nil, {})
       )
-      visit new_admin_team_path
+      visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 

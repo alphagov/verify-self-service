@@ -1,5 +1,5 @@
 require 'rails_helper'
-RSpec.describe Admin::TeamsController, type: :controller do
+RSpec.describe TeamsController, type: :controller do
   include AuthSupport, CognitoSupport
 
   before(:each) do
@@ -37,7 +37,7 @@ RSpec.describe Admin::TeamsController, type: :controller do
       )
       post :create, params: { team: { name: team_name } }
 
-      expect(subject).to redirect_to(admin_teams_path)
+      expect(subject).to redirect_to(teams_path)
       expect(flash.now[:errors]).to be_nil
       expect(flash.now[:success]).not_to be_nil
     end
