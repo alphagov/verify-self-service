@@ -11,7 +11,7 @@ class User
   attr_accessor :email, :access_token, :challenge_name, :cognito_session_id,
                 :mfa, :challenge_parameters, :roles, :full_name, :family_name,
                 :given_name, :phone_number, :user_id, :login_id, :password, :new_password,
-                :totp_code, :permissions, :current_sign_in_at, :last_sign_in_at
+                :totp_code, :permissions, :session_start_time
 
   #required by Devise
   define_model_callbacks :validation

@@ -87,8 +87,7 @@ module Devise
         self.given_name = user_attributes['given_name']
         self.family_name = user_attributes['family_name']
         self.mfa = aws_user.preferred_mfa_setting
-        self.current_sign_in_at = Time.now.to_s
-        self.last_sign_in_at = Time.now.to_s
+        self.session_start_time = Time.now.to_s
         self
       end
 
@@ -132,8 +131,7 @@ module Devise
           resource.full_name = "#{data['given_name']} #{data['family_name']}"
           resource.given_name = data['given_name']
           resource.family_name = data['family_name']
-          resource.current_sign_in_at = data['current_sign_in_at']
-          resource.last_sign_in_at = data['last_sign_in_at']
+          resource.session_start_time = data['session_start_time']
           resource
         end
 
@@ -154,8 +152,7 @@ module Devise
               roles: record.roles,
               given_name: record.given_name,
               family_name: record.family_name,
-              current_sign_in_at: record.current_sign_in_at,
-              last_sign_in_at: record.last_sign_in_at
+              session_start_time: record.session_start_time
             },
             # Used for salt in serialize_from_session, causes error if missing
             nil
