@@ -5,6 +5,8 @@ FactoryBot.define do
     email { "test@test.test" }
     password { "validpassword" }
     roles { ROLE::USER_MANAGER }
+    current_sign_in_at { Time.now.to_s }
+    last_sign_in_at { Time.now.to_s }
     permissions { UserRolePermissions.new(ROLE::USER_MANAGER, nil) }
   end
 
@@ -14,6 +16,8 @@ FactoryBot.define do
     email { "test.test@digital.cabinet-office.gov.uk" }
     password { "validpassword" }
     roles { ROLE::GDS }
+    current_sign_in_at { Time.now.to_s }
+    last_sign_in_at { Time.now.to_s }
     permissions { UserRolePermissions.new(ROLE::GDS, "test.test@digital.cabinet-office.gov.uk") }
   end
 
@@ -23,6 +27,8 @@ FactoryBot.define do
     email { "test@test.test" }
     password { "validpassword" }
     roles { ROLE::CERTIFICATE_MANAGER }
+    current_sign_in_at { Time.now.to_s }
+    last_sign_in_at { Time.now.to_s }
     permissions { UserRolePermissions.new(ROLE::CERTIFICATE_MANAGER, nil) }
   end
 
@@ -32,6 +38,8 @@ FactoryBot.define do
     email { "test@test.test" }
     password { "validpassword" }
     roles { ROLE::USER_MANAGER }
+    current_sign_in_at { Time.now.to_s }
+    last_sign_in_at { Time.now.to_s }
     permissions { UserRolePermissions.new(ROLE::USER_MANAGER, nil) }
   end
 
@@ -41,6 +49,8 @@ FactoryBot.define do
     email { "test@test.test" }
     password { "validpassword" }
     roles { ROLE::COMPONENT_MANAGER }
+    current_sign_in_at { Time.now.to_s }
+    last_sign_in_at { Time.now.to_s }
     permissions { UserRolePermissions.new(ROLE::COMPONENT_MANAGER, nil) }
   end
 end

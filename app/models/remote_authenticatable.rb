@@ -87,8 +87,8 @@ module Devise
         self.given_name = user_attributes['given_name']
         self.family_name = user_attributes['family_name']
         self.mfa = aws_user.preferred_mfa_setting
-        self.current_sign_in_at = Time.now
-        self.last_sign_in_at = Time.now
+        self.current_sign_in_at = Time.now.to_s
+        self.last_sign_in_at = Time.now.to_s
         self
       end
 
