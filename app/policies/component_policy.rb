@@ -23,4 +23,12 @@ class ComponentPolicy < ApplicationPolicy
   def create?
     user.permissions.component_management
   end
+
+  def edit?
+    update?
+  end
+
+  def update?
+    user.permissions.certificate_management
+  end
 end

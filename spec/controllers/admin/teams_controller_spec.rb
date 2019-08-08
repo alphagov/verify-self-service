@@ -1,9 +1,9 @@
 require 'rails_helper'
-RSpec.describe Admin::TeamsController, type: :controller do
+RSpec.describe TeamsController, type: :controller do
   include AuthSupport
   
   before(:each) do
-    stub_auth
+    gdsuser_stub_auth
   end
   
   describe "GET #index" do
