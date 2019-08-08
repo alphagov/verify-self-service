@@ -42,6 +42,7 @@ gem 'aws-sdk-cognitoidentityprovider'
 
 gem 'devise'
 gem 'pundit'
+gem 'rqrcode'
 gem 'request_store'
 
 gem 'email_validator'

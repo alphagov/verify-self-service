@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Sign in', type: :system do
+
   scenario 'user cannot sign in if not registered' do
     SelfService.service(:cognito_client).stub_responses(:initiate_auth, Aws::CognitoIdentityProvider::Errors::UserNotFoundException.new(nil, "Stub Response"))
     
@@ -12,6 +13,19 @@ RSpec.describe 'Sign in', type: :system do
 
   scenario 'user can sign in with valid credentials' do
     SelfService.service(:cognito_client).stub_responses(:initiate_auth, { authentication_result: {access_token: "valid-token" }})
+    SelfService.service(:cognito_client).stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
+      [
+        { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
+        { name: 'custom:roles', value: 'test' },
+        { name: 'email_verified', value: 'true' },
+        { name: 'phone_number_verified', value: 'true' },
+        { name: 'phone_number', value: '+447000000000' },
+        { name: 'given_name', value: 'Test' },
+        { name: 'family_name', value: 'User' },
+        { name: 'email', value: 'test@test.test' }
+      ],
+    preferred_mfa_setting: 'SOFTWARE_TOKEN_MFA',
+    user_mfa_setting_list: ['SOFTWARE_TOKEN_MFA'] })
 
     user = FactoryBot.create(:user)
     sign_in(user.email, user.password)

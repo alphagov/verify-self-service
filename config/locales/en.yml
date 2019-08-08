@@ -39,6 +39,13 @@ en:
     mfa_description: Please enter your one time code from your authenticator app
     new_password_heading: Set up your new password
     new_password_description: This is first time you're logging in, please set your password.
+  mfa_enrolment:
+    heading: Set up your MFA
+    no_qr: Unable to scan the QR code?
+    no_qr_instructions: "Insert the code below in the authenticator app instead:"
+    success: You have been successfully enroled to MFA, please login now
+    errors: 
+      generic_error: "There was an error, please try again"
   users:
     title: Team members
     invite_button: Invite a new user
