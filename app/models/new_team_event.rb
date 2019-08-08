@@ -25,7 +25,7 @@ class NewTeamEvent < AggregatedEvent
       user_pool_id: Rails.application.secrets.cognito_user_pool_id
     )
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
-    Rails.logger.error("#{I18n.t('team.errors.invalid')} -> #{e.message}"))
+    Rails.logger.error("#{I18n.t('team.errors.invalid')} -> #{e.message}")
     errors.add(:team, I18n.t('team.errors.invalid'))
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     Rails.logger.error("#{I18n.t('team.errors.failed')} -> #{e.message}")
@@ -35,7 +35,7 @@ class NewTeamEvent < AggregatedEvent
   def team_alias
     @team_alias ||= begin
       unless name.blank?
-        name.delete(' ').strip.match(TEAMS::GROUP_NAME_REGEX)[0] # rubocop:disable Lint/SafeNavigationChain
+        name.delete(' ').strip.match(TEAMS::GROUP_NAME_REGEX)[0]
       end
     end
   end
