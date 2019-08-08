@@ -26,6 +26,12 @@ module AuthSupport
     stub_auth
   end
 
+  def gdsuser_stub_auth
+    @request.env["devise.mapping"] = Devise.mappings[:user]
+    @user = FactoryBot.create(:gds_user)
+    stub_auth
+  end
+
   def stub_auth
     allow(request.env['warden']).to receive(:authenticate!).and_return(@user)
     allow(controller).to receive(:current_user).and_return(@user)

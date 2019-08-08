@@ -45,17 +45,19 @@
               <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
                 <% if policy(EventsController).index? %>
                   <li class="govuk-header__navigation-item">
-                    <%= link_to 'Events', admin_events_path, class: "govuk-header__link" %>
+                    <%= link_to t('layout.application.events'), admin_events_path, class: "govuk-header__link" %>
+                  </li>
+                <% end %>
+                <% if policy(TeamsController).index? %>
+                  <li class="govuk-header__navigation-item">
+                    <%= link_to t('layout.application.teams') , teams_path, class: "govuk-header__link" %>
                   </li>
                 <% end %>
                 <li class="govuk-header__navigation-item">
-                  <%= link_to t('layout.application.admin_link') , admin_teams_path, class: "govuk-header__link" %>
+                  <%= link_to t('layout.application.profile'), profile_path, class: "govuk-header__link" %>
                 </li>
                 <li class="govuk-header__navigation-item">
-                  <%= link_to 'Profile', profile_path, class: "govuk-header__link" %>
-                </li>
-                <li class="govuk-header__navigation-item">
-                  <%= link_to 'Sign out', destroy_user_session_path, confirm: 'Sign Out', method: :delete, class: "govuk-header__link" %>
+                  <%= link_to t('layout.application.sign_out_link'), destroy_user_session_path, confirm: 'Sign Out', method: :delete, class: "govuk-header__link" %>
                 </li>
               </ul>
             </nav>

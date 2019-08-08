@@ -2,11 +2,6 @@ class UserRolePermissions
   attr_reader :component_management, :team_management, :user_management, :event_management,
               :certificate_management, :read_components, :update_profile, :change_password
 
-  # The string roles are defined as follows:
-  # * usermgr
-  # * certmgr
-  # * compmgr
-  # * gds
   def initialize(roles_str, email)
     all_users
     roles = roles_str.nil? ? [] : roles_str.split(',').map(&:strip)
@@ -25,6 +20,10 @@ class UserRolePermissions
     "team_management = #{team_management}\n" \
     "user_management = #{user_management}\n" \
     "event_management = #{event_management}"
+  end
+
+  def to_hash
+    instance_variables.map { |var| [var.to_s.delete('@'), instance_variable_get(var)] }.to_h
   end
 
 private
