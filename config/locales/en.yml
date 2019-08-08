@@ -75,9 +75,9 @@ en:
     upload: Upload your certificate
     previous: Previous
   profile:
-    title: Dashboard
+    title: "User Information"
     welcome: Welcome
-    heading: Profile
+    heading: "Your Profile"
     id: "User ID: "
     given_name: "Given Name: "
     family_name: "Family Name: "
@@ -85,6 +85,9 @@ en:
     email: "E-mail address: "
     phone: "Phone number: "
     logout: logout
+    permissions: "Permissions"
+    permissions_heading: "Your Permissions"
+    access: "Access"
   events:
     title: Events
     type: Type
@@ -105,6 +108,9 @@ en:
       menu: Menu
       warning: Warning
       message: "%{message}"
+      profile: "Profile"
+      teams: "Teams Admin"
+      events: "Events Viewer"
     main_layout:
       team_members: Team Members
   services:

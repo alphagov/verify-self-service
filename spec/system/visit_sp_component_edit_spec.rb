@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Edit SP Component Page', type: :system do
   before(:each) do
-    login_user
+    login_gds_user
   end
   let(:sp_component) { create(:sp_component) }
   let(:team) { create(:new_team_event).team }

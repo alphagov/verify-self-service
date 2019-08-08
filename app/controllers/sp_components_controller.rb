@@ -1,6 +1,6 @@
 class SpComponentsController < ApplicationController
-  before_action :check_authorisation, only: %i(new create)
   before_action :find_teams, only: %i[edit]
+
   def index
     @sp_components = SpComponent.all
   end
@@ -41,13 +41,6 @@ class SpComponentsController < ApplicationController
   end
 
 private
-
-  def check_authorisation
-    authorize NewSpComponentEvent
-  rescue Pundit::NotAuthorizedError
-    flash[:warn] = t('shared.errors.authorisation')
-    redirect_to root_path
-  end
 
   def component_params
     params.require(:component).permit(:name, :component_type, :team_id)

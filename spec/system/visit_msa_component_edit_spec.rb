@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Edit MSA Component Page', type: :system do
   before(:each) do
-    login_user
+    login_gds_user
   end
 
   let(:msa_component) { create(:msa_component) }

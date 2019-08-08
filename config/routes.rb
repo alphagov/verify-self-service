@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
-  namespace :admin do
-    resources :teams, only: %i[index new create]
-  end
+  resources :teams, path: 'admin/teams', only: %i[index new create]
 
   devise_for :users, controllers: { sessions: 'sessions' }
 

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.shared_examples "show component page" do |component_type|
   include ComponentSupport
   before(:each) do
-    login_user
+    login_component_manager_user
   end
   let(:component) { component_by_type(component_type) }
   let(:root) { PKI.new }

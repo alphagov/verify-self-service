@@ -1,0 +1,2 @@
+class ServicesControllerPolicy < ComponentPolicy
+end

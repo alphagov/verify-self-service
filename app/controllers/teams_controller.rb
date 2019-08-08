@@ -1,4 +1,4 @@
-class Admin::TeamsController < ApplicationController
+class TeamsController < ApplicationController
   before_action :find_components, only: %i[show]
   def index
     @teams = Team.all
@@ -13,7 +13,7 @@ class Admin::TeamsController < ApplicationController
     @team = team_event.team
     if @team.valid? && team_event.valid?
       flash.now[:success] = "#{@team.name} #{t('team.new.success')}."
-      redirect_to admin_teams_path
+      redirect_to teams_path
     else
       @team.errors.merge!(team_event.errors)
       Rails.logger.info(@team.errors.full_messages)

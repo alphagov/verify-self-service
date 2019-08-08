@@ -29,7 +29,7 @@ def stub_client
   client.stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
     [
       { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
-      { name: 'custom:roles', value: 'test' },
+      { name: 'custom:roles', value: 'gds' },
       { name: 'email_verified', value: 'true' },
       { name: 'phone_number_verified', value: 'true' },
       { name: 'phone_number', value: '+447000000000' },

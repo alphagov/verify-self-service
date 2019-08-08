@@ -4,12 +4,12 @@ RSpec.describe 'New Team Page', type: :system do
   include CognitoSupport
 
   before(:each) do
-    login_user
+    login_gds_user
   end
   let(:team_name) { 'test team' }
   context 'creation succeeds' do
     it 'when a valid name' do
-      visit new_admin_team_path
+      visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 
@@ -20,7 +20,7 @@ RSpec.describe 'New Team Page', type: :system do
 
   context 'creation fails' do
     it 'when name is not specified' do
-      visit new_admin_team_path
+      visit new_team_path
       click_button t('team.new.create_team')
 
       expect(page).to have_content t('team.new.heading')
@@ -28,11 +28,11 @@ RSpec.describe 'New Team Page', type: :system do
     end
 
     it 'when name is not unique' do
-      visit new_admin_team_path
+      visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 
-      visit new_admin_team_path
+      visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 
@@ -47,7 +47,7 @@ RSpec.describe 'New Team Page', type: :system do
         method: :create_group,
         payload: Aws::CognitoIdentityProvider::Errors::InvalidParameterException.new(nil, nil, {})
       )
-      visit new_admin_team_path
+      visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 
@@ -60,7 +60,7 @@ RSpec.describe 'New Team Page', type: :system do
         method: :create_group,
         payload: Aws::CognitoIdentityProvider::Errors::ServiceError.new(nil, nil, {})
       )
-      visit new_admin_team_path
+      visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 

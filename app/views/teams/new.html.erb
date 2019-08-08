@@ -4,7 +4,7 @@
   </legend>
 
   <%=error_messages_for(@team&.errors) %>
-  <%=form_for @team,  url:  admin_teams_path, as: :team do |f| %>
+  <%=form_for @team,  url:  teams_path, as: :team do |f| %>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @team.errors.key?(:name) %>">
       <h3 class="govuk-heading-m"><%=t('team.new.team_name_field')%></h3>
       <%= error_message_on(f.object.errors, :name) %>
