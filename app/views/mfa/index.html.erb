@@ -1,0 +1,36 @@
+<h1 class="govuk-heading-xl"><%= t('mfa_enrolment.heading') %></h1>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
+    <%= form_for @form, url: enrol_to_mfa_path, class: 'govuk-form-group' do |f| %>
+
+      <div class="govuk-form-group">
+        <%= f.label :code, class: "govuk-label" %>
+        <%= f.text_field :code, class: "govuk-input" %>
+      </div>
+      
+      <div class="actions">
+        <%= f.submit 'Confirm', class: "govuk-button", data: { module: "govuk-button" } %>
+      </div>
+
+    <% end %>
+  </div>
+
+  <div class="govuk-grid-column-one-half">
+    <div class="mfa-qr-code">
+      <%= raw(@secret_code_svg) %>
+    </div>
+  </div>
+</div>
+<details class="govuk-details" data-module="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      <%= t('mfa_enrolment.no_qr') %>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <%= t('mfa_enrolment.no_qr_instructions') %>
+    <pre><%= @secret_code %></pre>
+  </div>
+</details>
+

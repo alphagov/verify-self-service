@@ -1,10 +1,9 @@
 class InviteUserForm
   include ActiveModel::Model
 
-  attr_reader :email, :given_name, :family_name, :mfa, :roles, :team
+  attr_reader :email, :given_name, :family_name, :roles, :team
 
-  validates_presence_of :email, :given_name, :family_name, :mfa, :roles
-  validates_inclusion_of :mfa, in: %w[SOFTWARE_TOKEN_MFA]
+  validates_presence_of :email, :given_name, :family_name, :roles
 
   validate :email_is_valid, :validate_roles
 
@@ -12,7 +11,6 @@ class InviteUserForm
     @email = hash[:email]
     @given_name = hash[:given_name]
     @family_name = hash[:family_name]
-    @mfa = hash[:mfa]
     @roles = hash[:roles]
   end
 

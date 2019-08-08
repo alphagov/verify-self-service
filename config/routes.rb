@@ -38,6 +38,9 @@ Rails.application.routes.draw do
   get '/users/invite', to: 'users#invite', as: :invite_user
   post '/users/invite', to: 'users#new', as: :invite_new_user
 
+  get '/mfa-enrolment', to: 'mfa#index', as: :mfa_enrolment
+  post '/mfa-enrolment', to: 'mfa#enrol', as: :enrol_to_mfa
+
   if %w(test development).include? Rails.env
     # Dashboard
     get 'profile', to: 'profile#show'

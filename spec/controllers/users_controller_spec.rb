@@ -33,11 +33,11 @@ RSpec.describe UsersController, type: :controller do
             email: 'test@test.test', 
             given_name: 'First Name', 
             family_name: 'Surname', 
-            mfa: 'SOFTWARE_TOKEN_MFA',
             roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
           }
       }
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(users_path)
       expect(flash.now[:errors]).to be_nil
       expect(flash.now[:success]).not_to be_nil
     end

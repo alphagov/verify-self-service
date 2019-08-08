@@ -1,9 +1,9 @@
 module UserInfo
   def current_user
-    Thread.current[:user]
+    RequestStore.store[:user]
   end
 
   def self.current_user=(user)
-    Thread.current[:user] = user
+    RequestStore.store[:user] = user
   end
 end
