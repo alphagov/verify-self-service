@@ -15,7 +15,7 @@ RSpec.describe SessionsController, type: :controller do
     cognito_session_id = SecureRandom.uuid
     username = 'test@test.com'
     challenge_name = 'SOFTWARE_TOKEN_MFA'
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, challenge_name: challenge_name, session: cognito_session_id, challenge_parameters: { 'FRIENDLY_DEVICE_NAME' => 'Authy' })
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, challenge_name: challenge_name, session: cognito_session_id, challenge_parameters: { })
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: username, password: 'validpass' } }
     expect(response).to have_http_status(:redirect)
@@ -31,7 +31,7 @@ RSpec.describe SessionsController, type: :controller do
     allow(strategy).to receive(:params).at_least(:once).and_return(user: 'name')
     session[:challenge_name] = 'SOFTWARE_TOKEN_MFA'
     session[:cognito_session_id] = SecureRandom.uuid
-    session[:challenge_parameters] = { 'FRIENDLY_DEVICE_NAME' => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }
+    session[:challenge_parameters] = { 'USER_ID_FOR_SRP' => '0000-0000' }
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: 'test@test.com', totp_code: '999999' } }
     expect(response).to have_http_status(:redirect)
@@ -47,7 +47,7 @@ RSpec.describe SessionsController, type: :controller do
     cognito_session_id = SecureRandom.uuid
     username = 'test@test.com'
     challenge_name = 'NEW_PASSWORD_REQUIRED'
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, challenge_name: challenge_name, session: cognito_session_id, challenge_parameters: { 'FRIENDLY_DEVICE_NAME' => 'Authy' })
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, challenge_name: challenge_name, session: cognito_session_id, challenge_parameters: { })
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: username, password: 'validpass' } }
     expect(response).to have_http_status(:redirect)
@@ -63,7 +63,7 @@ RSpec.describe SessionsController, type: :controller do
     allow(strategy).to receive(:params).at_least(:once).and_return(user: 'name')
     session[:challenge_name] = 'NEW_PASSWORD_REQUIRED'
     session[:cognito_session_id] = SecureRandom.uuid
-    session[:challenge_parameters] = { 'FRIENDLY_DEVICE_NAME' => 'Authy', 'USER_ID_FOR_SRP' => '0000-0000' }
+    session[:challenge_parameters] = { 'USER_ID_FOR_SRP' => '0000-0000' }
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: 'test@test.com', new_password: 'mynewpassword' } }
     expect(response).to have_http_status(:redirect)
