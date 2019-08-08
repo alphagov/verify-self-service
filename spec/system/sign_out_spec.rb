@@ -33,6 +33,7 @@ RSpec.describe 'Sign out', type: :system do
     travel_to Time.now + 16.minutes
     visit(profile_path)
     expect(current_path).to eql new_user_session_path
+    expect(page).to have_content 'Your session expired. Please sign in again to continue.'
   end
 
   scenario 'user signed out after length of time' do
@@ -59,6 +60,7 @@ RSpec.describe 'Sign out', type: :system do
     travel_to Time.now + 16.minutes
     visit(profile_path)
     expect(current_path).to eql new_user_session_path
+    expect(page).to have_content 'Your session expired. Please sign in again to continue.'
   end
 
   scenario 'user gets to path before expiry' do
