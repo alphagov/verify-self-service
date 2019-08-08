@@ -15,7 +15,7 @@ protected
   def check_max_session_time
     return false if current_user.nil?
 
-    timeout = Rails.application.secrets.session_expiry_in_minutes.nil? ? 60 : Rails.application.secrets.session_expiry_in_minutes.to_i
+    timeout = Rails.configuration.session_expiry_in_minutes
     sign_out_user if Time.parse(current_user.session_start_time) + timeout.minutes < Time.now
   end
 

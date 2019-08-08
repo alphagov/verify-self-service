@@ -36,8 +36,6 @@ RSpec.describe 'Sign out', type: :system do
   end
 
   scenario 'user signed out after length of time' do
-    Rails.application.secrets.session_inactivity_in_minutes = 90
-    Rails.application.secrets.session_expiry_in_minutes = 15
     SelfService.service(:cognito_client).stub_responses(:initiate_auth, { authentication_result: {access_token: "valid-token" }})
     SelfService.service(:cognito_client).stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
       [
