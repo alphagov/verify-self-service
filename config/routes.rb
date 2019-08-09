@@ -39,8 +39,6 @@ Rails.application.routes.draw do
   get '/mfa-enrolment', to: 'mfa#index', as: :mfa_enrolment
   post '/mfa-enrolment', to: 'mfa#enrol', as: :enrol_to_mfa
 
-  if %w(test development).include? Rails.env
-    # Dashboard
-    get 'profile', to: 'profile#show'
-  end
+  get 'profile', to: 'profile#show'
+
 end
