@@ -1,0 +1,2 @@
+class UserTimeoutEvent < Event
+end

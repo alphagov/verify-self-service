@@ -41,12 +41,6 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
-  # User will be timed out after 90 minutes regardless of activity
-  config.session_expiry_in_minutes = 90
-
-  # User will be timed out after 15 minutes of inactivity
-  config.session_inactivity_in_minutes = 15
-
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 

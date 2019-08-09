@@ -15,8 +15,8 @@ protected
   def check_max_session_time
     return false if current_user.nil?
 
-    timeout = Rails.configuration.session_expiry_in_minutes
-    sign_out_user if Time.parse(current_user.session_start_time) + timeout.minutes < Time.now
+    timeout = Rails.configuration.session_expiry
+    sign_out_user if Time.parse(current_user.session_start_time) + timeout < Time.now
   end
 
   def configure_permitted_parameters
@@ -38,7 +38,7 @@ protected
 private
 
   def sign_out_user
-    UserSignOutEvent.create(user_id: warden.user.user_id)
+    UserTimeoutEvent.create(user_id: warden.user.user_id)
     Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
     yield if block_given?
     redirect_to root_path

@@ -15,13 +15,6 @@ Rails.application.configure do
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
 
-  # User will be timed out after 90 minutes regardless of activity
-  config.session_expiry_in_minutes = 90
-
-  # User will be timed out after 15 minutes of inactivity
-  config.session_inactivity_in_minutes = 1
-
-
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
 

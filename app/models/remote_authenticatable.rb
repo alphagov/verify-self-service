@@ -87,6 +87,8 @@ module Devise
         self.given_name = user_attributes['given_name']
         self.family_name = user_attributes['family_name']
         self.mfa = aws_user.preferred_mfa_setting
+        # session_start_time will be serialised to a string so
+        # lets be explicit about setting it as a string here.
         self.session_start_time = Time.now.to_s
         self
       end
