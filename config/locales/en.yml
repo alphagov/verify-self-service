@@ -62,6 +62,7 @@ en:
   certificates:
     caption: "%{heading}"
     header_id: ID
+    header_name: Name
     header_usage: Usage
     header_enabled: Enabled
     header_last_updated: Last updated
@@ -131,6 +132,7 @@ en:
     heading: All teams
     name: Name
     add_team: Add new team
+    associate_team: Associate team
     new:
       heading: Add a team
       team_name_field: Team name
@@ -168,6 +170,5 @@ en:
   admin:
     title: Admin
     view_components: View components
-    associate_team: Associate team
     edit:
       heading: Associate team to

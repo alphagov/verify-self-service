@@ -14,7 +14,7 @@ RSpec.describe 'Edit MSA Component Page', type: :system do
       create_teams
       visit edit_msa_component_path(msa_component)
       select(team.name, from: 'component[team_id]')
-      click_button t('admin.associate_team')
+      click_button t('team.associate_team')
 
       expect(MsaComponent.last.team_id).to eq team.id
     end
@@ -26,7 +26,7 @@ RSpec.describe 'Edit MSA Component Page', type: :system do
       visit edit_msa_component_path(msa_component)
       select(team.name, from: 'component[team_id]')
       select('Select', from: 'component[team_id]')
-      click_button t('admin.associate_team')
+      click_button t('team.associate_team')
 
       expect(MsaComponent.last.team_id).to be_nil
     end
