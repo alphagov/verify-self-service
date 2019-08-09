@@ -87,6 +87,9 @@ module Devise
         self.given_name = user_attributes['given_name']
         self.family_name = user_attributes['family_name']
         self.mfa = aws_user.preferred_mfa_setting
+        # session_start_time will be serialised to a string so
+        # lets be explicit about setting it as a string here.
+        self.session_start_time = Time.now.to_s
         self
       end
 
@@ -130,6 +133,7 @@ module Devise
           resource.full_name = "#{data['given_name']} #{data['family_name']}"
           resource.given_name = data['given_name']
           resource.family_name = data['family_name']
+          resource.session_start_time = data['session_start_time']
           resource
         end
 
@@ -149,7 +153,8 @@ module Devise
               user_id: record.user_id,
               roles: record.roles,
               given_name: record.given_name,
-              family_name: record.family_name
+              family_name: record.family_name,
+              session_start_time: record.session_start_time
             },
             # Used for salt in serialize_from_session, causes error if missing
             nil

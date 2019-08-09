@@ -8,9 +8,10 @@ class User
   extend Devise::Models
 
   # create getter and setter methods internally for the fields below
-  attr_accessor :email, :access_token, :challenge_name, :cognito_session_id, :mfa,
-                :challenge_parameters, :roles, :full_name, :family_name, :given_name,
-                :phone_number, :user_id, :login_id, :password, :new_password, :totp_code, :permissions
+  attr_accessor :email, :access_token, :challenge_name, :cognito_session_id,
+                :mfa, :challenge_parameters, :roles, :full_name, :family_name,
+                :given_name, :phone_number, :user_id, :login_id, :password, :new_password,
+                :totp_code, :permissions, :session_start_time
 
   #required by Devise
   define_model_callbacks :validation
@@ -25,5 +26,9 @@ class User
 
   def attributes
     super.merge(roles: nil, permissions: nil)
+  end
+
+  def to_hash
+    instance_variables.map { |var| [var.to_s.delete('@'), instance_variable_get(var)] }.to_h
   end
 end

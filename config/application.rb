@@ -35,5 +35,10 @@ module VerifySelfService
 
     config.i18n.default_locale = :en
 
+    # User will be timed out after 90 minutes regardless of activity
+    config.session_expiry = 90.minutes
+
+    # User will be timed out after 15 minutes of inactivity
+    config.session_inactivity = 15.minutes
   end
 end
