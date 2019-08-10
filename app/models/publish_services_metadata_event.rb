@@ -2,8 +2,6 @@ require 'yaml'
 require 'digest/md5'
 
 class PublishServicesMetadataEvent < Event
-  include Utilities::Configuration::Settings
-
   attr_reader :metadata
   data_attributes :event_id, :services_metadata
   validates_presence_of :event_id
@@ -19,11 +17,11 @@ class PublishServicesMetadataEvent < Event
     json_data = metadata.to_json
     storage_key = "verify_services_metadata.json"
     check_sum = Digest::MD5.base64digest(json_data)
-    current_active_storage_env = Rails.configuration.active_storage.service
-    service = ActiveStorage::Service.configure(
-      current_active_storage_env, configuration('storage.yml')
+    SelfService.service(:storage_client).upload(
+      storage_key,
+      StringIO.new(json_data),
+      checksum: check_sum
     )
-    service.upload(storage_key, StringIO.new(json_data), checksum: check_sum)
   end
 
 private

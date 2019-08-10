@@ -58,7 +58,26 @@ def cognito_client
   end
 end
 
+def configuration(yaml_file_name)
+  storage_yml = Pathname.new(Rails.root.join('config', yaml_file_name))
+  erb = ERB.new(storage_yml.read)
+  configuration = YAML.safe_load(erb.result) || {}
+  configuration.deep_symbolize_keys
+rescue Errno::ENOENT
+  puts "Missing configuration file #{yaml_file_name} in config"
+  {}
+end
+
+
 SelfService.register_service(
   name: :cognito_client,
   client: cognito_client
+)
+
+SelfService.register_service(
+  name: :storage_client,
+  client: ActiveStorage::Service.configure(
+    Rails.configuration.active_storage.service,
+    configuration('storage.yml')
+  )
 )
