@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   root 'components#index'
 
+  get '/healthcheck', to: 'healthcheck#index'
+
   get '/admin', to: 'components#index'
 
   resources :sp_components, path: 'admin/sp-components' do

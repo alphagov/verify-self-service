@@ -2,8 +2,6 @@ require 'yaml'
 require 'rails_helper'
 
 RSpec.describe PublishServicesMetadataEvent, type: :model do
-  include Utilities::Configuration::Settings
-
   let(:published_at) { Time.now }
   let(:event_id) { 0 }
   let(:component) { MsaComponent.create(name: 'lala', entity_id: 'https//test-entity') }
@@ -30,15 +28,9 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
       event.upload
       key = "verify_services_metadata.json"
       expected_chunks = event.metadata
-      current_active_storage_env = Rails.configuration.active_storage.service
-
-      service = ActiveStorage::Service.configure(
-        current_active_storage_env,
-        configuration('storage.yml')
-      )
 
       actual_chunks = []
-      service.download key do |chunk|
+      SelfService.service(:storage_client).download key do |chunk|
         actual_chunks << chunk
       end
 
