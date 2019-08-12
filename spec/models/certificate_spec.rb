@@ -8,9 +8,7 @@ RSpec.describe Certificate, type: :model do
     pki.generate_signed_cert(expires_in: 2.months).to_pem
   end
 
-  entity_id = 'http://test-entity-id'
-  component_params = { name: 'fake_name', entity_id: entity_id }
-  let(:component) { NewMsaComponentEvent.create(component_params).msa_component }
+  let(:component) { create(:msa_component) }
 
   it 'is valid with valid attributes' do
     expect(Certificate.new(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: component)).to be_valid

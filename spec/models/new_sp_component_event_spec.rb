@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe NewSpComponentEvent, type: :model do
 
-  include_examples 'has data attributes', NewSpComponentEvent, %i[name component_type]
-  include_examples 'is aggregated', NewSpComponentEvent, name: 'New SP component', component_type: COMPONENT_TYPE::SP
-  include_examples 'is a creation event', NewSpComponentEvent, name: 'New component', component_type: COMPONENT_TYPE::SP
+  include_examples 'has data attributes', NewSpComponentEvent, %i[name component_type], environment: 'staging'
+  include_examples 'is aggregated', NewSpComponentEvent, name: 'New SP component', component_type: COMPONENT_TYPE::SP, environment: 'staging'
+  include_examples 'is a creation event', NewSpComponentEvent, name: 'New component', component_type: COMPONENT_TYPE::SP, environment: 'staging'
 
   context 'name' do
     it 'must be provided' do
-      event = NewSpComponentEvent.create(name: '')
+      event = build(:new_sp_component_event, name: '', environment: 'staging')
       expect(event).to_not be_valid
       expect(event.errors[:name]).to eql ['can\'t be blank']
     end
@@ -16,7 +16,7 @@ RSpec.describe NewSpComponentEvent, type: :model do
 
   context 'component type' do
     it 'must be provided' do
-      event = NewSpComponentEvent.create(component_type: '')
+      event = build(:new_sp_component_event, component_type: '', environment: 'staging')
       expect(event).to_not be_valid
       expect(event.errors[:component_type]).to eql ['must be either VSP or SP']
     end
@@ -28,7 +28,7 @@ RSpec.describe NewSpComponentEvent, type: :model do
       user = User.new
       user.user_id = user_id
       RequestStore.store[:user] = user
-      event = NewSpComponentEvent.create(name: 'New SP component', component_type: COMPONENT_TYPE::SP)
+      event = create(:new_sp_component_event)
 
       expect(event.user_id).to eql user_id
     end

@@ -1,6 +1,6 @@
 class NewSpComponentEvent < AggregatedEvent
   belongs_to_aggregate :sp_component
-  data_attributes :name, :component_type
+  data_attributes :name, :component_type, :environment
 
   validate :name_is_present
   validate :component_is_new, on: :create
@@ -16,6 +16,7 @@ class NewSpComponentEvent < AggregatedEvent
   def attributes_to_apply
     {
       name: name,
+      environment: environment,
       component_type: COMPONENT_TYPE::SP,
       vsp: component_type == COMPONENT_TYPE::VSP,
       created_at: created_at
