@@ -1,6 +1,6 @@
 class NewMsaComponentEvent < AggregatedEvent
   belongs_to_aggregate :msa_component
-  data_attributes :name, :entity_id
+  data_attributes :name, :entity_id, :environment
   validate :msa_has_entity_id
   validate :component_is_new, on: :create
   validate :name_is_present
@@ -13,6 +13,7 @@ class NewMsaComponentEvent < AggregatedEvent
     {
       name: name,
       component_type: COMPONENT_TYPE::MSA,
+      environment: environment,
       entity_id: entity_id,
       created_at: created_at
     }
