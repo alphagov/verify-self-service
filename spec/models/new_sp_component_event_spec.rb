@@ -14,6 +14,14 @@ RSpec.describe NewSpComponentEvent, type: :model do
     end
   end
 
+  context 'environment' do
+    it 'must be provided' do
+      event = build(:new_sp_component_event, name: 'New component', environment: '')
+      expect(event).to_not be_valid
+      expect(event.errors[:environment]).to eql ['can\'t be blank']
+    end
+  end
+
   context 'component type' do
     it 'must be provided' do
       event = build(:new_sp_component_event, component_type: '', environment: 'staging')

@@ -6,6 +6,7 @@
         <th class="govuk-table__header" scope="col"><%= t 'components.name' %></th>
         <th class="govuk-table__header" scope="col"><%= t 'components.entity_id' %></th>
         <th class="govuk-table__header" scope="col"><%= t 'components.team' %></th>
+        <th class="govuk-table__header" scope="col"><%= t 'components.environment' %></th>
         <th class="govuk-table__header" scope="col"></th>
       </tr>
     </thead>
@@ -15,6 +16,7 @@
           <td class="govuk-table__cell" scope="row"><%= component.name %></td>
           <td class="govuk-table__cell"><%= component.entity_id %></td>
           <td class="govuk-table__cell"><%= component.team&.name %></td>
+          <td class="govuk-table__cell"><%= component.environment %></td>
           <td class="govuk-table__cell">
             <%= link_to t('components.view_link'), msa_component_path(component) , class: 'govuk-button'  %>
             <%= link_to t('team.associate_team'), edit_msa_component_path(component), class: 'govuk-button' %>

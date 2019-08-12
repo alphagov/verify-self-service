@@ -43,7 +43,7 @@ class MsaComponentsController < ApplicationController
 private
 
   def component_params
-    params.require(:component).permit(:name, :entity_id, :team_id)
+    params.require(:component).permit(:name, :entity_id, :team_id, :environment)
   end
 
   def find_teams

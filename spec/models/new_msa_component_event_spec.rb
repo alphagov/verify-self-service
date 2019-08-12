@@ -14,4 +14,12 @@ RSpec.describe NewMsaComponentEvent, type: :model do
       expect(event.errors[:name]).to eql ['can\'t be blank']
     end
   end
+
+  context 'environment' do
+    it 'must be provided' do
+      event = build(:new_msa_component_event, name: 'New component', entity_id: entity_id, environment: '')
+      expect(event).to_not be_valid
+      expect(event.errors[:environment]).to eql ['can\'t be blank']
+    end
+  end
 end

@@ -4,6 +4,7 @@ class NewMsaComponentEvent < AggregatedEvent
   validate :msa_has_entity_id
   validate :component_is_new, on: :create
   validate :name_is_present
+  validates_presence_of :environment
 
   def build_msa_component
     MsaComponent.new
