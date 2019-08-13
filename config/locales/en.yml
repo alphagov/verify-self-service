@@ -157,6 +157,7 @@ en:
     component_name_field: "%{type} Component name"
     component_type_field: "%{type} Component type"
     create_component: Create %{type} component
+    environment: Environment
     upload_component: Upload your %{type} component
     component_entity_id: "%{type} Component Entity ID"
     sign_cert_enabled: Signing Certificates (Enabled)

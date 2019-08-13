@@ -12,6 +12,7 @@ RSpec.describe 'New MSA Component Page', type: :system do
       visit new_msa_component_path
       fill_in 'component_name', with: component_name
       fill_in 'component_entity_id', with: entity
+      choose('component_environment_staging')
       click_button 'Create MSA component'
 
       expect(current_path).to eql root_path
@@ -25,6 +26,7 @@ RSpec.describe 'New MSA Component Page', type: :system do
       visit new_msa_component_path
       fill_in 'component_name', with: component_name
       fill_in 'component_entity_id', with: entity
+      choose('component_environment_staging')
       click_button 'Create MSA component'
 
       expect(page).to have_content 'Entity id is required for MSA component'

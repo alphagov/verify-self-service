@@ -1,13 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
-
-  entity_id = 'http://test-entity-id'
-  let(:component_name) { 'test component' }
-  let(:component) do
-    component_params = { name: component_name, entity_id: entity_id }
-    NewMsaComponentEvent.create(component_params).msa_component
-  end
+  let(:component) { create(:msa_component) }
   let(:root) { PKI.new }
   let(:x509_cert) { root.generate_encoded_cert(expires_in: 9.months) }
   let(:upload_encryption_cert) do

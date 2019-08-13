@@ -25,6 +25,9 @@
         </div>
       </div>
     </div>
+
+    <%= render "shared/component_environments", f: f %>
+
     <div class="govuk-form-group">
         <%=f.submit t('components.create_component', type: COMPONENT_TYPE::SP_SHORT ), class: "govuk-button", data: { module: "govuk-button" } %>
     </div>
