@@ -1,4 +1,5 @@
-unless ENV['RAILS_ENV'] == 'production'
+require_relative '../../config/initializers/constants/environment'
+unless ENV['RAILS_ENV'] == ENVIRONMENT::PRODUCTION
   require 'rspec/core/rake_task'
 
   desc 'Run acceptance tests'
