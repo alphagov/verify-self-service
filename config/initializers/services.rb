@@ -40,4 +40,14 @@ SelfService.register_service(
   )
 )
 
+if Rails.env.production?
+  SelfService.register_service(
+    name: :integration_storage_client,
+    client: ActiveStorage::Service.configure(
+      Rails.configuration.active_storage.service,
+      configuration('integration_storage.yml')
+    )
+  )
+end
+
 CognitoChooser.new
