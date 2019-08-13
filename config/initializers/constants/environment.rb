@@ -1,3 +1,3 @@
 module ENVIRONMENT
-  STAGING = 'staging'.freeze
+  STAGING = 'staging'
 end
