@@ -1,4 +1,4 @@
-<% if !Rails.env.production? %>
+<% if Rails.env.development? %>
   <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
       <strong class="govuk-tag govuk-phase-banner__content__tag">
@@ -72,50 +72,52 @@
     </div>
   </div>
   <% if Rails.env.development? %>
-    <div class="govuk-accordion__section ">
-      <div class="govuk-accordion__section-header">
-        <h2 class="govuk-accordion__section-heading">
-          <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-            <%= t 'profile.client_switch_h' %>
-          </span>
-          <strong class="govuk-tag">
-            dev
-          </strong>
-        </h2>
-      </div>
-      <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-        <div class="govuk-form-group">
-          <%= form_for:client_switch, url: profile_switch_client_path do |f| %>
-          <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
-            <span id="changed-name-hint" class="govuk-hint">
-              <%= t 'profile.client_switch_l' %>
+    <% if @cognito_available %>
+      <div class="govuk-accordion__section ">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+              <%= t 'profile.client_switch_heading' %>
             </span>
-            <div class="govuk-radios govuk-radios--inline">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="cognito-radio" name="client" type="radio" value="cognito" <% if !@using_stub %> checked<% end %>>
-                <label class="govuk-label govuk-radios__label" for="cognito-radio">
-                  Cognito Client
-                </label>
+            <strong class="govuk-tag">
+              dev
+            </strong>
+          </h2>
+        </div>
+        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+          <div class="govuk-form-group">
+            <%= form_for:client_switch, url: profile_switch_client_path do |f| %>
+            <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
+              <span id="changed-name-hint" class="govuk-hint">
+                <%= t 'profile.client_switch_legend' %>
+              </span>
+              <div class="govuk-radios govuk-radios--inline">
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="cognito-radio" name="client" type="radio" value="cognito" <% if !@using_stub %> checked<% end %>>
+                  <label class="govuk-label govuk-radios__label" for="cognito-radio">
+                    Cognito Client
+                  </label>
+                </div>
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="stub-radio" name="client" type="radio" value="stub" <% if @using_stub %> checked<% end %>>
+                  <label class="govuk-label govuk-radios__label" for="stub-radio">
+                    Stub Client
+                  </label>
+                </div>
               </div>
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="stub-radio" name="client" type="radio" value="stub" <% if @using_stub %> checked<% end %>>
-                <label class="govuk-label govuk-radios__label" for="stub-radio">
-                  Stub Client
-                </label>
-              </div>
-            </div>
-          </fieldset>
-          <%= f.submit "Switch Client", class: "govuk-button govuk-!-margin-top-6", data: { module: "govuk-button" } %>
-          <% end %>
+            </fieldset>
+            <%= f.submit "Switch Client", class: "govuk-button govuk-!-margin-top-6", data: { module: "govuk-button" } %>
+            <% end %>
+          </div>
         </div>
       </div>
-    </div>
+    <% end %>
     <% if @using_stub %>
       <div class="govuk-accordion__section ">
         <div class="govuk-accordion__section-header">
           <h2 class="govuk-accordion__section-heading">
             <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
-              <%= t 'profile.assume_roles_h' %>
+              <%= t 'profile.assume_roles_heading' %>
             </span>
             <strong class="govuk-tag">
               dev
@@ -127,7 +129,7 @@
             <div class="govuk-form-group">
               <fieldset class="govuk-fieldset" aria-describedby="assume-roles-hint">
                 <span id="assume-roles-hint" class="govuk-hint">
-                  <%= t 'profile.assume_roles_l' %>
+                  <%= t 'profile.assume_roles_legend' %>
                 </span>
                 <div class="govuk-checkboxes">
                   

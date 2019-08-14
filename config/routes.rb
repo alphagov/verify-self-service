@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Rails.application.routes.draw do
   resources :teams, path: 'admin/teams', only: %i[index new create]
 

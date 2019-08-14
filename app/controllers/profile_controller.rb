@@ -2,7 +2,8 @@ class ProfileController < ApplicationController
   def show
     if Rails.env.development?
       @stub_available = true
-      @using_stub = CognitoStubClient.true?(SelfService.service(:cognito_stub))
+      @using_stub = CognitoStubClient.using_coginito_stub?(SelfService.service(:cognito_stub))
+      @cognito_available = SelfService.service_present?(:real_client)
       @breakerofchains = @using_stub && current_user.given_name == 'Daenerys'
     end
     @user = current_user
