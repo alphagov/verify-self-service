@@ -3,11 +3,13 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: { sessions: 'sessions' }
 
-  root 'home#index'
-  
+  root 'components#index'
+
   get '/healthcheck', to: 'healthcheck#index'
 
   get '/admin', to: 'components#index'
+
+  get '/user-journey', to: 'user_journey#index'
 
   resources :sp_components, path: 'admin/sp-components' do
     resources :services

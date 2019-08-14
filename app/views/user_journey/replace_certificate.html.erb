@@ -1,0 +1,9 @@
+<%= error_messages_for(@upload&.errors) %>
+<%= form_for @upload, url: check_certificate_path, as: :certificate do |f| %>
+  <div class="govuk-form-group <%= 'govuk-form-group--error' if @upload.errors.key?(:certificate) %>">
+    <h3 class="govuk-heading-m"><%= t 'certificates.upload_certificate.value' %></h3>
+    <%= error_message_on(f.object.errors, :certificate) %>
+    <%= f.text_area :value, placeholder: t('certificates.upload_certificate.paste_cert'), class: "govuk-textarea#{@upload.errors.key?(:certificate) ? ' govuk-textarea--error' : ''}", rows: "6" %>
+    <%= f.submit "Upload", class: "govuk-button", data: { module: "govuk-button" } %>
+  </div>
+<% end %>
