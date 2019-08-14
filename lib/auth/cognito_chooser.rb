@@ -26,6 +26,7 @@ class CognitoChooser
 
   def register_client(client:, is_stub: true)
     SelfService.register_service(name: :cognito_stub, client: is_stub.to_s)
+    SelfService.register_service(name: :real_client, client: client) unless is_stub
     SelfService.register_service(name: :cognito_client, client: client)
   end
 
@@ -46,6 +47,7 @@ class CognitoChooser
 
   def register_stub_client
     Rails.application.secrets.cognito_client_id = SecureRandom.uuid
+    Rails.application.secrets.cognito_user_pool_id = SecureRandom.uuid
     register_client(
       client: CognitoStubClient.stub_client
     )
