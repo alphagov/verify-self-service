@@ -1,3 +1,18 @@
+<% if !Rails.env.production? %>
+  <div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+      <strong class="govuk-tag govuk-phase-banner__content__tag">
+        development
+      </strong>
+      <span class="govuk-phase-banner__text">
+        <%= t 'profile.banner' %>
+      </span>
+    </p>
+  </div>
+
+
+  <p>&nbsp;</p>
+<%end%>
 <h1  class="govuk-heading-l"><%= t 'profile.title' %></h1>
 
 <div>
@@ -30,26 +45,110 @@
       </h2>
     </div>
     <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
-      <table class="govuk-table">
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header"><%= t 'profile.permissions' %></th>
-            <th scope="col" class="govuk-table__header"><%= t 'profile.access' %></th>
-          </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-          <% @user.permissions.to_hash.each do |key, value| -%>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><%= key.titlecase %></th>
-              <td class="govuk-table__cell">
-                <% if value %>
-                  &#9989;
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>  
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+          <div class="govuk-checkboxes">
+            <% @user.permissions.to_hash.each do |key, value| -%>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="<% key %>" name="<% key %>" type="checkbox" value="<% key %>"
+                <% if value %>checked<% end %> disabled>
+                <label class="govuk-label govuk-checkboxes__label" for="key">
+                  <%= key.titlecase %>
+                </label>
+              </div>
+            <% end %>
+            <% if @breakerofchains %>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="breaker_of_chains" name="breaker_of_chains" type="checkbox" value="breaker_of_chains"
+                checked disabled>
+                <label class="govuk-label govuk-checkboxes__label" for="breaker_of_chains">
+                  Breaker of Chains
+                </label>
+              </div>
+            <% end %>
+          </div>
+        </fieldset>
+      </div>
     </div>
   </div>
+  <% if Rails.env.development? %>
+    <div class="govuk-accordion__section ">
+      <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+          <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+            <%= t 'profile.client_switch_h' %>
+          </span>
+          <strong class="govuk-tag">
+            dev
+          </strong>
+        </h2>
+      </div>
+      <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+        <div class="govuk-form-group">
+          <%= form_for:client_switch, url: profile_switch_client_path do |f| %>
+          <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
+            <span id="changed-name-hint" class="govuk-hint">
+              <%= t 'profile.client_switch_l' %>
+            </span>
+            <div class="govuk-radios govuk-radios--inline">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="cognito-radio" name="client" type="radio" value="cognito" <% if !@using_stub %> checked<% end %>>
+                <label class="govuk-label govuk-radios__label" for="cognito-radio">
+                  Cognito Client
+                </label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="stub-radio" name="client" type="radio" value="stub" <% if @using_stub %> checked<% end %>>
+                <label class="govuk-label govuk-radios__label" for="stub-radio">
+                  Stub Client
+                </label>
+              </div>
+            </div>
+          </fieldset>
+          <%= f.submit "Switch Client", class: "govuk-button govuk-!-margin-top-6", data: { module: "govuk-button" } %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <% if @using_stub %>
+      <div class="govuk-accordion__section ">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+              <%= t 'profile.assume_roles_h' %>
+            </span>
+            <strong class="govuk-tag">
+              dev
+            </strong>
+          </h2>
+        </div>
+        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+           <%= form_for:assume_roles, url: profile_update_role_path do |f| %>
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset" aria-describedby="assume-roles-hint">
+                <span id="assume-roles-hint" class="govuk-hint">
+                  <%= t 'profile.assume_roles_l' %>
+                </span>
+                <div class="govuk-checkboxes">
+                  
+                  <% ROLE.constants.each do |role| -%>
+                  <% role_string = "ROLE::#{role}".constantize %>
+                  <% is_checked = @user.roles.split(',').include?(role_string) %>
+                    <div class="govuk-checkboxes__item">
+                      <%= f.check_box 'role_selection', { :checked => is_checked,:multiple => true, :class => "govuk-checkboxes__input" }, role_string, nil  %>
+                      
+                      <label class="govuk-label govuk-checkboxes__label" for="assume_roles_role_selection_<%= role_string %>">
+                        <% if role.to_s == 'GDS' %><%= role %><% else %><%= role.to_s.titlecase %><% end %>
+                      </label>
+                    </div>
+                  <% end %>
+                </div>
+              </fieldset>
+              <%= f.submit "Update Roles and Logout", class: "govuk-button govuk-!-margin-top-6", data: { module: "govuk-button" } %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
 </div>

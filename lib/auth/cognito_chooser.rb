@@ -46,6 +46,7 @@ class CognitoChooser
 
   def register_stub_client
     Rails.application.secrets.cognito_client_id = SecureRandom.uuid
+    Rails.application.secrets.cognito_user_pool_id = SecureRandom.uuid
     register_client(
       client: CognitoStubClient.stub_client
     )

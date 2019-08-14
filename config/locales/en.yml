@@ -89,6 +89,11 @@ en:
     permissions: "Permissions"
     permissions_heading: "Your Permissions"
     access: "Access"
+    client_switch_h: "Switch Authentication Clients"
+    client_switch_l: "In development you can switch between using cognito and the stub authenication clients. If you use the stub client you can assume different roles."
+    banner: "There are features on this page which are only avialable in the development environment."
+    assume_roles_h: "Switch Roles"
+    assume_roles_l: "Select which role(s) you wish to assume?"
   events:
     title: Events
     type: Type
