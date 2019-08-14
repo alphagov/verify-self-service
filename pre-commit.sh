@@ -35,4 +35,14 @@ bundle exec govuk-lint-ruby app lib
 
 bundle check || bundle install
 
-bundle exec rake
+echo -e "[RSPEC] --> init (wait a second)"
+
+FAILS=`bundle exec rake | grep -E '(\d*) failure(s?)' -o | awk '{print $1}'`
+
+if [ $FAILS -ne 0 ]; then
+  echo -e "[RSPEC] --> ✋ Can't commit! You've broken $FAILS tests!!!"
+  exit 1
+else
+  echo -e "[RSPEC] --> 👍 Commit approved."
+  exit 0
+fi
