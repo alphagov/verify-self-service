@@ -1,16 +1,36 @@
 <h1 class="govuk-heading-l">Before you start</h1>
-<p>You need to do 2 things before you upload your Matching Service Adapter (MSA) certificate.</p>
-<ul class="govuk-list govuk-list--number">
+<p>The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.</p>
+<p>Before you upload your <%= @certificate.component_type == COMPONENT_TYPE::MSA ? "Matching Service Adapter (MSA)" : "Verify Service Provider (VSP)" %>
+<%= @certificate.usage %> certificate, you must
+<% if @certificate.usage == "signing" %>
+  create a new signing key and certificate
+<% else %>
+  <ul class="govuk-list govuk-list--number">
     <li>Create a new key and certificate</li>
-    <li>Add your new encryption key and certificate to your MSA configuration</li>
-</ul>
-<p>Find out more about <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate">rotating your MSA encryption key and certificate</a> in the documentation.</p>
-<div class="govuk-warning-text">
-  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-  <strong class="govuk-warning-text__text">
-    <span class="govuk-warning-text__assistive">Warning</span>
-      You must update your MSA configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
-    </strong>
-</div>
+    <li>Add your new encryption key and certificate to your <%= @certificate.component_type == COMPONENT_TYPE::MSA ? "MSA" : "VSP" %> configuration</li>
+  </ul>
+<% end %>
+</p>
+<p>Find out more about 
+  <% if @certificate.usage == "encryption" && @certificate.component_type == COMPONENT_TYPE::MSA %>
+    <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate">rotating your MSA encryption key and certificate</a>
+  <% elsif @certificate.usage == "encryption" && @certificate.component_type == COMPONENT_TYPE::SP %>
+    <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate">rotating your VSP encryption key and certificate</a>
+  <% elsif @certificate.usage == "signing" && @certificate.component_type == COMPONENT_TYPE::MSA %>
+    <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate">rotating your MSA Signing key and certificate</a>
+  <% elsif @certificate.usage == "signing" && @certificate.component_type == COMPONENT_TYPE::SP %>
+    <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate">rotating your VSP Signing key and certificate</a>
+  <% end %>
+  in the documentation.
+</p>
+<% if @certificate.usage == "encryption" %>
+  <div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+      <span class="govuk-warning-text__assistive">Warning</span>
+        You must update your <%= @certificate.component_type == COMPONENT_TYPE::MSA ? "MSA" : "VSP" %> configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
+      </strong>
+  </div>
+<% end %>
 
-<%= link_to "I have updated my MSA configuration", replace_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+<%= link_to @certificate.usage == "encryption" ? "I have updated my #{(@certificate.component_type == COMPONENT_TYPE::MSA ? 'MSA' : 'VSP')} configuration" : "continue", replace_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 

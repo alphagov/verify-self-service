@@ -1,0 +1,2 @@
+class UserJourneyControllerPolicy < ApplicationPolicy
+end

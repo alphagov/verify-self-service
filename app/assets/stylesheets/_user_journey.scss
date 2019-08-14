@@ -1,0 +1,25 @@
+// Place all the styles related to the events controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.component-supporting-text{
+  font-weight: 300;
+}
+.govuk-details__code {
+  background-color: #f8f8f8;
+  border: 1px solid #bfc1c3;
+  padding: 0 15px;
+  margin-top: 15px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.secondary-link{
+  display: inline-block;
+  padding: 9px 10px 6px 10px;
+  font-family: "nta", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1.1875rem;
+  line-height: 1.31579;
+}

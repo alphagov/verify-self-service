@@ -1,4 +1,7 @@
-<h1 class="govuk-heading-l">Matching Service Adapter: encryption certificate</h1>
+<h1 class="govuk-heading-l">
+  <%= @certificate.component.component_type == COMPONENT_TYPE::MSA ? "Matching Service Adapter: " : "Verify Service Provider: " %>
+  <%= @certificate.usage %> certificate
+</h1>
 <table class="govuk-table">
   <thead class="govuk-table__head govuk-visually-hidden">
     <tr class="govuk-table__row">
@@ -13,7 +16,7 @@
     </tr>
     <tr class="govuk-table__row">
       <th scope="row" class="govuk-table__header">Environment</th>
-      <td class="govuk-table__cell"></td>
+      <td class="govuk-table__cell"><%= @certificate.component.environment.capitalize %></td>
     </tr>
     <tr class="govuk-table__row">
       <th scope="row" class="govuk-table__header">Valid from</th>
@@ -35,7 +38,7 @@
       View full certificate
     </span>
   </summary>
-  <div class="govuk-details__text">
+  <div class="govuk-details__text govuk-details__code">
     <%= @certificate.x509 %>
   </div>
 </details>

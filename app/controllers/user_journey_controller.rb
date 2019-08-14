@@ -13,9 +13,12 @@ class UserJourneyController < ApplicationController
     @certificate = Certificate.find_by_id(params[:id])
   end
 
-  def before_you_start; end
+  def before_you_start
+    @certificate = Certificate.find_by_id(params[:id])
+  end
 
   def replace_certificate
+    @certificate = Certificate.find_by_id(params[:id])
     component_id = params[component_key(params)]
     component_type = component_name_from_params(params)
     @upload = UploadCertificateEvent.new(

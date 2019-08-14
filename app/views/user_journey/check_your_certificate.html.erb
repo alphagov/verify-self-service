@@ -28,14 +28,14 @@
       View full certificate
     </span>
   </summary>
-  <div class="govuk-details__text">
+  <div class="govuk-details__text govuk-details__code">
     <%= @certificate %>
   </div>
 </details>
-<p>Using this certificate will update GOV.UK Verify's configuration to use the new encryption certificate within 1 hour.</p>
+<p>Using this certificate will update our configuration within 10 minutes.</p>
 
 <%= form_for @certificate, url: confirmation_path, as: :certificate do |f| %>
-    <%= f.hidden_field :new_certificate, value: @certificate_value %>
-    <%= f.submit "Use this certificate", class: "govuk-button", data: { module: "govuk-button" } %>
-  </div>
+  <%= f.hidden_field :new_certificate, value: @certificate_value %>
+  <%= f.submit "Use this certificate", class: "govuk-button", data: { module: "govuk-button" } %>
+  <%= link_to "Upload a different certificate", replace_certificate_path, class: "secondary-link" %></td>
 <% end %>
