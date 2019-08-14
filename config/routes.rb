@@ -3,8 +3,8 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: { sessions: 'sessions' }
 
-  root 'components#index'
-
+  root 'home#index'
+  
   get '/healthcheck', to: 'healthcheck#index'
 
   get '/admin', to: 'components#index'
@@ -44,4 +44,11 @@ Rails.application.routes.draw do
   get 'profile', to: 'profile#show'
   post 'profile/switch-client', to: 'profile#switch_client'
   post 'profile/update-role', to: 'profile#update_role'
+
+  get '/component/:component_type/:component_id/certificate/:id', to: 'user_journey#view_certificate', as: 'view_certificate'
+  get '/component/:component_type/:component_id/certificate/:id/before-you-start', to: 'user_journey#before_you_start', as: 'before_you_start'
+  get '/component/:component_type/:component_id/certificate/:id/replace-certificate', to: 'user_journey#replace_certificate', as: 'replace_certificate'
+  post '/component/:component_type/:component_id/certificate/:id/replace-certificate', to: 'user_journey#replace_certificate_post', as: 'replace_certificate_post'
+  post '/component/:component_type/:component_id/certificate/:id/check-your-certificate', to: 'user_journey#check_your_certificate', as: 'check_certificate'
+  post '/component/:component_type/:component_id/certificate/:id/confirmation', to: 'user_journey#confirmation', as: 'confirmation'
 end

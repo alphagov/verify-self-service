@@ -1,0 +1,16 @@
+<h1 class="govuk-heading-l">Before you start</h1>
+<p>You need to do 2 things before you upload your Matching Service Adapter (MSA) certificate.</p>
+<ul class="govuk-list govuk-list--number">
+    <li>Create a new key and certificate</li>
+    <li>Add your new encryption key and certificate to your MSA configuration</li>
+</ul>
+<p>Find out more about <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate">rotating your MSA encryption key and certificate</a> in the documentation.</p>
+<div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-warning-text__assistive">Warning</span>
+      You must update your MSA configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
+    </strong>
+</div>
+
+<%= link_to "I have updated my MSA configuration", replace_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 

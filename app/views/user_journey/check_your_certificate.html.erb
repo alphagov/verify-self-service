@@ -1,0 +1,41 @@
+<h1 class="govuk-heading-l">Check you've uploaded the right certificate</h1>
+<p>The certificate you uploaded contains the following information:</p>
+<table class="govuk-table">
+  <thead class="govuk-table__head govuk-visually-hidden">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">Date</th>
+      <th scope="col" class="govuk-table__header">Amount</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid from</th>
+      <td class="govuk-table__cell"><%= @certificate.not_before %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid until</th>
+      <td class="govuk-table__cell"><%= @certificate.not_after %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common name</th>
+      <td class="govuk-table__cell"><%= @certificate.subject.to_a.find { |name, _, _| name == 'CN' }[1] %></td>
+    </tr>
+  </tbody>
+</table>
+<details class="govuk-details" data-module="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      View full certificate
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <%= @certificate %>
+  </div>
+</details>
+<p>Using this certificate will update GOV.UK Verify's configuration to use the new encryption certificate within 1 hour.</p>
+
+<%= form_for @certificate, url: confirmation_path, as: :certificate do |f| %>
+    <%= f.hidden_field :new_certificate, value: @certificate_value %>
+    <%= f.submit "Use this certificate", class: "govuk-button", data: { module: "govuk-button" } %>
+  </div>
+<% end %>
