@@ -26,7 +26,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
 
     it 'downloaded content is the same as upload with given key' do
       event.upload
-      key = "verify_services_metadata.json"
+      key = 'verify_services_metadata.json'
       expected_chunks = event.metadata
 
       actual_chunks = []
@@ -35,6 +35,40 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
       end
 
       expect(expected_chunks.to_json).to eq(actual_chunks.first)
+    end
+  end
+
+  context 'upload' do
+    before do
+      SelfService.register_service(
+        name: :integration_storage_client,
+        client: ActiveStorage::Service.configure(
+          Rails.configuration.active_storage.service,
+          configuration('integration_storage.yml')
+        )
+      )
+    end
+
+    it 'when environment is set to integration on component' do
+      expect(
+        SelfService.service(:integration_storage_client)
+      ).to receive(:upload)
+      expect(
+        SelfService.service(:storage_client)
+      ).not_to receive(:upload)
+
+      PublishServicesMetadataEvent.create(event_id: 0, environment: ENVIRONMENT::INTEGRATION)
+    end
+
+    it 'when environment is set to production on component' do
+      expect(
+        SelfService.service(:storage_client)
+      ).to receive(:upload)
+      expect(
+        SelfService.service(:integration_storage_client)
+      ).not_to receive(:upload)
+
+      PublishServicesMetadataEvent.create(event_id: 0, environment: ENVIRONMENT::PRODUCTION)
     end
   end
 end
