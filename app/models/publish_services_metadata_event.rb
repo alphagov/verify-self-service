@@ -27,7 +27,7 @@ class PublishServicesMetadataEvent < Event
 private
 
   def storage_client
-    return SelfService.service(:integration_storage_client) if environment == ENVIRONMENT::INTEGRATION
+    return SelfService.service(:integration_storage_client) if environment == S3::ENVIRONMENT::INTEGRATION
 
     SelfService.service(:storage_client)
   end
