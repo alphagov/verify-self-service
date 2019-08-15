@@ -49,8 +49,10 @@ Rails.application.routes.draw do
 
   get '/component/:component_type/:component_id/certificate/:id', to: 'user_journey#view_certificate', as: 'view_certificate'
   get '/component/:component_type/:component_id/certificate/:id/before-you-start', to: 'user_journey#before_you_start', as: 'before_you_start'
-  get '/component/:component_type/:component_id/certificate/:id/replace-certificate', to: 'user_journey#replace_certificate', as: 'replace_certificate'
-  post '/component/:component_type/:component_id/certificate/:id/replace-certificate', to: 'user_journey#replace_certificate_post', as: 'replace_certificate_post'
-  post '/component/:component_type/:component_id/certificate/:id/check-your-certificate', to: 'user_journey#check_your_certificate', as: 'check_certificate'
-  post '/component/:component_type/:component_id/certificate/:id/confirmation', to: 'user_journey#confirmation', as: 'confirmation'
+  post '/component/:component_type/:component_id/certificate/:id/upload-certificate', to: 'user_journey#upload_certificate_post', as: 'upload_certificate_post'
+  get '/component/:component_type/:component_id/certificate/:id/upload-certificate', to: 'user_journey#upload_certificate', as: 'upload_certificate'
+  post '/component/:component_type/:component_id/certificate/:id/check-your-certificate', to: 'user_journey#check_your_certificate_post', as: 'check_certificate_post'
+  get '/component/:component_type/:component_id/certificate/:id/check-your-certificate', to: 'user_journey#check_your_certificate', as: 'check_certificate'
+  post '/component/:component_type/:component_id/certificate/:id/confirmation', to: 'user_journey#confirmation_post', as: 'confirmation_post'
+  get '/component/:component_type/:component_id/certificate/:id/confirmation', to: 'user_journey#confirmation', as: 'confirmation'
 end

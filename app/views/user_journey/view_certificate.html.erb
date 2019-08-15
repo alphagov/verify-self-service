@@ -12,7 +12,7 @@
   <tbody class="govuk-table__body">
     <tr class="govuk-table__row">
       <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.used_by' %></th>
-      <td class="govuk-table__cell"><%= @certificate.x509.subject.to_a.find { |name, _, _| name == 'O' }[1] %></td>
+      <td class="govuk-table__cell"></td>
     </tr>
     <tr class="govuk-table__row">
       <th scope="row" class="govuk-table__header"><%= t 'components.environment' %></th>
@@ -28,7 +28,7 @@
     </tr>
     <tr class="govuk-table__row">
       <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.common_name' %></th>
-      <td class="govuk-table__cell"><%= @certificate.x509.subject.to_a.find { |name, _, _| name == 'CN' }[1] %></td>
+      <td class="govuk-table__cell"><%= @certificate_issuer_common_name %></td>
     </tr>
   </tbody>
 </table>

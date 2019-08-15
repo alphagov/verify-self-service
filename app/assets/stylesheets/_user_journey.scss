@@ -6,8 +6,8 @@
   font-weight: 300;
 }
 .govuk-details__code {
-  background-color: #f8f8f8;
-  border: 1px solid #bfc1c3;
+  background-color: govuk-colour("light-grey");
+  border: 1px solid $govuk-border-colour;
   padding: 0 15px;
   margin-top: 15px;
   overflow-x: auto;
@@ -25,4 +25,33 @@
 }
 .secondary-link__confirmation{
   padding: 9px 10px 6px 0px;
+}
+.certificate-details {
+  font-size: 0;
+  margin-bottom: 25px;
+}
+dl {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+dt {
+  display: block;
+}
+.certificate-details dd {
+  margin: 0 8px 0 0;
+  padding: 3px 8px 2px;
+  display: inline;
+  background-color: #dee0e2;
+}
+.certificate-details dd {
+  font-family: "nta", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.14286;
+  margin-top: 0;
+  margin-bottom: 15px;
 }

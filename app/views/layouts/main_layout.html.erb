@@ -3,7 +3,7 @@
     <div class="govuk-grid-column-one-third">
     <div class="side-navigation">
       <ul class="govuk-list">
-        <li class="<%= 'active' if current_page?(root_path) %>">
+        <li class="<%= 'active' if 'user_journey'.include?(params[:controller])  %>">
           <a href="/" class="govuk-link--no-visited-state"><%= t 'components.title' %></a>
         </li>
         <li class="<%= 'active' if 'users'.include?(params[:controller]) %>">

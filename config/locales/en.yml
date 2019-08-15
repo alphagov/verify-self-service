@@ -227,5 +227,8 @@ en:
       what_to_expect: This usually takes around 10 minutes. We'll email you when your new certificate is in use.
       next_steps: Next steps
       rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.
-      received_email: Once you've received the email, add the new key
+      received_email: Once you've received the email, delete the old %{usage} key and certificate from your %{component} configuration.
       rotate_more: Rotate more certificates
+      msa_add_new_key_and_certificate: Add the new signing key and certificate to your Matching Service Adapter (MSA) configuration.
+      tell_us_to_stop_using_old_certificate: Tell GOV.UK Verify to stop using your old certificate using this tool.
+

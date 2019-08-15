@@ -1,0 +1,8 @@
+<dl class="certificate-details">
+  <dt class="govuk-visually-hidden">Environment</dt>
+  <dd><%= certificate.component.environment.capitalize %></dd>
+  <dt class="govuk-visually-hidden">Component</dt>
+  <dd><%= certificate.component_type == COMPONENT_TYPE::MSA ? "MSA" : "SP" %></dd>
+  <dt class="govuk-visually-hidden">Certificate</dt>
+  <dd><%= certificate.usage.capitalize + " certificate" %></dd>
+</dl>

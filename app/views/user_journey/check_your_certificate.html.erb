@@ -1,3 +1,5 @@
+<%= render 'shared/certificate_details', certificate: @existing_certificate %>
+
 <h1 class="govuk-heading-l"><%= t 'user_journey.certificate.check_certificate_title' %></h1>
 <p><%= t 'user_journey.certificate.contains_the_following' %></p>
 <table class="govuk-table">
@@ -37,5 +39,5 @@
 <%= form_for @certificate, url: confirmation_path, as: :certificate do |f| %>
   <%= f.hidden_field :new_certificate, value: @certificate_value %>
   <%= f.submit t('user_journey.certificate.use_certificate'), class: "govuk-button", data: { module: "govuk-button" } %>
-  <%= link_to t('user_journey.certificate.upload_different_certificate'), replace_certificate_path, class: "secondary-link" %></td>
+  <%= link_to t('user_journey.certificate.upload_different_certificate'), upload_certificate_path, class: "secondary-link" %></td>
 <% end %>

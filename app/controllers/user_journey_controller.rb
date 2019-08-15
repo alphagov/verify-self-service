@@ -11,13 +11,14 @@ class UserJourneyController < ApplicationController
 
   def view_certificate
     @certificate = Certificate.find_by_id(params[:id])
+    @certificate_issuer_common_name = certificate_issuer_common_name(@certificate)
   end
 
   def before_you_start
     @certificate = Certificate.find_by_id(params[:id])
   end
 
-  def replace_certificate
+  def upload_certificate
     @certificate = Certificate.find_by_id(params[:id])
     component_id = params[component_key(params)]
     component_type = component_name_from_params(params)
@@ -27,23 +28,27 @@ class UserJourneyController < ApplicationController
     )
   end
 
-  def replace_certificate_post; end
+  def upload_certificate_post; end
 
-  def check_your_certificate
+  def check_your_certificate_post
     @existing_certificate = Certificate.find_by_id(params[:id])
     @certificate_value = (params[:certificate][:value])
-    @component = MsaComponent.find_by_id(params[:component_id])
+    @component = klass_component(@existing_certificate.component_type).find_by_id(@existing_certificate.component_id)
 
     new_certificate = Certificate.new(usage: @existing_certificate.usage, value: @certificate_value, component: @component)
-
     if new_certificate.valid?
       @certificate = to_x509(params[:certificate][:value])
+      render 'user_journey/check_your_certificate'
     else
-      redirect_to :replace_certificate
+      redirect_to :upload_certificate
     end
   end
 
-  def confirmation
+  def check_your_certificate
+    redirect_to :upload_certificate
+  end
+
+  def confirmation_post
     certificate_value = params[:certificate][:new_certificate]
     @existing_certificate = Certificate.find_by_id(params[:id])
     @upload = UploadCertificateEvent.create(usage: @existing_certificate.usage, value: certificate_value, component_id: params[:component_id], component_type: params[:component_type])
@@ -61,7 +66,11 @@ class UserJourneyController < ApplicationController
       render :confirmation
     else
       Rails.logger.info(@upload.errors.full_messages)
-      render :replace_certificate
+      render :upload_certificate
     end
+  end
+
+  def confirmation
+    @existing_certificate = Certificate.find_by_id(params[:id])
   end
 end

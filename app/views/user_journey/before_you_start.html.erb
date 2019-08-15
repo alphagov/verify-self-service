@@ -1,3 +1,5 @@
+<%= render 'shared/certificate_details', certificate: @certificate %>
+
 <h1 class="govuk-heading-l"> <%= t 'user_journey.before_you_start.title' %></h1>
 <p><%= t 'user_journey.before_you_start.rotate_certificate_read_steps' %></p>
 <p><%= t 'user_journey.before_you_start.before_you_upload' %><%= @certificate.component_type == COMPONENT_TYPE::MSA ? t('user_journey.before_you_start.msa_with_abbreviation') : t('user_journey.before_you_start.vsp_with_abbreviation') %>
@@ -37,4 +39,4 @@
   </div>
 <% end %>
 
-<%= link_to @certificate.usage == "encryption" ?  t('user_journey.before_you_start.have_updated', component: (@certificate.component_type == COMPONENT_TYPE::MSA ? " MSA " : " VSP ")) : t('user_journey.before_you_start.continue'), replace_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+<%= link_to @certificate.usage == "encryption" ?  t('user_journey.before_you_start.have_updated', component: (@certificate.component_type == COMPONENT_TYPE::MSA ? " MSA " : " VSP ")) : t('user_journey.before_you_start.continue'), upload_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
