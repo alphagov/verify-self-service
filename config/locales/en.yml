@@ -147,9 +147,6 @@ en:
       errored: errored
       invalid: Invalid team name
       failed: Failed to create team
-
-
-
   components:
     title: Manage certificates
     name: Name
@@ -178,3 +175,57 @@ en:
     view_components: View components
     edit:
       heading: Associate team to
+  user_journey:
+    msa_long: Matching Service Adapter 
+    vsp_long: Verify Service Provider
+    used_by: used by
+    certificate: Certificate
+    status: Status
+    missing: MISSING
+    in_use: IN USE
+    encryption_certificate: Encryption certificate
+    signing_certificate: Signing certificate
+    before_you_start:
+      title: Before you start
+      rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
+      before_you_upload: "Before you upload your " 
+      you_must: "%{type} certificate, you must"
+      msa_with_abbreviation: Matching Service Adapter (MSA)
+      vsp_with_abbreviation: Verify Service Provider (VSP)
+      create_signing_key_and_certificate: create a new signing key and certificate
+      create_key_and_certificate: Create a new key and certificate
+      create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
+      find_out_more: Find out more about 
+      rotate_key_and_certificate: rotating your %{component} %{certificate} key and certificate
+      in_documentation: in the documentation.
+      must_update: You must update your %{component} configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
+      continue: Continue
+      have_updated: I have updated my %{component} configuration
+    certificate:
+      check_certificate_title: Check you've uploaded the right certificate
+      contains_the_following: "The certificate you uploaded contains the following information:"
+      date: Date
+      amount: Amount
+      valid_from: Valid from
+      valid_until: Valid until
+      common_name: Common name
+      used_by: Used by
+      view_certificate: View full certificate
+      certificate_update_notice: Using this certificate will update our configuration within 10 minutes.
+      use_certificate: Use this certificate
+      upload_different_certificate: Upload a different certificate
+      certificate: "%{type} certificate"
+      msa_heading: "Matching Service Adapter: "
+      vsp_heading: "Verify Service Provider: "
+      replace: Replace certificate
+      upload_new: Upload your new %{certificate} certificate 
+      upload_certificate_file_header: Upload a certificate file
+      upload_certificate_file_body: Upload file
+      paste_certificate: Paste certificate text into a text box
+    confirmation:
+      title: GOV.UK Verify is adding your certificate to its configuration
+      what_to_expect: This usually takes around 10 minutes. We'll email you when your new certificate is in use.
+      next_steps: Next steps
+      rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.
+      received_email: Once you've received the email, add the new key
+      rotate_more: Rotate more certificates

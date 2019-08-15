@@ -1,9 +1,24 @@
-<h1 class="govuk-heading-l">GOV.UK Verify is adding your certificate to its configuration</h1>
-<p>This usually takes around 10 minutes. We'll email you when your new encryption certificate is in use.</p>
-<h2 class="govuk-heading-m">Next steps</h2>
+<h1 class="govuk-heading-l"><%= t 'user_journey.confirmation.title' %></h1>
+<p><%= t 'user_journey.confirmation.what_to_expect' %></p>
+<h2 class="govuk-heading-m"><%= t 'user_journey.confirmation.next_steps' %></h2>
 <ul class="govuk-list govuk-list--number">
-  <li>You can rotate other certificates straight away - you do not need to wait for the email.</li>
-  <li>Once you've received the email, add the new signing key to your Verify Service Provider (VSP).</li>
+  <li><%= t 'user_journey.confirmation.rotate_other_certificates' %></li>
+  <li><%= t 'user_journey.confirmation.received_email' %></li>
 </ul>
-<p>Find out more about <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate">rotating your MSA encryption key and certificate</a> in the documentation.</p>
-<%= link_to "Rotate more certificates", root_path, class: "secondary-link" %> 
+<p><%= t 'user_journey.before_you_start.find_out_more' %>
+  <% if @existing_certificate.usage == "encryption" && @existing_certificate.component_type == COMPONENT_TYPE::MSA %>
+    <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate">
+    <%= t('user_journey.before_you_start.rotate_key_and_certificate', component: "MSA", certificate: "Encyrption") %></a>
+  <% elsif @existing_certificate.usage == "encryption" && @existing_certificate.component_type == COMPONENT_TYPE::SP %>
+    <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate">
+    <%= t('user_journey.before_you_start.rotate_key_and_certificate', component: "VSP", certificate: "Encyrption") %></a>
+  <% elsif @existing_certificate.usage == "signing" && @existing_certificate.component_type == COMPONENT_TYPE::MSA %>
+    <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate">
+    <%= t('user_journey.before_you_start.rotate_key_and_certificate', component: "MSA", certificate: "Signing") %></a>
+  <% elsif @existing_certificate.usage == "signing" && @existing_certificate.component_type == COMPONENT_TYPE::SP %>
+    <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate">
+    <%= t('user_journey.before_you_start.rotate_key_and_certificate', component: "VSP", certificate: "Signing") %></a>
+  <% end %>
+  <%= t 'user_journey.before_you_start.in_documentation' %>
+</p>
+<%= link_to t('user_journey.confirmation.rotate_more'), root_path, class: "secondary-link secondary-link__confirmation" %> 
