@@ -21,13 +21,17 @@ class ProfileController < ApplicationController
   end
 
   def update_role
-    role_str = params[:assume_roles][:role_selection].join(',')
-    if params[:assume_roles][:role_selection].include?(ROLE::GDS)
-      CognitoStubClient.update_user(
-        role: role_str, email_domain: 'digital.cabinet-office.gov.uk'
-      )
+    if params[:assume_roles].nil?
+      CognitoStubClient.update_user(role: "")
     else
-      CognitoStubClient.update_user(role: role_str)
+      role_str = params[:assume_roles][:role_selection].join(',')
+      if params[:assume_roles][:role_selection].include?(ROLE::GDS)
+        CognitoStubClient.update_user(
+          role: role_str, email_domain: 'digital.cabinet-office.gov.uk'
+        )
+      else
+        CognitoStubClient.update_user(role: role_str)
+      end
     end
     UserSignOutEvent.create(user_id: warden.user.user_id)
     signed_out = (Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name))

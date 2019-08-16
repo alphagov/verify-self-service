@@ -70,16 +70,6 @@ class CognitoStubClient
     SelfService.register_service(name: :cognito_stub, client: 'true')
   end
 
-  def self.switch_client
-    return false if Rails.env.production?
-
-    if !using_coginito_stub?(SelfService.service(:cognito_stub))
-      switch_to_stub
-    else
-      switch_to_cognito
-    end
-  end
-
   def self.using_coginito_stub?(obj)
     obj.to_s.downcase == 'true'
   end
