@@ -25,7 +25,7 @@ class CognitoChooser
   end
 
   def register_client(client:, is_stub: true)
-    SelfService.register_service(name: :cognito_stub, client: is_stub.to_s)
+    SelfService.register_service(name: :cognito_stub, client: is_stub)
     SelfService.register_service(name: :real_client, client: client) unless is_stub
     SelfService.register_service(name: :cognito_client, client: client)
   end

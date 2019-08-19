@@ -48,29 +48,25 @@ class CognitoStubClient
 
   def self.switch_to_cognito
     # Exit if we are already a cognito client
-    return false unless using_coginito_stub?(SelfService.service(:cognito_stub))
+    return false unless SelfService.service(:cognito_stub)
     # Exit if there isn't a cognito client available to switch to
     return false unless SelfService.service_present?(:real_client)
 
     real_client = SelfService.service(:real_client)
     SelfService.register_service(name: :cognito_client, client: real_client)
-    SelfService.register_service(name: :cognito_stub, client: 'false')
+    SelfService.register_service(name: :cognito_stub, client: false)
   end
 
   def self.switch_to_stub
     # Exit if we are in production we don't want a stub in production
     return false if Rails.env.production?
     # Exit if we're already a stub client
-    return false if using_coginito_stub?(SelfService.service(:cognito_stub))
+    return false if SelfService.service(:cognito_stub)
 
     real_client = SelfService.service(:cognito_client)
     SelfService.register_service(name: :real_client, client: real_client)
     SelfService.register_service(name: :cognito_client, client: stub_client)
     setup_stubs
-    SelfService.register_service(name: :cognito_stub, client: 'true')
-  end
-
-  def self.using_coginito_stub?(obj)
-    obj.to_s.downcase == 'true'
+    SelfService.register_service(name: :cognito_stub, client: true)
   end
 end

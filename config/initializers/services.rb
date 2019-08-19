@@ -9,14 +9,13 @@ module SelfService
   end
 
   def self.service(name)
-    @services[name] || raise(ServiceNotRegisteredException.new(name))
+    raise(ServiceNotRegisteredException.new(name)) unless self.service_present?(name)
+
+    @services[name]
   end
 
   def self.service_present?(name)
-    self.service(name)
-    true
-  rescue SelfService::ServiceNotRegisteredException
-    false
+    @services.key?(name)
   end
 
   class ServiceNotRegisteredException < RuntimeError; end
