@@ -1,7 +1,7 @@
 class InviteUserForm
   include ActiveModel::Model
 
-  attr_reader :email, :given_name, :family_name, :roles, :team
+  attr_reader :email, :given_name, :family_name, :roles
 
   validates_presence_of :email, :given_name, :family_name, :roles
 

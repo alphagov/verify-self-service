@@ -1,0 +1,2 @@
+class UserAddedToTeamEvent < Event
+end
