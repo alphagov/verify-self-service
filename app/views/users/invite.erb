@@ -1,6 +1,6 @@
 <h1 class="govuk-heading-xl"><%= t 'users.invite.title' %></h1>
 
-<%= form_for @form, url: invite_new_user_path, class: 'govuk-form-group' do |f| %>
+<%= form_for @form, url: invite_to_team_post_path, class: 'govuk-form-group' do |f| %>
 
   <div class="govuk-form-group">
     <%= f.label :email, class: "govuk-label" %>

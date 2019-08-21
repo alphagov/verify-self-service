@@ -33,6 +33,8 @@ en:
   common:
     error_blank_name: Name can't be blank
     error_name_not_unique: Name has already been taken
+    gds_full: Government Digital Service
+    gds: GDS
   login:
     heading: Log in
     mfa_heading: Log in - One Time Password Request
@@ -47,15 +49,18 @@ en:
     errors:
       generic_error: "There was an error, please try again"
   users:
-    title: Team members
+    title_no_team: Team members
+    title_for_team: Team members for
     invite_button: Invite a new user
     invite:
       title: Invite a new user
       button: Invite user
+      button_to: Invite user to
       success: The user has been invited
       errors:
         already_exists: The user already exists
         generic_error: There was an error creating the user
+        team_missing: Team does not exist
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
@@ -115,7 +120,7 @@ en:
       warning: Warning
       message: "%{message}"
       profile: "Profile"
-      teams: "Teams Admin"
+      teams: "Team Management"
       events: "Events Viewer"
     main_layout:
       team_members: Team Members
