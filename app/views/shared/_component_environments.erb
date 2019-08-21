@@ -1,9 +1,11 @@
 <div class="govuk-form-group <%= 'govuk-form-group--error' if @component.errors.key?(:environment) %>">
   <h3 class="govuk-heading-m"><%= t 'components.environment' %></h3>
   <div class="govuk-radios">
-    <div class="govuk-radios__item ">
-      <%= f.radio_button :environment, ENVIRONMENT::STAGING, class: 'govuk-radios__input'  %>
-      <%= f.label :environment, ENVIRONMENT::STAGING.capitalize, class: 'govuk-label govuk-radios__label' %>
-    </div>
+    <% @hub_environments&.each do |hub_environment| %>
+      <div class="govuk-radios__item">
+        <%= f.radio_button :environment, hub_environment, class: 'govuk-radios__input'  %>
+        <%= f.label :environment, hub_environment.capitalize, class: 'govuk-label govuk-radios__label' %>
+      </div>
+    <% end %>
   </div>
 </div>

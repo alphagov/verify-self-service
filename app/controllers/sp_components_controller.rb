@@ -7,6 +7,7 @@ class SpComponentsController < ApplicationController
 
   def new
     @component = NewSpComponentEvent.new
+    @hub_environments = hub_environments
   end
 
   def show
@@ -41,6 +42,11 @@ class SpComponentsController < ApplicationController
   end
 
 private
+
+  def hub_environments
+    hub_envs = JSON.parse(ENV["HUB_ENVIRONMENTS"])
+    hub_envs.keys
+  end
 
   def component_params
     params.require(:component).permit(:name, :component_type, :team_id, :environment)

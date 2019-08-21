@@ -7,6 +7,7 @@ class MsaComponentsController < ApplicationController
 
   def new
     @component = NewMsaComponentEvent.new
+    @hub_environments = hub_environments
   end
 
   def show
@@ -41,6 +42,11 @@ class MsaComponentsController < ApplicationController
   end
 
 private
+
+  def hub_environments
+    hub_envs = JSON.parse(ENV["HUB_ENVIRONMENTS"])
+    hub_envs.keys
+  end
 
   def component_params
     params.require(:component).permit(:name, :entity_id, :team_id, :environment)
