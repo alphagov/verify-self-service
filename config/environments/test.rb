@@ -45,4 +45,11 @@ Rails.application.configure do
   config.action_view.raise_on_missing_translations = true
 
   config.middleware.use RackSessionAccess::Middleware
+
+  config.hub_environments = {
+    'production': 'production-bucket',
+    'integration': 'integration-bucket',
+    'staging': 'staging-bucket',
+    'test': 'test-bucket'
+  }
 end

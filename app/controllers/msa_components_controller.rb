@@ -7,7 +7,7 @@ class MsaComponentsController < ApplicationController
 
   def new
     @component = NewMsaComponentEvent.new
-    @hub_environments = hub_environments
+    @hub_environments = Rails.configuration.hub_environments.keys
   end
 
   def show
@@ -16,6 +16,7 @@ class MsaComponentsController < ApplicationController
 
   def create
     @component = NewMsaComponentEvent.create(component_params)
+    @hub_environments = Rails.configuration.hub_environments.keys
     if @component.valid?
       redirect_to root_path
     else
@@ -42,11 +43,6 @@ class MsaComponentsController < ApplicationController
   end
 
 private
-
-  def hub_environments
-    hub_envs = JSON.parse(ENV["HUB_ENVIRONMENTS"])
-    hub_envs.keys
-  end
 
   def component_params
     params.require(:component).permit(:name, :entity_id, :team_id, :environment)

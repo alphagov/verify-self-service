@@ -14,25 +14,26 @@ class PublishServicesMetadataEvent < Event
   end
 
   def upload
-    json_data = metadata.to_json
-    storage_key = "verify_services_metadata.json"
-    check_sum = Digest::MD5.base64digest(json_data)
-    storage_client.upload(
-      storage_key,
-      StringIO.new(json_data),
-      checksum: check_sum
+    SelfService.service(:storage_client).put_object(
+      bucket: hub_environment_bucket,
+      key: FILES::CONFIG_METADATA,
+      body: StringIO.new(metadata.to_json),
+      server_side_encryption: 'AES256'
     )
+  rescue Aws::S3::Errors::ServiceError
+    Rails.logger.error("Failed to publish config metadata for event #{event_id}")
   end
 
 private
 
-  def storage_client
-    return SelfService.service(:integration_storage_client) if environment == ENVIRONMENT::INTEGRATION
-
-    SelfService.service(:storage_client)
-  end
-
   def services_metadata
     Component.to_service_metadata(event_id)
+  end
+
+  def hub_environment_bucket
+    Rails.configuration.hub_environments.fetch(environment.to_sym)
+  rescue KeyError
+    Rails.logger.error("Failed to find bucket for #{environment}")
+    "#{Rails.env}-bucket"
   end
 end
