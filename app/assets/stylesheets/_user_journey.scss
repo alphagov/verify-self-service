@@ -1,4 +1,4 @@
-// Place all the styles related to the events controller here.
+// Place all the styles related to the user journey controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
@@ -17,41 +17,22 @@
 .secondary-link{
   display: inline-block;
   padding: 9px 10px 6px 10px;
-  font-family: "nta", Arial, sans-serif;
-  font-weight: 400;
-  font-size: 16px;
   font-size: 1.1875rem;
-  line-height: 1.31579;
 }
 .secondary-link__confirmation{
   padding: 9px 10px 6px 0px;
 }
 .certificate-details {
-  font-size: 0;
-  margin-bottom: 25px;
-}
-dl {
-  display: block;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
+  margin: 8px 0 25px;
+
+  dd {
+    @extend %govuk-body-s;
+    background-color: #dee0e2;
+    margin: 0 5px 0 0;
+    display: inline;
+    padding: 3px 8px 4px;
+  }
 }
 dt {
   display: block;
-}
-.certificate-details dd {
-  margin: 0 8px 0 0;
-  padding: 3px 8px 2px;
-  display: inline;
-  background-color: #dee0e2;
-}
-.certificate-details dd {
-  font-family: "nta", Arial, sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  font-size: 0.875rem;
-  line-height: 1.14286;
-  margin-top: 0;
-  margin-bottom: 15px;
 }

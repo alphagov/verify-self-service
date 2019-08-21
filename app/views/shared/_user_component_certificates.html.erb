@@ -1,7 +1,7 @@
 <% if components.present? %>
   <% components.reverse.each do |component| %>
-    <h2 class="govuk-heading-m"><%= component.environment.capitalize %></h2>
     <table class="govuk-table">
+      <h2 class="govuk-heading-m"><%= component.environment.capitalize %></h2>
       <caption class="govuk-table__caption govuk-!-margin-bottom-1">
         <%= component.component_type == COMPONENT_TYPE::MSA ? t('user_journey.msa_long') : t('user_journey.vsp_long') %> 
         <span class="component-supporting-text">

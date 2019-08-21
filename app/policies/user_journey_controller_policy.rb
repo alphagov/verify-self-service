@@ -22,7 +22,7 @@ class UserJourneyControllerPolicy < ApplicationPolicy
     user.permissions.certificate_management
   end
 
-  def upload_certificate_post?
+  def upload?
     user.permissions.certificate_management
   end
 
@@ -30,7 +30,7 @@ class UserJourneyControllerPolicy < ApplicationPolicy
     user.permissions.certificate_management
   end
 
-  def check_your_certificate_post?
+  def submit?
     user.permissions.certificate_management
   end
 
@@ -38,7 +38,7 @@ class UserJourneyControllerPolicy < ApplicationPolicy
     user.permissions.certificate_management
   end
 
-  def confirmation_post?
+  def confirm?
     user.permissions.certificate_management
   end
 end

@@ -185,14 +185,17 @@ en:
     in_use: IN USE
     encryption_certificate: Encryption certificate
     signing_certificate: Signing certificate
+    urls:
+      msa_encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
+      msa_signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate
+      vsp_encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate
+      vsp_signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate
     before_you_start:
       title: Before you start
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
-      before_you_upload: "Before you upload your " 
-      you_must: "%{type} certificate, you must"
-      msa_with_abbreviation: Matching Service Adapter (MSA)
-      vsp_with_abbreviation: Verify Service Provider (VSP)
-      create_signing_key_and_certificate: create a new signing key and certificate
+      MsaComponent: "Before you upload your Matching Service Adapter (MSA) %{type} certificate, you must "
+      SpComponent: "Before you upload your Verify Service Provider (VSP) %{type} certificate, you must "
+      create_signing_key_and_certificate: create a new signing key and certificate.
       create_key_and_certificate: Create a new key and certificate
       create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
       find_out_more: Find out more about 

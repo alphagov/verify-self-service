@@ -10,16 +10,15 @@ class UserJourneyController < ApplicationController
   end
 
   def view_certificate
-    @certificate = Certificate.find_by_id(params[:id])
-    @certificate_issuer_common_name = certificate_issuer_common_name(@certificate)
+    @certificate = Certificate.find_by_id(params[:certificate_id])
   end
 
   def before_you_start
-    @certificate = Certificate.find_by_id(params[:id])
+    @certificate = Certificate.find_by_id(params[:certificate_id])
   end
 
   def upload_certificate
-    @certificate = Certificate.find_by_id(params[:id])
+    @certificate = Certificate.find_by_id(params[:certificate_id])
     component_id = params[component_key(params)]
     component_type = component_name_from_params(params)
     @upload = UploadCertificateEvent.new(
@@ -28,29 +27,25 @@ class UserJourneyController < ApplicationController
     )
   end
 
-  def upload_certificate_post; end
-
-  def check_your_certificate_post
-    @existing_certificate = Certificate.find_by_id(params[:id])
+  def submit
+    @existing_certificate = Certificate.find_by_id(params[:certificate_id])
     @certificate_value = (params[:certificate][:value])
     @component = klass_component(@existing_certificate.component_type).find_by_id(@existing_certificate.component_id)
-
-    new_certificate = Certificate.new(usage: @existing_certificate.usage, value: @certificate_value, component: @component)
-    if new_certificate.valid?
-      @certificate = to_x509(params[:certificate][:value])
+    @new_certificate = Certificate.new(usage: @existing_certificate.usage, value: @certificate_value, component: @component)
+    if @new_certificate.valid?
       render 'user_journey/check_your_certificate'
     else
       redirect_to :upload_certificate
     end
   end
 
-  def check_your_certificate
-    redirect_to :upload_certificate
+  def confirmation
+    @existing_certificate = Certificate.find_by_id(params[:certificate_id])
   end
 
-  def confirmation_post
+  def confirm
     certificate_value = params[:certificate][:new_certificate]
-    @existing_certificate = Certificate.find_by_id(params[:id])
+    @existing_certificate = Certificate.find_by_id(params[:certificate_id])
     @upload = UploadCertificateEvent.create(usage: @existing_certificate.usage, value: certificate_value, component_id: params[:component_id], component_type: params[:component_type])
 
     if @upload.valid?
@@ -68,9 +63,5 @@ class UserJourneyController < ApplicationController
       Rails.logger.info(@upload.errors.full_messages)
       render :upload_certificate
     end
-  end
-
-  def confirmation
-    @existing_certificate = Certificate.find_by_id(params[:id])
   end
 end

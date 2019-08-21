@@ -20,7 +20,7 @@ RSpec.describe 'Before you start page', type: :system do
     }
     Certificate.create(defaults)
     visit before_you_start_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
-    expect(page).to have_content t('user_journey.before_you_start.msa_with_abbreviation')
+    expect(page).to have_content 'Matching Service Adapter (MSA) encryption certificate'
     click_link 'I have updated my MSA configuration'
     expect(current_path).to eql upload_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
   end
@@ -33,7 +33,7 @@ RSpec.describe 'Before you start page', type: :system do
     }
     Certificate.create(defaults)
     visit before_you_start_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
-    expect(page).to have_content t('user_journey.before_you_start.vsp_with_abbreviation')
+    expect(page).to have_content 'Verify Service Provider (VSP) encryption certificate'
     click_link 'I have updated my VSP configuration'
     expect(current_path).to eql upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
   end

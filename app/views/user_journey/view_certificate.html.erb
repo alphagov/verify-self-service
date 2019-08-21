@@ -2,44 +2,7 @@
   <%= @certificate.component.component_type == COMPONENT_TYPE::MSA ? t('user_journey.certificate.msa_heading') : t('user_journey.certificate.vsp_heading') %>
   <%= t('user_journey.certificate.certificate', type: @certificate.usage ) %>
 </h1>
-<table class="govuk-table">
-  <thead class="govuk-table__head govuk-visually-hidden">
-    <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header"><%= t 'user_journey.certificate.date' %></th>
-      <th scope="col" class="govuk-table__header"><%= t 'user_journey.certificate.amount' %></th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.used_by' %></th>
-      <td class="govuk-table__cell"></td>
-    </tr>
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"><%= t 'components.environment' %></th>
-      <td class="govuk-table__cell"><%= @certificate.component.environment.capitalize %></td>
-    </tr>
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.valid_from' %></th>
-      <td class="govuk-table__cell"><%= @certificate.x509.not_before %></td>
-    </tr>
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.valid_until' %></th>
-      <td class="govuk-table__cell"><%= @certificate.x509.not_after %></td>
-    </tr>
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.common_name' %></th>
-      <td class="govuk-table__cell"><%= @certificate_issuer_common_name %></td>
-    </tr>
-  </tbody>
-</table>
-<details class="govuk-details" data-module="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      <%= t 'user_journey.certificate.view_certificate' %>
-    </span>
-  </summary>
-  <div class="govuk-details__text govuk-details__code">
-    <%= @certificate.x509 %>
-  </div>
-</details>
+
+<%= render 'shared/user_certificate_view', certificate: @certificate, full_details: true %>
+
 <%= link_to t('user_journey.certificate.replace'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>

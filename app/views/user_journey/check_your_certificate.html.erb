@@ -2,41 +2,12 @@
 
 <h1 class="govuk-heading-l"><%= t 'user_journey.certificate.check_certificate_title' %></h1>
 <p><%= t 'user_journey.certificate.contains_the_following' %></p>
-<table class="govuk-table">
-  <thead class="govuk-table__head govuk-visually-hidden">
-    <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header"><%= t 'user_journey.certificate.date' %></th>
-      <th scope="col" class="govuk-table__header"><%= t 'user_journey.certificate.amount' %></th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.valid_from' %></th>
-      <td class="govuk-table__cell"><%= @certificate.not_before %></td>
-    </tr>
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.valid_until' %></th>
-      <td class="govuk-table__cell"><%= @certificate.not_after %></td>
-    </tr>
-    <tr class="govuk-table__row">
-      <th scope="row" class="govuk-table__header"><%= t 'user_journey.certificate.common_name' %></th>
-      <td class="govuk-table__cell"><%= @certificate.subject.to_a.find { |name, _, _| name == 'CN' }[1] %></td>
-    </tr>
-  </tbody>
-</table>
-<details class="govuk-details" data-module="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      <%= t 'user_journey.certificate.view_certificate' %>
-    </span>
-  </summary>
-  <div class="govuk-details__text govuk-details__code">
-    <%= @certificate %>
-  </div>
-</details>
+
+<%= render 'shared/user_certificate_view', certificate: @new_certificate, full_details: false %>
+
 <p><%= t 'user_journey.certificate.certificate_update_notice' %></p>
 
-<%= form_for @certificate, url: confirmation_path, as: :certificate do |f| %>
+<%= form_for @new_certificate, url: confirmation_path, as: :certificate do |f| %>
   <%= f.hidden_field :new_certificate, value: @certificate_value %>
   <%= f.submit t('user_journey.certificate.use_certificate'), class: "govuk-button", data: { module: "govuk-button" } %>
   <%= link_to t('user_journey.certificate.upload_different_certificate'), upload_certificate_path, class: "secondary-link" %></td>

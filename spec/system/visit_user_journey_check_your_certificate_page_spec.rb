@@ -22,7 +22,7 @@ RSpec.describe 'Check your certificate page', type: :system do
     visit upload_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
     fill_in 'certificate_value', with: x509_cert
     click_button 'Continue'
-    expect(current_path).to eql check_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
+    expect(current_path).to eql check_your_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
     expect(page).to have_content 'MSA'
     expect(page).to have_content "Check you've uploaded the right certificate"
     click_button 'Use this certificate'
@@ -39,7 +39,7 @@ RSpec.describe 'Check your certificate page', type: :system do
     visit upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
     fill_in 'certificate_value', with: x509_cert
     click_button 'Continue'
-    expect(current_path).to eql check_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+    expect(current_path).to eql check_your_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
     expect(page).to have_content 'SP'
     expect(page).to have_content "Check you've uploaded the right certificate"
     click_button 'Use this certificate'

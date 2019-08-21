@@ -47,12 +47,12 @@ Rails.application.routes.draw do
   post 'profile/switch-client', to: 'profile#switch_client'
   post 'profile/update-role', to: 'profile#update_role'
 
-  get '/component/:component_type/:component_id/certificate/:id', to: 'user_journey#view_certificate', as: 'view_certificate'
-  get '/component/:component_type/:component_id/certificate/:id/before-you-start', to: 'user_journey#before_you_start', as: 'before_you_start'
-  post '/component/:component_type/:component_id/certificate/:id/upload-certificate', to: 'user_journey#upload_certificate_post', as: 'upload_certificate_post'
-  get '/component/:component_type/:component_id/certificate/:id/upload-certificate', to: 'user_journey#upload_certificate', as: 'upload_certificate'
-  post '/component/:component_type/:component_id/certificate/:id/check-your-certificate', to: 'user_journey#check_your_certificate_post', as: 'check_certificate_post'
-  get '/component/:component_type/:component_id/certificate/:id/check-your-certificate', to: 'user_journey#check_your_certificate', as: 'check_certificate'
-  post '/component/:component_type/:component_id/certificate/:id/confirmation', to: 'user_journey#confirmation_post', as: 'confirmation_post'
-  get '/component/:component_type/:component_id/certificate/:id/confirmation', to: 'user_journey#confirmation', as: 'confirmation'
+  get '/component/:component_type/:component_id/certificate/:certificate_id', to: 'user_journey#view_certificate', as: 'view_certificate'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/before-you-start', to: 'user_journey#before_you_start', as: 'before_you_start'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/upload-certificate', to: 'user_journey#upload_certificate', as: 'upload_certificate'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/check-your-certificate', to: 'user_journey#upload_certificate', as: 'check_your_certificate'
+  post '/component/:component_type/:component_id/certificate/:certificate_id/check-your-certificate', to: 'user_journey#submit', as: 'submit'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/confirmation', to: 'user_journey#confirmation', as: 'confirmation'
+  post '/component/:component_type/:component_id/certificate/:certificate_id/confirmation', to: 'user_journey#confirm', as: 'confirm'
+
 end

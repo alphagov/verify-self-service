@@ -1,15 +1,15 @@
 <%= render 'shared/certificate_details', certificate: @certificate %>
 
 <div class="govuk-form-group">
-  <%= form_for @upload, url: check_certificate_post_path, as: :certificate do |f| %>
+  <%= form_for @upload, url: submit_path, as: :certificate do |f| %>
     <%= error_message_on(f.object.errors, :certificate) %>
     <fieldset class="govuk-fieldset" aria-describedby="upload-certificate-conditional-hint">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 class="govuk-fieldset__heading">
           <%= t('user_journey.certificate.upload_new', certificate: @certificate.usage) %>
         </h1>
       </legend>
-      <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+      <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-5" data-module="govuk-radios">
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="upload-certificate-conditional" name="upload-certificate" type="radio" value="email" data-aria-controls="conditional-upload-certificate-conditional">
           <label class="govuk-label govuk-radios__label" for="upload-certificate-conditional">

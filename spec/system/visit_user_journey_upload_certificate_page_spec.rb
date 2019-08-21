@@ -25,7 +25,7 @@ RSpec.describe 'Upload certificate page', type: :system do
     expect(page).to have_content 'Encryption certificate'
     fill_in 'certificate_value', with: x509_cert
     click_button 'Continue'
-    expect(current_path).to eql check_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
+    expect(current_path).to eql check_your_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
   end
 
   it 'shows upload page for sp encryption and successfully goes to next page' do
@@ -40,6 +40,6 @@ RSpec.describe 'Upload certificate page', type: :system do
     expect(page).to have_content 'Encryption certificate'
     fill_in 'certificate_value', with: x509_cert
     click_button 'Continue'
-    expect(current_path).to eql check_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+    expect(current_path).to eql check_your_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
   end
 end
