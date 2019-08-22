@@ -107,6 +107,6 @@ private
   end
 
   def user_pool_id
-    Rails.application.secrets.cognito_user_pool_id
+    Rails.configuration.cognito_user_pool_id
   end
 end

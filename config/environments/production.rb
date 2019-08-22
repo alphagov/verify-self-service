@@ -99,5 +99,10 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  config.aws_region = ENV.fetch('AWS_REGION')
+
   config.hub_environments = JSON.parse(ENV.fetch('HUB_ENVIRONMENTS'))
+
+  config.cognito_client_id = ENV.fetch('AWS_COGNITO_CLIENT_ID')
+  config.cognito_user_pool_id = ENV.fetch('AWS_COGNITO_USER_POOL_ID')
 end
