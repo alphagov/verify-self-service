@@ -5,6 +5,8 @@ FactoryBot.define do
     email { "test@test.test" }
     password { "validpassword" }
     roles { ROLE::USER_MANAGER }
+    cognito_groups { ['test'] }
+    team { 'test' }
     session_start_time { Time.now.to_s }
 
     factory :gds_user do

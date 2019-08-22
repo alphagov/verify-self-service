@@ -14,19 +14,11 @@ RSpec.describe 'MFA enrolment', type: :system do
     scenario 'user is forced to enrol to MFA if not set up for it' do
       SelfService.service(:cognito_client).stub_responses(:associate_software_token, { secret_code: secret_code_value })
       SelfService.service(:cognito_client).stub_responses(:verify_software_token, {})
-      SelfService.service(:cognito_client).stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
-        [
-          { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
-          { name: 'custom:roles', value: 'usermgr' },
-          { name: 'email_verified', value: 'true' },
-          { name: 'phone_number_verified', value: 'true' },
-          { name: 'phone_number', value: '+447000000000' },
-          { name: 'given_name', value: 'Test' },
-          { name: 'family_name', value: 'User' },
-          { name: 'email', value: user_email }
-        ],
-      preferred_mfa_setting: nil,
-      user_mfa_setting_list: [] })
+      user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
+      user_hash.delete('mfa')
+      user_hash['email'] = user_email
+      token = CognitoStubClient.user_hash_to_jwt(user_hash)
+      SelfService.service(:cognito_client).stub_responses(:initiate_auth, authentication_result: { access_token: 'valid-token', id_token: token })
   
       user = FactoryBot.create(:user_manager_user)
       sign_in(user.email, user.password)

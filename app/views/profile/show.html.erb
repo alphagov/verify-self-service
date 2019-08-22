@@ -34,6 +34,8 @@
       <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.email' %></span><%= @user.email %></p>
       <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.phone' %></span><%= @user.phone_number %></p>
       <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.roles' %></span><%= @user.roles %></p>
+      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.team' %></span><%= @user.team %></p>
+      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.cognito_groups' %></span><%= @user.cognito_groups.join(', ') unless @user.team.nil? %></p>
     </div>
   </div>
   <div class="govuk-accordion__section ">
