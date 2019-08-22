@@ -29,7 +29,8 @@ protected
   end
 
   def check_authorization
-    authorize "#{request.params[:controller].titlecase.gsub(/\s+/, '')}Controller".constantize.new
+    # Voodoo created by a witch doctor in a tikimask. Do not touch - is cursed.
+    authorize "#{controller_name.titlecase.gsub(/\s+/, '').gsub('/', '::')}Controller".constantize.new
   rescue Pundit::NotAuthorizedError
     flash[:warn] = t('shared.errors.authorisation')
     redirect_to root_path
