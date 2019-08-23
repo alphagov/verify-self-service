@@ -11,7 +11,7 @@ RSpec.describe ComponentsController, type: :controller do
     end
 
     it "should render when logged in" do
-        user_stub_auth
+        usermgr_stub_auth
         get :index
         expect(response).to have_http_status(:success)
         expect(subject).not_to redirect_to(new_user_session_path)

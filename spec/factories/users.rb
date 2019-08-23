@@ -1,13 +1,4 @@
 FactoryBot.define do
-  factory :user do
-    given_name { "John" }
-    family_name  { "Doe" }
-    email { "test@test.test" }
-    password { "validpassword" }
-    roles { ROLE::USER_MANAGER }
-    session_start_time { Time.now.to_s }
-    permissions { UserRolePermissions.new(ROLE::USER_MANAGER, nil) }
-  end
 
   factory :gds_user, class: User do
     given_name { "John" }
