@@ -1,5 +1,5 @@
 class UserRolePermissions
-  attr_reader :component_management, :team_management, :user_management, :event_management,
+  attr_reader :admin_management, :component_management, :team_management, :user_management, :event_management,
               :certificate_management, :read_components, :update_profile, :change_password
 
   def initialize(roles_str, email)
@@ -19,7 +19,8 @@ class UserRolePermissions
     "component_management = #{component_management}\n" \
     "team_management = #{team_management}\n" \
     "user_management = #{user_management}\n" \
-    "event_management = #{event_management}"
+    "event_management = #{event_management}\n" \
+    "admin_management = #{admin_management}"
   end
 
   def to_hash
@@ -58,5 +59,6 @@ private
     @certificate_management = true
     @user_management = true
     @team_management = true
+    @admin_management = true
   end
 end
