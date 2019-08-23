@@ -1,7 +1,6 @@
 -   repo: local
     hooks:
-    -   id: tests
-        name: tests
-        entry: ./pre-commit.sh
-        language: script
-        types: [ruby]
+    -   id: lint
+        name: govuk linter
+        entry: bundle exec govuk-lint-ruby app lib
+        language: system
