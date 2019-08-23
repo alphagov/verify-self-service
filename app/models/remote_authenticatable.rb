@@ -104,7 +104,7 @@ module Devise
       end
 
       def cognito_client_id
-        Rails.application.secrets.cognito_client_id
+        Rails.configuration.cognito_client_id
       end
 
       module ClassMethods

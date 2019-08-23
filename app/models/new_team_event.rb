@@ -22,7 +22,7 @@ class NewTeamEvent < AggregatedEvent
     SelfService.service(:cognito_client).create_group(
       group_name: team_alias,
       description: name,
-      user_pool_id: Rails.application.secrets.cognito_user_pool_id
+      user_pool_id: Rails.configuration.cognito_user_pool_id
     )
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
     Rails.logger.error("#{I18n.t('team.errors.invalid')} -> #{e.message}")

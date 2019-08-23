@@ -6,7 +6,7 @@ module Healthcheck
 
     def status
       SelfService.service(:cognito_client).describe_user_pool(
-        user_pool_id: Rails.application.secrets.cognito_user_pool_id
+        user_pool_id: Rails.configuration.cognito_user_pool_id
       )
       OK
     end

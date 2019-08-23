@@ -25,15 +25,15 @@ RSpec.describe UsersController, type: :controller do
 
   describe '#new' do
     it 'invites the user when all valid' do
-      Rails.application.secrets.cognito_user_pool_id = "dummy"
+      Rails.configuration.cognito_user_pool_id = "dummy"
       SelfService.service(:cognito_client).stub_responses(:admin_create_user, { user: { username:'test@test.test' } })
-      post :new, params: { 
+      post :new, params: {
         team_id: 0,
-        invite_user_form: 
-          { 
-            email: 'test@test.test', 
-            given_name: 'First Name', 
-            family_name: 'Surname', 
+        invite_user_form:
+          {
+            email: 'test@test.test',
+            given_name: 'First Name',
+            family_name: 'Surname',
             roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
           }
       }
