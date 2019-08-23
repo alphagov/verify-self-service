@@ -43,14 +43,9 @@
           <% if user_signed_in? %>
             <nav>
               <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
-                <% if policy(EventsController).index? %>
+                <% if policy(AdminController).index? %>
                   <li class="govuk-header__navigation-item">
-                    <%= link_to t('layout.application.events'), admin_events_path, class: "govuk-header__link" %>
-                  </li>
-                <% end %>
-                <% if policy(TeamsController).index? %>
-                  <li class="govuk-header__navigation-item">
-                    <%= link_to t('layout.application.teams') , teams_path, class: "govuk-header__link" %>
+                    <%= link_to t('layout.application.admin') , admin_path, class: "govuk-header__link" %>
                   </li>
                 <% end %>
                 <li class="govuk-header__navigation-item">

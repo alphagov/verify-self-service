@@ -111,7 +111,7 @@ en:
   layout:
     application:
       title: Verify Self-Service
-      admin_link: Admin
+      admin: Admin
       skip_link: Skip to main content
       sign_out_link: Sign out
       logo_text: GOV.UK
