@@ -18,7 +18,7 @@ class CognitoStubClient
   end
 
   def self.stub_gds_user_hash
-    self.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk")
+    self.stub_user_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN)
   end
 
   def self.setup_user(user_hash)
