@@ -12,7 +12,7 @@ describe GroupPolicy do
       expect(subject).to permit(FactoryBot.create(:user_manager_user),  FactoryBot.create(:team))
     end
 
-    it "grants access when the GDS user" do
+    it 'grants access when the GDS user' do
       expect(subject).to permit(FactoryBot.create(:gds_user), FactoryBot.create(:team, id: 99))
     end
   end

@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :set_user
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :check_authorization
+  before_action :check_team_authorization
   before_action :check_max_session_time
 
 protected
@@ -33,7 +34,14 @@ protected
     authorize "#{controller_name.titlecase.gsub(/\s+/, '').gsub('/', '::')}Controller".constantize.new
   rescue Pundit::NotAuthorizedError
     flash[:warn] = t('shared.errors.authorisation')
-    redirect_to root_path
+    redirect_to root_path, status: :forbidden
+  end
+
+  def check_team_authorization(team_id: params[:team_id])
+    authorize Team.find_by_id(team_id) unless team_id.nil? || !Team.exists?(team_id)
+  rescue Pundit::NotAuthorizedError
+    flash[:warn] = t('shared.errors.authorisation')
+    redirect_to root_path, status: :forbidden
   end
 
 private
