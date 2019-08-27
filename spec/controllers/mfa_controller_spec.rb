@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe MfaController, type: :controller do
-  include AuthSupport
+  include AuthSupport, CognitoSupport
 
   describe '#index' do
     it 'renders the page when asked to enrol to MFA' do
-      SelfService.service(:cognito_client).stub_responses(:associate_software_token, { secret_code: 'abcdefgh' })
+      stub_cognito_response(method: :associate_software_token, payload: { secret_code: 'abcdefgh' })
       session[:email] = 'test@test.test'
       session[:access_token] = 'valid-access-token'
       get :index
@@ -30,8 +30,8 @@ RSpec.describe MfaController, type: :controller do
 
   describe '#enrol' do
     it 'is success when successfully enrolled' do
-      SelfService.service(:cognito_client).stub_responses(:verify_software_token, {})
-      SelfService.service(:cognito_client).stub_responses(:set_user_mfa_preference, {})
+      stub_cognito_response(method: :verify_software_token)
+      stub_cognito_response(method: :set_user_mfa_preference)
       session[:email] = 'test@test.test'
       session[:access_token] = "valid-access-token"
       post :enrol, params: { mfa_enrolment_form: { code: 12345 }}
@@ -41,7 +41,7 @@ RSpec.describe MfaController, type: :controller do
     end
 
     it 'returns error when the there is an exception' do
-      SelfService.service(:cognito_client).stub_responses(:verify_software_token, Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, nil))
+      stub_cognito_response(method: :verify_software_token, payload: Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, nil))
       session[:email] = 'test@test.test'
       session[:access_token] = "valid-access-token"
       post :enrol, params: { mfa_enrolment_form: { code: 12345 }}

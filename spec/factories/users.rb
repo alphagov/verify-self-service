@@ -6,7 +6,7 @@ FactoryBot.define do
     password { "validpassword" }
     roles { ROLE::USER_MANAGER }
     cognito_groups { ['test'] }
-    team { 'test' }
+    team { 1 }
     session_start_time { Time.now.to_s }
 
     factory :gds_user do

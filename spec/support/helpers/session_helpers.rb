@@ -1,5 +1,9 @@
+require 'support/cognito_support'
+
 module System
   module SessionHelpers
+    include CognitoSupport
+  
     def sign_in(email, password)
       visit new_user_session_path
       fill_in 'Email', with: email
@@ -45,14 +49,14 @@ module System
     def setup_simple_auth_stub
       user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
       token = CognitoStubClient.user_hash_to_jwt(user_hash)
-      SelfService.service(:cognito_client).stub_responses(:initiate_auth, authentication_result: { access_token: 'valid-token', id_token: token })
+      stub_cognito_response(method: :initiate_auth, payload: { authentication_result: { access_token: 'valid-token', id_token: token } })
     end
 
     def setup_2fa_stub
-      SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
+      stub_cognito_response(method: :initiate_auth, payload: { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
       user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
       token = CognitoStubClient.user_hash_to_jwt(user_hash)
-      SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, authentication_result: { access_token: 'valid-token', id_token: token })
+      stub_cognito_response(method: :respond_to_auth_challenge, payload: { authentication_result: { access_token: 'valid-token', id_token: token } })
     end
   end
 end

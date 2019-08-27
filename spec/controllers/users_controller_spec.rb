@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
-  include AuthSupport
+  include AuthSupport, CognitoSupport
 
   context 'GDS User' do
     before(:each) do
@@ -27,7 +27,7 @@ RSpec.describe UsersController, type: :controller do
     describe '#new' do
       it 'invites the user when all valid' do
         Rails.configuration.cognito_user_pool_id = "dummy"
-        SelfService.service(:cognito_client).stub_responses(:admin_create_user, { user: { username:'test@test.test' } })
+        stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
         post :new, params: {
           team_id: 0,
           invite_user_form:
@@ -87,7 +87,7 @@ RSpec.describe UsersController, type: :controller do
     describe '#new' do
       it 'invites the user when all valid' do
         Rails.configuration.cognito_user_pool_id = "dummy"
-        SelfService.service(:cognito_client).stub_responses(:admin_create_user, { user: { username:'test@test.test' } })
+        stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
         team = FactoryBot.create(:team)
         post :new, params: {
           team_id: team.id,

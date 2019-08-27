@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe SessionsController, type: :controller do
+  include AuthSupport, CognitoSupport
+  
   it 'Get to signin page' do
     @request.env['devise.mapping'] = Devise.mappings[:user]
     get :new
@@ -13,7 +15,7 @@ RSpec.describe SessionsController, type: :controller do
     cognito_session_id = SecureRandom.uuid
     username = 'test@test.com'
     challenge_name = 'SOFTWARE_TOKEN_MFA'
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, challenge_name: challenge_name, session: cognito_session_id, challenge_parameters: { })
+    stub_cognito_response(method: :initiate_auth, payload: { challenge_name: challenge_name, session: cognito_session_id, challenge_parameters: { } })
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: username, password: 'validpass' } }
     expect(response).to have_http_status(:redirect)
@@ -45,7 +47,7 @@ RSpec.describe SessionsController, type: :controller do
     cognito_session_id = SecureRandom.uuid
     username = 'test@test.com'
     challenge_name = 'NEW_PASSWORD_REQUIRED'
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, challenge_name: challenge_name, session: cognito_session_id, challenge_parameters: { })
+    stub_cognito_response(method: :initiate_auth, payload: { challenge_name: challenge_name, session: cognito_session_id, challenge_parameters: { } })
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: username, password: 'validpass' } }
     expect(response).to have_http_status(:redirect)
@@ -72,8 +74,8 @@ RSpec.describe SessionsController, type: :controller do
   end
 
   def setup_stub
-    user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
+    user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN, groups: %w[gds])
     token = CognitoStubClient.user_hash_to_jwt(user_hash)
-    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, authentication_result: { access_token: 'valid-token', id_token: token })
+    stub_cognito_response(method: :respond_to_auth_challenge, payload: { authentication_result: { access_token: 'valid-token', id_token: token } })
   end
 end

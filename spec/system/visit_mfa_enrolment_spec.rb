@@ -3,7 +3,7 @@ require 'rqrcode'
 require 'erb'
 
 RSpec.describe 'MFA enrolment', type: :system do
-  include ERB::Util
+  include ERB::Util, CognitoSupport
   context 'is successful' do
     let(:secret_code_value) { 'secret-code-value'}
     let(:user_email) { 'mfa@test.com'}
@@ -12,13 +12,13 @@ RSpec.describe 'MFA enrolment', type: :system do
       RQRCode::QRCode.new("otpauth://totp/#{qr_issuer}:#{url_encode(user_email)}?secret=#{secret_code_value}&issuer=#{qr_issuer}")
     }
     scenario 'user is forced to enrol to MFA if not set up for it' do
-      SelfService.service(:cognito_client).stub_responses(:associate_software_token, { secret_code: secret_code_value })
-      SelfService.service(:cognito_client).stub_responses(:verify_software_token, {})
+      stub_cognito_response(method: :associate_software_token, payload: { secret_code: secret_code_value })
+      stub_cognito_response(method: :verify_software_token)
       user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
       user_hash.delete('mfa')
       user_hash['email'] = user_email
       token = CognitoStubClient.user_hash_to_jwt(user_hash)
-      SelfService.service(:cognito_client).stub_responses(:initiate_auth, authentication_result: { access_token: 'valid-token', id_token: token })
+      stub_cognito_response(method: :initiate_auth, payload: { authentication_result: { access_token: 'valid-token', id_token: token } })
   
       user = FactoryBot.create(:user_manager_user)
       sign_in(user.email, user.password)
@@ -45,8 +45,8 @@ RSpec.describe 'MFA enrolment', type: :system do
       RQRCode::QRCode.new("otpauth://totp/#{qr_issuer}:#{url_encode(user_email)}?secret=#{secret_code_value}&issuer=#{qr_issuer}")
     }
     scenario 'user gets an error when the MFA code is not valid' do
-      SelfService.service(:cognito_client).stub_responses(:associate_software_token, { secret_code: secret_code_value })
-      SelfService.service(:cognito_client).stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
+      stub_cognito_response(method: :associate_software_token, payload: { secret_code: secret_code_value })
+      stub_cognito_response(method: :get_user, payload: { username: '00000000-0000-0000-0000-000000000000', user_attributes:
         [
           { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
           { name: 'custom:roles', value: 'usermgr' },
@@ -60,7 +60,7 @@ RSpec.describe 'MFA enrolment', type: :system do
       preferred_mfa_setting: nil,
       user_mfa_setting_list: [] })
 
-      SelfService.service(:cognito_client).stub_responses(:verify_software_token, Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, nil))
+      stub_cognito_response(method: :verify_software_token, payload: Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, nil))
   
       user = FactoryBot.create(:user_manager_user)
       sign_in(user.email, user.password)

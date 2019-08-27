@@ -134,7 +134,7 @@ module Devise
           resource.family_name = data['family_name']
           resource.session_start_time = data['session_start_time']
           resource.team = data['team']
-          resource.cognito_groups = data['cognito_groups'].split(',') unless data['cognito_groups'].nil?
+          resource.cognito_groups = data['cognito_groups']&.split(',')
           resource
         end
 

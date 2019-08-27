@@ -3,7 +3,7 @@ require 'rails_helper'
 def cognito_stubs
   user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
   token = CognitoStubClient.user_hash_to_jwt(user_hash)
-  SelfService.service(:cognito_client).stub_responses(:initiate_auth, authentication_result: { access_token: 'valid-token', id_token: token })
+  stub_cognito_response(method: :initiate_auth, payload: { authentication_result: { access_token: 'valid-token', id_token: token } })
 end
 
 RSpec.describe 'Sign out', type: :system do

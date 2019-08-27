@@ -18,7 +18,7 @@ class JwksLoader
 private
 
   def add_live_to_cache
-    Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_expiry) do
+    Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
       Rails.logger.info "Loading JWKS from cognito..."
       response = Net::HTTP.get(URI("https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json"))
       JSON.parse(response)
@@ -26,7 +26,7 @@ private
   end
 
   def add_stub_to_cache
-    Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_expiry) do
+    Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
       Rails.logger.info "Creating new JWKS for stubbing..."
       jwk_set = JSON::JWK::Set.new(keys: [JSON::JWK.new($cognito_jwt_private_key.public_key, kid: 2)])
       # to_json produces a JSON String which needs to be turned in to an object
@@ -35,10 +35,10 @@ private
   end
 
   def region
-    Rails.application.secrets.aws_region
+    Rails.configuration.aws_region
   end
 
   def user_pool_id
-    Rails.application.secrets.cognito_user_pool_id
+    Rails.configuration.cognito_user_pool_id
   end
 end

@@ -12,7 +12,7 @@ class CognitoChooser
     elsif %w(test development).include? Rails.env
       Rails.logger.info "choosing stub client"
       register_stub_client
-      CognitoStubClient.load_jwks
+      CognitoStubClient.register_jwks
       CognitoStubClient.setup_stubs
     else
       raise StandandError('Unable to configure AWS Cognito Client.  Exiting.')
@@ -27,14 +27,6 @@ class CognitoChooser
     Rails.configuration.cognito_aws_secret_access_key
   end
 
-  def region
-    Rails.application.secrets.aws_region
-  end
-
-  def user_pool_id
-    Rails.application.secrets.cognito_user_pool_id
-  end
-
   def register_client(client:, is_stub: true)
     SelfService.register_service(name: :cognito_stub, client: is_stub)
     SelfService.register_service(name: :real_client, client: client) unless is_stub
@@ -42,7 +34,7 @@ class CognitoChooser
   end
 
   def register_production_client
-    load_jwks
+    register_jwks
     register_client(
       client: Aws::CognitoIdentityProvider::Client.new,
       is_stub: false
@@ -50,7 +42,7 @@ class CognitoChooser
   end
 
   def register_dev_client
-    load_jwks
+    register_jwks
     register_client(client: Aws::CognitoIdentityProvider::Client.new(
       region: Rails.configuration.aws_region,
       access_key_id: aws_access_key,
@@ -66,7 +58,7 @@ class CognitoChooser
     )
   end
 
-  def load_jwks
+  def register_jwks
     jwks_loader = JwksLoader.new
     SelfService.register_service(name: :jwks, client: jwks_loader)
   end

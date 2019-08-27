@@ -69,9 +69,9 @@ class CognitoStubClient
     return false unless SelfService.service_present?(:real_client)
 
     real_client = SelfService.service(:real_client)
-    real_jwks = SelfService.service(:real_jwks)
+    jwks = JwksLoader.new
     SelfService.register_service(name: :cognito_client, client: real_client)
-    SelfService.register_service(name: :jwks, client: real_jwks)
+    SelfService.register_service(name: :jwks, client: jwks)
     SelfService.register_service(name: :cognito_stub, client: false)
   end
 
@@ -82,18 +82,16 @@ class CognitoStubClient
     return false if SelfService.service(:cognito_stub)
 
     real_client = SelfService.service(:cognito_client)
-    real_jwks = SelfService.service(:jwks)
     SelfService.register_service(name: :real_client, client: real_client)
-    SelfService.register_service(name: :real_jwks, client: real_jwks)
     SelfService.register_service(name: :cognito_client, client: stub_client)
-    load_jwks
+    register_jwks
     setup_stubs
     SelfService.register_service(name: :cognito_stub, client: true)
   end
 
-  def self.load_jwks
+  def self.register_jwks
     $cognito_jwt_private_key = OpenSSL::PKey::RSA.generate(2048)
-    jwks = JSON::JWK::Set.new(keys: [JSON::JWK.new($cognito_jwt_private_key.public_key, kid: 2)])
-    SelfService.register_service(name: :jwks, client: JSON.parse(jwks.to_json))
+    jwks_loader = JwksLoader.new(false)
+    SelfService.register_service(name: :jwks, client: jwks_loader)
   end
 end
