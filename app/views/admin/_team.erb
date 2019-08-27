@@ -1,0 +1,32 @@
+<%= link_to t('team.add_team'), new_team_path, class: "govuk-button" %>
+
+<% teams.reverse.each do |team| %>
+  <table class="govuk-table">
+    <caption class="govuk-table__caption" id="teams/<%= team.id %>">Team ID: <%= team.id %></caption>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Name</th>
+        <td class="govuk-table__cell"><%= team.name %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Alias</th>
+        <td class="govuk-table__cell"><%= team.team_alias %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Created</th>
+        <td class="govuk-table__cell"><%= team.created_at %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Updated</th>
+        <td class="govuk-table__cell"><%= team.updated_at %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2"><%= link_to 'Manage', '', class: 'govuk-button', data: { module: 'govuk-button' } %></td>
+      </tr>
+    </tbody>
+  </table>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+<% end %>
+
+
+

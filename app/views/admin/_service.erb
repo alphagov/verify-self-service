@@ -1,0 +1,38 @@
+<% services.reverse.each do |service| %>
+  <table class="govuk-table">
+    <caption class="govuk-table__caption" id="services/<%= service.id %>">Connected Service ID: <%= service.id %></caption>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Name</th>
+        <td class="govuk-table__cell"><%= service.name %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Entity ID</th>
+        <td class="govuk-table__cell"><%= service.entity_id %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">SP Component ID</th>
+        <td class="govuk-table__cell"><%= link_to service.sp_component_id, "/admin#SpComponent/#{service.sp_component_id}" %> </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">MSA Component ID???</th>
+        <td class="govuk-table__cell"><%= service.msa_component_id %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Created</th>
+        <td class="govuk-table__cell"><%= service.created_at %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Updated</th>
+        <td class="govuk-table__cell"><%= service.updated_at %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2"><%= link_to 'Manage', '', class: 'govuk-button', data: { module: 'govuk-button' } %></td>
+      </tr>
+    </tbody>
+  </table>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+<% end %>
+
+
+

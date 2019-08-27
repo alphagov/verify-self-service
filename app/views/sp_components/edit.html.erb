@@ -6,13 +6,13 @@
 
 <%= form_for  @sp_component , url: sp_component_path, as: :component do |f| %>
   <div class="govuk-form-group <%= 'govuk-form-group--error' if  @sp_component.errors.key?(:name) %>">
-    <%=error_message_on(f.object.errors, :name) %>
+    <%= error_message_on(f.object.errors, :name) %>
     <%= f.select(:team_id, @teams.map{|t|[t.name, t.id]},
     {include_blank: 'Select'},
     {class: 'govuk-select'})  
     %>
   </div>
   <div class="govuk-form-group">
-    <%=f.submit t('team.associate_team'), class: "govuk-button" %>
+    <%= f.submit t('team.associate_team'), class: "govuk-button" %>
  </div>
 <%end %>
