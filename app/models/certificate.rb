@@ -23,4 +23,12 @@ class Certificate < Aggregate
   def issuer_common_name
     x509.subject.to_a.find { |issuer, _, _| issuer == 'CN' }[1]
   end
+
+  def not_after_nice_date_format
+    x509.not_after.strftime("%d %B %Y, %H:%M%P")
+  end
+
+  def not_before_nice_date_format
+    x509.not_before.strftime("%d %B %Y, %H:%M%P")
+  end
 end
