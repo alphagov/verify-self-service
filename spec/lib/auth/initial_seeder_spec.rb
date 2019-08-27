@@ -133,11 +133,10 @@ RSpec.describe InitialSeeder do
     it 'returns number of GDS users found if there are any' do
       stub_cognito_response(method: :list_users, payload: users_with_gds)
       expect(subject.gds_user_exists?).to eq(1)
-      expect(subject.gds_user_exists?).to be_truthy
     end
-    it 'returns false if zero number of GDS users found' do
+    it 'returns zero if zero number of GDS users found' do
       stub_cognito_response(method: :list_users, payload: users_without_gds)
-      expect(subject.gds_user_exists?).to be_truthy
+      expect(subject.gds_user_exists?).to eq(0)
     end
     it 'returns false when Cognito throws an error' do
       stub_cognito_response(
