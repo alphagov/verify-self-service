@@ -28,7 +28,7 @@ RSpec.describe 'MFA enrolment', type: :system do
       preferred_mfa_setting: nil,
       user_mfa_setting_list: [] })
   
-      user = FactoryBot.create(:user)
+      user = FactoryBot.create(:user_manager_user)
       sign_in(user.email, user.password)
       expect(current_path).to eql mfa_enrolment_path
       expect(page).to have_content 'Set up your MFA'
@@ -70,7 +70,7 @@ RSpec.describe 'MFA enrolment', type: :system do
 
       SelfService.service(:cognito_client).stub_responses(:verify_software_token, Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, nil))
   
-      user = FactoryBot.create(:user)
+      user = FactoryBot.create(:user_manager_user)
       sign_in(user.email, user.password)
       expect(current_path).to eql mfa_enrolment_path
       expect(page).to have_content 'Set up your MFA'

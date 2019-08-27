@@ -2,12 +2,6 @@ require 'rails_helper'
 
 module AuthSupport
 
-  def user_stub_auth
-    @request.env["devise.mapping"] = Devise.mappings[:user]
-    @user = FactoryBot.create(:user)
-    stub_auth
-  end
-
   def usermgr_stub_auth
     @request.env["devise.mapping"] = Devise.mappings[:user]
     @user = FactoryBot.create(:user_manager_user)

@@ -8,7 +8,7 @@ module System
     end
 
     def login_user
-      user = FactoryBot.create(:user)
+      user = FactoryBot.create(:user_manager_user)
       login_as(user, scope: :user)
     end
 
