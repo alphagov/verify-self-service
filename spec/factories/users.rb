@@ -6,7 +6,6 @@ FactoryBot.define do
     password { "validpassword" }
     roles { ROLE::USER_MANAGER }
     session_start_time { Time.now.to_s }
-    permissions { UserRolePermissions.new(ROLE::USER_MANAGER, nil) }
 
     factory :gds_user do
       email { "test.test@digital.cabinet-office.gov.uk" }
@@ -16,17 +15,18 @@ FactoryBot.define do
 
     factory :certificate_manager_user do
       roles { ROLE::CERTIFICATE_MANAGER }
-      permissions { UserRolePermissions.new(ROLE::CERTIFICATE_MANAGER, nil) }
+      permissions { UserRolePermissions.new(ROLE::CERTIFICATE_MANAGER) }
     end
 
     factory :user_manager_user do
       roles { ROLE::USER_MANAGER }
-      permissions { UserRolePermissions.new(ROLE::USER_MANAGER, nil) }
+      team { 1 }
+      permissions { UserRolePermissions.new(ROLE::USER_MANAGER) }
     end
 
     factory :component_manager_user do
       roles { ROLE::COMPONENT_MANAGER }
-      permissions { UserRolePermissions.new(ROLE::COMPONENT_MANAGER, nil) }
+      permissions { UserRolePermissions.new(ROLE::COMPONENT_MANAGER) }
     end
   end
 end

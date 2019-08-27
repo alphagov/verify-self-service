@@ -2,7 +2,7 @@ class UserRolePermissions
   attr_reader :admin_management, :component_management, :team_management, :user_management, :event_management,
               :certificate_management, :read_components, :update_profile, :change_password
 
-  def initialize(roles_str, email)
+  def initialize(roles_str, email = nil)
     all_users
     roles = roles_str.nil? ? [] : roles_str.split(',').map(&:strip)
     user_manager if roles.include?(ROLE::USER_MANAGER)

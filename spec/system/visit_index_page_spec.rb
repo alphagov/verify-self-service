@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'IndexPage', type: :system do
   before(:each) do
-    login_user
+    login_gds_user
   end
   it 'shows greeting without JS' do
     visit '/'
