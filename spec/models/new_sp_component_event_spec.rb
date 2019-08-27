@@ -1,14 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe NewSpComponentEvent, type: :model do
-
-  include_examples 'has data attributes', NewSpComponentEvent, %i[name component_type], environment: ENVIRONMENT::STAGING
-  include_examples 'is aggregated', NewSpComponentEvent, name: 'New SP component', component_type: COMPONENT_TYPE::SP, environment: ENVIRONMENT::STAGING
-  include_examples 'is a creation event', NewSpComponentEvent, name: 'New component', component_type: COMPONENT_TYPE::SP, environment: ENVIRONMENT::STAGING
+  include_examples 'components have data attributes', :new_sp_component_event, {
+    name: 'It was the day my grandmother exploded',
+    component_type: COMPONENT_TYPE::SP,
+    environment: 'staging'
+  }
+  include_examples 'components are aggregated', :new_sp_component_event
+  include_examples 'component creation event', :new_sp_component_event
 
   context 'name' do
     it 'must be provided' do
-      event = build(:new_sp_component_event, name: '', environment: ENVIRONMENT::STAGING)
+      event = build(:new_sp_component_event, name: '')
       expect(event).to_not be_valid
       expect(event.errors[:name]).to eql ['can\'t be blank']
     end
@@ -24,7 +27,7 @@ RSpec.describe NewSpComponentEvent, type: :model do
 
   context 'component type' do
     it 'must be provided' do
-      event = build(:new_sp_component_event, component_type: '', environment: ENVIRONMENT::STAGING)
+      event = build(:new_sp_component_event, component_type: '')
       expect(event).to_not be_valid
       expect(event.errors[:component_type]).to eql ['must be either VSP or SP']
     end
