@@ -94,11 +94,11 @@ module Devise
       def get_user_info(jwt)
         header = JSON.parse(Base64.decode64(jwt.split('.')[0]))
         jwk = find_jwk(header['kid'])
-        JSON::JWT.decode(jwt, jwk)
+        JSON::JWT.decode(jwt, jwk, :RS256)
       end
 
       def find_jwk(kid)
-        jwk = SelfService.service(:jwks)['keys'].detect { |j| j['kid'] == kid }
+        jwk = SelfService.service(:jwks).fetch['keys'].detect { |j| j['kid'] == kid }
         JSON::JWK.new jwk
       end
 

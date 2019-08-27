@@ -41,6 +41,9 @@ module VerifySelfService
     # User will be timed out after 15 minutes of inactivity
     config.session_inactivity = 15.minutes
 
+    # The cache reload time for the JWKS file from amazon
+    config.jwks_expiry = 1.hour
+
     config.filter_parameters << :temporary_password << :new_password << :password
   end
 end

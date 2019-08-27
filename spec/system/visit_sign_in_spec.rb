@@ -20,6 +20,20 @@ RSpec.describe 'Sign in', type: :system do
     expect(page).to have_content 'Signed in successfully.'
   end
 
+  scenario 'user cant sign in with unsigned jwt' do
+    user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
+    jwt = JSON::JWT.new(user_hash)
+    jwt.kid = 2
+    jwt.alg = :none
+    token = jwt.to_s
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, authentication_result: { access_token: 'valid-token', id_token: token })
+    user = FactoryBot.create(:user)
+    sign_in(user.email, user.password)
+
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content 'Unknown authentication response.'
+  end
+
   scenario 'user can sign in with valid 2FA credentials' do
     setup_2fa_stub
 

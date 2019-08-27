@@ -1,5 +1,4 @@
-require 'net/http'
-require 'json'
+require 'auth/jwks_loader'
 
 class CognitoChooser
   def initialize
@@ -68,11 +67,7 @@ class CognitoChooser
   end
 
   def load_jwks
-    # TODO Some schedule code to reload this every n hours/days as I suspect
-    # this may change or be updated by Amazon.
-    url = "https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json"
-    uri = URI(url)
-    response = Net::HTTP.get(uri)
-    SelfService.register_service(name: :jwks, client: JSON.parse(response))
+    jwks_loader = JwksLoader.new
+    SelfService.register_service(name: :jwks, client: jwks_loader)
   end
 end
