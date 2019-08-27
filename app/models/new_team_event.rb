@@ -27,6 +27,8 @@ class NewTeamEvent < AggregatedEvent
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
     Rails.logger.error("#{I18n.t('team.errors.invalid')} -> #{e.message}")
     errors.add(:team, I18n.t('team.errors.invalid'))
+  rescue Aws::CognitoIdentityProvider::Errors::GroupExistsException
+    Rails.logger.warn("The group #{name} already existed in Cognito...")
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     Rails.logger.error("#{I18n.t('team.errors.failed')} -> #{e.message}")
     errors.add(:team, I18n.t('team.errors.failed'))

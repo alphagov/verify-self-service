@@ -105,4 +105,16 @@ Rails.application.configure do
 
   config.cognito_client_id = ENV.fetch('AWS_COGNITO_CLIENT_ID')
   config.cognito_user_pool_id = ENV.fetch('AWS_COGNITO_USER_POOL_ID')
+
+  # To seed Cognito
+  # 1. Creates a GDS user if one doesn't exist
+  # 2. Creates a GDS team and/or group if one doesn't exist
+  # 3. Adds any users with GDS role AND GDS email address to the GDS group
+  # NOTE: It's only neccessary to run this once in a new environment or after
+  #       the Cognito instance has been wiped. However, it doesn't do any harm
+  #       if it'll run on every startup
+  config.after_initialize do
+    require 'auth/initial_seeder'
+    InitialSeeder.new unless ENV['DISABLE_COGNITO_SEEDING'].present?
+  end
 end

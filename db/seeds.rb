@@ -5,3 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+# Set up the GDS group in the app by default. The InitialSeeder class will take
+# care of the rest
+  Team.create(name: TEAMS::GDS, team_alias: TEAMS::GDS)

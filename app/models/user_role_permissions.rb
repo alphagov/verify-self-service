@@ -8,7 +8,7 @@ class UserRolePermissions
     user_manager if roles.include?(ROLE::USER_MANAGER)
     cert_manager if roles.include?(ROLE::CERTIFICATE_MANAGER)
     component_manager if roles.include?(ROLE::COMPONENT_MANAGER)
-    gds_user if roles.include?(ROLE::GDS) && email.ends_with?("@digital.cabinet-office.gov.uk")
+    gds_user if roles.include?(ROLE::GDS) && email.ends_with?(TEAMS::GDS_EMAIL_DOMAIN)
   end
 
   def to_s
