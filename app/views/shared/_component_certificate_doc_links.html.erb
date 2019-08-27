@@ -1,0 +1,17 @@
+<p>
+  <%= t 'user_journey.before_you_start.find_out_more' %>
+  <% if certificate.component_type == COMPONENT_TYPE::MSA %>
+    <% if certificate.encryption? %>
+      <%= link_to t('user_journey.before_you_start.rotate_key_and_certificate', component: COMPONENT_TYPE::MSA_SHORT, certificate: 'Encryption'), t('user_journey.urls.msa_encryption') %>
+    <% else %>
+      <%= link_to t('user_journey.before_you_start.rotate_key_and_certificate', component: COMPONENT_TYPE::MSA_SHORT, certificate: "Signing"), t('user_journey.urls.msa_signing') %>
+    <% end %>
+  <% else %>
+    <% if certificate.encryption? %>
+      <%= link_to t('user_journey.before_you_start.rotate_key_and_certificate', component: COMPONENT_TYPE::VSP_SHORT, certificate: "Encryption"), t('user_journey.urls.vsp_encryption') %>
+    <% else %>
+      <%= link_to t('user_journey.before_you_start.rotate_key_and_certificate', component: COMPONENT_TYPE::VSP_SHORT, certificate: "Signing"), t('user_journey.urls.vsp_signing') %>
+    <% end %>
+  <% end %>
+  <%= t 'user_journey.before_you_start.in_documentation' %> 
+</p>

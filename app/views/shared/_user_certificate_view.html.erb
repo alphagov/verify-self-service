@@ -1,0 +1,36 @@
+<dl class="govuk-summary-list">
+  <% if full_details %>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key"><%= t 'user_journey.certificate.used_by' %></dt>
+      <dd class="govuk-summary-list__value"><!-- TODO --></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+      <dt class="govuk-summary-list__key"><%= t 'components.environment' %></dt>
+      <dd class="govuk-summary-list__value"><%= certificate.component.environment.capitalize %></dd>
+    </div>
+  <% end %>
+
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><%= t 'user_journey.certificate.valid_from' %></dt>
+    <dd class="govuk-summary-list__value"><%= certificate.x509.not_before %></dd>
+  </div>
+   <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><%= t 'user_journey.certificate.valid_until' %></dt>
+    <dd class="govuk-summary-list__value"><%= certificate.x509.not_after %></dd>
+  </div>
+   <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key"><%= t 'user_journey.certificate.common_name' %></dt>
+    <dd class="govuk-summary-list__value"><%= certificate.issuer_common_name %></dd>
+  </div>
+</dl>
+
+<details class="govuk-details" data-module="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      <%= t 'user_journey.certificate.view_certificate' %>
+    </span>
+  </summary>
+  <div class="govuk-details__text govuk-details__code">
+    <%= certificate.x509.to_text %>
+  </div>
+</details>

@@ -1,0 +1,42 @@
+<%= render 'shared/certificate_details', certificate: @certificate %>
+
+<div class="govuk-form-group">
+  <%= form_for @upload, url: submit_path, as: :certificate do |f| %>
+    <%= error_message_on(f.object.errors, :certificate) %>
+    <fieldset class="govuk-fieldset" aria-describedby="upload-certificate-conditional-hint">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading">
+          <%= t('user_journey.certificate.upload_new', certificate: @certificate.usage) %>
+        </h1>
+      </legend>
+      <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-5" data-module="govuk-radios">
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="upload-certificate-conditional" name="upload-certificate" type="radio" value="email" data-aria-controls="conditional-upload-certificate-conditional">
+          <label class="govuk-label govuk-radios__label" for="upload-certificate-conditional">
+            <%= t 'user_journey.certificate.upload_certificate_file_header' %>
+          </label>
+        </div>
+        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-upload-certificate-conditional">
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="file-upload-1">
+              <%= t 'user_journey.certificate.upload_certificate_file_body' %>
+            </label>
+            <input class="govuk-file-upload" id="file-upload-1" name="file-upload-1" type="file">
+          </div>
+        </div>
+        <div class="govuk-radios__item">
+          <input class="govuk-radios__input" id="upload-certificate-conditional-2" name="upload-certificate" type="radio" value="certificate" data-aria-controls="conditional-upload-certificate-conditional-2">
+          <label class="govuk-label govuk-radios__label" for="upload-certificate-conditional-2">
+            <%= t 'user_journey.certificate.paste_certificate' %>
+          </label>
+        </div>
+        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-upload-certificate-conditional-2">
+          <div class="govuk-form-group">
+            <%= f.text_area :value, class: "govuk-textarea#{@upload.errors.key?(:certificate) ? ' govuk-textarea--error' : ''}", rows: "20" %>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    <%= f.submit t('user_journey.before_you_start.continue'), class: "govuk-button", data: { module: "govuk-button" } %>
+  <% end %>
+</div>

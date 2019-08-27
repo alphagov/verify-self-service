@@ -1,0 +1,8 @@
+<h1 class="govuk-heading-l">
+  <%= @certificate.component.component_type == COMPONENT_TYPE::MSA ? t('user_journey.certificate.msa_heading') : t('user_journey.certificate.vsp_heading') %>
+  <%= t('user_journey.certificate.certificate', type: @certificate.usage ) %>
+</h1>
+
+<%= render 'shared/user_certificate_view', certificate: @certificate, full_details: true %>
+
+<%= link_to t('user_journey.certificate.replace'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>

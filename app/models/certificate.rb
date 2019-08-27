@@ -19,4 +19,8 @@ class Certificate < Aggregate
   def x509
     to_x509(value)
   end
+
+  def issuer_common_name
+    x509.subject.to_a.find { |issuer, _, _| issuer == 'CN' }[1]
+  end
 end
