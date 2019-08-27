@@ -7,6 +7,7 @@ class SpComponentsController < ApplicationController
 
   def new
     @component = NewSpComponentEvent.new
+    @hub_environments = Rails.configuration.hub_environments.keys
   end
 
   def show
@@ -15,6 +16,7 @@ class SpComponentsController < ApplicationController
 
   def create
     @component = NewSpComponentEvent.create(component_params)
+    @hub_environments = Rails.configuration.hub_environments.keys
     if @component.valid?
       redirect_to root_path
     else

@@ -24,13 +24,13 @@ RSpec.describe TeamsController, type: :controller do
     let(:team_name) { 'super-awesome-team' }
 
     it 'successfully creates a group in cognito' do
-      Rails.application.secrets.cognito_user_pool_id = 'dummy'
+      Rails.configuration.cognito_user_pool_id = 'dummy'
       stub_cognito_response(
         method: :create_group,
         payload: {
           group: {
             group_name: team_name,
-            user_pool_id: Rails.application.secrets.cognito_user_pool_id,
+            user_pool_id: Rails.configuration.cognito_user_pool_id,
             description: team_name
           }
         }
@@ -43,7 +43,7 @@ RSpec.describe TeamsController, type: :controller do
     end
 
     it 'fails to create a group in cognito' do
-      Rails.application.secrets.cognito_user_pool_id = 'dummy'
+      Rails.configuration.cognito_user_pool_id = 'dummy'
       stub_cognito_response(
         method: :create_group,
         payload: Aws::CognitoIdentityProvider::Errors::InvalidParameterException.new(nil, nil, {})

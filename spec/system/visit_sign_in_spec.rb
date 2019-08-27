@@ -27,7 +27,7 @@ RSpec.describe 'Sign in', type: :system do
     preferred_mfa_setting: 'SOFTWARE_TOKEN_MFA',
     user_mfa_setting_list: ['SOFTWARE_TOKEN_MFA'] })
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
 
     expect(current_path).to eql root_path
@@ -38,7 +38,7 @@ RSpec.describe 'Sign in', type: :system do
     SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
     SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { authentication_result: {access_token: 'valid-token' }})
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content 'Log in - One Time Password Request'
@@ -57,7 +57,7 @@ RSpec.describe 'Sign in', type: :system do
     SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
     SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, "Stub Response"))
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content 'Log in - One Time Password Request'
@@ -71,7 +71,7 @@ RSpec.describe 'Sign in', type: :system do
   scenario 'user cannot sign in with wrong email' do
     SelfService.service(:cognito_client).stub_responses(:initiate_auth, Aws::CognitoIdentityProvider::Errors::UserNotFoundException.new(nil, "Stub Response"))
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in('invalid@email.com', user.password)
 
     expect(current_path).to eql new_user_session_path
@@ -79,7 +79,7 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user cannot sign in with wrong password' do
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, 'invalidpassword')
 
     expect(current_path).to eql new_user_session_path
@@ -97,7 +97,7 @@ RSpec.describe 'Sign in', type: :system do
     SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "NEW_PASSWORD_REQUIRED", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
     SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { authentication_result: {access_token: 'valid-token' }})
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content 'Set up your new password'

@@ -1,0 +1,68 @@
+<h1 class="govuk-heading-xl">Admin</h1>
+
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <h2 class="govuk-tabs__title">
+    Admin
+  </h2>
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+      <a class="govuk-tabs__tab" href="#SpComponent">
+        SP Components
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#MsaComponent">
+        MSA Components
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#services">
+        Services
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#teams">
+        Teams
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#certificates">
+        Certificates
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#events">
+        Events
+      </a>
+    </li>
+  </ul>
+  <section class="govuk-tabs__panel" id="SpComponent">
+    <h2 class="govuk-heading-l">SP components</h2>
+    <%= render "admin/sp_component", components: @sp_components %>
+  </section>
+
+  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="MsaComponent">
+    <h2 class="govuk-heading-l">MSA components</h2>
+    <%= render "admin/msa_component", components: @msa_components %>
+  </section>
+
+  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="services">
+    <h2 class="govuk-heading-l">Services</h2>
+    <%= render "admin/service", services: @services %>
+  </section>
+
+  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="teams">
+    <h2 class="govuk-heading-l">Teams</h2>
+     <%= render "admin/team", teams: @teams %>
+  </section>
+
+  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="certificates">
+    <h2 class="govuk-heading-l">Certificates</h2>
+    <%= render "admin/certificate", certificates: @certificates %>
+  </section>
+
+  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="events">
+    <h2 class="govuk-heading-l">Events</h2>
+    <%= link_to t('layout.application.events'), admin_events_path %>
+  </section>
+</div>

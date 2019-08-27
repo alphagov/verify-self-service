@@ -48,9 +48,6 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for NGINX
 
-  # Store uploaded files on the local file system (see config/storage.yml for options)
-  config.active_storage.service = :amazon
-
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
   # config.action_cable.url = 'wss://example.com/cable'
@@ -101,4 +98,11 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.aws_region = ENV.fetch('AWS_REGION')
+
+  config.hub_environments = JSON.parse(ENV.fetch('HUB_ENVIRONMENTS'))
+
+  config.cognito_client_id = ENV.fetch('AWS_COGNITO_CLIENT_ID')
+  config.cognito_user_pool_id = ENV.fetch('AWS_COGNITO_USER_POOL_ID')
 end

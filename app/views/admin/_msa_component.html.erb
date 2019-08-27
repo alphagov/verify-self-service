@@ -1,0 +1,44 @@
+<%= link_to "Create new MSA component", new_msa_component_path, class: "govuk-button"  %>
+
+<% components.reverse.each do |component| %>
+  <table class="govuk-table">
+    <caption class="govuk-table__caption" id="MsaComponent/<%= component.id %>">MSA component ID: <%= component.id %></caption>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Name</th>
+        <td class="govuk-table__cell"><%= component.name %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Entity ID</th>
+        <td class="govuk-table__cell"><%= component.entity_id %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Team ID</th>
+        <td class="govuk-table__cell"><%= link_to(component.team_id, "/admin#teams/#{component.team_id}") if component.team_id %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Environment</th>
+        <td class="govuk-table__cell"><%= component.environment %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Encryption certificate ID</th>
+        <td class="govuk-table__cell"><%= link_to(component.encryption_certificate_id, "/admin#certificates/#{component.encryption_certificate_id}") if component.encryption_certificate_id %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Created</th>
+        <td class="govuk-table__cell"><%= component.created_at %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Updated</th>
+        <td class="govuk-table__cell"><%= component.updated_at %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2"><%= link_to 'Manage', polymorphic_url(component), class: 'govuk-button', data: { module: 'govuk-button' } %></td>
+      </tr>
+    </tbody>
+  </table>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+<% end %>
+
+
+

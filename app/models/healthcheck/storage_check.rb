@@ -5,13 +5,28 @@ module Healthcheck
     end
 
     def status
-      healthcheck_key = 'healthcheck.txt'
-
-      unless SelfService.service(:storage_client).exist?(healthcheck_key)
-        SelfService.service(:storage_client).upload(healthcheck_key, '')
+      Rails.configuration.hub_environments.values.each do |bucket|
+        unless healthcheck_file_exists?(bucket)
+          SelfService.service(:storage_client).put_object(
+            bucket: bucket,
+            key: FILES::HEALTHCHECK,
+            body: ''
+          )
+        end
       end
 
       OK
+    end
+
+  private
+
+    def healthcheck_file_exists?(bucket)
+      SelfService.service(:storage_client).get_object(
+        bucket: bucket,
+        key: FILES::HEALTHCHECK
+      )
+    rescue Aws::S3::Errors::NoSuchKey
+      false
     end
   end
 end

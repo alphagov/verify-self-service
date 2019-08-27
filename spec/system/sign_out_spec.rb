@@ -21,7 +21,7 @@ RSpec.describe 'Sign out', type: :system do
   scenario 'user can sign out' do
     cognito_stubs
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(page).to have_content 'Signed in successfully.'
     click_link 'Sign out'
@@ -35,7 +35,7 @@ RSpec.describe 'Sign out', type: :system do
     Rails.configuration.session_inactivity_in_minutes = 15.minutes
     cognito_stubs
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     travel_to Time.now + 16.minutes
     visit(profile_path)
@@ -47,7 +47,7 @@ RSpec.describe 'Sign out', type: :system do
     Rails.configuration.session_inactivity = 60.minutes
     cognito_stubs
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     travel_to Time.now + 14.minutes
     visit(profile_path)
@@ -62,7 +62,7 @@ RSpec.describe 'Sign out', type: :system do
     cognito_stubs
     Rails.configuration.session_inactivity_in_minutes = 15.minutes
 
-    user = FactoryBot.create(:user)
+    user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     travel_to Time.now + 14.minutes
     visit(profile_path)

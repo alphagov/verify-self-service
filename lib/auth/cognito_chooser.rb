@@ -17,11 +17,11 @@ class CognitoChooser
   end
 
   def aws_access_key
-    Rails.application.secrets.cognito_aws_access_key_id
+    Rails.configuration.cognito_aws_access_key_id
   end
 
   def aws_secret_key
-    Rails.application.secrets.cognito_aws_secret_access_key
+    Rails.configuration.cognito_aws_secret_access_key
   end
 
   def register_client(client:, is_stub: true)
@@ -39,15 +39,15 @@ class CognitoChooser
 
   def register_dev_client
     register_client(client: Aws::CognitoIdentityProvider::Client.new(
-      region: Rails.application.secrets.aws_region,
+      region: Rails.configuration.aws_region,
       access_key_id: aws_access_key,
       secret_access_key: aws_secret_key
     ), is_stub: false)
   end
 
   def register_stub_client
-    Rails.application.secrets.cognito_client_id = SecureRandom.uuid
-    Rails.application.secrets.cognito_user_pool_id = SecureRandom.uuid
+    Rails.configuration.cognito_client_id = SecureRandom.uuid
+    Rails.configuration.cognito_user_pool_id = SecureRandom.uuid
     register_client(
       client: CognitoStubClient.stub_client
     )
