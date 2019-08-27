@@ -29,7 +29,7 @@ module Healthcheck
     def build_check_status(check)
       { status: check.status }
     rescue StandardError => e
-      Rails.logger.error(e.to_s)
+      Rails.logger.error("#{check.name} => #{e}")
       { status: CRITICAL }
     end
 
