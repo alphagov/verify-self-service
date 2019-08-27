@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'New MSA Component Page', type: :system do
   before(:each) do
-    login_component_manager_user
+    login_gds_user
   end
   let(:entity_id) { 'http://test-entity-id' }
   context 'creation is successful' do
@@ -15,7 +15,7 @@ RSpec.describe 'New MSA Component Page', type: :system do
       choose('component_environment_staging')
       click_button 'Create MSA component'
 
-      expect(current_path).to eql root_path
+      expect(current_path).to eql admin_path
     end
   end
 

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'New SP Component Page', type: :system do
   before(:each) do
-    login_component_manager_user
+    login_gds_user
   end
   let(:entity_id) { 'http://test-entity-id' }
   context 'creation is successful' do
@@ -14,7 +14,7 @@ RSpec.describe 'New SP Component Page', type: :system do
       fill_in 'component_name', with: component_name
       click_button 'Create SP component'
 
-      expect(current_path).to eql root_path
+      expect(current_path).to eql admin_path
     end
   end
 

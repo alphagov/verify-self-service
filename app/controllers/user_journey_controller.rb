@@ -4,7 +4,7 @@ class UserJourneyController < ApplicationController
   include ComponentConcern
   include CertificateConcern
 
-  before_action :find_certificate
+  before_action :find_certificate, except: :index
 
   def index
     @sp_components = SpComponent.all
@@ -51,6 +51,8 @@ class UserJourneyController < ApplicationController
       render :upload_certificate
     end
   end
+
+private
 
   def find_certificate
     @certificate = Certificate.find_by_id(params[:certificate_id])

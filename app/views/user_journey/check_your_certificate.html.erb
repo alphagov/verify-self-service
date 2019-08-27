@@ -5,7 +5,7 @@
 
 <%= render 'shared/user_certificate_view', certificate: @new_certificate, full_details: false %>
 
-<p><%= t 'user_journey.certificate.certificate_update_notice' %></p>
+<p><%= t('user_journey.certificate.certificate_update_notice', certificate: @certificate.usage) %></p>
 
 <%= form_for @new_certificate, url: confirmation_path, as: :certificate do |f| %>
   <%= f.hidden_field :new_certificate, value: @new_certificate_value %>

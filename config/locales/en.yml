@@ -198,9 +198,10 @@ en:
     before_you_start:
       title: Before you start
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
-      MsaComponent: "Before you upload your Matching Service Adapter (MSA) %{type} certificate, you must "
-      SpComponent: "Before you upload your Verify Service Provider (VSP) %{type} certificate, you must "
-      create_signing_key_and_certificate: create a new signing key and certificate.
+      MsaComponent: Before you upload your Matching Service Adapter (MSA) %{type} certificate,
+      SpComponent: Before you upload your Verify Service Provider (VSP) %{type} certificate,
+      you_must: "you must:"
+      create_signing_key_and_certificate: "you must create a new signing key and certificate."
       create_key_and_certificate: Create a new key and certificate
       create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
       find_out_more: Find out more about 
@@ -219,7 +220,7 @@ en:
       common_name: Common name
       used_by: Used by
       view_certificate: View full certificate
-      certificate_update_notice: Using this certificate will update our configuration within 10 minutes.
+      certificate_update_notice: Using this certificate will replace your old %{certificate} certificate in GOV.UK Verify's configuration within 10 minutes.
       use_certificate: Use this certificate
       upload_different_certificate: Upload a different certificate
       certificate: "%{type} certificate"

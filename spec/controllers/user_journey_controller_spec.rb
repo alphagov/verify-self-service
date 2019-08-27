@@ -4,15 +4,26 @@ RSpec.describe UserJourneyController, type: :controller do
   include AuthSupport
   include CertificateSupport
 
-  let(:msa_component) { create(:msa_component, encryption_certificate_id: 1) }
-  let(:root) { PKI.new }
-  let(:x509_cert) { root.generate_encoded_cert(expires_in: 9.months) }
-
   describe "GET #index" do
     it "returns http success" do
       certmgr_stub_auth
       get :index
       expect(response).to have_http_status(:success)
+    end
+
+    it "should redirect to sign-page" do
+      get :index
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(new_user_session_path)
+      expect(subject).not_to redirect_to(root_path)
+    end
+  
+    it "should render when logged in" do
+      certmgr_stub_auth
+      get :index
+      expect(response).to have_http_status(:success)
+      expect(subject).not_to redirect_to(new_user_session_path)
+      expect(subject).to render_template(:index)
     end
   end
 
@@ -44,17 +55,24 @@ RSpec.describe UserJourneyController, type: :controller do
   end
 
   describe '#check_your_certificate' do
-    it 'renders upload certificate page' do
+    it 'renders check your certificate page' do
       certmgr_stub_auth
-      defaults = {
-        usage: CERTIFICATE_USAGE::ENCRYPTION,
-        value: x509_cert,
-        component: msa_component
-      }
-      Certificate.create(defaults)
-      post(:submit, params: { component_type: 'MsaComponent', component_id: 1, certificate_id: 1, certificate: { value: x509_cert } })
+      certificate = create(:msa_encryption_certificate)
+      msa_component = certificate.component
+      post(:submit, params: { component_type: 'MsaComponent', component_id: 1, certificate_id: 1, certificate: { value: certificate.value } })
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:check_your_certificate)
+    end
+  end
+
+  describe '#confirmation' do
+    it 'renders confirmation page' do
+      certmgr_stub_auth
+      certificate = create(:msa_encryption_certificate)
+      msa_component = certificate.component
+      post(:confirm, params: { component_type: 'MsaComponent', component_id: 1, certificate_id: 1, certificate: { new_certificate: certificate.value } })
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:confirmation)
     end
   end
 end

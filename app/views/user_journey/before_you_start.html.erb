@@ -6,6 +6,7 @@
 <% if @certificate.signing? %>
   <%= t 'user_journey.before_you_start.create_signing_key_and_certificate' %>
 <% else %>
+<%= t 'user_journey.before_you_start.you_must' %>
   <ul class="govuk-list govuk-list--number">
     <li><%= t 'user_journey.before_you_start.create_key_and_certificate' %></li>
     <li><%= t('user_journey.before_you_start.create_encryption_key_and_certificate', component: display_component(@certificate)) %></li>

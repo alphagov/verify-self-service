@@ -19,11 +19,11 @@
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
       <span class="govuk-warning-text__assistive"><%= t 'layout.application.warning' %></span>
-      <%= t('user_journey.confirmation.configuration_warning', component: display_component(@certificate), date: @certificate.not_after_nice_date_format) %>
+      <%= t('user_journey.confirmation.configuration_warning', component: display_component(@certificate), date: "TODO") %>
     </strong>
   </div>
 <% end %>
 
 <%= render 'shared/component_certificate_doc_links', certificate: @certificate  %>
 
-<%= link_to t('user_journey.confirmation.rotate_more'), user_journey_path, class: "secondary-link secondary-link__confirmation" %> 
+<%= link_to t('user_journey.confirmation.rotate_more'), root_path, class: "secondary-link secondary-link__confirmation" %> 

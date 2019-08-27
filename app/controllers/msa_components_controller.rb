@@ -18,7 +18,7 @@ class MsaComponentsController < ApplicationController
     @component = NewMsaComponentEvent.create(component_params)
     @hub_environments = Rails.configuration.hub_environments.keys
     if @component.valid?
-      redirect_to root_path
+      redirect_to admin_path
     else
       Rails.logger.info(@component.errors.full_messages)
       render :new
