@@ -1,5 +1,3 @@
-require 'auth/jwks_loader'
-
 class CognitoStubClient
   # TODO Turn stub_user_hash into a JWT token which
   # can be returned by the stub client
@@ -26,11 +24,7 @@ class CognitoStubClient
   end
 
   def self.stub_gds_user_hash
-<<<<<<< HEAD
     self.stub_user_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN)
-=======
-    self.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
->>>>>>> XTHIuvEX switched to using JWT for building user
   end
 
   def self.setup_user(user_hash)
@@ -75,8 +69,9 @@ class CognitoStubClient
     return false unless SelfService.service_present?(:real_client)
 
     real_client = SelfService.service(:real_client)
+    real_jwks = SelfService.service(:real_jwks)
     SelfService.register_service(name: :cognito_client, client: real_client)
-    SelfService.register_service(name: :jwks, client: JwksLoader.new)
+    SelfService.register_service(name: :jwks, client: real_jwks)
     SelfService.register_service(name: :cognito_stub, client: false)
   end
 
@@ -87,7 +82,9 @@ class CognitoStubClient
     return false if SelfService.service(:cognito_stub)
 
     real_client = SelfService.service(:cognito_client)
+    real_jwks = SelfService.service(:jwks)
     SelfService.register_service(name: :real_client, client: real_client)
+    SelfService.register_service(name: :real_jwks, client: real_jwks)
     SelfService.register_service(name: :cognito_client, client: stub_client)
     load_jwks
     setup_stubs
@@ -96,7 +93,7 @@ class CognitoStubClient
 
   def self.load_jwks
     $cognito_jwt_private_key = OpenSSL::PKey::RSA.generate(2048)
-    jwks_loader = JwksLoader.new(false)
-    SelfService.register_service(name: :jwks, client: jwks_loader)
+    jwks = JSON::JWK::Set.new(keys: [JSON::JWK.new($cognito_jwt_private_key.public_key, kid: 2)])
+    SelfService.register_service(name: :jwks, client: JSON.parse(jwks.to_json))
   end
 end
