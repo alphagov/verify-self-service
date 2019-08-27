@@ -6,47 +6,27 @@ FactoryBot.define do
     password { "validpassword" }
     roles { ROLE::USER_MANAGER }
     session_start_time { Time.now.to_s }
-    permissions { UserRolePermissions.new(ROLE::USER_MANAGER) }
-  end
 
-  factory :gds_user, class: User do
-    given_name { "John" }
-    family_name  { "Doe" }
-    email { "test.test@digital.cabinet-office.gov.uk" }
-    password { "validpassword" }
-    roles { ROLE::GDS }
-    session_start_time { Time.now.to_s }
-    permissions { UserRolePermissions.new(ROLE::GDS, "test.test@digital.cabinet-office.gov.uk") }
-  end
+    factory :gds_user do
+      email { "test.test@digital.cabinet-office.gov.uk" }
+      roles { ROLE::GDS }
+      permissions { UserRolePermissions.new(ROLE::GDS, "test.test@digital.cabinet-office.gov.uk") }
+    end
 
-  factory :certificate_manager_user, class: User do
-    given_name { "Jane" }
-    family_name  { "Smith" }
-    email { "test@test.test" }
-    password { "validpassword" }
-    roles { ROLE::CERTIFICATE_MANAGER }
-    session_start_time { Time.now.to_s }
-    permissions { UserRolePermissions.new(ROLE::CERTIFICATE_MANAGER) }
-  end
+    factory :certificate_manager_user do
+      roles { ROLE::CERTIFICATE_MANAGER }
+      permissions { UserRolePermissions.new(ROLE::CERTIFICATE_MANAGER) }
+    end
 
-  factory :user_manager_user, class: User do
-    given_name { "Jane" }
-    family_name  { "Smith" }
-    email { "test@test.test" }
-    password { "validpassword" }
-    roles { ROLE::USER_MANAGER }
-    team { 1 }
-    session_start_time { Time.now.to_s }
-    permissions { UserRolePermissions.new(ROLE::USER_MANAGER) }
-  end
+    factory :user_manager_user do
+      roles { ROLE::USER_MANAGER }
+      team { 1 }
+      permissions { UserRolePermissions.new(ROLE::USER_MANAGER) }
+    end
 
-  factory :component_manager_user, class: User do
-    given_name { "Jane" }
-    family_name  { "Smith" }
-    email { "test@test.test" }
-    password { "validpassword" }
-    roles { ROLE::COMPONENT_MANAGER }
-    session_start_time { Time.now.to_s }
-    permissions { UserRolePermissions.new(ROLE::COMPONENT_MANAGER) }
+    factory :component_manager_user do
+      roles { ROLE::COMPONENT_MANAGER }
+      permissions { UserRolePermissions.new(ROLE::COMPONENT_MANAGER) }
+    end
   end
 end

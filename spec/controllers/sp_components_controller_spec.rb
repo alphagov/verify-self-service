@@ -13,7 +13,7 @@ RSpec.describe SpComponentsController, type: :controller do
 
   describe "GET #new" do
     it "returns http redirect for unauthorised user" do
-      user_stub_auth
+      usermgr_stub_auth
       get :new
       expect(flash[:warn]).to match("You are not authorised to perform this action")
       expect(response).to have_http_status(:forbidden)

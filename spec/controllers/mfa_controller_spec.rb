@@ -20,7 +20,7 @@ RSpec.describe MfaController, type: :controller do
     end
 
     it 'redirects when the user is already logged in' do
-      user_stub_auth
+      usermgr_stub_auth
       session[:access_token] = 'valid-access-token'
       get :index
       expect(response).to have_http_status(:redirect)
