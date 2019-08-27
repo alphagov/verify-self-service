@@ -4,7 +4,7 @@ class NewSpComponentEvent < AggregatedEvent
 
   validate :name_is_present
   validate :component_is_new, on: :create
-  validates_presence_of :environment, in: ENVIRONMENT.constants
+  validates_presence_of :environment, in: Rails.configuration.hub_environments.keys
   validates_inclusion_of :component_type,
                          in: [COMPONENT_TYPE::SP, COMPONENT_TYPE::VSP],
                          message: "must be either VSP or SP"

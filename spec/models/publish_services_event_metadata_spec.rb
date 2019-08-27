@@ -31,7 +31,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
         SelfService.service(:storage_client)
       ).to receive(:put_object).with(hash_including(bucket: "integration-bucket"))
 
-      PublishServicesMetadataEvent.create(event_id: 0, environment: ENVIRONMENT::INTEGRATION)
+      PublishServicesMetadataEvent.create(event_id: 0, environment: 'integration')
     end
 
     it 'when environment is set to production on component' do
@@ -39,7 +39,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
         SelfService.service(:storage_client)
       ).to receive(:put_object).with(hash_including(bucket: "production-bucket"))
 
-      PublishServicesMetadataEvent.create(event_id: 0, environment: ENVIRONMENT::PRODUCTION)
+      PublishServicesMetadataEvent.create(event_id: 0, environment: 'production')
     end
   end
 end
