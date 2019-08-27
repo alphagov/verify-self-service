@@ -2,5 +2,6 @@
     hooks:
     -   id: lint
         name: govuk linter
-        entry: bundle exec govuk-lint-ruby app lib
+        entry: bundle exec govuk-lint-ruby
+        files: (app|lib)
         language: system
