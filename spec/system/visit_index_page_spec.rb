@@ -35,4 +35,21 @@ RSpec.describe 'IndexPage', type: :system do
     expect(primary_certificate_link).to have_content second_certificate.id
     expect(secondary_certificate_link).to have_content first_certificate.id
   end
+
+  it 'shows index page and successfully goes to next page' do
+    certificate = create(:msa_encryption_certificate)
+    msa_component = certificate.component
+    visit root_path
+    expect(page).to have_content 'Manage certificates'
+    click_link('Encryption certificate', match: :first)
+    expect(current_path).to eql view_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
+  end
+
+  it 'shows certificate expiring if under 30 days and IN USE if over 30 days' do
+    certificate = create(:msa_encryption_certificate)
+    expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 20.days))
+    visit root_path
+    expect(page).to have_content 'EXPIRES IN 20 DAYS'
+    expect(page).to have_content 'IN USE'
+  end
 end

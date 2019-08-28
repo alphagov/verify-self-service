@@ -19,9 +19,9 @@
           <tr class="govuk-table__row">
             <td class="govuk-table__cell"><%= link_to t('user_journey.encryption_certificate'), view_certificate_path(component.component_type, component.id, component.encryption_certificate_id) %></td>
             <td class="govuk-table__cell">
-            <% if certificate_expiry(component.encryption_certificate.x509) %>
+            <% if component.encryption_certificate.certificate_expiry %>
               <div class="app-certificate-tag app-certificate-tag-expiring">
-                <strong class="govuk-tag"><%= t('user_journey.expiry', days: certificate_expiry(component.encryption_certificate.x509)) %></strong>
+                <strong class="govuk-tag"><%= t('user_journey.expiry', days: component.encryption_certificate.certificate_expiry) %></strong>
               </div>
             <% else %>
               <div class="app-certificate-tag">
@@ -41,9 +41,9 @@
               <% end %>
             </td> 
             <td class="govuk-table__cell">
-            <% if certificate_expiry(signing.x509) %>
+            <% if signing.certificate_expiry %>
               <div class="app-certificate-tag app-certificate-tag-expiring">
-                <strong class="govuk-tag"><%= t('user_journey.expiry', days: certificate_expiry(signing.x509)) %></strong>
+                <strong class="govuk-tag"><%= t('user_journey.expiry', days: signing.certificate_expiry) %></strong>
               </div>
             <% else %>
               <div class="app-certificate-tag">

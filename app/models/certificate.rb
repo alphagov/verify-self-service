@@ -23,4 +23,10 @@ class Certificate < Aggregate
   def issuer_common_name
     x509.subject.to_a.find { |issuer, _, _| issuer == 'CN' }[1]
   end
+
+  def certificate_expiry
+    if x509.not_after - Time.now < 30.day
+      (x509.not_after.to_date - Time.now.to_date).to_i.to_s
+    end
+  end
 end
