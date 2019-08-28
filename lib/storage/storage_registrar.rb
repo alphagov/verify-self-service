@@ -16,7 +16,7 @@ class StorageRegistrar
   def register_production_client
     SelfService.register_service(
       name: :storage_client,
-      client: Aws::S3::Client.new(logger: Rails.logger, log_level: :debug)
+      client: Aws::S3::Client.new(logger: Rails.logger, log_level: :info)
     )
   end
 
