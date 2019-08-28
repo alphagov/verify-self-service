@@ -10,7 +10,8 @@ module Healthcheck
           SelfService.service(:storage_client).put_object(
             bucket: bucket,
             key: FILES::HEALTHCHECK,
-            body: ''
+            body: '',
+            server_side_encryption: 'AES256'
           )
         end
       end
