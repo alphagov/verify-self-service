@@ -1,0 +1,6 @@
+en:
+  certificates:
+    new:
+      value: certificate_value
+      certificate: certificate_value
+      usage: certificate_usage_signing

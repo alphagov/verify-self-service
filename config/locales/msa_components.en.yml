@@ -1,0 +1,6 @@
+en:
+  msa_components:
+    new:
+      entity_id: component_entity_id
+      name: component_name
+      component_type: component_component_type_msacomponent

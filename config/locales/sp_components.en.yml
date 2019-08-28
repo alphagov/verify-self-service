@@ -1,0 +1,6 @@
+en:
+  sp_components:
+    new:
+      name: component_name
+      component_type: component_component_type_vspcomponent
+      
