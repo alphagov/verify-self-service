@@ -10,7 +10,7 @@ RSpec.describe Component, type: :model do
     let(:published_at) { Time.now }
     let(:msa_component) { create(:new_msa_component_event).msa_component }
     let(:sp_component) { create(:new_sp_component_event).sp_component }
-    let(:root) { PKI.new }
+    let!(:root) { PKI.new }
     let!(:upload_signing_certificate_event_1) do
       UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::SIGNING,

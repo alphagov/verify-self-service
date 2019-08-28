@@ -1,0 +1,64 @@
+en:
+  component_environment: &environment "Environment"
+  component_entity: &entity "Entity"
+  associate_team: &associate_team "Associate team"
+  all: &all_components_view
+    associate_team: *associate_team
+    create_new_component: Create new %{type} component
+    environment: *environment
+    heading: "%{type} Components"
+    name: Name
+    team: Team
+    view_link: View component
+  edit: &edit_component_details_view
+    associate_team: *associate_team
+    heading: Associate team to
+  new: &new_component_details_view
+    create_component: Create %{type} component
+    upload_component: Upload your %{type} component
+    name_field: "%{type} Component name"
+    name: component_name
+  show: &show_component_details_view
+    add_service: Add service
+    all_certs: All certificates
+    all_certs_for_component: All certificates for this component
+    assigned_encryption_cert: Encryption Certificate assigned to component
+    previous_encryption_cert: Previous encryption Certificates
+    previous_assigned_encryption_cert: Previous Encryption Certificates for this component
+    sign_cert_enabled: Signing Certificates (Enabled)
+    sign_cert_disabled: Signing Certificates (Disabled)
+    upload: Upload
+  components:
+    entity_id: *entity
+    environment: *environment
+    title: Manage certificates
+    errors:
+      already_exists: already exists
+      must_exist: must exist
+      missing_entity_id: id is required for MSA component
+  msa_components:
+    all_msa_components:
+      <<: *all_components_view
+      entity_id: *entity
+    edit:
+      <<: *edit_component_details_view
+    new:
+      <<: *new_component_details_view
+      component_entity_id: "%{type} Component Entity ID"
+      component_type: component_component_type_msacomponent
+      entity_id: component_entity_id
+    show:
+      <<: *show_component_details_view
+
+  sp_components:
+    all_sp_components:
+      <<: *all_components_view
+      type: Type
+    edit:
+      <<: *edit_component_details_view
+    new:
+      <<: *new_component_details_view
+      type_field: "%{type} Component type"
+      component_type: component_component_type_vspcomponent
+    show:
+      <<: *show_component_details_view

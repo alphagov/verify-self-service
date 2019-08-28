@@ -28,7 +28,6 @@
 #
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
-
 en:
   common:
     error_blank_name: Name can't be blank
@@ -66,30 +65,6 @@ en:
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
-  certificates:
-    caption: "%{heading}"
-    header_id: ID
-    header_name: Name
-    header_usage: Usage
-    header_enabled: Enabled
-    header_last_updated: Last updated
-    replace_button: Replace
-    upload_certificate:
-      usage: Certificate usage
-      value: Certificate value
-      paste_cert: Paste your certificate here
-    enable: Enable
-    disable: Disable
-    upload: Upload your certificate
-    previous: Previous
-    errors:
-      invalid: is not a valid x509 certificate
-      expired: has expired
-      expires_soon: expires too soon
-      valid_too_long: valid for too long
-      not_rsa: is not RSA
-      small_key: key size is less than 2048 bits
-      not_signing: signing certificate required
   profile:
     title: "User Information"
     welcome: Welcome
@@ -166,40 +141,13 @@ en:
       errored: errored
       invalid: Invalid team name
       failed: Failed to create team
-  components:
-    title: Manage certificates
-    name: Name
-    team: Team
-    entity_id: Entity ID
-    view_link: View component
-    upload: Upload
-    create_new_component: Create new %{type} component
-    component_heading: "%{type} Components"
-    component_name_field: "%{type} Component name"
-    component_type_field: "%{type} Component type"
-    create_component: Create %{type} component
-    environment: Environment
-    upload_component: Upload your %{type} component
-    component_entity_id: "%{type} Component Entity ID"
-    sign_cert_enabled: Signing Certificates (Enabled)
-    sign_cert_disabled: Signing Certificates (Disabled)
-    assigned_encryption_cert: Encryption Certificate assigned to component
-    previous_encryption_cert: Previous encryption Certificates
-    previous_assigned_encryption_cert: Previous Encryption Certificates for this component
-    all_certs: All certificates
-    all_certs_for_componenet: All certificates for this component
-    add_service: Add service
-    errors:
-      already_exists: already exists
-      must_exist: must exist
-      missing_entity_id: id is required for MSA component
   admin:
     title: Admin
     view_components: View components
     edit:
       heading: Associate team to
   user_journey:
-    msa_long: Matching Service Adapter 
+    msa_long: Matching Service Adapter
     vsp_long: Verify Service Provider
     used_by: used by
     certificate: Certificate
@@ -232,7 +180,7 @@ en:
       create_signing_key_and_certificate: "you must create a new signing key and certificate."
       create_key_and_certificate: Create a new key and certificate
       create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
-      find_out_more: Find out more about 
+      find_out_more: Find out more about
       rotate_key_and_certificate: rotating your %{component} %{certificate} key and certificate
       in_documentation: in the documentation.
       must_update: You must update your %{component} configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
@@ -256,7 +204,7 @@ en:
       vsp_heading: "Verify Service Provider: "
       replace: Replace certificate
       add_new: Add new certificate
-      upload_new: Upload your new %{certificate} certificate 
+      upload_new: Upload your new %{certificate} certificate
       upload_certificate_file_header: Upload a certificate file
       upload_certificate_file_body: Upload file
       paste_certificate: Paste certificate text into a text box

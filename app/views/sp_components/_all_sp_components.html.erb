@@ -1,12 +1,12 @@
 <% if @sp_components.present? %>
   <table class="govuk-table">
-    <caption class="govuk-table__caption govuk-heading-l"><%= t('components.component_heading', type: COMPONENT_TYPE::SP_SHORT) %></caption>
+    <caption class="govuk-table__caption govuk-heading-l"><%= t('.heading', type: COMPONENT_TYPE::SP_SHORT) %></caption>
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col"><%= t 'components.name' %></th>
-        <th class="govuk-table__header" scope="col"><%= t 'events.type' %></th>
-        <th class="govuk-table__header" scope="col"><%= t 'components.team' %></th>
-        <th class="govuk-table__header" scope="col"><%= t 'components.environment' %></th>
+        <th class="govuk-table__header" scope="col"><%= t '.name' %></th>
+        <th class="govuk-table__header" scope="col"><%= t '.type' %></th>
+        <th class="govuk-table__header" scope="col"><%= t '.team' %></th>
+        <th class="govuk-table__header" scope="col"><%= t '.environment' %></th>
         <th class="govuk-table__header" scope="col"></th>
       </tr>
     </thead>
@@ -20,8 +20,8 @@
           <td class="govuk-table__cell" scope="row"><%= component.team&.name %></td>
           <td class="govuk-table__cell" scope="row"><%= component.environment %></td>
           <td class="govuk-table__cell">
-            <%= link_to t('components.view_link'), sp_component_path(component), class: 'govuk-button' %>
-            <%= link_to t('team.associate_team'), edit_sp_component_path(component), class: 'govuk-button' %>
+            <%= link_to t('.view_link'), sp_component_path(component), class: 'govuk-button' %>
+            <%= link_to t('.associate_team'), edit_sp_component_path(component), class: 'govuk-button' %>
           </td>
         </tr>
       <% end %>
@@ -29,4 +29,4 @@
   </table>
 <% end %>
 
-<%= link_to t('components.create_new_component', type: COMPONENT_TYPE::SP_SHORT), new_sp_component_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %>
+<%= link_to t('.create_new_component', type: COMPONENT_TYPE::SP_SHORT), new_sp_component_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button", draggable:"false" %>

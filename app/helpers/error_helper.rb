@@ -1,11 +1,9 @@
 module ErrorHelper
-  def error_messages_for(model, name, specified_in_en_file: false)
+  def error_messages_for(model, name = nil)
     return unless model.errors.present?
 
-    initialize_error_messages_for(model, name, specified_in_en_file)
-
     content_tag :div, error_div_govuk_summary_styles do
-      (error_heading + error_body).html_safe
+      (error_heading(model) + error_body(model, name)).html_safe
     end
   end
 
@@ -22,45 +20,38 @@ module ErrorHelper
 
 private
 
-  def initialize_error_messages_for(model, name, specified_in_en_file)
-    @name = name
-    @model = model
-    @errors = model.errors
-    @specified_in_en_file = specified_in_en_file
-  end
-
-  def error_heading
+  def error_heading(model)
     content_tag :h2, t('shared.errors.problem',
-                       count: @errors.count,
-                       model: @model.class.model_name.human.downcase),
+                       count: model.errors.count,
+                       model: model.class.model_name.human.downcase),
                 class: 'govuk-error-summary__title', id: 'error-summary-title'
   end
 
-  def error_body
+  def error_body(model, name)
     content_tag :div, class: 'govuk-error-summary__body' do
       content_tag :ul, class: 'govuk-list govuk-error-summary__list' do
-        @errors.each do |key|
-          error_content_listitem(key)
+        model.errors.each do |key|
+          error_content_listitem(key, model, name)
         end
       end
     end
   end
 
-  def error_content_listitem(key)
+  def error_content_listitem(key, model, name)
     concat(
       content_tag(
         :li,
         link_to(
-          @errors.full_messages_for(key).first,
-          locate_error_field(key)
+          model.errors.full_messages_for(key).first,
+          use_lazy_evaluation_or_computed_name(key, name)
         ),
         'data-turbolinks': 'false'
       )
     )
   end
 
-  def locate_error_field(key)
-    @specified_in_en_file ? "##{t(".#{key}")}" : "##{@name}_#{key}"
+  def use_lazy_evaluation_or_computed_name(key, name)
+    name.present? ? "##{name}_#{key}" : "##{t(".#{key}")}"
   end
 
   def error_div_govuk_summary_styles

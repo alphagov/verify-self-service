@@ -13,7 +13,7 @@ RSpec.describe 'Edit SP Component Page', type: :system do
       create_teams
       visit edit_sp_component_path(sp_component)
       select(team.name, from: 'component[team_id]')
-      click_button t('team.associate_team')
+      click_button t('sp_components.edit.associate_team')
       result = SpComponent.find_by_id(sp_component.id)
       expect(current_path).to eq sp_components_path
       expect(result.team_id).to eq team.id
@@ -26,7 +26,7 @@ RSpec.describe 'Edit SP Component Page', type: :system do
       visit edit_sp_component_path(sp_component)
       select(team.name, from: 'component[team_id]')
       select('Select', from: 'component[team_id]')
-      click_button t('team.associate_team')
+      click_button t('sp_components.edit.associate_team')
       result = SpComponent.find_by_id(sp_component.id)
       expect(current_path).to eq sp_components_path
       expect(result.team_id).to be_nil

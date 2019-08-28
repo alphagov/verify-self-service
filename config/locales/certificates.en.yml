@@ -1,6 +1,44 @@
 en:
+  certificate_value: &certificate certificate_value
+  team_add_new_team: &add_new_team Add new team
+  name: &name Name
+  cert: &certificate_details
+    certificate: *certificate
+    heading: Certificate usage
+    paste_cert: Paste your certificate here
+    usage: certificate_usage_signing
+    certificate_text_label: Certificate value
+    value: *certificate
+  table_header: &column_headers
+    caption: "%{heading}"
+    header_usage: Usage
+    header_id: ID
+    header_name: *name
+    header_last_updated: Last updated
+    header_enabled: Enabled
   certificates:
+    header_name: *name
+    replace_button: Replace
+    enable: Enable
+    errors:
+      invalid: is not a valid x509 certificate
+      expired: has expired
+      expires_soon: expires too soon
+      valid_too_long: valid for too long
+      not_rsa: is not RSA
+      small_key: key size is less than 2048 bits
+      not_signing: signing certificate required
+    disable: Disable
+    previous: Previous
+    list:
+      certificate_table:
+        <<: *column_headers
     new:
-      value: certificate_value
-      certificate: certificate_value
-      usage: certificate_usage_signing
+      upload: Upload your certificate
+      msa_cert:
+        <<: *certificate_details
+      sp_cert:
+        <<: *certificate_details
+    status:
+      certificate_table:
+        <<: *column_headers
