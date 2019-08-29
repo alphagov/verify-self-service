@@ -3,5 +3,5 @@
     -   id: lint
         name: govuk linter
         entry: bundle exec govuk-lint-ruby
-        files: (app|lib)
+        files: (^app|^lib)
         language: system
