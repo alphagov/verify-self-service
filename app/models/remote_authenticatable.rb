@@ -73,7 +73,7 @@ module Devise
       end
 
       def auth_complete(resp, params)
-        claims = get_user_info(resp[:authentication_result][:id_token])
+        claims = get_user_info(resp[:authentication_result][:id_token])[0]
         self.login_id = claims['email']
         self.user_id = claims['sub']
         self.email = claims['email']
@@ -92,14 +92,7 @@ module Devise
       end
 
       def get_user_info(jwt)
-        header = JSON.parse(Base64.decode64(jwt.split('.')[0]))
-        jwk = find_jwk(header['kid'])
-        JSON::JWT.decode(jwt, jwk, :RS256)
-      end
-
-      def find_jwk(kid)
-        jwk = SelfService.service(:jwks).fetch['keys'].detect { |j| j['kid'] == kid }
-        JSON::JWK.new jwk
+        JWT.decode(jwt, nil, true, algorithms: %w[RS256], jwks: SelfService.service(:jwks))
       end
 
       def cognito_client_id

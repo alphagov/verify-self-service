@@ -23,10 +23,9 @@ RSpec.describe 'Sign in', type: :system do
 
   scenario 'user cant sign in with unsigned jwt' do
     user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
-    jwt = JSON::JWT.new(user_hash)
-    jwt.kid = 2
-    jwt.alg = :none
-    token = jwt.to_s
+    payload, headers = user_hash, { kid: SelfService.service(:jwks).jwk.kid }
+    token = JWT.encode(payload, SelfService.service(:jwks).jwk.keypair, 'none')
+
     stub_cognito_response(method: :initiate_auth, payload: { authentication_result: { access_token: 'valid-token', id_token: token } })
     user = FactoryBot.create(:user)
     sign_in(user.email, user.password)

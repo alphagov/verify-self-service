@@ -15,8 +15,8 @@ class CognitoStubClient
       'token_use' => 'id',
       'auth_time' => Time.now,
       'phone_number' => '+447000000000',
-      'exp' => 1.week.from_now,
-      'iat' => Time.now,
+      'exp' => 1.week.from_now.to_i,
+      'iat' => Time.now.to_i,
       'family_name' => 'Targaryen',
       'email' => "daenerys.targaryen@#{email_domain}",
       'mfa' => true
@@ -42,11 +42,9 @@ class CognitoStubClient
   end
 
   def self.user_hash_to_jwt(user_hash)
-    jwt = JSON::JWT.new(user_hash)
-    jwt.kid = 2
-    jwt.alg = :RS256
-    jws = jwt.sign($cognito_jwt_private_key)
-    jws.to_s
+    payload = user_hash
+    headers = { kid: SelfService.service(:jwks).jwk.kid }
+    JWT.encode(payload, SelfService.service(:jwks).jwk.keypair, 'RS256', headers)
   end
 
   def self.update_user(role:, email_domain: "test.com", groups: %w[test])
