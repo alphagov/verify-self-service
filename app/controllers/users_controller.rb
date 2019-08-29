@@ -7,7 +7,7 @@ class UsersController < ApplicationController
     if @gds
       @teams = Team.all
     else
-      @team = current_user.team
+      @team = Team.find_by_id(current_user.team)
     end
   end
 

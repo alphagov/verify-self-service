@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Sign in', type: :system do
+  include CognitoSupport
 
   scenario 'user cannot sign in if not registered' do
     SelfService.service(:cognito_client).stub_responses(:initiate_auth, Aws::CognitoIdentityProvider::Errors::UserNotFoundException.new(nil, "Stub Response"))
@@ -12,31 +13,29 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user can sign in with valid credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { authentication_result: {access_token: "valid-token" }})
-    SelfService.service(:cognito_client).stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
-      [
-        { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
-        { name: 'custom:roles', value: 'test' },
-        { name: 'email_verified', value: 'true' },
-        { name: 'phone_number_verified', value: 'true' },
-        { name: 'phone_number', value: '+447000000000' },
-        { name: 'given_name', value: 'Test' },
-        { name: 'family_name', value: 'User' },
-        { name: 'email', value: 'test@test.test' }
-      ],
-    preferred_mfa_setting: 'SOFTWARE_TOKEN_MFA',
-    user_mfa_setting_list: ['SOFTWARE_TOKEN_MFA'] })
-
-    user = FactoryBot.create(:user_manager_user)
+    setup_simple_auth_stub
+    user = FactoryBot.create(:user)
     sign_in(user.email, user.password)
 
     expect(current_path).to eql root_path
     expect(page).to have_content 'Signed in successfully.'
   end
 
+  scenario 'user cant sign in with unsigned jwt' do
+    user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
+    payload, headers = user_hash, { kid: SelfService.service(:jwks).jwk.kid }
+    token = JWT.encode(payload, SelfService.service(:jwks).jwk.keypair, 'none')
+
+    stub_cognito_response(method: :initiate_auth, payload: { authentication_result: { access_token: 'valid-token', id_token: token } })
+    user = FactoryBot.create(:user)
+    sign_in(user.email, user.password)
+
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content 'Unknown authentication response.'
+  end
+
   scenario 'user can sign in with valid 2FA credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
-    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { authentication_result: {access_token: 'valid-token' }})
+    setup_2fa_stub
 
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
@@ -54,7 +53,7 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user cant sign in with wrong 2FA credentials' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
+    stub_cognito_response(method: :initiate_auth, payload: { challenge_name: "SOFTWARE_TOKEN_MFA", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
     SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, "Stub Response"))
 
     user = FactoryBot.create(:user_manager_user)
@@ -94,8 +93,8 @@ RSpec.describe 'Sign in', type: :system do
   end
 
   scenario 'user is forced to change their temporary password' do
-    SelfService.service(:cognito_client).stub_responses(:initiate_auth, { challenge_name: "NEW_PASSWORD_REQUIRED", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
-    SelfService.service(:cognito_client).stub_responses(:respond_to_auth_challenge, { authentication_result: {access_token: 'valid-token' }})
+    setup_2fa_stub
+    stub_cognito_response(method: :initiate_auth, payload: { challenge_name: "NEW_PASSWORD_REQUIRED", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
 
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)

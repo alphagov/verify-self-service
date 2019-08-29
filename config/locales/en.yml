@@ -90,6 +90,8 @@ en:
     roles: "Roles: "
     email: "E-mail address: "
     phone: "Phone number: "
+    team: "Team: "
+    cognito_groups: "Cognito Groups: "
     logout: logout
     permissions: "Permissions"
     permissions_heading: "Your Permissions"

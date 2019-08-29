@@ -1,20 +1,9 @@
 require 'rails_helper'
 
 def cognito_stubs
-  SelfService.service(:cognito_client).stub_responses(:initiate_auth, { authentication_result: {access_token: "valid-token" }})
-  SelfService.service(:cognito_client).stub_responses(:get_user, { username: '00000000-0000-0000-0000-000000000000', user_attributes:
-    [
-      { name: 'sub', value: '00000000-0000-0000-0000-000000000000' },
-      { name: 'custom:roles', value: 'test' },
-      { name: 'email_verified', value: 'true' },
-      { name: 'phone_number_verified', value: 'true' },
-      { name: 'phone_number', value: '+447000000000' },
-      { name: 'given_name', value: 'Test' },
-      { name: 'family_name', value: 'User' },
-      { name: 'email', value: 'test@test.test' }
-    ],
-  preferred_mfa_setting: 'SOFTWARE_TOKEN_MFA',
-  user_mfa_setting_list: ['SOFTWARE_TOKEN_MFA'] })
+  user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: "digital.cabinet-office.gov.uk", groups: %w[gds])
+  token = CognitoStubClient.user_hash_to_jwt(user_hash)
+  stub_cognito_response(method: :initiate_auth, payload: { authentication_result: { access_token: 'valid-token', id_token: token } })
 end
 
 RSpec.describe 'Sign out', type: :system do

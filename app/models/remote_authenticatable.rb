@@ -17,17 +17,17 @@ module Devise
         else
           resp = initiate_auth(params[:email], params[:password])
         end
-        return process_response(resp) if resp.present?
+        return process_response(resp, params) if resp.present?
 
         raise StandardError("No Response Back from AWS to process")
       end
 
-      def process_response(resp)
+      def process_response(resp, params)
         if resp.challenge_name.present?
           create_challenge_flow(resp)
         else
           # Get User Information
-          auth_complete(resp)
+          auth_complete(resp, params)
         end
         self
       end
@@ -72,35 +72,27 @@ module Devise
         self
       end
 
-      def auth_complete(resp)
-        access_token = resp[:authentication_result][:access_token]
-        aws_user = get_user_info(access_token)
-        user_attributes = get_user_attributes(aws_user)
-        self.login_id = user_attributes['email']
-        self.user_id = aws_user.username
-        self.email = user_attributes['email']
-        self.phone_number = user_attributes['phone_number']
-        self.access_token = access_token
-        self.roles = user_attributes['custom:roles']
-        self.permissions = UserRolePermissions.new(user_attributes['custom:roles'], user_attributes['email'])
-        self.full_name = "#{user_attributes['given_name']} #{user_attributes['family_name']}"
-        self.given_name = user_attributes['given_name']
-        self.family_name = user_attributes['family_name']
-        self.mfa = aws_user.preferred_mfa_setting
-        # session_start_time will be serialised to a string so
-        # lets be explicit about setting it as a string here.
+      def auth_complete(resp, params)
+        claims = get_user_info(resp[:authentication_result][:id_token])[0]
+        self.login_id = claims['email']
+        self.user_id = claims['sub']
+        self.email = claims['email']
+        self.phone_number = claims['phone_number']
+        self.access_token = resp[:authentication_result][:access_token]
+        self.roles = claims['custom:roles']
+        self.permissions = UserRolePermissions.new(claims['custom:roles'], claims['email'])
+        self.full_name = "#{claims['given_name']} #{claims['family_name']}"
+        self.given_name = claims['given_name']
+        self.family_name = claims['family_name']
+        self.team = Team.find_by_team_alias(claims['cognito:groups'][0])&.id
+        self.cognito_groups = claims['cognito:groups']
+        self.mfa = claims['mfa'] || params[:challenge_name]
         self.session_start_time = Time.now.to_s
         self
       end
 
-      def get_user_info(access_token)
-        SelfService.service(:cognito_client).get_user(access_token: access_token)
-      end
-
-      def get_user_attributes(aws_user)
-        aws_user.user_attributes.map { |attribute|
-          [attribute.name, attribute.value]
-        }.to_h
+      def get_user_info(jwt)
+        JWT.decode(jwt, nil, true, algorithms: %w[RS256], jwks: SelfService.service(:jwks))
       end
 
       def cognito_client_id
@@ -134,6 +126,8 @@ module Devise
           resource.given_name = data['given_name']
           resource.family_name = data['family_name']
           resource.session_start_time = data['session_start_time']
+          resource.team = data['team']
+          resource.cognito_groups = data['cognito_groups']&.split(',')
           resource
         end
 
@@ -144,6 +138,7 @@ module Devise
         # You might want to include some authentication data
         #
         def serialize_into_session(record)
+          groups = record.cognito_groups.join(',') unless record.cognito_groups.nil?
           [
             {
               email: record.email,
@@ -154,7 +149,9 @@ module Devise
               roles: record.roles,
               given_name: record.given_name,
               family_name: record.family_name,
-              session_start_time: record.session_start_time
+              session_start_time: record.session_start_time,
+              team: record.team,
+              cognito_groups: groups
             },
             # Used for salt in serialize_from_session, causes error if missing
             nil

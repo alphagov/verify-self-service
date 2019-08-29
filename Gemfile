@@ -44,6 +44,7 @@ gem 'devise'
 gem 'pundit'
 gem 'rqrcode'
 gem 'request_store'
+gem 'jwt'
 
 gem 'email_validator'
 
