@@ -1,7 +1,7 @@
 module Healthcheck
   STATUSES = [
     OK = :ok,
-    CRITICAL = :critical,
+    UNAVAILABLE = :service_unavailable,
   ].freeze
 
   class Checker
@@ -30,16 +30,16 @@ module Healthcheck
       { status: check.status }
     rescue StandardError => e
       Rails.logger.error("#{check.name} => #{e}")
-      { status: CRITICAL }
+      { status: UNAVAILABLE }
     end
 
     def worst_status
-      critical? ? CRITICAL : OK
+      unavailable? ? UNAVAILABLE : OK
     end
 
-    def critical?
+    def unavailable?
       check_statuses.values.any? do |s|
-        s[:status] == CRITICAL || s[:status].blank?
+        s[:status] == UNAVAILABLE || s[:status].blank?
       end
     end
   end

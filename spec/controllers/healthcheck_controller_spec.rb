@@ -31,10 +31,10 @@ RSpec.describe HealthcheckController, type: :controller do
       get :index
       json_response = JSON.parse(response.body)
 
-      expect(response).to have_http_status(:error)
-      expect(json_response['status']).to eq('critical')
+      expect(response).to have_http_status(:service_unavailable)
+      expect(json_response['status']).to eq('service_unavailable')
       json_response['checks'].each do |_, check_status|
-        expect(check_status['status']).to eq('critical')
+        expect(check_status['status']).to eq('service_unavailable')
       end
     end
   end
