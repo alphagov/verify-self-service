@@ -17,16 +17,13 @@ class JwksLoader
   end
 
   def call(_options)
-    jwks = self.fetch
-    Rails.logger.debug "jwks value = #{jwks}"
-    jwks
+    self.fetch
   end
-
 
 private
 
   def add_live_to_cache
-    Rails.logger.info "Inital Cache store information: #{Rails.cache.inspect}"
+    Rails.logger.debug "Inital Cache store information: #{Rails.cache.inspect}"
 
     Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
       Rails.logger.info "Loading JWKS from cognito..."
@@ -36,7 +33,7 @@ private
       json = JSON.parse(response)
       { keys: json.fetch('keys').map { |data| HashWithIndifferentAccess.new(data) } }
     end
-    Rails.logger.info "Populated Cache store information: #{Rails.cache.inspect}"
+    Rails.logger.debug "Populated Cache store information: #{Rails.cache.inspect}"
   end
 
   def add_stub_to_cache
