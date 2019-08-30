@@ -43,7 +43,7 @@ private
   def setup_user_in_cognito
     temporary_password = ""
     until password_meets_criteria?(temporary_password) do
-      temporary_password = SecureRandom.urlsafe_base64(20)
+      temporary_password = generate_password
     end
 
     SelfService.service(:cognito_client).admin_create_user(
@@ -116,6 +116,10 @@ private
 
   def user_pool_id
     Rails.configuration.cognito_user_pool_id
+  end
+
+  def generate_password
+    SecureRandom.urlsafe_base64(12).insert(SecureRandom.random_number(11), SecureRandom.random_number(9).to_s)
   end
 
   def password_meets_criteria?(password)
