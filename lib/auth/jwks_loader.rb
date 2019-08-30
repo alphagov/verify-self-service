@@ -17,18 +17,26 @@ class JwksLoader
   end
 
   def call(_options)
-    self.fetch
+    jwks = self.fetch
+    Rails.logger.debug "jwks value = #{jwks}"
+    jwks
   end
+
 
 private
 
   def add_live_to_cache
+    Rails.logger.info "Inital Cache store information: #{Rails.cache.inspect}"
+
     Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
       Rails.logger.info "Loading JWKS from cognito..."
+      Rails.logger.ingo "Fetching JWKS from: \"https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json\""
       response = Net::HTTP.get(URI("https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json"))
+      Rails.logger.debug "Response from cognito #{response}"
       json = JSON.parse(response)
       { keys: json.fetch('keys').map { |data| HashWithIndifferentAccess.new(data) } }
     end
+    Rails.logger.info "Populated Cache store information: #{Rails.cache.inspect}"
   end
 
   def add_stub_to_cache
