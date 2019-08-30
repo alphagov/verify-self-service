@@ -1,3 +1,6 @@
+require_relative 'challenge_response'
+require_relative 'authenticated_response'
+
 module AuthenticationBackend
   # Abstracted Exceptions
   # Aws::CognitoIdentityProvider::Errors::NotAuthorizedException,
@@ -8,30 +11,12 @@ module AuthenticationBackend
   # Aws::CognitoIdentityProvider::Errors::AliasExistsException,
   # Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e
   # Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException
-
   class NotAuthorizedException < StandardError; end
   class UserGroupNotFoundException < StandardError; end
   class AuthenticationBackendException < StandardError; end
 
-  class AuthenticationResponse
-    attr_reader :params, :id_token, :access_token
-
-    def initialize(params:, cognito_response:)
-      @params = params
-      @id_token = cognito_response[:authentication_result][:id_token]
-      @access_token = cognito_response[:authentication_result][:access_token]
-    end
-  end
-
-  class ChallengeResponse
-    attr_reader :client_id, :session_id, :challenge_name, :challenge_parameters
-
-    def initialize(cognito_response:)
-      @challenge_name = cognito_response[:challenge_name]
-      @session_id = cognito_response[:session]
-      @challenge_parameters = cognito_response[:challenge_parameters]
-    end
-  end
+  AUTHENTICATED = 'authenticated'.freeze
+  CHALLENGE = 'challenge'.freeze
 
   # Authenticaiton flows start here and will return either
   # an authentication response, a challenge response or an
@@ -53,7 +38,7 @@ private
     if cognito_response.challenge_name.present?
       ChallengeResponse.new(cognito_response: cognito_response)
     else
-      AuthenticationResponse.new(params: params, cognito_response: cognito_response)
+      AuthenticatedResponse.new(params: params, cognito_response: cognito_response)
     end
   end
 

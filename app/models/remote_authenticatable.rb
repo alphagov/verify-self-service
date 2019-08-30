@@ -9,7 +9,7 @@ module Devise
       def remote_authentication(params)
         resp = authentication_flow(params)
 
-        if resp.class == ChallengeResponse
+        if resp.response_type == AuthenticationBackend::CHALLENGE
           create_challenge_flow(resp)
         else
           complete_auth(resp)
