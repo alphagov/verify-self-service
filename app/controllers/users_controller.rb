@@ -3,6 +3,8 @@ require 'securerandom'
 class UsersController < ApplicationController
   layout "main_layout"
 
+  MINIMUM_PASSWORD_LENGTH = 12
+
   def index
     @user = current_user
     @gds = current_user.permissions.team_management
@@ -117,9 +119,7 @@ private
   end
 
   def password_meets_criteria?(password)
-    minimum_length = 8
-
-    is_long_enough = password.length >= minimum_length
+    is_long_enough = password.length >= MINIMUM_PASSWORD_LENGTH
     has_uppercase = password =~ /[A-Z]/
     has_lowercase = password =~ /[a-z]/
     has_numbers = password =~ /[0-9]/
