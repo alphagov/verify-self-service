@@ -30,7 +30,7 @@ private
 
     Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
       Rails.logger.info "Loading JWKS from cognito..."
-      Rails.logger.ingo "Fetching JWKS from: \"https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json\""
+      Rails.logger.info "Fetching JWKS from: \"https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json\""
       response = Net::HTTP.get(URI("https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json"))
       Rails.logger.debug "Response from cognito #{response}"
       json = JSON.parse(response)
