@@ -28,10 +28,7 @@ module Devise
               clean_up_session
               return fail!(:unknown_cognito_response)
             end
-          rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException,
-                 Aws::CognitoIdentityProvider::Errors::UserNotFoundException,
-                 Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
-                 Aws::CognitoIdentityProvider::Errors::CodeMismatchException => error
+          rescue AuthenticationBackend::NotAuthorizedException => error
             clean_up_session
             Rails.logger.error error
             return fail!(:invalid_login)

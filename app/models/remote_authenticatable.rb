@@ -1,102 +1,50 @@
+require 'auth/authentication_backend'
+
 module Devise
   module Models
     module RemoteAuthenticatable
       extend ActiveSupport::Concern
+      include AuthenticationBackend
 
-      #
-      # Here you do the request to the external webservice
-      #
-      # If the authentication is successful you should return
-      # a resource instance
-      #
-      # If the authentication fails you should return false
-      #
       def remote_authentication(params)
-        if params.key?(:cognito_session_id)
-          resp = respond_to_challenge(params)
-        else
-          resp = initiate_auth(params[:email], params[:password])
-        end
-        return process_response(resp, params) if resp.present?
+        resp = authentication_flow(params)
 
-        raise StandardError("No Response Back from AWS to process")
-      end
-
-      def process_response(resp, params)
-        if resp.challenge_name.present?
+        if resp.response_type == AuthenticationBackend::CHALLENGE
           create_challenge_flow(resp)
         else
-          # Get User Information
-          auth_complete(resp, params)
+          complete_auth(resp)
         end
         self
-      end
-
-      def initiate_auth(email, password)
-        SelfService.service(:cognito_client).initiate_auth(
-          client_id: cognito_client_id,
-          auth_flow: 'USER_PASSWORD_AUTH',
-          auth_parameters: {
-            'USERNAME' => email,
-            'PASSWORD' => password
-          }
-        )
-      end
-
-      def respond_to_challenge(params)
-        challenge_name = params[:challenge_name]
-        case challenge_name
-        when 'NEW_PASSWORD_REQUIRED'
-          challenge_responses = {
-            "USERNAME": params[:challenge_parameters]['USER_ID_FOR_SRP'],
-            "NEW_PASSWORD": params[:new_password]
-          }
-        when 'SOFTWARE_TOKEN_MFA'
-          challenge_responses = {
-            "USERNAME": params[:challenge_parameters]['USER_ID_FOR_SRP'],
-            "SOFTWARE_TOKEN_MFA_CODE": params[:totp_code]
-          }
-        end
-        SelfService.service(:cognito_client).respond_to_auth_challenge(
-          client_id: cognito_client_id,
-          session: params[:cognito_session_id],
-          challenge_name: challenge_name,
-          challenge_responses: challenge_responses
-        )
       end
 
       def create_challenge_flow(resp)
-        self.challenge_name = resp[:challenge_name]
-        self.cognito_session_id = resp[:session]
-        self.challenge_parameters = resp[:challenge_parameters]
+        self.challenge_name = resp.challenge_name
+        self.cognito_session_id = resp.session_id
+        self.challenge_parameters = resp.challenge_parameters
         self
       end
 
-      def auth_complete(resp, params)
-        claims = get_user_info(resp[:authentication_result][:id_token])[0]
+      def complete_auth(resp)
+        claims = get_user_info(resp.id_token)[0]
         self.login_id = claims['email']
         self.user_id = claims['sub']
         self.email = claims['email']
         self.phone_number = claims['phone_number']
-        self.access_token = resp[:authentication_result][:access_token]
+        self.access_token = resp.access_token
         self.roles = claims['custom:roles']
         self.permissions = UserRolePermissions.new(claims['custom:roles'], claims['email'])
         self.full_name = "#{claims['given_name']} #{claims['family_name']}"
         self.given_name = claims['given_name']
         self.family_name = claims['family_name']
-        self.team = Team.find_by_team_alias(claims['cognito:groups'][0])&.id
+        self.team = Team.find_by_team_alias(claims['cognito:groups'][0])&.id unless claims['cognito:groups'].nil?
         self.cognito_groups = claims['cognito:groups']
-        self.mfa = claims['mfa'] || params[:challenge_name]
+        self.mfa = claims['mfa'] || resp.params[:challenge_name]
         self.session_start_time = Time.now.to_s
         self
       end
 
       def get_user_info(jwt)
         JWT.decode(jwt, nil, true, algorithms: %w[RS256], jwks: SelfService.service(:jwks))
-      end
-
-      def cognito_client_id
-        Rails.configuration.cognito_client_id
       end
 
       module ClassMethods
