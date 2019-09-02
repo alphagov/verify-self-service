@@ -15,6 +15,7 @@ FactoryBot.define do
 
     factory :certificate_manager_user do
       roles { ROLE::CERTIFICATE_MANAGER }
+      team { 1 }
       permissions { UserRolePermissions.new(ROLE::CERTIFICATE_MANAGER) }
     end
 

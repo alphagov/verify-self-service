@@ -25,6 +25,36 @@ RSpec.describe UserJourneyController, type: :controller do
       expect(subject).not_to redirect_to(new_user_session_path)
       expect(subject).to render_template(:index)
     end
+
+    it "should show the user their team components" do
+      certmgr_stub_auth
+      sp_component = FactoryBot.create(:sp_component, team_id: 1)
+      get :index
+      expect(response).to have_http_status(:success)
+      expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
+      expect(@controller.instance_variable_get(:@sp_components)[0].team_id).to eq(sp_component.team_id)
+    end
+
+    it "should not show user components with different id" do
+      certmgr_stub_auth
+      sp_component = FactoryBot.create(:sp_component, team_id: 99)
+      get :index
+      expect(response).to have_http_status(:success)
+      expect(@controller.instance_variable_get(:@sp_components).length).to eq(0)
+      expect(@controller.instance_variable_get(:@sp_components)[0]).to eq(nil)
+    end
+
+    it "should only show the user their team components with the same id" do
+      certmgr_stub_auth
+      sp_component = FactoryBot.create(:sp_component, team_id: 1)
+      other_team_sp_component = FactoryBot.create(:sp_component, team_id: 99)
+      get :index
+      expect(response).to have_http_status(:success)
+      expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
+      expect(@controller.instance_variable_get(:@sp_components)[0].team_id).to eq(sp_component.team_id)
+    end
+
+
   end
 
   describe '#view_certificate' do
@@ -33,6 +63,13 @@ RSpec.describe UserJourneyController, type: :controller do
       get :view_certificate, params: { component_type: 'MsaComponent', component_id: 1, certificate_id: 1 }
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:view_certificate)
+    end
+
+    it "returns http redirect for unauthorised user" do
+      usermgr_stub_auth
+      get :view_certificate, params: { component_type: 'MsaComponent', component_id: 1, certificate_id: 1 }
+      expect(flash[:warn]).to match("You are not authorised to perform this action")
+      expect(response).to have_http_status(:forbidden)
     end
   end
 

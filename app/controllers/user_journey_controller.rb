@@ -7,8 +7,13 @@ class UserJourneyController < ApplicationController
   before_action :find_certificate, except: :index
 
   def index
-    @sp_components = SpComponent.all
-    @msa_components = MsaComponent.all
+    if current_user.permissions.component_management
+      @sp_components = SpComponent.all
+      @msa_components = MsaComponent.all
+    else
+      @sp_components = SpComponent.where(team_id: current_user.team)
+      @msa_components = MsaComponent.where(team_id: current_user.team)
+    end
   end
 
   def upload_certificate
