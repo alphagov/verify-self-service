@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe SpComponentsController, type: :controller do
   include AuthSupport
 
+  let(:sp_component) { create(:sp_component) }
+
   describe "GET #index" do
     it "returns http success" do
       compmgr_stub_auth
@@ -29,7 +31,7 @@ RSpec.describe SpComponentsController, type: :controller do
   describe "GET #edit" do
     it "returns http success" do
       certmgr_stub_auth
-      get :edit, params: { id: 1 }
+      get :edit, params: { id: sp_component.id }
       expect(response).to have_http_status(:success)
     end
   end

@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 2019_08_22_141252) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "team_id"
-    t.string "environment", null: false
+    t.string "environment"
     t.index ["team_id"], name: "index_msa_components_on_team_id"
   end
 
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 2019_08_22_141252) do
     t.datetime "updated_at", null: false
     t.boolean "vsp", default: false
     t.integer "team_id"
-    t.string "environment", null: false
+    t.string "environment"
     t.index ["team_id"], name: "index_sp_components_on_team_id"
   end
 

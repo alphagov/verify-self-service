@@ -167,10 +167,18 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
   context '#trigger_publish_event' do
     it 'is triggered on creation' do
-      event = UploadCertificateEvent.create!(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: msa_component)
-      publish_event = PublishServicesMetadataEvent.last
+      event = UploadCertificateEvent.create!(
+        usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value,
+        component: msa_component
+      )
+
+      resulting_event = Event.find_by_aggregate_id(
+        event.aggregate_id
+      )
+
       expect(event.id).to_not be_nil
-      expect(event.id).to eql publish_event.event_id
+      expect(resulting_event.usage).to eq CERTIFICATE_USAGE::SIGNING
+      expect(resulting_event.value).to eq event.certificate.value
     end
   end
 end

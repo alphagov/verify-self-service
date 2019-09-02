@@ -1,29 +1,27 @@
 FactoryBot.define do
   factory :user do
-    given_name { "John" }
-    family_name  { "Doe" }
-    email { "test@test.test" }
-    password { "validpassword" }
+    given_name { 'John' }
+    family_name  { 'Doe' }
+    email { 'test@test.test' }
+    password { 'validpassword' }
     roles { ROLE::USER_MANAGER }
     cognito_groups { ['test'] }
-    team { 1 }
+    team { SecureRandom.uuid }
     session_start_time { Time.now.to_s }
 
     factory :gds_user do
-      email { "test.test@digital.cabinet-office.gov.uk" }
+      email { 'test.test@digital.cabinet-office.gov.uk' }
       roles { ROLE::GDS }
-      permissions { UserRolePermissions.new(ROLE::GDS, "test.test@digital.cabinet-office.gov.uk") }
+      permissions { UserRolePermissions.new(ROLE::GDS, 'test.test@digital.cabinet-office.gov.uk') }
     end
 
     factory :certificate_manager_user do
       roles { ROLE::CERTIFICATE_MANAGER }
-      team { 1 }
       permissions { UserRolePermissions.new(ROLE::CERTIFICATE_MANAGER) }
     end
 
     factory :user_manager_user do
       roles { ROLE::USER_MANAGER }
-      team { 1 }
       permissions { UserRolePermissions.new(ROLE::USER_MANAGER) }
     end
 

@@ -5,7 +5,10 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
   let(:root) { PKI.new }
   let(:x509_cert) { root.generate_encoded_cert(expires_in: 9.months) }
   let(:upload_encryption_cert) do
-    UploadCertificateEvent.create( usage: CERTIFICATE_USAGE::ENCRYPTION, value: x509_cert, component: component).certificate
+    UploadCertificateEvent.create(
+      usage: CERTIFICATE_USAGE::ENCRYPTION,
+      value: x509_cert, component: component
+    ).certificate
   end
 
   def certificate_created_with(params = {})
@@ -102,12 +105,18 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
 
   context '#trigger_publish_event' do
     it 'when encryption certificate is replaced' do
+      resulting_event = Event.find_by(
+        type: 'PublishServicesMetadataEvent'
+      )
+      expect(resulting_event).not_to be_present
       event = ReplaceEncryptionCertificateEvent.create(
         component: component, encryption_certificate_id: upload_encryption_cert.id
       )
-      publish_event = PublishServicesMetadataEvent.last
+      resulting_event = Event.find_by(
+        type: 'PublishServicesMetadataEvent'
+      )
       expect(event.id).to_not be_nil
-      expect(event.id).to eq publish_event.event_id
+      expect(resulting_event).to be_present
     end
   end
 end
