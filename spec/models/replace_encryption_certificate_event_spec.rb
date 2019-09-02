@@ -105,17 +105,13 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
 
   context '#trigger_publish_event' do
     it 'when encryption certificate is replaced' do
-      resulting_event = Event.find_by(
-        type: 'PublishServicesMetadataEvent'
-      )
-      expect(resulting_event).not_to be_present
       event = ReplaceEncryptionCertificateEvent.create(
         component: component, encryption_certificate_id: upload_encryption_cert.id
       )
-      resulting_event = Event.find_by(
-        type: 'PublishServicesMetadataEvent'
-      )
-      expect(event.id).to_not be_nil
+      resulting_event = PublishServicesMetadataEvent.all.select do |evt|
+        evt.event_id == event.id
+      end.first
+
       expect(resulting_event).to be_present
     end
   end

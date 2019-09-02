@@ -15,35 +15,35 @@ RSpec.describe Component, type: :model do
       UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
-        component: msa_component,
+        component: msa_component
       )
     end
     let!(:upload_signing_certificate_event_2) do
       UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
-        component: msa_component,
+        component: msa_component
       )
     end
     let!(:upload_signing_certificate_event_3) do
       UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
-        component: sp_component,
+        component: sp_component
       )
     end
     let!(:upload_signing_certificate_event_4) do
       UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
-        component: sp_component,
+        component: sp_component
       )
     end
     let!(:upload_encryption_event_1) do
       event = UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: 2.months),
-        component: msa_component,
+        component: msa_component
       )
       ReplaceEncryptionCertificateEvent.create(
         component: msa_component,
@@ -55,7 +55,7 @@ RSpec.describe Component, type: :model do
       event = UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: 2.months),
-        component: sp_component,
+        component: sp_component
       )
       ReplaceEncryptionCertificateEvent.create(
         component: sp_component,
@@ -63,15 +63,15 @@ RSpec.describe Component, type: :model do
       )
       event
     end
-    let(:msa_service) { create(:service, entity_id: 'https://old-and-boring') }
-    let(:sp_service) { create(:service, entity_id: 'https://new-hotness') }
+    let!(:msa_service) { create(:service, entity_id: 'https://old-and-boring') }
+    let!(:sp_service) { create(:service, entity_id: 'https://new-hotness') }
 
-    it "publishes all the components and services metadata correctly" do
+    it 'publishes all the components and services metadata correctly' do
       msa_component.services << msa_service
       sp_component.services << sp_service
-      event_id = Event.last.id
-      actual_config = Component.to_service_metadata(event_id, published_at)
+      event_id = Event.order(created_at: :desc).first.id
 
+      actual_config = Component.to_service_metadata(event_id, published_at)
       expect(expected_config(event_id)).to eq(actual_config)
     end
 

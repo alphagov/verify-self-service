@@ -57,8 +57,6 @@ group :development, :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'geckodriver-helper'
-  # still use sqlite3 in development and testing.
-  gem 'sqlite3'
   gem 'pry'
   gem 'govuk-lint'
   gem 'factory_bot_rails'

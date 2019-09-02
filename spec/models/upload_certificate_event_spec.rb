@@ -171,14 +171,11 @@ RSpec.describe UploadCertificateEvent, type: :model do
         usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value,
         component: msa_component
       )
+      resulting_event = PublishServicesMetadataEvent.all.select do |evt|
+        evt.event_id == event.id
+      end.first
 
-      resulting_event = Event.find_by_aggregate_id(
-        event.aggregate_id
-      )
-
-      expect(event.id).to_not be_nil
-      expect(resulting_event.usage).to eq CERTIFICATE_USAGE::SIGNING
-      expect(resulting_event.value).to eq event.certificate.value
+      expect(resulting_event).to be_present
     end
   end
 end
