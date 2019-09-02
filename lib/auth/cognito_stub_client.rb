@@ -88,8 +88,8 @@ class CognitoStubClient
   end
 
   def self.register_jwks
-    $cognito_jwt_private_key = OpenSSL::PKey::RSA.generate(2048)
-    jwks_loader = JwksLoader.new(false)
+    cognito_jwt_private_key = OpenSSL::PKey::RSA.generate(2048)
+    jwks_loader = JwksLoaderStub.new(cognito_jwt_private_key)
     SelfService.register_service(name: :jwks, client: jwks_loader)
   end
 end

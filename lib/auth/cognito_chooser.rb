@@ -51,6 +51,7 @@ class CognitoChooser
   end
 
   def register_stub_client
+    require 'auth/jwks_loader_stub'
     Rails.configuration.cognito_client_id = SecureRandom.uuid
     Rails.configuration.cognito_user_pool_id = SecureRandom.uuid
     register_client(

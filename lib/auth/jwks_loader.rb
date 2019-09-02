@@ -2,14 +2,9 @@ require 'net/http'
 require 'json'
 
 class JwksLoader
-  attr_reader :jwk
-  def initialize(live = true)
+  def initialize
     @cache_key = "#{Time.now.to_formatted_s(:number)}/jwks"
-    if live
-      add_live_to_cache
-    else
-      add_stub_to_cache
-    end
+    fetch_or_update
   end
 
   def fetch
@@ -22,8 +17,8 @@ class JwksLoader
 
 private
 
-  def add_live_to_cache
-    Rails.logger.debug "Inital Cache store information: #{Rails.cache.inspect}"
+  def fetch_or_update
+    Rails.logger.debug "Initial Cache store information: #{Rails.cache.inspect}"
 
     Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
       Rails.logger.info "Loading JWKS from cognito..."
@@ -34,14 +29,6 @@ private
       { keys: json.fetch('keys').map { |data| HashWithIndifferentAccess.new(data) } }
     end
     Rails.logger.debug "Populated Cache store information: #{Rails.cache.inspect}"
-  end
-
-  def add_stub_to_cache
-    Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
-      Rails.logger.info "Creating new JWKS for stubbing..."
-      @jwk = JWT::JWK.new($cognito_jwt_private_key)
-      { keys: [@jwk.export] }
-    end
   end
 
   def region
