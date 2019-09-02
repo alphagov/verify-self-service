@@ -1,5 +1,9 @@
+require 'securerandom'
+
 class UsersController < ApplicationController
   layout "main_layout"
+
+  MINIMUM_PASSWORD_LENGTH = 12
 
   def index
     @user = current_user
@@ -37,9 +41,13 @@ private
   end
 
   def setup_user_in_cognito
-    temporary_password = ('a'..'z').to_a.sample(3) + ('A'..'Z').to_a.sample(3) + ('0'..'9').to_a.sample(3) + ('!'..'/').to_a.sample(1)
+    temporary_password = ""
+    until password_meets_criteria?(temporary_password) do
+      temporary_password = generate_password
+    end
+
     SelfService.service(:cognito_client).admin_create_user(
-      temporary_password: temporary_password.join(''),
+      temporary_password: temporary_password,
       user_attributes: [
         {
           name: 'email',
@@ -108,5 +116,18 @@ private
 
   def user_pool_id
     Rails.configuration.cognito_user_pool_id
+  end
+
+  def generate_password
+    SecureRandom.urlsafe_base64(12).insert(SecureRandom.random_number(11), SecureRandom.random_number(9).to_s)
+  end
+
+  def password_meets_criteria?(password)
+    is_long_enough = password.length >= MINIMUM_PASSWORD_LENGTH
+    has_uppercase = password =~ /[A-Z]/
+    has_lowercase = password =~ /[a-z]/
+    has_numbers = password =~ /[0-9]/
+
+    is_long_enough && has_uppercase && has_lowercase && has_numbers
   end
 end
