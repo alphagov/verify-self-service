@@ -7,6 +7,8 @@ EXPOSE 8080
 
 ENV RAILS_LOG_TO_STDOUT true
 
+ENV RAILS_SERVE_STATIC_FILES true
+
 RUN bundle install
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs
