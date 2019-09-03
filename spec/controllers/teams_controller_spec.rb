@@ -46,7 +46,7 @@ RSpec.describe TeamsController, type: :controller do
       Rails.configuration.cognito_user_pool_id = 'dummy'
       stub_cognito_response(
         method: :create_group,
-        payload: Aws::CognitoIdentityProvider::Errors::InvalidParameterException.new(nil, nil, {})
+        payload: Aws::CognitoIdentityProvider::Errors::InvalidParameterException.new("error", "error", {})
       )
       post :create, params: { team: { name: 'not a valid team name' } }
 

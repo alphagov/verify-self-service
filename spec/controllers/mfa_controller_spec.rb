@@ -41,7 +41,7 @@ RSpec.describe MfaController, type: :controller do
     end
 
     it 'returns error when the there is an exception' do
-      stub_cognito_response(method: :verify_software_token, payload: Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, nil))
+      stub_cognito_response(method: :verify_software_token, payload: Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new("error", "error"))
       session[:email] = 'test@test.test'
       session[:access_token] = "valid-access-token"
       post :enrol, params: { mfa_enrolment_form: { code: 12345 }}
