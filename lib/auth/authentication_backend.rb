@@ -3,7 +3,6 @@ require_relative 'authenticated_response'
 require 'securerandom'
 
 module AuthenticationBackend
-  
   class NotAuthorizedException < StandardError; end
   class UserGroupNotFoundException < StandardError; end
   class AuthenticationBackendException < StandardError; end
@@ -72,7 +71,7 @@ module AuthenticationBackend
       temporary_password = generate_password
     end
     client.admin_create_user(
-      temporary_password: temporary_password.join(''),
+      temporary_password: temporary_password,
       user_attributes: [
         {
           name: 'email',
