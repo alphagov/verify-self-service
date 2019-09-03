@@ -1,9 +1,8 @@
 require 'auth/authentication_backend'
 
 module Healthcheck
-  include AuthenticationBackend
-
   class CognitoCheck
+    include AuthenticationBackend
     def name
       :cognito_connectivity
     end

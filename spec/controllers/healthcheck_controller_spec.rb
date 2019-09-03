@@ -20,7 +20,7 @@ RSpec.describe HealthcheckController, type: :controller do
     it 'returns critical statuses when healthchecks fail' do
       allow_any_instance_of(
         Healthcheck::CognitoCheck
-      ).to receive(:status).and_raise(Aws::CognitoIdentityProvider::Errors::ServiceError)
+      ).to receive(:status).and_raise(AuthenticationBackend::AuthenticationBackendException)
       allow_any_instance_of(
         Healthcheck::DbCheck
       ).to receive(:status).and_raise(ActiveRecord::ConnectionNotEstablished)

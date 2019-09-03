@@ -12,6 +12,7 @@ module AuthenticationBackend
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
   CHALLENGE = 'challenge'.freeze
+  OK = 'ok'.freeze
 
   # Authenticaiton flows start here and will return either
   # an authentication response, a challenge response or an
