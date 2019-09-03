@@ -81,11 +81,7 @@ private
 
   def invite_user
     begin
-      if params[:team_id] != '0'
-        team = Team.find(params[:team_id])
-      else
-        team = Team.new(id: 0, name: 'gds')
-      end
+      team = Team.find(params[:team_id])
       invite = setup_user_in_cognito
     rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException,
            Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e

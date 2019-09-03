@@ -28,8 +28,9 @@ RSpec.describe UsersController, type: :controller do
       it 'invites the user when all valid' do
         Rails.configuration.cognito_user_pool_id = "dummy"
         stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
+        team = FactoryBot.create(:team)
         post :new, params: {
-          team_id: 0,
+          team_id: team.id,
           invite_user_form:
             {
               email: 'test@test.test',

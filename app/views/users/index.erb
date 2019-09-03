@@ -14,20 +14,7 @@
           <p class='govuk-body'><%= link_to "#{t('users.invite.button')}", invite_to_team_path(team.id), class: 'govuk-button'%></p>
         </div>
       </div>
-    <%end%>
-    <div class="govuk-accordion__section ">
-        <div class="govuk-accordion__section-header">
-          <h2 class="govuk-accordion__section-heading">
-            <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-              <%= t('common.gds_full') %>
-            </span>
-          </h2>
-        </div>
-        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-          <p class='govuk-body'><%= link_to "#{t('users.invite.button')}", invite_to_team_path(0), class: 'govuk-button'%></p>
-        </div>
-      </div>
-  </div>
+    <% end %>
 <% else %>
   <h1 class="govuk-heading-xl"><%= t 'users.title_for_team' %> <%= @team.name %></h1>
   <%= link_to "#{t('users.invite.button')}", invite_to_team_path(@team.id), class: 'govuk-button'%>
