@@ -118,13 +118,13 @@ RSpec.describe InitialSeeder do
     it 'returns false when Cognito group does not exist' do
       stub_cognito_response(
         method: :get_group, 
-        payload: Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException.new(nil, nil))
+        payload: Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException.new("error", "error"))
       expect(subject.gds_group_exists?).to eq(false)
     end
     it 'returns false when Cognito throws an error' do
       stub_cognito_response(
         method: :get_group, 
-        payload: Aws::CognitoIdentityProvider::Errors::ServiceError.new(nil, nil))
+        payload: Aws::CognitoIdentityProvider::Errors::ServiceError.new("error", "error"))
       expect(subject.gds_group_exists?).to eq(false)
     end
   end
@@ -141,7 +141,7 @@ RSpec.describe InitialSeeder do
     it 'returns false when Cognito throws an error' do
       stub_cognito_response(
         method: :list_users, 
-        payload: Aws::CognitoIdentityProvider::Errors::ServiceError.new(nil, nil))
+        payload: Aws::CognitoIdentityProvider::Errors::ServiceError.new("error", "error"))
       expect(subject.gds_user_exists?).to eq(false)
     end
   end

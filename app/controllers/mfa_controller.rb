@@ -1,7 +1,9 @@
 require 'rqrcode'
 require 'erb'
+require 'auth/authentication_backend'
 
 class MfaController < ApplicationController
+  include AuthenticationBackend
   include ERB::Util
   skip_before_action :authenticate_user!
   skip_before_action :set_user
@@ -16,23 +18,13 @@ class MfaController < ApplicationController
   def enrol
     @form = MfaEnrolmentForm.new(params[:mfa_enrolment_form] || {})
     begin
-      SelfService.service(:cognito_client).verify_software_token(
-        access_token: session[:access_token],
-        user_code: @form.code
-      )
-    rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+      enrole_totp_device(access_token: session[:access_token], totp_code: @form.code)
+    rescue AuthenticationBackend::AuthenticationBackendException => e
       Rails.logger.error e
       flash.now[:error] = t('mfa_enrolment.errors.generic_error')
       generate_new_qr
       return render :index, status: :bad_request
     end
-    SelfService.service(:cognito_client).set_user_mfa_preference(
-      access_token: session[:access_token],
-      software_token_mfa_settings: {
-        enabled: true,
-        preferred_mfa: true
-      }
-    )
     flash.now[:success] = t('mfa_enrolment.success')
     redirect_to root_path
   end
@@ -40,8 +32,7 @@ class MfaController < ApplicationController
 private
 
   def generate_new_qr
-    associate = SelfService.service(:cognito_client).associate_software_token(access_token: session[:access_token])
-    @secret_code = associate.secret_code
+    @secret_code = associate_device(access_token: session[:access_token])
     issuer = "GOV.UK Verify Admin Tool"
     issuer += " (#{Rails.env})" unless Rails.env.production?
     encoded_issuer = url_encode(issuer)

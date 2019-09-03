@@ -1,4 +1,8 @@
+require 'auth/authentication_backend'
+
 class NewTeamEvent < AggregatedEvent
+  include AuthenticationBackend
+
   belongs_to_aggregate :team
   data_attributes :name, :team_alias
 
@@ -19,17 +23,10 @@ class NewTeamEvent < AggregatedEvent
   def create_cognito_group
     return if name.blank?
 
-    SelfService.service(:cognito_client).create_group(
-      group_name: team_alias,
-      description: name,
-      user_pool_id: Rails.configuration.cognito_user_pool_id
-    )
-  rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
-    Rails.logger.error("#{I18n.t('team.errors.invalid')} -> #{e.message}")
-    errors.add(:team, I18n.t('team.errors.invalid'))
-  rescue Aws::CognitoIdentityProvider::Errors::GroupExistsException
+    create_group(name: team_alias, description: name)
+  rescue AuthenticationBackend::GroupExistsException
     Rails.logger.warn("The group #{name} already existed in Cognito...")
-  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+  rescue AuthenticationBackend::AuthenticationBackendException => e
     Rails.logger.error("#{I18n.t('team.errors.failed')} -> #{e.message}")
     errors.add(:team, I18n.t('team.errors.failed'))
   end

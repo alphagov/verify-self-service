@@ -1,9 +1,8 @@
-require 'securerandom'
+require 'auth/authentication_backend'
 
 class UsersController < ApplicationController
+  include AuthenticationBackend
   layout "main_layout"
-
-  MINIMUM_PASSWORD_LENGTH = 12
 
   def index
     @user = current_user
@@ -41,58 +40,31 @@ private
   end
 
   def setup_user_in_cognito
-    temporary_password = ""
-    until password_meets_criteria?(temporary_password) do
-      temporary_password = generate_password
-    end
-
-    SelfService.service(:cognito_client).admin_create_user(
-      temporary_password: temporary_password,
-      user_attributes: [
-        {
-          name: 'email',
-          value: @form.email
-        },
-        {
-          name: 'given_name',
-          value: @form.given_name
-        },
-        {
-          name: 'family_name',
-          value: @form.family_name
-        },
-        {
-          name: 'custom:roles',
-          value: @form.roles.join(",")
-        }
-      ],
-      username: @form.email,
-      user_pool_id: user_pool_id
-      )
+    add_user(
+      email: @form.email,
+      given_name: @form.given_name,
+      family_name: @form.family_name,
+      roles: @form.roles
+    )
   end
 
   def add_user_to_team_in_cognito(new_user, team)
-    SelfService.service(:cognito_client).admin_add_user_to_group(
-      user_pool_id: user_pool_id,
-      username: new_user.username,
-      group_name: team.name
-    )
+    add_user_to_group(username: new_user.username, group: team.name)
   end
 
   def invite_user
     begin
       team = Team.find(params[:team_id])
       invite = setup_user_in_cognito
-    rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException,
-           Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e
+    rescue AuthenticationBackend::UsernameExistsException => e
       flash.now[:errors] = t('users.invite.errors.already_exists')
-    rescue StandardError => e
+    rescue AuthenticationBackend::AuthenticationBackendException => e
       flash.now[:errors] = t('users.invite.errors.generic_error')
     end
 
     begin
       add_user_to_team_in_cognito(invite.user, team) unless team.nil?
-    rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    rescue AuthenticationBackend::AuthenticationBackendException => e
       flash.now[:errors] = t('users.invite.errors.generic_error')
     end
 
@@ -108,22 +80,5 @@ private
       flash.now[:success] = t('users.invite.success')
       redirect_to users_path
     end
-  end
-
-  def user_pool_id
-    Rails.configuration.cognito_user_pool_id
-  end
-
-  def generate_password
-    SecureRandom.urlsafe_base64(12).insert(SecureRandom.random_number(11), SecureRandom.random_number(9).to_s)
-  end
-
-  def password_meets_criteria?(password)
-    is_long_enough = password.length >= MINIMUM_PASSWORD_LENGTH
-    has_uppercase = password =~ /[A-Z]/
-    has_lowercase = password =~ /[a-z]/
-    has_numbers = password =~ /[0-9]/
-
-    is_long_enough && has_uppercase && has_lowercase && has_numbers
   end
 end
