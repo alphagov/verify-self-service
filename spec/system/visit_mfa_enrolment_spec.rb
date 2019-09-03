@@ -60,7 +60,7 @@ RSpec.describe 'MFA enrolment', type: :system do
       preferred_mfa_setting: nil,
       user_mfa_setting_list: [] })
 
-      stub_cognito_response(method: :verify_software_token, payload: Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new(nil, nil))
+      stub_cognito_response(method: :verify_software_token, payload: Aws::CognitoIdentityProvider::Errors::CodeMismatchException.new("error", "error"))
   
       user = FactoryBot.create(:user_manager_user)
       sign_in(user.email, user.password)

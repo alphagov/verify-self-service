@@ -1,4 +1,8 @@
+require 'auth/authentication_backend'
+
 class InitialSeeder
+  include AuthenticationBackend
+
   def initialize
     return if SelfService.service(:cognito_stub)
 
@@ -13,18 +17,15 @@ class InitialSeeder
 
   def gds_group_exists?
     begin
-      SelfService.service(:cognito_client).get_group(
-        group_name: TEAMS::GDS,
-        user_pool_id: Rails.configuration.cognito_user_pool_id
-      )
-    rescue Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException
-      Rails.logger.warn('The GDS group does not exist in Cognito!')
+      get_group(group_name: TEAMS::GDS)
+    rescue AuthenticationBackend::UserGroupNotFoundException
+      Rails.logger.warn('The GDS group does not exist in the authentication backend!')
       return false
-    rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    rescue AuthenticationBackend::AuthenticationBackendException => e
       Rails.logger.warn("Error occurred when checking GDS group: #{e}")
       return false
     end
-    Rails.logger.info('The GDS group already exists in Cognito.')
+    Rails.logger.info('The GDS group already exists in  the authentication backend.')
     if Team.exists?(team_alias: TEAMS::GDS)
       Rails.logger.info('The GDS group already exists in database.')
       true
@@ -36,16 +37,8 @@ class InitialSeeder
 
   def gds_user_exists?
     begin
-      users = SelfService.service(:cognito_client).list_users(
-        user_pool_id: Rails.configuration.cognito_user_pool_id,
-        limit: 60
-      )
-      @gds_users = users.users.select { |user|
-        user.attributes.find { |att|
-          att.name == 'custom:roles' && att.value.include?(TEAMS::GDS)
-        }
-      }
-    rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+      @gds_users = find_users_by_role(role: TEAMS::GDS)
+    rescue AuthenticationBackend::AuthenticationBackendException => e
       Rails.logger.error("Error occurred when looking for GDS users: #{e}")
       return false
     end
@@ -55,35 +48,13 @@ class InitialSeeder
 
   def create_gds_user
     admin_email = ENV['COGNITO_SEEDING_EMAIL'] || 'jakub.miarka+gdsadmin@digital.cabinet-office.gov.uk'
-    SelfService.service(:cognito_client).admin_create_user(
-      temporary_password: ENV['COGNITO_SEEDING_PASSWORD'] || 'abcDEF123%',
-      user_attributes: [
-        {
-          name: 'email',
-          value: admin_email
-        },
-        {
-          name: 'given_name',
-          value: 'Jakub'
-        },
-        {
-          name: 'family_name',
-          value: 'Miarka'
-        },
-        {
-          name: 'custom:roles',
-          value: TEAMS::GDS
-        }
-      ],
-      username: admin_email,
-      user_pool_id: Rails.configuration.cognito_user_pool_id
+    add_user(
+      email: admin_email,
+      given_name: 'Jakub',
+      family_name: 'Miarka',
+      roles: TEAMS::GDS
     )
-
-    SelfService.service(:cognito_client).admin_add_user_to_group(
-      user_pool_id: Rails.configuration.cognito_user_pool_id,
-      username: admin_email,
-      group_name: TEAMS::GDS
-    )
+    add_user_to_group(username: admin_email, group: TEAMS::GDS)
   end
 
   def add_gds_users_to_group(gds_users = @gds_users)
@@ -91,11 +62,7 @@ class InitialSeeder
       user_email = user.attributes.find { |att| att.name == 'email' }
       if user_email.value.end_with?(TEAMS::GDS_EMAIL_DOMAIN)
         Rails.logger.info("Adding user #{user.username} to the GDS group.")
-        SelfService.service(:cognito_client).admin_add_user_to_group(
-          user_pool_id: Rails.configuration.cognito_user_pool_id,
-          username: user.username,
-          group_name: TEAMS::GDS
-        )
+        add_user_to_group(username: user.username, group: TEAMS::GDS)
       else
         Rails.logger.warn("Skipping user #{user.username} from being added GDS group - non-GDS email (#{user_email.value})")
       end

@@ -1,14 +1,15 @@
+require 'auth/authentication_backend'
+
 module Healthcheck
+  include AuthenticationBackend
+
   class CognitoCheck
     def name
       :cognito_connectivity
     end
 
     def status
-      SelfService.service(:cognito_client).describe_user_pool(
-        user_pool_id: Rails.configuration.cognito_user_pool_id
-      )
-      OK
+      authentication_backend_status
     end
   end
 end

@@ -45,20 +45,20 @@ RSpec.describe 'New Team Page', type: :system do
     it 'shows correct error message with invalid group name' do
       stub_cognito_response(
         method: :create_group,
-        payload: Aws::CognitoIdentityProvider::Errors::InvalidParameterException.new(nil, nil, {})
+        payload: Aws::CognitoIdentityProvider::Errors::InvalidParameterException.new("error", "error")
       )
       visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 
       expect(page).to have_content t('team.new.heading')
-      expect(page).to have_content t('team.errors.invalid')
+      expect(page).to have_content t('team.errors.failed')
     end
 
     it 'shows general failed to create message on error' do
       stub_cognito_response(
         method: :create_group,
-        payload: Aws::CognitoIdentityProvider::Errors::ServiceError.new(nil, nil, {})
+        payload: Aws::CognitoIdentityProvider::Errors::ServiceError.new("error", "error", {})
       )
       visit new_team_path
       fill_in 'team_name', with: team_name
