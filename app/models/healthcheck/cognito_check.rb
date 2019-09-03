@@ -9,7 +9,7 @@ module Healthcheck
     end
 
     def status
-      status
+      authentication_backend_status
     end
   end
 end

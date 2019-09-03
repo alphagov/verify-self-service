@@ -18,7 +18,7 @@ class MfaController < ApplicationController
   def enrol
     @form = MfaEnrolmentForm.new(params[:mfa_enrolment_form] || {})
     begin
-      enrole_totp_device(access_token: session[:access_token], totp_code: @form.code)
+      enrol_totp_device(access_token: session[:access_token], totp_code: @form.code)
     rescue AuthenticationBackend::AuthenticationBackendException => e
       Rails.logger.error e
       flash.now[:error] = t('mfa_enrolment.errors.generic_error')

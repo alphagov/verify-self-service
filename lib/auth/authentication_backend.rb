@@ -49,7 +49,7 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new("Error occurred associating device with error #{e.message}")
   end
 
-  def enrole_totp_device(access_token:, totp_code:)
+  def enrol_totp_device(access_token:, totp_code:)
     client.verify_software_token(
       access_token: access_token,
       user_code: totp_code
@@ -65,7 +65,7 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e.message)
   end
 
-  def add_user(email:, given_name:, family_name:, roles:, phone_number: nil)
+  def add_user(email:, given_name:, family_name:, roles:)
     temporary_password = ""
     until password_meets_criteria?(temporary_password) do
       temporary_password = generate_password
@@ -84,10 +84,6 @@ module AuthenticationBackend
         {
           name: 'family_name',
           value: family_name
-        },
-        {
-          name: 'phone_number',
-          value: phone_number
         },
         {
           name: 'custom:roles',
@@ -114,7 +110,7 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e.message)
   end
 
-  def get_users(limit: 50)
+  def get_users(limit: 60)
     client.list_users(
       user_pool_id: user_pool_id,
       limit: limit
@@ -123,7 +119,7 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e.message)
   end
 
-  def find_users_by_role(limit: 50, role:)
+  def find_users_by_role(limit: 60, role:)
     users = get_users(limit: limit)
     users.users.select { |user|
       user.attributes.find { |att|
@@ -143,7 +139,7 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e.message)
   end
 
-  def status
+  def authentication_backend_status
     client.describe_user_pool(user_pool_id: user_pool_id)
     OK
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e

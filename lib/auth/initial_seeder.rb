@@ -19,13 +19,13 @@ class InitialSeeder
     begin
       get_group(group_name: TEAMS::GDS)
     rescue AuthenticationBackend::UserGroupNotFoundException
-      Rails.logger.warn('The GDS group does not exist in Cognito!')
+      Rails.logger.warn('The GDS group does not exist in the authentication backend!')
       return false
     rescue AuthenticationBackend::AuthenticationBackendException => e
       Rails.logger.warn("Error occurred when checking GDS group: #{e}")
       return false
     end
-    Rails.logger.info('The GDS group already exists in Cognito.')
+    Rails.logger.info('The GDS group already exists in  the authentication backend.')
     if Team.exists?(team_alias: TEAMS::GDS)
       Rails.logger.info('The GDS group already exists in database.')
       true
@@ -37,7 +37,7 @@ class InitialSeeder
 
   def gds_user_exists?
     begin
-      @gds_users = find_users_by_role(limit: 60, role: TEAMS::GDS)
+      @gds_users = find_users_by_role(role: TEAMS::GDS)
     rescue AuthenticationBackend::AuthenticationBackendException => e
       Rails.logger.error("Error occurred when looking for GDS users: #{e}")
       return false
