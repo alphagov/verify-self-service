@@ -15,7 +15,7 @@
         </tr>
       </thead>
       <tbody class="govuk-table__body app-table__body--noheading">   
-        <% if component.certificates.present? %>       
+        <% if component.encryption_certificate.present? %>       
           <tr class="govuk-table__row">
             <td class="govuk-table__cell"><%= link_to t('user_journey.encryption_certificate'), view_certificate_path(component.component_type, component.id, component.encryption_certificate_id) %></td>
             <td class="govuk-table__cell">
@@ -24,17 +24,17 @@
             </div>
             </td>
           </tr>
-          <% component.signing_certificates.each do |signing| %>
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell"><%= link_to t('user_journey.signing_certificate') , view_certificate_path(signing.component_type, component.id, signing.id) %></td> 
-              <td class="govuk-table__cell">
-                <div class="app-certificate-tag app-certificate-tag-expiring">
-                  <strong class="govuk-tag"><%= format_date_time(signing.updated_at) %></strong> <!-- TODO: implement the logic for expiry -->
-                </div>
-              </td>
-            </tr>
-          <% end %> 
         <% end%>
+        <% component.signing_certificates.each do |signing| %>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><%= link_to t('user_journey.signing_certificate') , view_certificate_path(signing.component_type, component.id, signing.id) %></td> 
+            <td class="govuk-table__cell">
+              <div class="app-certificate-tag app-certificate-tag-expiring">
+                <strong class="govuk-tag"><%= format_date_time(signing.updated_at) %></strong> <!-- TODO: implement the logic for expiry -->
+              </div>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>

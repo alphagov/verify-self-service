@@ -7,7 +7,7 @@ class UserJourneyControllerPolicy < ApplicationPolicy
   end
 
   def index?
-    user.permissions.certificate_management
+    true
   end
 
   def before_you_start?

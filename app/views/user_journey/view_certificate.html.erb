@@ -5,4 +5,4 @@
 
 <%= render 'shared/user_certificate_view', certificate: @certificate, full_details: true %>
 
-<%= link_to t('user_journey.certificate.replace'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
+<%= link_to @certificate.encryption? ? t('user_journey.certificate.replace') : t('user_journey.certificate.add_new'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
