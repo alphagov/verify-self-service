@@ -195,6 +195,12 @@ en:
     two_signing_certificate: Signing certificate %{type}
     primary: (primary)
     secondary: (secondary)
+    adding_certificate_to_config: GOV.UK Verify is adding your certificate to its configuration
+    we_will_email_you: This usually takes around 10 minutes. We'll email you when this is done.
+    add_new_signing_key_warning: After receiving this email you must add the new signing key to your %{component} config by %{date}, or your service’s connection to GOV.UK Verify will break.
+    wait_for_an_email: Wait for an email from GOV.UK Verify confirming your new signing certificate is in use
+    how_long_it_takes: This usually takes around 10 minutes from the time you uploaded the new signing certificate.
+    delete_old_signing_key_and_cert: Then you can delete the old signing key and certificate from your %{component} configuration.
     urls:
       msa_encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
       msa_signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate
@@ -238,7 +244,6 @@ en:
       upload_certificate_file_body: Upload file
       paste_certificate: Paste certificate text into a text box
     confirmation:
-      title: GOV.UK Verify is adding your certificate to its configuration
       what_to_expect: This usually takes around 10 minutes. We'll email you when your new %{type} certificate is in use.
       next_steps: Next steps
       rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.

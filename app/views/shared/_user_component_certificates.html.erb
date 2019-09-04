@@ -29,7 +29,7 @@
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">
               <% if component.signing_certificates.length == 2 %>
-                <%= link_to t('user_journey.two_signing_certificate', type: signing == component.signing_certificates.reverse.first ? t('user_journey.primary') : t('user_journey.secondary')) , view_certificate_path(signing.component_type, component.id, signing.id) %>
+                <%= link_to t('user_journey.two_signing_certificate', type: t("user_journey.#{position(signing)}")) , view_certificate_path(signing.component_type, component.id, signing.id) %>
               <% else %>
                 <%= link_to t('user_journey.signing_certificate'), view_certificate_path(signing.component_type, component.id, signing.id) %>
               <% end %>
