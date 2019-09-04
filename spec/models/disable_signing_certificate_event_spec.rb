@@ -25,10 +25,9 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
     ).certificate
   end
 
-  def disable_signing_certificate_event
+  let(:disable_signing_certificate_event) do
     DisableSigningCertificateEvent.create(certificate: signing_certificate)
   end
-
 
   it 'disables a signing certificate' do
     cert = disable_signing_certificate_event.certificate
@@ -61,9 +60,12 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
   context '#trigger_publish_event' do
     it 'when signing certificate is disabled' do
       event = disable_signing_certificate_event
-      publish_event = PublishServicesMetadataEvent.last
-      expect(event.id).to_not be_nil
-      expect(event.id).to eql publish_event.event_id
+
+      resulting_event = PublishServicesMetadataEvent.all.select do |evt|
+        evt.event_id == event.id
+      end.first
+
+      expect(resulting_event).to be_present
     end
   end
 end

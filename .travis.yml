@@ -1,3 +1,10 @@
 language: ruby
 addons:
   firefox: latest
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database vss_test;' -U postgres
+test:
+  adapter: postgresql
+  database: vss_test

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ChangeComponentEvent, type: :model do
   let(:msa_component) { create(:new_msa_component_event).msa_component }
   let(:sp_component) { create(:new_sp_component_event).sp_component }
-  let(:team_id) { 1 }
+  let(:team) { create(:team) }
   let(:msa_change_event) do
     ChangeComponentEvent.create(component: msa_component)
   end
@@ -20,12 +20,12 @@ RSpec.describe ChangeComponentEvent, type: :model do
 
     it 'has team id assigned to event metadata' do
       expect(msa_component.team_id).to be_nil
-      msa_component.team_id = team_id
+      msa_component.team_id = team.id
 
-      expect(msa_change_event.team_id).to eq team_id
+      expect(msa_change_event.team_id).to eq team.id
     end
   end
- 
+
   context 'on SP' do
     it 'must be valid' do
       expect(sp_change_event).to be_valid
@@ -35,10 +35,9 @@ RSpec.describe ChangeComponentEvent, type: :model do
 
     it 'has team id assigned to event metadata' do
       expect(sp_component.team_id).to be_nil
-      sp_component.team_id = team_id
+      sp_component.team_id = team.id
 
-      expect(sp_change_event.team_id).to eq team_id
+      expect(sp_change_event.team_id).to eq team.id
     end
   end
-
 end

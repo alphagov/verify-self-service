@@ -28,7 +28,10 @@ module VerifySelfService
     # the framework and any gems in your application.
     # Don't generate system test files.
     config.generators.system_tests = nil
-
+    # explicitly override ActiveRecord primary_key type from id to use uuid
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
     # by default rails wraps invalid inputs with <div class="field_with_errors">
     # we have our own way of styling errors, so we don't need this behaviour:
     config.action_view.field_error_proc = Proc.new { |html_tag| html_tag }
