@@ -7,12 +7,8 @@ class JwksLoader
     fetch_or_update
   end
 
-  def fetch
-    Rails.cache.fetch(@cache_key)
-  end
-
   def call(_options)
-    self.fetch
+    fetch_or_update
   end
 
 private
