@@ -192,6 +192,9 @@ en:
     in_use: IN USE
     encryption_certificate: Encryption certificate
     signing_certificate: Signing certificate
+    two_signing_certificate: Signing certificate %{type}
+    primary: (primary)
+    secondary: (secondary)
     urls:
       msa_encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
       msa_signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate

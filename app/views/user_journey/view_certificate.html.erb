@@ -1,8 +1,51 @@
+<% if @certificate.component.signing_certificates.length == 2 %>
+  <% if @certificate == @certificate.component.signing_certificates.reverse.first %>
+    <div class="govuk-error-summary govuk-error-summary--grey" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        GOV.UK Verify is adding your certificate to its configuration
+      </h2>
+      <div class="govuk-error-summary__body">
+        <p>
+          This usually takes around 10 minutes. We'll email you when this is done.
+        </p>
+        <p>
+          After receiving this email you must add the new signing key to your MSA config by 2 August 2019, or your service’s connection to GOV.UK Verify will break.
+        </p>
+        <p>
+          Find out more about <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate">rotating your MSA signing key and certificate</a> in the documentation.
+        </p>
+      </div>
+    </div>
+  <% end %>
+  <% if @certificate == @certificate.component.signing_certificates.reverse.second %>
+    <div class="govuk-error-summary govuk-error-summary--orange" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title">
+        Wait for an email from GOV.UK Verify confirming your new signing certificate is in use
+      </h2>
+      <div class="govuk-error-summary__body">
+        <p>
+          This usually takes around 10 minutes from the time you uploaded the new signing certificate.
+        </p>
+        <p>
+          Then you can delete the old signing key and certificate from your MSA configuration.
+        </p>
+        <p>
+          Find out more about <a href="https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate">rotating your MSA signing key and certificate</a> in the documentation.
+        </p>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
 <h1 class="govuk-heading-l">
   <%= @certificate.component.component_type == COMPONENT_TYPE::MSA ? t('user_journey.certificate.msa_heading') : t('user_journey.certificate.vsp_heading') %>
   <%= t('user_journey.certificate.certificate', type: @certificate.usage ) %>
+  <% if !@certificate.encryption? %>
+    <%= @certificate == @certificate.component.signing_certificates.reverse.first ? t('user_journey.primary') : t('user_journey.secondary') %>
+  <% end %>
 </h1>
 
 <%= render 'shared/user_certificate_view', certificate: @certificate, full_details: true %>
-
-<%= link_to @certificate.encryption? ? t('user_journey.certificate.replace') : t('user_journey.certificate.add_new'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
+<% if @certificate.encryption? || @certificate.component.signing_certificates.length < 2 %>
+  <%= link_to @certificate.encryption? ? t('user_journey.certificate.replace') : t('user_journey.certificate.add_new'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
+<% end %>

@@ -25,9 +25,15 @@
             </td>
           </tr>
         <% end%>
-        <% component.signing_certificates.each do |signing| %>
+        <% component.signing_certificates.reverse.each do |signing| %>
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><%= link_to t('user_journey.signing_certificate') , view_certificate_path(signing.component_type, component.id, signing.id) %></td> 
+            <td class="govuk-table__cell">
+              <% if component.signing_certificates.length == 2 %>
+                <%= link_to t('user_journey.two_signing_certificate', type: signing == component.signing_certificates.reverse.first ? t('user_journey.primary') : t('user_journey.secondary')) , view_certificate_path(signing.component_type, component.id, signing.id) %>
+              <% else %>
+                <%= link_to t('user_journey.signing_certificate'), view_certificate_path(signing.component_type, component.id, signing.id) %>
+              <% end %>
+            </td> 
             <td class="govuk-table__cell">
               <div class="app-certificate-tag app-certificate-tag-expiring">
                 <strong class="govuk-tag"><%= format_date_time(signing.updated_at) %></strong> <!-- TODO: implement the logic for expiry -->
