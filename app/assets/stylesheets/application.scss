@@ -16,6 +16,8 @@
  $govuk-fonts-path: "govuk-frontend/govuk/assets/fonts/";
  @import "govuk-frontend/govuk/all";
 
+ $warning-colour: #CB4B0B;
+
  @import "components";
  @import "events";
  @import "mfa_enrolment";
