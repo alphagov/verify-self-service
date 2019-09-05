@@ -19,21 +19,25 @@ module System
     def login_user
       user = FactoryBot.create(:user_manager_user)
       login_as(user, scope: :user)
+      user
     end
 
     def login_gds_user
       user = FactoryBot.create(:gds_user)
       login_as(user, scope: :user)
+      user
     end
 
     def login_component_manager_user
       user = FactoryBot.create(:component_manager_user)
       login_as(user, scope: :user)
+      user
     end
 
     def login_certificate_manager_user
       user = FactoryBot.create(:certificate_manager_user)
       login_as(user, scope: :user)
+      user
     end
 
     def setup_simple_auth_stub
