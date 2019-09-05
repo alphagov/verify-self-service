@@ -13,6 +13,12 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
  && apt-get install -y yarn
 
 RUN apt-get install -y firefox-esr
+RUN apt-get install -y postgresql-9.6
 
-# Puma needs these dockerignored dirs to write to
-RUN mkdir -p log tmp
+USER postgres
+
+RUN  /etc/init.d/postgresql start &&\
+    psql --command "CREATE DATABASE vss_test;" -U postgres &&\
+    sed -i 's/local   all             postgres                                peer/local   all             postgres                                trust/g' /etc/postgresql/9.6/main/pg_hba.conf
+
+USER root
