@@ -8,22 +8,23 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload', nonce: true %>
     <%= favicon_link_tag        asset_path('govuk-frontend/govuk/assets/images/favicon.ico'), sizes: "16x16 32x32 48x48" %>
 
-    <link rel="mask-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-mask-icon.svg')%>" color="blue">  
-    <link rel="apple-touch-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-apple-touch-icon-180x180.png')%>" sizes="180x180"> 
-    <link rel="apple-touch-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-apple-touch-icon-167x167.png')%>" sizes="167x167"> 
-    <link rel="apple-touch-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-apple-touch-icon-152x152.png')%>" sizes="152x152"> 
-    <link rel="apple-touch-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-apple-touch-icon.png')%>"> 
-    
+    <link rel="mask-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-mask-icon.svg')%>" color="blue">
+    <link rel="apple-touch-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-apple-touch-icon-180x180.png')%>" sizes="180x180">
+    <link rel="apple-touch-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-apple-touch-icon-167x167.png')%>" sizes="167x167">
+    <link rel="apple-touch-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-apple-touch-icon-152x152.png')%>" sizes="152x152">
+    <link rel="apple-touch-icon" href="<%= asset_path('govuk-frontend/govuk/assets/images/govuk-apple-touch-icon.png')%>">
+
 </head>
 
   <body class="govuk-template__body ">
 
-    <script>
+    <%= javascript_tag nonce: true do %>
       document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-    </script>
+    <% end %>
+
 
     <a href="#main-content" class="govuk-skip-link"><%= t 'layout.application.skip_link' %></a>
 
@@ -104,7 +105,8 @@
         </div>
       </div>
     </footer>
-
-    <script>window.GOVUKFrontend.initAll()</script>
+    <%= javascript_tag nonce: true do %>
+      window.GOVUKFrontend.initAll()
+    <% end %>
   </body>
 </html>
