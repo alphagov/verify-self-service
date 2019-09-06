@@ -14,4 +14,15 @@ FactoryBot.define do
   factory :new_team_event do
     name { 'Team Awesome' }
   end
+
+  factory :replace_encryption_certificate_event do
+    component { create(:sp_component) }
+    encryption_certificate_id { create(:sp_encryption_certificate).id }
+  end
+
+  factory :upload_certificate_event do
+    usage { CERTIFICATE_USAGE::SIGNING }
+    value { PKI.new.generate_encoded_cert(expires_in: 9.months) }
+    component { create(:sp_component) }
+  end
 end
