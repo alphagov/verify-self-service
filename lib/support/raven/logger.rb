@@ -28,8 +28,23 @@ module Support
       end
 
       class RavenWriter
+        UNLABELED_EVENT = '  '.freeze
+
         def write(msg = nil)
-          ::Raven.capture_exception(msg) unless msg.nil?
+          unless msg.nil? || message_is_404?(msg)
+            ::Raven.capture_exception(msg)
+          end
+        end
+
+        def message_is_404?(message)
+          message.is_a?(ActionController::RoutingError) ||
+            (
+              message.is_a?(String) &&
+                (
+                   message.start_with?('ActionController::RoutingError') ||
+                   message == UNLABELED_EVENT
+                )
+            )
         end
       end
     end
