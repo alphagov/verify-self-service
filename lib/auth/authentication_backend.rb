@@ -157,12 +157,12 @@ private
       if cognito_response.challenge_name == 'MFA_SETUP'
         token_resp = client.associate_software_token(session: cognito_response.session)
         cognito_response.session = token_resp.session
-        ChallengeResponse.new(cognito_response: cognito_response, secret_code: token_resp.secret_code)
+        ChallengeResponse.new(email: params[:email], cognito_response: cognito_response, secret_code: token_resp.secret_code)
       elsif cognito_response.challenge_name == 'MFA_SETUP_RETRY'
         cognito_response.challenge_name = 'MFA_SETUP'
         cognito_response
       else
-        ChallengeResponse.new(cognito_response: cognito_response)
+        ChallengeResponse.new(email: params[:email], cognito_response: cognito_response)
       end
     else
       AuthenticatedResponse.new(params: params, cognito_response: cognito_response)
@@ -191,7 +191,8 @@ private
   # Returns an authentication response normally with JWT
   def respond_to_challenge(params)
     challenge_name = params[:challenge_name]
-    challenge_responses = { "USERNAME": params[:challenge_parameters]['USER_ID_FOR_SRP'] }
+    username = params[:challenge_parameters]['USER_ID_FOR_SRP'] || params[:email]
+    challenge_responses = { "USERNAME": username }
     case challenge_name
     when 'NEW_PASSWORD_REQUIRED'
       challenge_responses.merge!("NEW_PASSWORD": params[:new_password])
@@ -200,7 +201,7 @@ private
       challenge_responses.merge!('SOFTWARE_TOKEN_MFA_CODE': params[:totp_code])
       send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
     when 'MFA_SETUP'
-      totp_resp = client.verify_software_token(session: params[cognito_session_id], user_code: params[:totp_code])
+      totp_resp = client.verify_software_token(session: params[:cognito_session_id], user_code: params[:totp_code])
       if totp_resp.status == 'SUCCESS'
         challenge_responses.merge!('ANSWER': 'SOFTWARE_TOKEN_MFA')
         send_challenge(session: totp_resp.session, challenge_name: challenge_name, challenge_responses: challenge_responses)
@@ -212,10 +213,11 @@ private
     end
   rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException
     ChallengeResponse.new(
-      secret_code: params['secret_code'],
-      session: params['cognito_session_id'],
-      challenge_name: 'MFA_SETUP_RETRY',
-      challenge_parameters: params['challenge_parameters']
+      email: params[:email],
+      secret_code: params[:secret_code],
+      session: params[:cognito_session_id],
+      challenge_name: MFA_SETUP_RETRY,
+      challenge_parameters: params[:challenge_parameters]
     )
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
          Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e

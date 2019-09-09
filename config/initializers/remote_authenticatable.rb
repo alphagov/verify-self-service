@@ -43,6 +43,7 @@ module Devise
       private
 
       def populate_session_for_auth_challenge(resource)
+        session[:email] = resource.email
         session[:challenge_name] = resource.challenge_name
         session[:cognito_session_id] = resource.cognito_session_id
         session[:challenge_parameters] = resource.challenge_parameters
@@ -55,6 +56,7 @@ module Devise
       end
 
       def populate_auth_params(auth_params)
+        auth_params[:email] = session[:email]
         auth_params[:cognito_session_id] = session[:cognito_session_id]
         auth_params[:challenge_name] = session[:challenge_name]
         auth_params[:challenge_parameters] = session[:challenge_parameters]

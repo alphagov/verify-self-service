@@ -18,6 +18,7 @@ module Devise
       end
 
       def create_challenge_flow(resp)
+        self.email = resp.email
         self.challenge_name = resp.challenge_name
         self.cognito_session_id = resp.session_id
         self.challenge_parameters = resp.challenge_parameters
