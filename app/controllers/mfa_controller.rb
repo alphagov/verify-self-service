@@ -3,6 +3,7 @@ require 'erb'
 require 'auth/authentication_backend'
 
 class MfaController < ApplicationController
+  include ControllerConcern
   include AuthenticationBackend
   include ERB::Util
   skip_before_action :authenticate_user!
@@ -30,15 +31,6 @@ class MfaController < ApplicationController
   end
 
 private
-
-  def generate_new_qr
-    @secret_code = associate_device(access_token: session[:access_token])
-    issuer = "GOV.UK Verify Admin Tool"
-    issuer += " (#{Rails.env})" unless Rails.env.production?
-    encoded_issuer = url_encode(issuer)
-    qrcode = RQRCode::QRCode.new("otpauth://totp/#{encoded_issuer}:#{url_encode(session[:email])}?secret=#{@secret_code}&issuer=#{encoded_issuer}")
-    @secret_code_svg = qrcode.as_svg(module_size: 3)
-  end
 
   def enrolment_only
     redirect_to root_path if user_signed_in? || session[:access_token].nil?
