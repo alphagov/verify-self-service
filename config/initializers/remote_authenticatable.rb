@@ -46,6 +46,7 @@ module Devise
         session[:challenge_name] = resource.challenge_name
         session[:cognito_session_id] = resource.cognito_session_id
         session[:challenge_parameters] = resource.challenge_parameters
+        session[:secret_code] = resource.secret_code
       end
 
       def populate_session_for_mfa_enrolment(resource)
@@ -57,6 +58,7 @@ module Devise
         auth_params[:cognito_session_id] = session[:cognito_session_id]
         auth_params[:challenge_name] = session[:challenge_name]
         auth_params[:challenge_parameters] = session[:challenge_parameters]
+        auth_params[:secret_code] = session[:secret_code]
         clean_up_session
       end
 
@@ -68,6 +70,7 @@ module Devise
         session.delete(:challenge_parameters)
         session.delete(:email)
         session.delete(:access_token)
+        session.delete(:secret_code)
       end
     end
   end

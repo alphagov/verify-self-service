@@ -21,6 +21,7 @@ module Devise
         self.challenge_name = resp.challenge_name
         self.cognito_session_id = resp.session_id
         self.challenge_parameters = resp.challenge_parameters
+        self.secret_code = resp.secret_code
         self
       end
 
