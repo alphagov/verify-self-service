@@ -36,43 +36,50 @@ RSpec.describe 'IndexPage', type: :system do
   end
 
   it 'shows whether signing certificate is primary or secondary when there are two signing certificates' do
-    create(:msa_signing_certificate, component: msa_signing_certificate.component)
+    second_signing_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
     visit root_path
-    expect(page).to have_content 'Signing certificate (primary)'
-    expect(page).to have_content 'Signing certificate (secondary)'
+    table_row_content_primary = page.find("##{second_signing_certificate.id}")
+    table_row_content_secondary = page.find("##{msa_signing_certificate.id}")
+    expect(table_row_content_primary).to have_content 'Signing certificate (primary)'
+    expect(table_row_content_secondary).to have_content 'Signing certificate (secondary)'
+    expect(table_row_content_secondary).to have_content 'IN USE'
   end
 
   it 'shows when a second signing certificate is added the new certificate becomes primary and the older one becomes secondary' do
     visit root_path
     expect(page).to_not have_content 'Signing certificate (primary)'
     expect(page).to_not have_content 'Signing certificate (secondary)'
-    second_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
+    second_signing_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
     visit root_path
     primary_certificate_link = find_link('Signing certificate (primary)')['href']
     secondary_certificate_link = find_link('Signing certificate (secondary)')['href']
-    expect(primary_certificate_link).to have_content second_certificate.id
+    expect(primary_certificate_link).to have_content second_signing_certificate.id
     expect(secondary_certificate_link).to have_content msa_signing_certificate.id
   end
 
-  it 'shows certificate expiry tag if certificate expires in 30 days' do
-    expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 20.days))
+  it 'shows certificate expiry tag if certificate expires under 30 days' do
+    expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 29.days))
     visit root_path
-    expect(page).to have_content 'EXPIRES IN 20 DAYS'
+    table_row_content = page.find("##{expiring_certificate.id}")
+    expect(table_row_content).to have_content 'EXPIRES IN 29 DAYS'
   end
 
   it 'shows in use tag if certificate is ok' do
-    visit root_path
-    expect(page).to have_content 'IN USE'
+    cert_id = msa_signing_certificate.id
+    visit root_path 
+    table_row_content = page.find("##{cert_id}")
+    expect(table_row_content).to have_content 'IN USE'
   end
 
   it 'shows deploying tag if a second signing certificate has been uploaded' do
-    second_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
+    second_signing_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
     visit root_path
-    expect(page).to have_content 'DEPLOYING'
+    table_row_content = page.find("##{second_signing_certificate.id}")
+    expect(table_row_content).to have_content 'DEPLOYING'
   end
 
-  it 'shows missing tag if encyrption certificate value hasnt been uploaded' do
-    sp_component =  create(:sp_component)
+  it 'shows missing tag if encyrption certificate value has not been uploaded' do
+    sp_component = create(:sp_component)
     visit root_path
     expect(page).to have_content 'Encryption certificate'
     expect(page).to have_content 'MISSING'

@@ -16,7 +16,7 @@
       </thead>
       <tbody class="govuk-table__body app-table__body--noheading">  
         <% if component.encryption_certificate.present? %>       
-          <tr class="govuk-table__row">
+          <tr class="govuk-table__row" id="<%= component.encryption_certificate_id %>">
             <td class="govuk-table__cell"><%= link_to t('user_journey.encryption_certificate'), view_certificate_path(component.component_type, component.id, component.encryption_certificate_id) %></td>
             <td class="govuk-table__cell">
               <div class="app-certificate-tag <%= 'app-certificate-tag-expiring' if component.encryption_certificate.expires_soon? %>">
@@ -33,7 +33,8 @@
           </td>
         <% end %>
         <% component.signing_certificates.reverse.each do |signing| %>
-          <tr class="govuk-table__row">
+  
+          <tr class="govuk-table__row" id="<%= signing.id %>">
           <td class="govuk-table__cell">
             <% if component.signing_certificates.length == 2 %>
                 <%= link_to t('user_journey.two_signing_certificate', type: t("user_journey.#{position(signing)}")) , view_certificate_path(signing.component_type, component.id, signing.id) %>
