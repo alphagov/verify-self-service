@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .app-certificate-tag-expiring .govuk-tag {
-  background-color: #CB4B0B;
+  background-color: $warning-colour;
 }
 .app-certificate-tag .govuk-tag {
   float: right;

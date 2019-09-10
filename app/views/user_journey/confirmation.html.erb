@@ -1,6 +1,6 @@
 <%= render 'shared/certificate_details', certificate: @certificate %>
 
-<h1 class="govuk-heading-l"><%= t 'user_journey.confirmation.title' %></h1>
+<h1 class="govuk-heading-l"><%= t 'user_journey.adding_certificate_to_config' %></h1>
 <p><%= t('user_journey.confirmation.what_to_expect', type: @certificate.usage ) %></p>
 <h2 class="govuk-heading-m"><%= t 'user_journey.confirmation.next_steps' %></h2>
 <ul class="govuk-list govuk-list--number">
@@ -19,7 +19,7 @@
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
       <span class="govuk-warning-text__assistive"><%= t 'layout.application.warning' %></span>
-      <%= t('user_journey.confirmation.configuration_warning', component: display_component(@certificate), date: "TODO") %>
+      <%= t('user_journey.confirmation.configuration_warning', component: display_component(@certificate), date: date_to_readable_long_format(@certificate.x509.not_after)) %>
     </strong>
   </div>
 <% end %>
