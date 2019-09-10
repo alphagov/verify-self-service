@@ -14,4 +14,16 @@ module UserJourneyHelper
   def position(certificate)
     primary_signing_certificate?(certificate) ? 'primary' : 'secondary'
   end
+
+  def certificate_status(certificate)
+    if certificate.nil?
+      "MISSING"
+    elsif certificate.expires_soon?
+      "EXPIRES IN #{(certificate.x509.not_after.to_date - Time.now.to_date).to_i} DAYS"
+    elsif certificate.component.signing_certificates.length == 2 && primary_signing_certificate?(certificate)
+      "DEPLOYING"
+    else
+      "IN USE"
+    end
+  end
 end
