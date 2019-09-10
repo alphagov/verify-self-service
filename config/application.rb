@@ -46,7 +46,5 @@ module VerifySelfService
 
     # The cache reload time for the JWKS file from amazon
     config.jwks_cache_expiry = 1.hour
-
-    config.filter_parameters << :temporary_password << :new_password << :password
   end
 end
