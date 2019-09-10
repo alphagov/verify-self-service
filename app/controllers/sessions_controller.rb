@@ -1,9 +1,6 @@
-require 'rqrcode'
-require 'erb'
-
 class SessionsController < Devise::SessionsController
   include ControllerConcern
-  include ERB::Util
+
   before_action :load_secret_code, only: %i(create new)
 
   def destroy
