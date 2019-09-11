@@ -31,6 +31,9 @@
 
 en:
   common:
+    back: Back
+    error_blank_name: Name can't be blank
+    error_name_not_unique: Name has already been taken
     gds_full: Government Digital Service
     gds: GDS
   login:
@@ -63,9 +66,15 @@ en:
         invalid_role: "%{role} is not a valid role"
         generic_error: Something went wrong when creating the user, try again
         team_missing: This team does not exist
+
+    update:
+      button: Save
+
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
+    you: (you)
+
   certificates:
     caption: "%{heading}"
     header_id: ID

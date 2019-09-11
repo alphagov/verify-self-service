@@ -3,16 +3,97 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :controller do
   include AuthSupport, CognitoSupport
 
+  let(:user_id) { "3487568374563874" }
+
+  let(:cognito_users) {
+    {:users => [
+        {username: "3487568374563874",
+         attributes: [{name: "given_name", value: "Cherry"},
+                          {name: "family_name", value: "One"},
+                          {name: "email", value: "cherry.one@test.com"},
+                          {name: "custom:roles", value: "certmgr"}
+         ]}]}
+  }
+
+  let(:cognito_user) {
+    { username: "3487568374563874",
+      user_attributes: [{name: "given_name", value: "Cherry"},
+                        {name: "family_name", value: "One"},
+                        {name: "email", value: "cherry.one@test.com"},
+                        {name: "custom:roles", value: "certmgr"}]}
+  }
+
+
   context 'GDS User' do
     before(:each) do
       gdsuser_stub_auth
     end
 
     describe '#index' do
+
+
       it 'renders the page' do
-        get :index, :params => { :team_id => @user.team }
+        get :index
         expect(response).to have_http_status(:success)
         expect(subject).to render_template(:index)
+      end
+
+      it 'renders the page when team specified' do
+        team = FactoryBot.create(:team)
+        stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+
+        expect(subject).to receive(:as_team_member)
+
+        get :index, :params => { :team_id => team.id }
+        expect(subject).to render_template(:index)
+        expect(response).to have_http_status(:success)
+      end
+
+
+
+    end
+
+    describe '#show' do
+
+      it 'renders the update user page' do
+        stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+
+        expect(subject).to receive(:as_team_member).and_call_original
+
+        get :show, :params => { :user_id => user_id }
+
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show)
+      end
+
+      it 'redirects to all teams page when user_id is not found' do
+        stub_cognito_response(method: :admin_get_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        get :show, :params => { :user_id => user_id }
+        expect(flash[:error]).to eq("User does not exist.")
+        expect(response).to have_http_status(:redirect)
+        expect(subject).to redirect_to(users_path)
+      end
+    end
+
+    describe '#update' do
+      it 'updates the user roles' do
+        post :update, :params => { :update_user_roles_form => { :roles => [ROLE::CERTIFICATE_MANAGER]}, :user_id => user_id}
+        expect(subject).to redirect_to(users_path)
+      end
+
+      it 'displays an error when validation fails' do
+        stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+        post :update, :params => { :update_user_roles_form => { :roles => []}, :user_id => user_id}
+        expect(subject).to render_template(:show)
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'displays an error when authentication backend returns an error' do
+        stub_cognito_response(method: :admin_update_user_attributes, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        post :update, :params => { :update_user_roles_form => { :roles => [ROLE::CERTIFICATE_MANAGER]}, :user_id => user_id}
+        expect(subject).to render_template(:show)
+        expect(response).to have_http_status(:internal_server_error)
+        expect(flash[:errors]).to eq(t 'devise.failure.unknown_cognito_error')
       end
     end
 
@@ -65,6 +146,52 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to render_template(:index)
       end
     end
+
+    describe '#show' do
+
+      it 'renders the update user page' do
+        stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+
+        expect(subject).to receive(:as_team_member).and_call_original
+
+        get :show, :params => { :user_id => user_id }
+
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show)
+      end
+
+      it 'redirects to all teams page when user_id is not found' do
+        stub_cognito_response(method: :admin_get_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        get :show, :params => { :user_id => user_id }
+        expect(flash[:error]).to eq("User does not exist.")
+        expect(response).to have_http_status(:redirect)
+        expect(subject).to redirect_to(users_path)
+      end
+    end
+
+    describe '#update' do
+      it 'updates the user roles' do
+        stub_cognito_response(method: :admin_update_user_attributes, payload: {})
+        post :update, :params => { :update_user_roles_form => { :roles => [ROLE::CERTIFICATE_MANAGER]}, :user_id => user_id}
+        expect(subject).to redirect_to(users_path)
+      end
+
+      it 'displays an error when validation fails' do
+        stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+        post :update, :params => { :update_user_roles_form => { :roles => []}, :user_id => user_id}
+        expect(subject).to render_template(:show)
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'displays an error when authentication backend returns an error' do
+        stub_cognito_response(method: :admin_update_user_attributes, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        post :update, :params => { :update_user_roles_form => { :roles => [ROLE::CERTIFICATE_MANAGER]}, :user_id => user_id}
+        expect(subject).to render_template(:show)
+        expect(response).to have_http_status(:internal_server_error)
+        expect(flash[:errors]).to eq(t 'devise.failure.unknown_cognito_error')
+      end
+    end
+
 
     describe '#invite' do
       it 'renders the invite page when team is matching' do

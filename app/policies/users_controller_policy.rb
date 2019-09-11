@@ -14,6 +14,14 @@ class UsersControllerPolicy < ApplicationPolicy
     user.permissions.user_management
   end
 
+  def update?
+    user.permissions.user_management
+  end
+
+  def show?
+    user.permissions.user_management
+  end
+
   def new?
     user.permissions.user_management
   end
