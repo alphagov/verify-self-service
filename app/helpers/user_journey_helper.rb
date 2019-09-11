@@ -4,11 +4,11 @@ module UserJourneyHelper
   end
 
   def primary_signing_certificate?(certificate)
-    certificate == certificate.component.signing_certificates.reverse.first
+    certificate == certificate.component.enabled_signing_certificates.first
   end
 
   def secondary_signing_certificate?(certificate)
-    certificate == certificate.component.signing_certificates.reverse.second
+    certificate == certificate.component.enabled_signing_certificates.second
   end
 
   def position(certificate)
