@@ -17,6 +17,14 @@ RSpec.describe NewSpComponentEvent, type: :model do
     end
   end
 
+  context 'team_id' do
+    it 'must be provided' do
+      event = build(:new_sp_component_event, name: 'New component', team_id: '', environment: 'staging')
+      expect(event).to_not be_valid
+      expect(event.errors[:team_id]).to eql [t('components.errors.invalid_team')]
+    end
+  end
+
   context 'environment' do
     it 'must be provided' do
       event = build(:new_sp_component_event, name: 'New component', environment: '')
@@ -39,7 +47,7 @@ RSpec.describe NewSpComponentEvent, type: :model do
       user = User.new
       user.user_id = user_id
       RequestStore.store[:user] = user
-      event = create(:new_sp_component_event)
+      event = create(:new_sp_component_event, team_id: 'etc')
 
       expect(event.user_id).to eql user_id
     end

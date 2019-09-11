@@ -1,9 +1,10 @@
 class NewSpComponentEvent < AggregatedEvent
   belongs_to_aggregate :sp_component
-  data_attributes :name, :component_type, :environment
+  data_attributes :name, :component_type, :team_id, :environment
 
   validate :component_is_new, on: :create
   validates_presence_of :name, message: I18n.t('events.errors.missing_name')
+  validates_presence_of :team_id, message: I18n.t('components.errors.invalid_team')
   validates_presence_of :environment,
                         in: Rails.configuration.hub_environments.keys,
                         message: I18n.t('components.errors.invalid_environment')
@@ -19,6 +20,7 @@ class NewSpComponentEvent < AggregatedEvent
   def attributes_to_apply
     {
       name: name,
+      team_id: team_id,
       environment: environment,
       component_type: COMPONENT_TYPE::SP,
       vsp: component_type == COMPONENT_TYPE::VSP,

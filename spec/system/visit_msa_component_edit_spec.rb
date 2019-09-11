@@ -5,7 +5,7 @@ RSpec.describe 'Edit MSA Component Page', type: :system do
     login_gds_user
   end
   let(:original_team_id) { SecureRandom.uuid }
-  let(:msa_component) { create(:new_msa_component_event).msa_component }
+  let(:msa_component) { create(:new_msa_component_event, team_id: 'etc').msa_component }
   let(:team) { create(:new_team_event).team }
   let(:create_teams) { team }
 

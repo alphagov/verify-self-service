@@ -1,4 +1,5 @@
 FactoryBot.define do
+
   factory :sp_component do
     component_type { COMPONENT_TYPE::SP }
     name { 'Test Service Provider' }

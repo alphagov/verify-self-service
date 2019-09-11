@@ -33,7 +33,7 @@ RSpec.shared_examples "components are aggregated" do |type, attributes = {}|
 end
 
 RSpec.shared_examples "component creation event" do |type, attributes = {}|
-  include_examples "components are aggregated", type
+  include_examples "components are aggregated", type, attributes
   it "that also creates an aggregate" do
     event = create(type, attributes)
     expect(event).to be_valid
