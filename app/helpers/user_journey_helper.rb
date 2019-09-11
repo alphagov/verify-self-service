@@ -26,4 +26,17 @@ module UserJourneyHelper
       "IN USE"
     end
   end
+
+  def certificate_expiry_count(msa_components, sp_components)
+    all_components = msa_components + sp_components
+    expiring_certificates = 0
+    all_components.each do |component|
+      component.certificates.each do |certificate|
+        if certificate.expires_soon?
+          expiring_certificates += 1
+        end
+      end
+    end
+    expiring_certificates
+  end
 end
