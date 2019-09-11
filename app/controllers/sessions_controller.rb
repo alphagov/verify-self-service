@@ -1,5 +1,9 @@
+require 'rqrcode'
+require 'erb'
+
 class SessionsController < Devise::SessionsController
-  include ControllerConcern
+  include ERB::Util
+  include AuthenticationBackend
 
   before_action :load_secret_code, only: %i(create new)
   before_action :challenge_flash_messages, only: %i(create new)
@@ -13,16 +17,25 @@ class SessionsController < Devise::SessionsController
   end
 
   def challenge_flash_messages
-    return false if session.to_h.dig('challenge_parameters', 'flash_message').nil?
+    return if session.to_h.dig('challenge_parameters', 'flash_message').nil?
 
-    msg = session.to_h.dig('challenge_parameters', 'flash_message', 'devise_message')
+    msg = session.to_h.dig('challenge_parameters', 'flash_message', 'code')
     session[:challenge_parameters].delete('flash_message')
     set_flash_message! :warn, msg.to_sym, now: true
   end
 
   def load_secret_code
-    return false if session[:secret_code].nil?
+    generate_new_qr unless session[:secret_code].nil?
+  end
 
-    generate_new_qr
+private
+
+  def generate_new_qr
+    @secret_code = session[:secret_code]
+    issuer = "GOV.UK Verify Admin Tool"
+    issuer += " (#{Rails.env})" unless Rails.env.production?
+    encoded_issuer = url_encode(issuer)
+    qrcode = RQRCode::QRCode.new("otpauth://totp/#{encoded_issuer}:#{url_encode(session[:email])}?secret=#{@secret_code}&issuer=#{encoded_issuer}")
+    @secret_code_svg = qrcode.as_svg(module_size: 3)
   end
 end

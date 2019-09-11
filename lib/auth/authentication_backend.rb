@@ -230,12 +230,6 @@ private
     end
   rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException,
          Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
-    case e.code
-    when 'InvalidPasswordException'
-      devise_msg = 'malformed_password'
-    when 'EnableSoftwareTokenMFAException'
-      devise_msg = 'code_missmatch'
-    end
     response_hash = {
       type: RETRY,
       email: params[:email],
@@ -243,7 +237,7 @@ private
       session_id: params[:cognito_session_id],
       challenge_name: "#{params[:challenge_name]}_RETRY",
       challenge_parameters: params[:challenge_parameters],
-      flash_message: { code: e.code, message: e.message, devise_message: devise_msg }
+      flash_message: { code: e.code, message: e.message }
     }
     ChallengeResponse.new(response_hash)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
