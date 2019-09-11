@@ -148,7 +148,7 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e.message)
   end
 
-  private
+private
 
   def process_response(cognito_response:, params:)
     if cognito_response.challenge_name.present?
@@ -179,7 +179,7 @@ module AuthenticationBackend
   def setup_mfa_response(cognito_response:, params:)
     token_resp = client.associate_software_token(session: cognito_response.session)
     cognito_response.session = token_resp.session
-    response_hash = { 
+    {
       email: params[:email],
       cognito_response: cognito_response,
       secret_code: token_resp.secret_code

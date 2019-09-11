@@ -13,10 +13,11 @@ class SessionsController < Devise::SessionsController
   end
 
   def challenge_flash_messages
-    return false if session.to_h.dig('challenge_parameters','flash_message').nil?
+    return false if session.to_h.dig('challenge_parameters', 'flash_message').nil?
+
     msg = session.to_h.dig('challenge_parameters', 'flash_message', 'devise_message')
     session[:challenge_parameters].delete('flash_message')
-    set_flash_message! :warn, msg.to_sym, {now: true}
+    set_flash_message! :warn, msg.to_sym, now: true
   end
 
   def load_secret_code

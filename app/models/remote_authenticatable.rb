@@ -10,7 +10,7 @@ module Devise
         resp = authentication_flow(params)
 
         if resp.response_type == AuthenticationBackend::CHALLENGE ||
-           resp.response_type == AuthenticationBackend::RETRY
+            resp.response_type == AuthenticationBackend::RETRY
           create_challenge_flow(resp)
         else
           complete_auth(resp)
@@ -25,7 +25,7 @@ module Devise
         if resp.flash_message.nil?
           self.challenge_parameters = resp.challenge_parameters
         else
-          self.challenge_parameters = resp.challenge_parameters.merge({ flash_message: resp.flash_message })
+          self.challenge_parameters = resp.challenge_parameters.merge(flash_message: resp.flash_message)
         end
         self.secret_code = resp.secret_code
         self
