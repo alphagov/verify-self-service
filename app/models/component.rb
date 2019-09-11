@@ -11,7 +11,7 @@ class Component < Aggregate
            }, class_name: 'Certificate', as: :component
   has_many :enabled_signing_certificates,
            -> {
-             where(usage: CERTIFICATE_USAGE::SIGNING, enabled: true)
+             where(usage: CERTIFICATE_USAGE::SIGNING, enabled: true).order(created_at: 'desc')
            }, class_name: 'Certificate', as: :component
   has_many :disabled_signing_certificates,
            -> {

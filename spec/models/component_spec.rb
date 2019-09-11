@@ -69,7 +69,7 @@ RSpec.describe Component, type: :model do
     it 'publishes all the components and services metadata correctly' do
       msa_component.services << msa_service
       sp_component.services << sp_service
-      event_id = Event.order(created_at: :desc).first.id
+      event_id = Event.first.id
 
       actual_config = Component.to_service_metadata(event_id, published_at)
       expect(expected_config(event_id)).to eq(actual_config)
@@ -95,12 +95,12 @@ RSpec.describe Component, type: :model do
             },
             signing_certificates: [
               {
-                name: upload_signing_certificate_event_1.certificate.x509.subject.to_s,
-                value: upload_signing_certificate_event_1.certificate.value
-              },
-              {
                 name: upload_signing_certificate_event_2.certificate.x509.subject.to_s,
                 value: upload_signing_certificate_event_2.certificate.value
+              },
+              {
+                name: upload_signing_certificate_event_1.certificate.x509.subject.to_s,
+                value: upload_signing_certificate_event_1.certificate.value
               }
             ]
           }
@@ -115,12 +115,12 @@ RSpec.describe Component, type: :model do
             name: sp_component.name,
             signing_certificates: [
               {
-                name: upload_signing_certificate_event_3.certificate.x509.subject.to_s,
-                value: upload_signing_certificate_event_3.certificate.value
-              },
-              {
                 name: upload_signing_certificate_event_4.certificate.x509.subject.to_s,
                 value: upload_signing_certificate_event_4.certificate.value
+              },
+              {
+                name: upload_signing_certificate_event_3.certificate.x509.subject.to_s,
+                value: upload_signing_certificate_event_3.certificate.value
               }
             ]
           }
