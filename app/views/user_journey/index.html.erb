@@ -1,4 +1,6 @@
 <h1 class="govuk-heading-l"><%= t 'components.title' %></h1>
 
+<p><%= link_to t('user_journey.connection_broken_or_compromised'), t('user_journey.urls.connection_broken_or_compromised') %></p>
+
 <%= render "shared/user_component_certificates", components: @msa_components, name: COMPONENT_TYPE::MSA %>
 <%= render "shared/user_component_certificates", components: @sp_components, name: COMPONENT_TYPE::SP %> 
