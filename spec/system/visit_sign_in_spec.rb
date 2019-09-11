@@ -132,4 +132,26 @@ RSpec.describe 'Sign in', type: :system do
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
   end
+
+  scenario 'User is told when they enter a wrong code on setup and gets to try again' do
+    SelfService.register_service(name: :cognito_client, client: Aws::CognitoIdentityProvider::Client.new(stub_responses: true))
+    stub_cognito_response(method: :initiate_auth, payload: { challenge_name: "MFA_SETUP", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' }})
+    stub_cognito_response(method: :associate_software_token, payload: { secret_code: 'OC7YQ4VYEVRWQGIKSXV25B3MZUV355I5XUKKM4P7KGTO72OTXXUQ', session: SecureRandom.uuid })
+    stub_cognito_response(method: :verify_software_token, payload: 'EnableSoftwareTokenMFAException')
+    user = FactoryBot.create(:user_manager_user)
+    sign_in(user.email, user.password)
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content 'Set up your MFA'
+    expect(page).to have_selector(".mfa-qr-code svg")
+
+    fill_in "user[totp_code]", with: "000000"
+    click_button("commit")
+
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content 'The one time code you entered did not match what was expected'
+    # Ensure session is cleaned up from flow
+    expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
+    expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
+    expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
+  end
 end
