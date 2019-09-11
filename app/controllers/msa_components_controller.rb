@@ -27,10 +27,6 @@ class MsaComponentsController < ApplicationController
     end
   end
 
-  def edit
-    @msa_component = MsaComponent.find_by_id(params[:id])
-  end
-
   def update
     msa_component = MsaComponent.find_by_id(params[:id])
     msa_component.team_id = params.dig(:component, :team_id)

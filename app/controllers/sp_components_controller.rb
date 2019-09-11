@@ -27,10 +27,6 @@ class SpComponentsController < ApplicationController
     end
   end
 
-  def edit
-    @sp_component = SpComponent.find_by_id(params[:id])
-  end
-
   def update
     spcomponent = SpComponent.find_by_id(params[:id])
     spcomponent.team_id = params.dig(:component, :team_id)
