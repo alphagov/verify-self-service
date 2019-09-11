@@ -1,4 +1,8 @@
 <h1 class="govuk-heading-l"><%= t 'components.title' %></h1>
 
+<% if certificate_expiry_count(@msa_components, @sp_components) > 0 %>
+  <p><%= t('user_journey.certificates_expiring', number: certificate_expiry_count(@msa_components, @sp_components)) %></p>
+<% end %>
+
 <%= render "shared/user_component_certificates", components: @msa_components, name: COMPONENT_TYPE::MSA %>
 <%= render "shared/user_component_certificates", components: @sp_components, name: COMPONENT_TYPE::SP %> 
