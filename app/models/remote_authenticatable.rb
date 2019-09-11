@@ -9,7 +9,8 @@ module Devise
       def remote_authentication(params)
         resp = authentication_flow(params)
 
-        if resp.response_type == AuthenticationBackend::CHALLENGE
+        if resp.response_type == AuthenticationBackend::CHALLENGE ||
+           resp.response_type == AuthenticationBackend::RETRY
           create_challenge_flow(resp)
         else
           complete_auth(resp)
@@ -21,7 +22,11 @@ module Devise
         self.email = resp.email
         self.challenge_name = resp.challenge_name
         self.cognito_session_id = resp.session_id
-        self.challenge_parameters = resp.challenge_parameters
+        if resp.flash_message.nil?
+          self.challenge_parameters = resp.challenge_parameters
+        else
+          self.challenge_parameters = resp.challenge_parameters.merge({ flash_message: resp.flash_message })
+        end
         self.secret_code = resp.secret_code
         self
       end
@@ -40,7 +45,6 @@ module Devise
         self.family_name = claims['family_name']
         self.team = Team.find_by_team_alias(claims['cognito:groups'][0])&.id unless claims['cognito:groups'].nil?
         self.cognito_groups = claims['cognito:groups']
-        self.mfa = claims['mfa'] || resp.params[:challenge_name]
         self.session_start_time = Time.now.to_s
         self
       end

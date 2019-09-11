@@ -9,16 +9,13 @@ module Devise
           resource = mapping.to.new
           populate_auth_params(auth_params) if session.key?('cognito_session_id')
           return fail! unless resource
-          
+
           begin
             if validate(resource)
               resource = resource.remote_authentication(auth_params)
               if resource.challenge_name
                 populate_session_for_auth_challenge(resource)
                 redirect!(Rails.application.routes.url_helpers.new_user_session_path)
-              elsif resource.mfa.nil?
-                populate_session_for_mfa_enrolment(resource)
-                redirect!(Rails.application.routes.url_helpers.mfa_enrolment_path)
               else
                 clean_up_session
                 UserSignInEvent.create(user_id: resource.user_id)

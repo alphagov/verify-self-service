@@ -12,6 +12,7 @@ module AuthenticationBackend
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
   CHALLENGE = 'challenge'.freeze
+  RETRY = 'retry'.freeze
   OK = 'ok'.freeze
 
   # Authenticaiton flows start here and will return either
@@ -147,26 +148,42 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e.message)
   end
 
-private
+  private
 
   def process_response(cognito_response:, params:)
     if cognito_response.challenge_name.present?
-      # MFA Set up needs a secret code from cognito which updates the session
-      # When we get this we massage the cognito response to give it the new
-      # session token from AWS.
-      if cognito_response.challenge_name == 'MFA_SETUP'
-        token_resp = client.associate_software_token(session: cognito_response.session)
-        cognito_response.session = token_resp.session
-        ChallengeResponse.new(email: params[:email], cognito_response: cognito_response, secret_code: token_resp.secret_code)
-      elsif cognito_response.challenge_name == 'MFA_SETUP_RETRY'
-        cognito_response.challenge_name = 'MFA_SETUP'
-        cognito_response
-      else
-        ChallengeResponse.new(email: params[:email], cognito_response: cognito_response)
-      end
+      create_challenge_response(cognito_response: cognito_response,
+                                params: params)
     else
-      AuthenticatedResponse.new(params: params, cognito_response: cognito_response)
+      AuthenticatedResponse.new(cognito_response: cognito_response,
+                                params: params)
     end
+  end
+
+  # MFA Set up needs a secret code from cognito which updates the session
+  # When we get this we massage the cognito response to give it the new
+  # session token from AWS.
+  def create_challenge_response(cognito_response:, params:)
+    if cognito_response.challenge_name == 'MFA_SETUP'
+      response_hash = setup_mfa_response(cognito_response: cognito_response, params: params)
+    elsif cognito_response.challenge_name.include?('_RETRY')
+      cognito_response.challenge_name = cognito_response.challenge_name.gsub('_RETRY', '')
+      response_hash = cognito_response.to_h
+    else
+      response_hash = { email: params[:email], cognito_response: cognito_response }
+    end
+
+    ChallengeResponse.new(response_hash)
+  end
+
+  def setup_mfa_response(cognito_response:, params:)
+    token_resp = client.associate_software_token(session: cognito_response.session)
+    cognito_response.session = token_resp.session
+    response_hash = { 
+      email: params[:email],
+      cognito_response: cognito_response,
+      secret_code: token_resp.secret_code
+    }
   end
 
   # Cognito Methods below this point
@@ -211,14 +228,24 @@ private
     else
       raise AuthenticationBackendException.new("Unknown challenge_name returned by cognito.  Challenge name returned: #{challenge_name}")
     end
-  rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException
-    ChallengeResponse.new(
+  rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException,
+         Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
+    case e.code
+    when 'InvalidPasswordException'
+      devise_msg = 'malformed_password'
+    when 'EnableSoftwareTokenMFAException'
+      devise_msg = 'code_missmatch'
+    end
+    response_hash = {
+      type: RETRY,
       email: params[:email],
       secret_code: params[:secret_code],
-      session: params[:cognito_session_id],
-      challenge_name: MFA_SETUP_RETRY,
-      challenge_parameters: params[:challenge_parameters]
-    )
+      session_id: params[:cognito_session_id],
+      challenge_name: "#{params[:challenge_name]}_RETRY",
+      challenge_parameters: params[:challenge_parameters],
+      flash_message: { code: e.code, message: e.message, devise_message: devise_msg }
+    }
+    ChallengeResponse.new(response_hash)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
          Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
     raise NotAuthorizedException.new(e.message)
