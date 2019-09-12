@@ -54,6 +54,8 @@ en:
       signed_in: "Signed in successfully."
       signed_out: "Signed out successfully."
       already_signed_out: "Signed out successfully."
+      InvalidPasswordException: "Your new password needs to contain at least 1 uppercase letter, 1 lowercase letter and a number"
+      EnableSoftwareTokenMFAException: "The one time code you entered did not match what was expected"
     unlocks:
       send_instructions: "You will receive an email with instructions for how to unlock your account in a few minutes."
       send_paranoid_instructions: "If your account exists, you will receive an email with instructions for how to unlock it in a few minutes."
