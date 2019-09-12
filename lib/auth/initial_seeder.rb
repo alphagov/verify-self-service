@@ -43,7 +43,7 @@ class InitialSeeder
       return false
     end
     Rails.logger.info("Found #{@gds_users.length} existing GDS users.")
-    @gds_users.length
+    !@gds_users.length.zero?
   end
 
   def create_gds_user
