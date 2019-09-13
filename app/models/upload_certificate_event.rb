@@ -49,10 +49,10 @@ private
   end
 
   def certificate_is_new
-    errors.add(:certificate, 'already exists') if certificate.persisted?
+    errors.add(:certificate, I18n.t('components.errors.already_exists')) if certificate.persisted?
   end
 
   def component_is_persisted
-    errors.add(:component, 'must exist') unless component&.persisted?
+    errors.add(:component, I18n.t('components.errors.must_exist')) unless component&.persisted?
   end
 end

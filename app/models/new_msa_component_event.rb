@@ -21,12 +21,12 @@ class NewMsaComponentEvent < AggregatedEvent
   end
 
   def component_is_new
-    errors.add(:msa_component, 'already exists') if msa_component.persisted?
+    errors.add(:msa_component, I18n.t('components.errors.already_exists')) if msa_component.persisted?
   end
 
 private
 
   def msa_has_entity_id
-    errors.add(:entity_id, 'id is required for MSA component') unless entity_id.present?
+    errors.add(:entity_id, I18n.t('components.errors.missing_entity_id')) unless entity_id.present?
   end
 end

@@ -80,7 +80,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
       event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['in not RSA']
+      expect(event.errors[:certificate]).to eql ['is not RSA']
     end
 
     it 'must be at least 2048 bits' do
@@ -88,7 +88,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
       event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['key size is less than 2048']
+      expect(event.errors[:certificate]).to eql ['key size is less than 2048 bits']
     end
   end
 

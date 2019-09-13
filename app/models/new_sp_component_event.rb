@@ -25,6 +25,6 @@ class NewSpComponentEvent < AggregatedEvent
   end
 
   def component_is_new
-    errors.add(:sp_component, 'already exists') if sp_component.persisted?
+    errors.add(:sp_component, I18n.t('components.errors.already_exists')) if sp_component.persisted?
   end
 end
