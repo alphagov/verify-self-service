@@ -12,10 +12,6 @@ class CertificatesController < ApplicationController
   end
 
   def create
-    if params["certificate"]["certificate_file"]
-      params["certificate"]["value"] = File.read(params["certificate"]["certificate_file"].tempfile).chomp
-    end
-
     @upload = UploadCertificateEvent.create(upload_params)
     if @upload.valid?
       component = klass_component(@upload.component_type).find_by_id(@upload.component_id)

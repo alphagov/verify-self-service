@@ -90,6 +90,7 @@ en:
       not_rsa: is not RSA
       small_key: key size is less than 2048 bits
       not_signing: signing certificate required
+      invalid_file_type: invalid file type
   profile:
     title: "User Information"
     welcome: Welcome
@@ -199,7 +200,7 @@ en:
     edit:
       heading: Associate team to
   user_journey:
-    msa_long: Matching Service Adapter 
+    msa_long: Matching Service Adapter
     vsp_long: Verify Service Provider
     used_by: used by
     certificate: Certificate
@@ -232,7 +233,7 @@ en:
       create_signing_key_and_certificate: "you must create a new signing key and certificate."
       create_key_and_certificate: Create a new key and certificate
       create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
-      find_out_more: Find out more about 
+      find_out_more: Find out more about
       rotate_key_and_certificate: rotating your %{component} %{certificate} key and certificate
       in_documentation: in the documentation.
       must_update: You must update your %{component} configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
@@ -256,7 +257,7 @@ en:
       vsp_heading: "Verify Service Provider: "
       replace: Replace certificate
       add_new: Add new certificate
-      upload_new: Upload your new %{certificate} certificate 
+      upload_new: Upload your new %{certificate} certificate
       upload_certificate_file_header: Upload a certificate file
       upload_certificate_file_body: Upload file
       paste_certificate: Paste certificate text into a text box

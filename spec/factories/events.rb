@@ -12,7 +12,7 @@ FactoryBot.define do
   end
 
   factory :new_team_event do
-    name { 'Team Awesome' }
+    name { SecureRandom.alphanumeric }
   end
 
   factory :replace_encryption_certificate_event do

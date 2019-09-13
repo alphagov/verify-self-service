@@ -1,7 +1,7 @@
 <%= render 'shared/certificate_details', certificate: @certificate %>
 
 <div class="govuk-form-group">
-  <%= form_for @upload, url: submit_path, as: :certificate do |f| %>
+  <%= form_for @upload, url: submit_path, as: :certificate, multipart: true do |f| %>
     <%= error_message_on(f.object.errors, :certificate) %>
     <fieldset class="govuk-fieldset" aria-describedby="upload-certificate-conditional-hint">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -11,17 +11,17 @@
       </legend>
       <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-5" data-module="govuk-radios">
         <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="upload-certificate-conditional" name="upload-certificate" type="radio" value="email" data-aria-controls="conditional-upload-certificate-conditional" disabled>
+          <input class="govuk-radios__input" id="upload-certificate-conditional" name="upload-certificate" type="radio" value="certficate" data-aria-controls="conditional-upload-certificate-conditional">
           <label class="govuk-label govuk-radios__label" for="upload-certificate-conditional">
             <%= t 'user_journey.certificate.upload_certificate_file_header' %>
           </label>
         </div>
         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-upload-certificate-conditional">
           <div class="govuk-form-group">
-            <label class="govuk-label" for="file-upload-1">
+            <label class="govuk-label" for="file-upload">
               <%= t 'user_journey.certificate.upload_certificate_file_body' %>
             </label>
-            <input class="govuk-file-upload" id="file-upload-1" name="file-upload-1" type="file">
+            <%= f.file_field :cert_file, class: "govuk-file-upload", id: "file-upload" %>
           </div>
         </div>
         <div class="govuk-radios__item">
