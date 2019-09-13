@@ -14,24 +14,24 @@ class ProfileController < ApplicationController
   def change_password
     passwd_form = params[:password_change]
     if passwd_form['new_password1'] != passwd_form['new_password2']
-      flash[:notice] = 'Your new passwords did not match'
+      flash[:notice] = t('profile.password_mismatch')
     else
       backend_change_password(
         old: passwd_form['old_password'],
         proposed: passwd_form['new_password1'],
         access_token: current_user.access_token
       )
-      flash[:notice] = 'Password changed successfully'
+      flash[:notice] = t('profile.password_changed')
     end
     redirect_to profile_path
   rescue InvalidOldPassowrdError
-    flash[:warn] = 'Your old password is incorrect'
+    flash[:warn] = t('profile.old_password_mismatch')
     redirect_to profile_path
   rescue InvalidNewPassowrdError
-    flash[:warn] = 'Your new password needs to contain at least 1 uppercase letter, 1 lowercase letter and a number'
+    flash[:warn] = t('devise.sessions.InvalidPasswordException')
     redirect_to profile_path
   rescue AuthenticationBackendException
-    flash[:warn] = 'An unknown error occured with our authorisation provider.'
+    flash[:warn] = t('devise.failure.unknown_cognito_response')
     redirect_to profile_path
   end
 
