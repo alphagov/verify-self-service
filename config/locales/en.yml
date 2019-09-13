@@ -59,6 +59,8 @@ en:
       success: The user has been invited
       errors:
         already_exists: The user already exists
+        invalid_email: Invalid email format
+        invalid_role: "%{role} is not a valid role"
         generic_error: There was an error creating the user
         team_missing: Team does not exist
     roles:
@@ -80,6 +82,14 @@ en:
     disable: Disable
     upload: Upload your certificate
     previous: Previous
+    errors:
+      invalid: is not a valid x509 certificate
+      expired: has expired
+      expires_soon: expires too soon
+      valid_too_long: valid for too long
+      not_rsa: is not RSA
+      small_key: key size is less than 2048 bits
+      not_signing: signing certificate required
   profile:
     title: "User Information"
     welcome: Welcome
@@ -110,6 +120,8 @@ en:
     aggregate_type: Aggregate Type
     details: Event details
     user_id: User ID
+    errors:
+      missing_name: "can't be blank"
   layout:
     application:
       title: Verify Self-Service
@@ -177,6 +189,10 @@ en:
     all_certs: All certificates
     all_certs_for_componenet: All certificates for this component
     add_service: Add service
+    errors:
+      already_exists: already exists
+      must_exist: must exist
+      missing_entity_id: id is required for MSA component
   admin:
     title: Admin
     view_components: View components

@@ -15,6 +15,6 @@ private
   def certificate_is_signing?
     return if certificate.signing?
 
-    errors.add(:signing_certificate_event, 'signing certificate required')
+    errors.add(:signing_certificate_event, I18n.t('certificates.errors.not_signing'))
   end
 end
