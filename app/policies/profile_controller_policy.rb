@@ -3,6 +3,10 @@ class ProfileControllerPolicy < ApplicationPolicy
     true
   end
 
+  def change_password?
+    true
+  end
+
   def switch_client?
     return false unless Rails.env.development?
 

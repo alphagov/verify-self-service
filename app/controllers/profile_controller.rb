@@ -1,4 +1,6 @@
 class ProfileController < ApplicationController
+  include AuthenticationBackend
+
   def show
     if Rails.env.development?
       @stub_available = true
@@ -7,6 +9,30 @@ class ProfileController < ApplicationController
       @breakerofchains = @using_stub && current_user.given_name == 'Daenerys'
     end
     @user = current_user
+  end
+
+  def change_password
+    passwd_form = params[:password_change]
+    if passwd_form['new_password1'] != passwd_form['new_password2']
+      flash[:notice] = 'Your new passwords did not match'
+    else
+      backend_change_password(
+        old: passwd_form['old_password'],
+        proposed: passwd_form['new_password1'],
+        access_token: current_user.access_token
+      )
+      flash[:notice] = 'Password changed successfully'
+    end
+    redirect_to profile_path
+  rescue InvalidOldPassowrdError
+    flash[:warn] = 'Your old password is incorrect'
+    redirect_to profile_path
+  rescue InvalidNewPassowrdError
+    flash[:warn] = 'Your new password needs to contain at least 1 uppercase letter, 1 lowercase letter and a number'
+    redirect_to profile_path
+  rescue AuthenticationBackendException
+    flash[:warn] = 'An unknown error occured with our authorisation provider.'
+    redirect_to profile_path
   end
 
   def switch_client

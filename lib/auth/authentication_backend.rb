@@ -8,6 +8,8 @@ module AuthenticationBackend
   class AuthenticationBackendException < StandardError; end
   class UsernameExistsException < StandardError; end
   class GroupExistsException < StandardError; end
+  class InvalidOldPassowrdError < StandardError; end
+  class InvalidNewPassowrdError < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
@@ -36,11 +38,11 @@ module AuthenticationBackend
       user_pool_id: user_pool_id
     )
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::GroupExistsException => e
-    raise GroupExistsException.new(e.message)
+    raise GroupExistsException.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
   end
 
   # Returns a secret shared code to associate a TOTP app/device with
@@ -64,7 +66,7 @@ module AuthenticationBackend
       }
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
   end
 
   def add_user(email:, given_name:, family_name:, roles:)
@@ -97,9 +99,9 @@ module AuthenticationBackend
   )
   rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException,
          Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e
-    raise UsernameExistsException.new(e.message)
+    raise UsernameExistsException.new(e)
   rescue StandardError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
   end
 
   def add_user_to_group(username:, group:)
@@ -109,7 +111,7 @@ module AuthenticationBackend
       group_name: group
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
   end
 
   def get_users(limit: 60)
@@ -118,7 +120,7 @@ module AuthenticationBackend
       limit: limit
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
   end
 
   def find_users_by_role(limit: 60, role:)
@@ -136,16 +138,31 @@ module AuthenticationBackend
       user_pool_id: user_pool_id
     )
   rescue Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException => e
-    raise UserGroupNotFoundException.new(e.message)
+    raise UserGroupNotFoundException.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
   end
 
   def authentication_backend_status
     client.describe_user_pool(user_pool_id: user_pool_id)
     OK
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
+  end
+
+  def backend_change_password(proposed:, old:, access_token:)
+    client.change_password(
+      previous_password: old,
+      proposed_password: proposed,
+      access_token: access_token
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
+    raise InvalidOldPassowrdError.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
+    raise InvalidNewPassowrdError.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    Rails.logger.warn "An unknown cognito error occured with message: #{e}"
+    raise AuthenticationBackendException.new(e)
   end
 
 private
@@ -200,9 +217,9 @@ private
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException,
          Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
-    raise NotAuthorizedException.new(e.message)
+    raise NotAuthorizedException.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException.new(e)
   end
 
   # Returns an authentication response normally with JWT
@@ -242,7 +259,7 @@ private
     ChallengeResponse.new(response_hash)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
          Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
-    raise NotAuthorizedException.new(e.message)
+    raise NotAuthorizedException.new(e)
   end
 
   def send_challenge(session:, challenge_name:, challenge_responses:)

@@ -75,6 +75,39 @@
       </div>
     </div>
   </div>
+  <div class="govuk-accordion__section ">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+          <%= t 'profile.change_password_heading' %>
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+      <div class="govuk-form-group">
+        <%= form_for:password_change, url: profile_change_password_path do |f| %>
+        <fieldset class="govuk-fieldset" aria-describedby="changed-password-hint">
+          <span id="changed-password-hint" class="govuk-hint">
+            <%= t 'profile.client_switch_legend' %>
+          </span>
+          <div class="govuk-form-group">
+            <%= f.label :old_password, class: "govuk-label" %>
+            <%= f.password_field :old_password, class: "govuk-input govuk-input--width-20" %>
+          </div>
+          <div class="govuk-form-group">
+            <%= f.label :new_password1, class: "govuk-label" %>
+            <%= f.password_field :new_password1, class: "govuk-input govuk-input--width-20" %>
+          </div>
+          <div class="govuk-form-group">
+            <%= f.label :new_password2, class: "govuk-label" %>
+            <%= f.password_field :new_password2, class: "govuk-input govuk-input--width-20" %>
+          </div>
+        </fieldset>
+        <%= f.submit "Change Password", class: "govuk-button govuk-!-margin-top-6", data: { module: "govuk-button" } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
   <% if Rails.env.development? %>
     <% if @cognito_available %>
       <div class="govuk-accordion__section ">
