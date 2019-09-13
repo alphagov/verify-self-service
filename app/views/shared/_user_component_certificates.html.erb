@@ -32,18 +32,17 @@
             </div>
           </td>
         <% end %>
-        <% component.signing_certificates.reverse.each do |signing| %>
-  
+        <% component.enabled_signing_certificates.each do |signing| %>
           <tr class="govuk-table__row" id="<%= signing.id %>">
           <td class="govuk-table__cell">
-            <% if component.signing_certificates.length == 2 %>
+            <% if component.enabled_signing_certificates.length == 2 %>
                 <%= link_to t('user_journey.two_signing_certificate', type: t("user_journey.#{position(signing)}")) , view_certificate_path(signing.component_type, component.id, signing.id) %>
               <% else %>
                 <%= link_to t('user_journey.signing_certificate'), view_certificate_path(signing.component_type, component.id, signing.id) %>
               <% end %>
             </td>
             <td class="govuk-table__cell">
-              <div class="app-certificate-tag <%= 'app-certificate-tag-deploying' if position(signing) == 'primary' && component.signing_certificates.length == 2 %><%= 'app-certificate-tag-expiring' if signing.expires_soon? %>">
+              <div class="app-certificate-tag <%= 'app-certificate-tag-deploying' if position(signing) == 'primary' && component.enabled_signing_certificates.length == 2 %><%= 'app-certificate-tag-expiring' if signing.expires_soon? %>">
                 <strong class="govuk-tag"><%= certificate_status(signing) %></strong>
               </div>
             </td>

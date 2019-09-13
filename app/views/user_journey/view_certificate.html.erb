@@ -1,4 +1,4 @@
-<% if @certificate.signing? && @certificate.component.signing_certificates.length == 2 %>
+<% if @certificate.signing? && @certificate.component.enabled_signing_certificates.length == 2 %>
   <div class="govuk-error-summary <%= primary_signing_certificate?(@certificate) ? "govuk-error-summary--grey" : "govuk-error-summary--orange" %>" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
     <h2 class="govuk-error-summary__title" id="error-summary-title"><%= primary_signing_certificate?(@certificate) ? t('user_journey.adding_certificate_to_config') : t('user_journey.wait_for_an_email') %></h2>
     <div class="govuk-error-summary__body">
@@ -17,7 +17,7 @@
 <h1 class="govuk-heading-l">
   <%= @certificate.component.component_type == COMPONENT_TYPE::MSA ? t('user_journey.certificate.msa_heading') : t('user_journey.certificate.vsp_heading') %>
   <%= t('user_journey.certificate.certificate', type: @certificate.usage ) %>
-  <% if @certificate.signing? && @certificate.component.signing_certificates.length == 2 %>
+  <% if @certificate.signing? && @certificate.component.enabled_signing_certificates.length == 2 %>
     <%= t "user_journey.#{position(@certificate)}" %>
   <% end %>
 </h1>
@@ -25,7 +25,7 @@
 <%= render 'shared/user_certificate_view', certificate: @certificate, full_details: true %>
 
 <% if @certificate.signing? %>
-  <% if @certificate.component.signing_certificates.length < 2 %>
+  <% if @certificate.component.enabled_signing_certificates.length < 2 %>
     <%= link_to t('user_journey.certificate.add_new'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
   <% end %>
 <% elsif @certificate.encryption? %>

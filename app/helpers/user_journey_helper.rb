@@ -20,7 +20,7 @@ module UserJourneyHelper
       "MISSING"
     elsif certificate.expires_soon?
       "EXPIRES IN #{(certificate.x509.not_after.to_date - Time.now.to_date).to_i} DAYS"
-    elsif certificate.component.signing_certificates.length == 2 && primary_signing_certificate?(certificate)
+    elsif certificate.component.enabled_signing_certificates.length == 2 && primary_signing_certificate?(certificate)
       "DEPLOYING"
     else
       "IN USE"
