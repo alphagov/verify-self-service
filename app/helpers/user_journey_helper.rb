@@ -26,4 +26,8 @@ module UserJourneyHelper
       "IN USE"
     end
   end
+
+  def certificate_expiry_count(msa_components, sp_components)
+    (msa_components + sp_components).map(&:certificates).flatten.select(&:expires_soon?).count
+  end
 end
