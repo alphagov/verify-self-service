@@ -120,6 +120,8 @@ en:
     aggregate_type: Aggregate Type
     details: Event details
     user_id: User ID
+    errors:
+      missing_name: "can't be blank"
   layout:
     application:
       title: Verify Self-Service
