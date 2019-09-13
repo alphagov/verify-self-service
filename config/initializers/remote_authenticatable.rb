@@ -9,16 +9,13 @@ module Devise
           resource = mapping.to.new
           populate_auth_params(auth_params) if session.key?('cognito_session_id')
           return fail! unless resource
-          
+
           begin
             if validate(resource)
               resource = resource.remote_authentication(auth_params)
               if resource.challenge_name
                 populate_session_for_auth_challenge(resource)
                 redirect!(Rails.application.routes.url_helpers.new_user_session_path)
-              elsif resource.mfa.nil?
-                populate_session_for_mfa_enrolment(resource)
-                redirect!(Rails.application.routes.url_helpers.mfa_enrolment_path)
               else
                 clean_up_session
                 UserSignInEvent.create(user_id: resource.user_id)
@@ -43,9 +40,11 @@ module Devise
       private
 
       def populate_session_for_auth_challenge(resource)
+        session[:email] = resource.email
         session[:challenge_name] = resource.challenge_name
         session[:cognito_session_id] = resource.cognito_session_id
         session[:challenge_parameters] = resource.challenge_parameters
+        session[:secret_code] = resource.secret_code
       end
 
       def populate_session_for_mfa_enrolment(resource)
@@ -54,9 +53,11 @@ module Devise
       end
 
       def populate_auth_params(auth_params)
+        auth_params[:email] = session[:email]
         auth_params[:cognito_session_id] = session[:cognito_session_id]
         auth_params[:challenge_name] = session[:challenge_name]
         auth_params[:challenge_parameters] = session[:challenge_parameters]
+        auth_params[:secret_code] = session[:secret_code]
         clean_up_session
       end
 
@@ -68,6 +69,7 @@ module Devise
         session.delete(:challenge_parameters)
         session.delete(:email)
         session.delete(:access_token)
+        session.delete(:secret_code)
       end
     end
   end

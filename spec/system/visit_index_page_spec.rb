@@ -84,4 +84,11 @@ RSpec.describe 'IndexPage', type: :system do
     expect(page).to have_content 'Encryption certificate'
     expect(page).to have_content 'MISSING'
   end
+
+  it 'shows the number of expiriing certificates at the top of the page' do
+    first_expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 29.days))
+    second_expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 29.days))
+    visit root_path
+    expect(page).to have_content '2 certificates are expiring soon.'
+  end
 end

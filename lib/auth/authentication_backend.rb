@@ -12,6 +12,7 @@ module AuthenticationBackend
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
   CHALLENGE = 'challenge'.freeze
+  RETRY = 'retry'.freeze
   OK = 'ok'.freeze
 
   # Authenticaiton flows start here and will return either
@@ -44,7 +45,7 @@ module AuthenticationBackend
 
   # Returns a secret shared code to associate a TOTP app/device with
   def associate_device(access_token:)
-    associate = client.associate_software_token(access_token: access_token)
+    associate = client.associate_software_token(session: access_token)
     associate.secret_code
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new("Error occurred associating device with error #{e.message}")
@@ -151,10 +152,38 @@ private
 
   def process_response(cognito_response:, params:)
     if cognito_response.challenge_name.present?
-      ChallengeResponse.new(cognito_response: cognito_response)
+      create_challenge_response(cognito_response: cognito_response,
+                                params: params)
     else
-      AuthenticatedResponse.new(params: params, cognito_response: cognito_response)
+      AuthenticatedResponse.new(cognito_response: cognito_response,
+                                params: params)
     end
+  end
+
+  # MFA Set up needs a secret code from cognito which updates the session
+  # When we get this we massage the cognito response to give it the new
+  # session token from AWS.
+  def create_challenge_response(cognito_response:, params:)
+    if cognito_response.challenge_name == 'MFA_SETUP'
+      response_hash = setup_mfa_response(cognito_response: cognito_response, params: params)
+    elsif cognito_response.challenge_name.include?('_RETRY')
+      cognito_response.challenge_name = cognito_response.challenge_name.gsub('_RETRY', '')
+      response_hash = cognito_response.to_h
+    else
+      response_hash = { email: params[:email], cognito_response: cognito_response }
+    end
+
+    ChallengeResponse.new(response_hash)
+  end
+
+  def setup_mfa_response(cognito_response:, params:)
+    token_resp = client.associate_software_token(session: cognito_response.session)
+    cognito_response.session = token_resp.session
+    {
+      email: params[:email],
+      cognito_response: cognito_response,
+      secret_code: token_resp.secret_code
+    }
   end
 
   # Cognito Methods below this point
@@ -176,32 +205,53 @@ private
     raise AuthenticationBackendException.new(e.message)
   end
 
-  # Returns an authentication response
+  # Returns an authentication response normally with JWT
   def respond_to_challenge(params)
     challenge_name = params[:challenge_name]
+    username = params[:challenge_parameters]['USER_ID_FOR_SRP'] || params[:email]
+    challenge_responses = { "USERNAME": username }
     case challenge_name
     when 'NEW_PASSWORD_REQUIRED'
-      challenge_responses = {
-        "USERNAME": params[:challenge_parameters]['USER_ID_FOR_SRP'],
-        "NEW_PASSWORD": params[:new_password]
-      }
-    when 'SOFTWARE_TOKEN_MFA'
-      challenge_responses = {
-        "USERNAME": params[:challenge_parameters]['USER_ID_FOR_SRP'],
-        "SOFTWARE_TOKEN_MFA_CODE": params[:totp_code]
-      }
+      challenge_responses.merge!("NEW_PASSWORD": params[:new_password])
+      send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
+    when 'SMS_MFA', 'SOFTWARE_TOKEN_MFA'
+      challenge_responses.merge!('SOFTWARE_TOKEN_MFA_CODE': params[:totp_code])
+      send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
+    when 'MFA_SETUP'
+      totp_resp = client.verify_software_token(session: params[:cognito_session_id], user_code: params[:totp_code])
+      if totp_resp.status == 'SUCCESS'
+        challenge_responses.merge!('ANSWER': 'SOFTWARE_TOKEN_MFA')
+        send_challenge(session: totp_resp.session, challenge_name: challenge_name, challenge_responses: challenge_responses)
+      else
+        raise AuthenticationBackendException.new("Unknown status returned by cognito when verifying software token.  Status returned: #{totp_resp.status}")
+      end
     else
       raise AuthenticationBackendException.new("Unknown challenge_name returned by cognito.  Challenge name returned: #{challenge_name}")
     end
-    client.respond_to_auth_challenge(
-      client_id: cognito_client_id,
-      session: params[:cognito_session_id],
-      challenge_name: challenge_name,
-      challenge_responses: challenge_responses
-    )
+  rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException,
+         Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
+    response_hash = {
+      type: RETRY,
+      email: params[:email],
+      secret_code: params[:secret_code],
+      session_id: params[:cognito_session_id],
+      challenge_name: "#{params[:challenge_name]}_RETRY",
+      challenge_parameters: params[:challenge_parameters],
+      flash_message: { code: e.code, message: e.message }
+    }
+    ChallengeResponse.new(response_hash)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
          Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
     raise NotAuthorizedException.new(e.message)
+  end
+
+  def send_challenge(session:, challenge_name:, challenge_responses:)
+    client.respond_to_auth_challenge(
+      client_id: cognito_client_id,
+      session: session,
+      challenge_name: challenge_name,
+      challenge_responses: challenge_responses
+    )
   end
 
   def client

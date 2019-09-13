@@ -202,6 +202,7 @@ en:
     how_long_it_takes: This usually takes around 10 minutes from the time you uploaded the new signing certificate.
     delete_old_signing_key_and_cert: Then you can delete the old signing key and certificate from your %{component} configuration.
     connection_broken_or_compromised: What to do if your connection is broken or compromised
+    certificates_expiring: "%{number} certificates are expiring soon."
     urls:
       msa_encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
       msa_signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate

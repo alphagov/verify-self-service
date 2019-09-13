@@ -43,7 +43,7 @@ class InitialSeeder
       return false
     end
     Rails.logger.info("Found #{@gds_users.length} existing GDS users.")
-    @gds_users.length
+    !@gds_users.length.zero?
   end
 
   def create_gds_user
@@ -52,7 +52,7 @@ class InitialSeeder
       email: admin_email,
       given_name: 'Jakub',
       family_name: 'Miarka',
-      roles: TEAMS::GDS
+      roles: [TEAMS::GDS]
     )
     add_user_to_group(username: admin_email, group: TEAMS::GDS)
   end

@@ -16,7 +16,7 @@ private
   def fetch_or_update
     Rails.logger.debug "Initial Cache store information: #{Rails.cache.inspect}"
 
-    Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
+    jwks = Rails.cache.fetch(@cache_key, expires_in: Rails.configuration.jwks_cache_expiry) do
       Rails.logger.info "Loading JWKS from cognito..."
       Rails.logger.info "Fetching JWKS from: \"https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json\""
       response = Net::HTTP.get(URI("https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json"))
@@ -25,6 +25,8 @@ private
       { keys: json.fetch('keys').map { |data| HashWithIndifferentAccess.new(data) } }
     end
     Rails.logger.debug "Populated Cache store information: #{Rails.cache.inspect}"
+    # Don't remove this as the debug statement above will return true instead
+    jwks
   end
 
   def region

@@ -4,6 +4,7 @@
 Rails.application.config.filter_parameters += [
   :access_token,
   :code,
+  :username,
   :email,
   :family_name,
   :full_name,
@@ -12,5 +13,6 @@ Rails.application.config.filter_parameters += [
   :password,
   :phone_number,
   :temporary_password,
-  :totp_code
+  :totp_code,
+  :secret_code
 ]
