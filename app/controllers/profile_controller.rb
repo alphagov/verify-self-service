@@ -14,7 +14,7 @@ class ProfileController < ApplicationController
   def change_password
     passwd_form = params[:password_change]
     if passwd_form['new_password1'] != passwd_form['new_password2']
-      flash[:notice] = t('profile.password_mismatch')
+      flash[:error] = t('profile.password_mismatch')
     else
       backend_change_password(
         old: passwd_form['old_password'],
@@ -25,13 +25,13 @@ class ProfileController < ApplicationController
     end
     redirect_to profile_path
   rescue InvalidOldPassowrdError
-    flash[:warn] = t('profile.old_password_mismatch')
+    flash[:error] = t('profile.old_password_mismatch')
     redirect_to profile_path
   rescue InvalidNewPassowrdError
-    flash[:warn] = t('devise.sessions.InvalidPasswordException')
+    flash[:error] = t('devise.sessions.InvalidPasswordException')
     redirect_to profile_path
   rescue AuthenticationBackendException
-    flash[:warn] = t('devise.failure.unknown_cognito_response')
+    flash[:error] = t('devise.failure.unknown_cognito_response')
     redirect_to profile_path
   end
 
