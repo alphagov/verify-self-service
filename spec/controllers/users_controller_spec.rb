@@ -60,8 +60,7 @@ RSpec.describe UsersController, type: :controller do
 
     describe '#index' do
       it 'renders the page when team is matching' do
-        team = FactoryBot.create(:team, id: @user.team)
-        get :index, :params => { :team_id => team.id}
+        get :index, :params => { :team_id => @user.team }
         expect(response).to have_http_status(:success)
         expect(subject).to render_template(:index)
       end
@@ -69,8 +68,7 @@ RSpec.describe UsersController, type: :controller do
 
     describe '#invite' do
       it 'renders the invite page when team is matching' do
-        team = FactoryBot.create(:team, id: @user.team)
-        get :invite, :params => { :team_id => team.id }
+        get :invite, :params => { :team_id => @user.team }
         expect(response).to have_http_status(:success)
         expect(subject).to render_template(:invite)
       end
@@ -89,10 +87,9 @@ RSpec.describe UsersController, type: :controller do
       it 'invites the user when all valid' do
         Rails.configuration.cognito_user_pool_id = "dummy"
         stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
-        team = FactoryBot.create(:team, id: @user.team)
 
         post :new, params: {
-          team_id: team.id,
+          team_id: @user.team,
           invite_user_form:
             {
               email: 'test@test.test',

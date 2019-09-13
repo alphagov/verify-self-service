@@ -47,7 +47,7 @@ RSpec.describe NewSpComponentEvent, type: :model do
       user = User.new
       user.user_id = user_id
       RequestStore.store[:user] = user
-      event = create(:new_sp_component_event, team_id: 'etc')
+      event = create(:new_sp_component_event)
 
       expect(event.user_id).to eql user_id
     end

@@ -21,7 +21,7 @@ class Component < Aggregate
   belongs_to :encryption_certificate,
              -> { where(usage: CERTIFICATE_USAGE::ENCRYPTION) }, class_name: 'Certificate', optional: true
 
-  belongs_to :team, optional: true
+  belongs_to :team
 
   def self.to_service_metadata(event_id, published_at = Time.now)
     service_providers = SpComponent.all_components_for_metadata

@@ -46,7 +46,7 @@ RSpec.describe UserJourneyController, type: :controller do
 
     it 'should not show user components with different id' do
       certmgr_stub_auth
-      FactoryBot.create(:sp_component, team_id: SecureRandom.uuid)
+      FactoryBot.create(:sp_component)
       get :index
       expect(response).to have_http_status(:success)
       expect(@controller.instance_variable_get(:@sp_components).length).to eq(0)
@@ -56,7 +56,7 @@ RSpec.describe UserJourneyController, type: :controller do
     it 'should only show the user their team components with the same id' do
       certmgr_stub_auth
       sp_component = FactoryBot.create(:sp_component, team_id: @user.team)
-      FactoryBot.create(:sp_component, team_id: SecureRandom.uuid)
+      FactoryBot.create(:sp_component)
       get :index
       expect(response).to have_http_status(:success)
       expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
