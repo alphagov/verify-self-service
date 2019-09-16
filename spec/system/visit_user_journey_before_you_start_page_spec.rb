@@ -23,7 +23,7 @@ RSpec.describe 'Before you start page', type: :system do
     )
   end
 
-  context 'encyrption journey' do 
+  context 'encryption journey' do 
     it 'shows before you start page for msa encryption and successfully goes to next page' do
       msa_component = msa_encryption_certificate.component
       visit before_you_start_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)

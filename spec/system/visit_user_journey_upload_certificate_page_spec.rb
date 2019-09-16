@@ -27,7 +27,7 @@ RSpec.describe 'Upload certificate page', type: :system do
     it 'encryption and successfully goes to next page' do
       msa_component = msa_encryption_certificate.component
       visit upload_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
-      expect(page).to have_content 'MSA'
+      expect(page).to have_content COMPONENT_TYPE::MSA_SHORT
       expect(page).to have_content 'Upload your new encryption certificate'
       fill_in 'certificate_value', with: msa_encryption_certificate.value
       click_button 'Continue'
@@ -38,7 +38,7 @@ RSpec.describe 'Upload certificate page', type: :system do
       certificate = create(:msa_signing_certificate)
       msa_component = certificate.component
       visit upload_certificate_path(msa_component.component_type, msa_component.id, msa_component.signing_certificates[0])
-      expect(page).to have_content 'MSA'
+      expect(page).to have_content COMPONENT_TYPE::MSA_SHORT
       expect(page).to have_content 'Upload your new signing certificate'
       fill_in 'certificate_value', with: certificate.value
       click_button 'Continue'
@@ -50,7 +50,7 @@ RSpec.describe 'Upload certificate page', type: :system do
     it 'encryption and successfully goes to next page' do
       vsp_component = vsp_encryption_certificate.component
       visit upload_certificate_path(vsp_component.component_type, vsp_component.id, vsp_component.encryption_certificate_id)
-      expect(page).to have_content 'VSP'
+      expect(page).to have_content COMPONENT_TYPE::VSP_SHORT
       expect(page).to have_content 'Upload your new encryption certificate'
       fill_in 'certificate_value', with: vsp_encryption_certificate.value
       click_button 'Continue'
@@ -61,7 +61,7 @@ RSpec.describe 'Upload certificate page', type: :system do
       certificate = create(:vsp_signing_certificate)
       vsp_component = certificate.component
       visit upload_certificate_path(vsp_component.component_type, vsp_component.id, vsp_component.signing_certificates[0])
-      expect(page).to have_content 'VSP'
+      expect(page).to have_content COMPONENT_TYPE::VSP_SHORT
       expect(page).to have_content 'Upload your new signing certificate'
       fill_in 'certificate_value', with: certificate.value
       click_button 'Continue'
@@ -73,7 +73,7 @@ RSpec.describe 'Upload certificate page', type: :system do
     it 'encryption and successfully goes to next page' do
       sp_component = sp_encryption_certificate.component
       visit upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
-      expect(page).to have_content 'SP'
+      expect(page).to have_content COMPONENT_TYPE::SP_SHORT
       expect(page).to have_content 'Upload your new encryption certificate'
       fill_in 'certificate_value', with: sp_encryption_certificate.value
       click_button 'Continue'
@@ -84,7 +84,7 @@ RSpec.describe 'Upload certificate page', type: :system do
       certificate = create(:sp_signing_certificate)
       sp_component = certificate.component
       visit upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
-      expect(page).to have_content 'SP'
+      expect(page).to have_content COMPONENT_TYPE::SP_SHORT
       expect(page).to have_content 'Upload your new signing certificate'
       fill_in 'certificate_value', with: certificate.value
       click_button 'Continue'

@@ -78,7 +78,7 @@ RSpec.describe 'IndexPage', type: :system do
     expect(table_row_content).to have_content 'DEPLOYING'
   end
 
-  it 'shows missing tag if encyrption certificate value has not been uploaded' do
+  it 'shows missing tag if encryption certificate value has not been uploaded' do
     sp_component = create(:sp_component)
     visit root_path
     expect(page).to have_content 'Encryption certificate'
