@@ -11,28 +11,33 @@ class ProfileController < ApplicationController
     @user = current_user
   end
 
-  def change_password
-    passwd_form = params[:password_change]
-    if passwd_form['new_password1'] != passwd_form['new_password2']
-      flash[:error] = t('profile.password_mismatch')
-    else
-      backend_change_password(
-        old: passwd_form['old_password'],
-        proposed: passwd_form['new_password1'],
+  def password_form
+    @password_form = ChangePasswordForm.new({})
+  end
+
+  def update_password
+    @password_form = ChangePasswordForm.new(params[:change_password_form])
+    if @password_form.valid?
+      change_password(
+        current_password: @password_form.old_password,
+        new_password: @password_form.password,
         access_token: current_user.access_token
       )
       flash[:notice] = t('profile.password_changed')
+      redirect_to profile_path
+    else
+      flash.now[:errors] = @password_form.errors.full_messages.join(', ')
+      render :password_form, status: :bad_request
     end
-    redirect_to profile_path
-  rescue InvalidOldPassowrdError
+  rescue InvalidOldPasswordError
     flash[:error] = t('profile.old_password_mismatch')
-    redirect_to profile_path
-  rescue InvalidNewPassowrdError
+    render :password_form, status: :bad_request
+  rescue InvalidNewPasswordError
     flash[:error] = t('devise.sessions.InvalidPasswordException')
-    redirect_to profile_path
+    render :password_form, status: :bad_request
   rescue AuthenticationBackendException
     flash[:error] = t('devise.failure.unknown_cognito_response')
-    redirect_to profile_path
+    render :password_form, status: :bad_request
   end
 
   def switch_client
@@ -48,7 +53,7 @@ class ProfileController < ApplicationController
 
   def update_role
     if params[:assume_roles].nil?
-      CognitoStubClient.update_user(role: "")
+      CognitoStubClient.update_user(role: '')
     else
       role_str = params[:assume_roles][:role_selection].join(',')
       if params[:assume_roles][:role_selection].include?(ROLE::GDS)

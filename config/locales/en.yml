@@ -96,6 +96,7 @@ en:
     permissions: "Permissions"
     permissions_heading: "Your Permissions"
     change_password_heading: "Change Your Password"
+    change_password: "Change Password"
     access: "Access"
     client_switch_heading: "Switch Authentication Clients"
     client_switch_legend: "In development you can switch between using cognito and the stub authentication clients. If you use the stub client you can assume different roles."

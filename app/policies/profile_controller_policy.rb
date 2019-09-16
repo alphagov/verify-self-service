@@ -3,7 +3,11 @@ class ProfileControllerPolicy < ApplicationPolicy
     true
   end
 
-  def change_password?
+  def password_form?
+    true
+  end
+
+  def update_password?
     true
   end
 

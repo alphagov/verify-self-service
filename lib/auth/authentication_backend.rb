@@ -8,8 +8,8 @@ module AuthenticationBackend
   class AuthenticationBackendException < StandardError; end
   class UsernameExistsException < StandardError; end
   class GroupExistsException < StandardError; end
-  class InvalidOldPassowrdError < StandardError; end
-  class InvalidNewPassowrdError < StandardError; end
+  class InvalidOldPasswordError < StandardError; end
+  class InvalidNewPasswordError < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
@@ -150,16 +150,16 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e)
   end
 
-  def backend_change_password(proposed:, old:, access_token:)
+  def change_password(new_password:, current_password:, access_token:)
     client.change_password(
-      previous_password: old,
-      proposed_password: proposed,
+      previous_password: current_password,
+      proposed_password: new_password,
       access_token: access_token
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
-    raise InvalidOldPassowrdError.new(e)
+    raise InvalidOldPasswordError.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
-    raise InvalidNewPassowrdError.new(e)
+    raise InvalidNewPasswordError.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     Rails.logger.warn "An unknown cognito error occured with message: #{e}"
     raise AuthenticationBackendException.new(e)

@@ -85,26 +85,7 @@
     </div>
     <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
       <div class="govuk-form-group">
-        <%= form_for:password_change, url: profile_change_password_path do |f| %>
-        <fieldset class="govuk-fieldset" aria-describedby="changed-password-hint">
-          <span id="changed-password-hint" class="govuk-hint">
-            <%= t 'profile.change_password_legend' %>
-          </span>
-          <div class="govuk-form-group">
-            <%= f.label :old_password, t('profile.current_password_lbl'), class: "govuk-label" %>
-            <%= f.password_field :old_password, class: "govuk-input govuk-input--width-20" %>
-          </div>
-          <div class="govuk-form-group">
-            <%= f.label :new_password1, t('profile.new_password_lbl'), class: "govuk-label" %>
-            <%= f.password_field :new_password1, class: "govuk-input govuk-input--width-20" %>
-          </div>
-          <div class="govuk-form-group">
-            <%= f.label :new_password2, t('profile.confirm_password_lbl'), class: "govuk-label" %>
-            <%= f.password_field :new_password2, class: "govuk-input govuk-input--width-20" %>
-          </div>
-        </fieldset>
-        <%= f.submit t('profile.change_password_btn'), class: "govuk-button govuk-!-margin-top-6", data: { module: "govuk-button" } %>
-        <% end %>
+        <%= link_to t('profile.change_password_btn'), profile_change_password_path, class: 'govuk-button'  %>
       </div>
     </div>
   </div>
