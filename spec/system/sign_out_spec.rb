@@ -12,11 +12,11 @@ RSpec.describe 'Sign out', type: :system do
 
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
-    expect(page).to have_content 'Signed in successfully.'
-    click_link 'Sign out'
+    expect(page).to have_content t('devise.sessions.signed_in')
+    click_link t('layout.application.sign_out_link')
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'You need to sign in or sign up before continuing.'
+    expect(page).to have_content t('devise.failure.unauthenticated')
   end
 
   scenario 'user signed out after inactiviy' do
@@ -44,7 +44,7 @@ RSpec.describe 'Sign out', type: :system do
     travel_to Time.now + 16.minutes
     visit(profile_path)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Your session expired. Please sign in again to continue.'
+    expect(page).to have_content t('devise.failure.timeout')
   end
 
   scenario 'user gets to path before expiry' do

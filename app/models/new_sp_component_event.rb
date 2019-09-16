@@ -2,12 +2,14 @@ class NewSpComponentEvent < AggregatedEvent
   belongs_to_aggregate :sp_component
   data_attributes :name, :component_type, :environment
 
-  validate :name_is_present
   validate :component_is_new, on: :create
-  validates_presence_of :environment, in: Rails.configuration.hub_environments.keys
+  validates_presence_of :name, message: I18n.t('events.errors.missing_name')
+  validates_presence_of :environment,
+                        in: Rails.configuration.hub_environments.keys,
+                        message: I18n.t('components.errors.invalid_environment')
   validates_inclusion_of :component_type,
                          in: [COMPONENT_TYPE::SP, COMPONENT_TYPE::VSP],
-                         message: "must be either VSP or SP"
+                         message: I18n.t('components.errors.invalid_type')
 
 
   def build_sp_component

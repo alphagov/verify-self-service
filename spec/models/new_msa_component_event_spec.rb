@@ -12,7 +12,7 @@ RSpec.describe NewMsaComponentEvent, type: :model do
     it 'must be provided' do
       event = build(:new_msa_component_event, name: '')
       expect(event).to_not be_valid
-      expect(event.errors[:name]).to eql ['can\'t be blank']
+      expect(event.errors[:name]).to eql [t('events.errors.missing_name')]
     end
   end
 
@@ -20,7 +20,7 @@ RSpec.describe NewMsaComponentEvent, type: :model do
     it 'must be provided' do
       event = build(:new_msa_component_event, environment: '')
       expect(event).to_not be_valid
-      expect(event.errors[:environment]).to eql ['can\'t be blank']
+      expect(event.errors[:environment]).to eql [t('components.errors.invalid_environment')]
     end
   end
 end

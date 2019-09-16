@@ -20,7 +20,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     it 'must be present' do
       event = UploadCertificateEvent.create
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['is not a valid x509 certificate']
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.invalid')]
     end
   end
 
@@ -30,7 +30,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     it 'must error with invalid x509 certificate' do
       event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: 'Not a valid certificate', component: msa_component)
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['is not a valid x509 certificate']
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.invalid')]
     end
 
     it 'must allow base64 encoded DER format x509 certificate' do
@@ -56,7 +56,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
       event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['has expired']
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.expired')]
     end
 
     it 'must not expire within 1 month' do
@@ -64,7 +64,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
       event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['expires too soon']
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.expires_soon')]
     end
 
     it 'must expire within 1 year' do
@@ -72,7 +72,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
       event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['valid for too long']
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.valid_too_long')]
     end
 
     it 'must be RSA' do
@@ -80,7 +80,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
       event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['is not RSA']
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.not_rsa')]
     end
 
     it 'must be at least 2048 bits' do
@@ -88,7 +88,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
       event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
       expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql ['key size is less than 2048 bits']
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.small_key')]
     end
   end
 
@@ -150,7 +150,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
     it 'must be invalid when component is new' do
       event = UploadCertificateEvent.create(component: SpComponent.new)
       expect(event).to_not be_valid
-      expect(event.errors[:component]).to eql ['must exist']
+      expect(event.errors[:component]).to eql [t('components.errors.must_exist')]
     end
 
     it 'must be persisted' do
@@ -161,7 +161,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
     it 'must reference an object' do
       event = UploadCertificateEvent.create
-      expect(event.errors[:component]).to eql ['must exist', 'must exist']
+      expect(event.errors[:component]).to eql [t('components.errors.must_exist'), t('components.errors.must_exist')]
     end
   end
 

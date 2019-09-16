@@ -60,7 +60,7 @@
                   <%= link_to t('layout.application.profile'), profile_path, class: "govuk-header__link" %>
                 </li>
                 <li class="govuk-header__navigation-item">
-                  <%= link_to t('layout.application.sign_out_link'), destroy_user_session_path, confirm: 'Sign Out', method: :delete, class: "govuk-header__link" %>
+                  <%= link_to t('layout.application.sign_out_link'), destroy_user_session_path, confirm: t('layout.application.sign_out_link'), method: :delete, class: "govuk-header__link" %>
                 </li>
               </ul>
             </nav>

@@ -84,7 +84,7 @@ RSpec.describe UserJourneyController, type: :controller do
         component_id: msa_component.id,
         certificate_id: msa_encryption_cert.id
       }
-      expect(flash[:warn]).to match('You are not authorised to perform this action')
+      expect(flash[:warn]).to match(t('shared.errors.authorisation'))
       expect(response).to have_http_status(:forbidden)
     end
   end

@@ -31,8 +31,6 @@
 
 en:
   common:
-    error_blank_name: Name can't be blank
-    error_name_not_unique: Name has already been taken
     gds_full: Government Digital Service
     gds: GDS
   login:
@@ -47,7 +45,7 @@ en:
     no_qr_instructions: "Insert the code below in the authenticator app instead:"
     success: You have been successfully enroled to MFA, please login now
     errors:
-      generic_error: "There was an error, please try again"
+      generic_error: "Something went wrong, try again"
   users:
     title_no_team: Team members
     title_for_team: Team members for
@@ -56,13 +54,13 @@ en:
       title: Invite a new user
       button: Invite user
       button_to: Invite user to
-      success: The user has been invited
+      success: An invitation has been sent to the new user's email address
       errors:
-        already_exists: The user already exists
-        invalid_email: Invalid email format
+        already_exists: This email address is already being used, enter a unique one
+        invalid_email: Enter an email address in the correct format
         invalid_role: "%{role} is not a valid role"
-        generic_error: There was an error creating the user
-        team_missing: Team does not exist
+        generic_error: Something went wrong when creating the user, try again
+        team_missing: This team does not exist
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
@@ -83,13 +81,13 @@ en:
     upload: Upload your certificate
     previous: Previous
     errors:
-      invalid: is not a valid x509 certificate
-      expired: has expired
+      invalid: is not a x509 certificate
+      expired: has already expired
       expires_soon: expires too soon
-      valid_too_long: valid for too long
+      valid_too_long: expires too far in the future
       not_rsa: is not RSA
       small_key: key size is less than 2048 bits
-      not_signing: signing certificate required
+      not_signing: signing certificate is needed
       invalid_file_type: invalid file type
   profile:
     title: "User Information"
@@ -122,7 +120,7 @@ en:
     details: Event details
     user_id: User ID
     errors:
-      missing_name: "can't be blank"
+      missing_name: "Enter a name"
   layout:
     application:
       title: Verify Self-Service
@@ -167,6 +165,8 @@ en:
       errored: errored
       invalid: Invalid team name
       failed: Failed to create team
+      blank_name: Enter a team name
+      name_not_unique: This team name is already being used, enter a unique one
   components:
     title: Manage certificates
     name: Name
@@ -193,7 +193,9 @@ en:
     errors:
       already_exists: already exists
       must_exist: must exist
-      missing_entity_id: id is required for MSA component
+      missing_entity_id: ID is required for the MSA component
+      invalid_environment: Component must belong to a valid environment
+      invalid_type: must be either VSP or SP
   admin:
     title: Admin
     view_components: View components
@@ -272,4 +274,3 @@ en:
       msa_add_new_key_and_certificate: Add the new signing key and certificate to your Matching Service Adapter (MSA) configuration.
       tell_us_to_stop_using_old_certificate: Tell GOV.UK Verify to stop using your old certificate using this tool.
       configuration_warning: You must update your %{component} configuration by %{date}, or your service’s connection to GOV.UK Verify will break.
-

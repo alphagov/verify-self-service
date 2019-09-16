@@ -13,7 +13,7 @@ RSpec.describe NewSpComponentEvent, type: :model do
     it 'must be provided' do
       event = build(:new_sp_component_event, name: '')
       expect(event).to_not be_valid
-      expect(event.errors[:name]).to eql ['can\'t be blank']
+      expect(event.errors[:name]).to eql [t('events.errors.missing_name')]
     end
   end
 
@@ -21,7 +21,7 @@ RSpec.describe NewSpComponentEvent, type: :model do
     it 'must be provided' do
       event = build(:new_sp_component_event, name: 'New component', environment: '')
       expect(event).to_not be_valid
-      expect(event.errors[:environment]).to eql ['can\'t be blank']
+      expect(event.errors[:environment]).to eql [t('components.errors.invalid_environment')]
     end
   end
 
@@ -29,7 +29,7 @@ RSpec.describe NewSpComponentEvent, type: :model do
     it 'must be provided' do
       event = build(:new_sp_component_event, component_type: '')
       expect(event).to_not be_valid
-      expect(event.errors[:component_type]).to eql ['must be either VSP or SP']
+      expect(event.errors[:component_type]).to eql [t('components.errors.invalid_type')]
     end
   end
 

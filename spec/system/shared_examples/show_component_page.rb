@@ -123,7 +123,7 @@ RSpec.shared_examples "show component page" do |component_type|
 
       show_page.replace_encryption_certificate(invalid_cert)
       expect(show_page).not_to have_encryption_certificate(invalid_cert)
-      expect(show_page).to have_content 'Certificate is not a valid x509 certificate'
+      expect(show_page).to have_content t('certificates.errors.invalid')
     end
 
     it 'successfully enables a certificate' do
