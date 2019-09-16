@@ -27,7 +27,7 @@ RSpec.describe 'New SP Component Page', type: :system do
       fill_in 'component_name', with: component_name
       click_button 'Create SP component'
 
-      expect(page).to have_content 'Name can\'t be blank'
+      expect(page).to have_content t('events.errors.missing_name')
     end
   end
 end

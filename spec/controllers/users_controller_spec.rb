@@ -81,7 +81,7 @@ RSpec.describe UsersController, type: :controller do
         expect(response).to_not have_http_status(:success)
         expect(subject).to_not render_template(:invite)
         expect(response).to have_http_status(:forbidden)
-        expect(flash[:warn]).to eq("You are not authorised to perform this action")
+        expect(flash[:warn]).to eq t('shared.errors.authorisation')
       end
     end
 
@@ -120,7 +120,7 @@ RSpec.describe UsersController, type: :controller do
             }
         }
         expect(response).to have_http_status(:forbidden)
-        expect(flash[:warn]).to eq("You are not authorised to perform this action")
+        expect(flash[:warn]).to eq t('shared.errors.authorisation')
       end
     end
   end

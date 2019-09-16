@@ -35,7 +35,7 @@ RSpec.shared_examples "new component page" do |component_name|
       fill_in 'service_entity_id', with: service_entity_id
       click_button 'Create service'
 
-      expect(page).to have_content 'Name can\'t be blank'
+      expect(page).to have_content t('events.errors.missing_name')
     end
 
     it 'when entity id is not unique' do

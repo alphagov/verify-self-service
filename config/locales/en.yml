@@ -31,8 +31,6 @@
 
 en:
   common:
-    error_blank_name: Enter a team name
-    error_name_not_unique: This team name is already being used, enter a unique one
     gds_full: Government Digital Service
     gds: GDS
   login:
@@ -166,6 +164,8 @@ en:
       errored: errored
       invalid: Invalid team name
       failed: Failed to create team
+      blank_name: Enter a team name
+      name_not_unique: This team name is already being used, enter a unique one
   components:
     title: Manage certificates
     name: Name
@@ -192,7 +192,9 @@ en:
     errors:
       already_exists: already exists
       must_exist: must exist
-      missing_entity_id: entityID is required for the MSA component
+      missing_entity_id: ID is required for the MSA component
+      invalid_environment: Component must belong to a valid environment
+      invalid_type: must be either VSP or SP
   admin:
     title: Admin
     view_components: View components

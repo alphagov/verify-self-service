@@ -41,7 +41,7 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     )
     expect(event).not_to be_valid
     expect(event).not_to be_persisted
-    expect(event.errors.messages[:certificate]).to eq(["is not a valid x509 certificate"])
+    expect(event.errors.messages[:certificate]).to eq [t('certificates.errors.invalid')]
   end
 
   it 'replace current encryption certificate with another' do
@@ -70,7 +70,7 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     event = ReplaceEncryptionCertificateEvent.create(
       component: component, encryption_certificate_id: invalid.id
     )
-    expect(event.errors[:certificate]).to eq ['is not a valid x509 certificate']
+    expect(event.errors[:certificate]).to eq [t('certificates.errors.invalid')]
   end
 
   it 'must not be expired' do
@@ -80,7 +80,7 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     event = ReplaceEncryptionCertificateEvent.create(
       component: component, encryption_certificate_id: expired.id
     )
-    expect(event.errors[:certificate]).to eq ['has expired']
+    expect(event.errors[:certificate]).to eq [t('certificates.errors.expired')]
   end
 
   it 'must not expire within 1 month' do
@@ -90,7 +90,7 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     event = ReplaceEncryptionCertificateEvent.create(
       component: component, encryption_certificate_id: less_than_one_month.id
     )
-    expect(event.errors[:certificate]).to eq ['expires too soon']
+    expect(event.errors[:certificate]).to eq [t('certificates.errors.expires_soon')]
   end
 
   it 'must expire within 1 year' do
@@ -100,7 +100,7 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     event = ReplaceEncryptionCertificateEvent.create(
       component: component, encryption_certificate_id: more_than_one_year.id
     )
-    expect(event.errors[:certificate]).to eq ['valid for too long']
+    expect(event.errors[:certificate]).to eq [t('certificates.errors.valid_too_long')]
   end
 
   context '#trigger_publish_event' do

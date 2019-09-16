@@ -29,7 +29,7 @@ RSpec.describe 'New MSA Component Page', type: :system do
       choose('component_environment_staging')
       click_button 'Create MSA component'
 
-      expect(page).to have_content 'Entity id is required for MSA component'
+      expect(page).to have_content t('components.errors.missing_entity_id')
     end
   end
 end

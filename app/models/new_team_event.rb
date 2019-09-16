@@ -6,7 +6,9 @@ class NewTeamEvent < AggregatedEvent
   belongs_to_aggregate :team
   data_attributes :name, :team_alias
 
-  validate :name_is_present, :create_cognito_group
+  validates_presence_of :name, message: I18n.t('team.errors.blank_name')
+
+  validate :create_cognito_group
 
   def build_team
     Team.new

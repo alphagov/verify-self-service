@@ -17,7 +17,7 @@ RSpec.describe MsaComponentsController, type: :controller do
     it "returns http redirect for unauthorised user" do
       usermgr_stub_auth
       get :new
-      expect(flash[:warn]).to match("You are not authorised to perform this action")
+      expect(flash[:warn]).to match(t('shared.errors.authorisation'))
       expect(response).to have_http_status(:forbidden)
     end
 

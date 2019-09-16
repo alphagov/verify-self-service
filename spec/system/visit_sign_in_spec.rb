@@ -89,7 +89,7 @@ RSpec.describe 'Sign in', type: :system do
     visit new_msa_component_path
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'You need to sign in or sign up before continuing.'
+    expect(page).to have_content t('devise.failure.unauthenticated')
   end
 
   scenario 'user is forced to change their temporary password' do
@@ -148,7 +148,7 @@ RSpec.describe 'Sign in', type: :system do
     click_button("commit")
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'The one time code you entered did not match what was expected'
+    expect(page).to have_content t('devise.sessions.EnableSoftwareTokenMFAException')
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false

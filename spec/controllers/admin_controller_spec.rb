@@ -13,14 +13,14 @@ RSpec.describe AdminController, type: :controller do
     it 'should not render when user is certificate manager' do
       certmgr_stub_auth
       get :index
-      expect(flash[:warn]).to eq 'You are not authorised to perform this action'      
+      expect(flash[:warn]).to eq t('shared.errors.authorisation')    
       expect(subject).to_not render_template(:index)
     end
 
     it 'should not render when user is user manager' do
       usermgr_stub_auth
       get :index
-      expect(flash[:warn]).to eq 'You are not authorised to perform this action'      
+      expect(flash[:warn]).to eq t('shared.errors.authorisation')    
       expect(subject).to_not render_template(:index)
     end
 end

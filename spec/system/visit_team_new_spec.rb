@@ -24,7 +24,7 @@ RSpec.describe 'New Team Page', type: :system do
       click_button t('team.new.create_team')
 
       expect(page).to have_content t('team.new.heading')
-      expect(page).to have_content t('common.error_blank_name')
+      expect(page).to have_content t('team.errors.blank_name')
     end
 
     it 'when name is not unique' do
@@ -37,7 +37,7 @@ RSpec.describe 'New Team Page', type: :system do
       click_button t('team.new.create_team')
 
       expect(page).to have_content t('team.new.heading')
-      expect(page).to have_content t('common.error_name_not_unique')
+      expect(page).to have_content t('team.errors.name_not_unique')
     end
   end
 
