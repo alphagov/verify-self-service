@@ -2,10 +2,9 @@ require 'auth/authentication_backend'
 
 class UsersController < ApplicationController
   include AuthenticationBackend
-  layout "main_layout"
+  layout 'main_layout'
 
   def index
-    @user = current_user
     @gds = current_user.permissions.team_management
     if @gds
       @teams = Team.all
@@ -15,6 +14,9 @@ class UsersController < ApplicationController
   end
 
   def invite
+    if current_user.permissions.admin_management
+      @gds_team = Team.find_by_id(params[:team_id])&.name == TEAMS::GDS
+    end
     @form = InviteUserForm.new({})
   end
 
@@ -31,7 +33,7 @@ class UsersController < ApplicationController
 private
 
   def team_valid?
-    if Team.exists?(params[:team_id]) || params[:team_id] == '0'
+    if Team.exists?(params[:team_id])
       true
     else
       @form.errors.add(t('invite.error.team.missing'))

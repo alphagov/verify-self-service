@@ -17,6 +17,10 @@ class InviteUserForm
 private
 
   def email_is_valid
+    if roles&.include?(ROLE::GDS) && !email.ends_with?(TEAMS::GDS_EMAIL_DOMAIN)
+      errors.add(:email, I18n.t('users.invite.errors.invalid_gds_email'))
+    end
+
     errors.add(:email, I18n.t('users.invite.errors.invalid_email')) unless EmailValidator.valid?(email, strict_mode: true)
   end
 

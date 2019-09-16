@@ -54,10 +54,12 @@ en:
       title: Invite a new user
       button: Invite user
       button_to: Invite user to
+      gds_warning: You're inviting a GDS user with full permissions to the system
       success: An invitation has been sent to the new user's email address
       errors:
         already_exists: This email address is already being used, enter a unique one
         invalid_email: Enter an email address in the correct format
+        invalid_gds_email: GDS team requires a GDS email address
         invalid_role: "%{role} is not a valid role"
         generic_error: Something went wrong when creating the user, try again
         team_missing: This team does not exist
