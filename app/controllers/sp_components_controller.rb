@@ -8,6 +8,7 @@ class SpComponentsController < ApplicationController
   def new
     @component = NewSpComponentEvent.new
     @hub_environments = Rails.configuration.hub_environments.keys
+    @teams = Team.all
   end
 
   def show
@@ -21,12 +22,9 @@ class SpComponentsController < ApplicationController
       redirect_to admin_path
     else
       Rails.logger.info(@component.errors.full_messages)
+      @teams = Team.all
       render :new
     end
-  end
-
-  def edit
-    @sp_component = SpComponent.find_by_id(params[:id])
   end
 
   def update

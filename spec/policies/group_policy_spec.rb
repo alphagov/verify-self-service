@@ -10,7 +10,7 @@ describe GroupPolicy do
 
     it "grants access when the user's team matches the object's one" do
       user_manager_user = FactoryBot.create(:user_manager_user)
-      expect(subject).to permit(user_manager_user, FactoryBot.create(:team, id: user_manager_user.team))
+      expect(subject).to permit(user_manager_user, Team.find_by_id(user_manager_user.team))
     end
 
     it 'grants access when the GDS user' do

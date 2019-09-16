@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :team do
-    name { 'Test Team' }
+    name { 'Team ' + SecureRandom.alphanumeric }
     team_alias { 'testteam' }
   end
 end

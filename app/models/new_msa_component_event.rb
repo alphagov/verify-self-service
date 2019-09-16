@@ -1,9 +1,10 @@
 class NewMsaComponentEvent < AggregatedEvent
   belongs_to_aggregate :msa_component
-  data_attributes :name, :entity_id, :environment
+  data_attributes :name, :entity_id, :team_id, :environment
   validate :msa_has_entity_id
   validate :component_is_new, on: :create
   validates_presence_of :name, message: I18n.t('events.errors.missing_name')
+  validates_presence_of :team_id, message: I18n.t('components.errors.invalid_team')
   validates_presence_of :environment,
                         in: Rails.configuration.hub_environments.keys,
                         message: I18n.t('components.errors.invalid_environment')
@@ -16,6 +17,7 @@ class NewMsaComponentEvent < AggregatedEvent
     {
       name: name,
       component_type: COMPONENT_TYPE::MSA,
+      team_id: team_id,
       environment: environment,
       entity_id: entity_id,
       created_at: created_at

@@ -27,12 +27,4 @@ RSpec.describe MsaComponentsController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
-
-  describe "GET #edit" do
-    it "returns http success" do
-      certmgr_stub_auth
-      get :edit, params: { id: msa_component.id }
-      expect(response).to have_http_status(:success)
-    end
-  end
 end

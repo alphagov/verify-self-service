@@ -8,6 +8,7 @@ class MsaComponentsController < ApplicationController
   def new
     @component = NewMsaComponentEvent.new
     @hub_environments = Rails.configuration.hub_environments.keys
+    @teams = Team.all
   end
 
   def show
@@ -21,12 +22,9 @@ class MsaComponentsController < ApplicationController
       redirect_to admin_path
     else
       Rails.logger.info(@component.errors.full_messages)
+      @teams = Team.all
       render :new
     end
-  end
-
-  def edit
-    @msa_component = MsaComponent.find_by_id(params[:id])
   end
 
   def update
