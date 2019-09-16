@@ -26,14 +26,23 @@ class UserJourneyController < ApplicationController
   end
 
   def submit
-    @new_certificate_value = (params[:certificate][:value])
-    @component = klass_component(@certificate.component_type).find_by_id(@certificate.component_id)
-    @new_certificate = Certificate.new(usage: @certificate.usage, value: @new_certificate_value, component: @component)
-    if @new_certificate.valid?
-      render 'user_journey/check_your_certificate'
-    else
-      redirect_to :upload_certificate
+    extractor = CertificateExtractor.new(params[:certificate])
+
+    if extractor.valid?
+      @new_certificate_value = extractor.call
+      @component = klass_component(@certificate.component_type).find_by_id(@certificate.component_id)
+      @new_certificate = Certificate.new(
+        usage: @certificate.usage,
+        value: @new_certificate_value,
+        component: @component
+      )
+
+      if @new_certificate.valid?
+        render 'user_journey/check_your_certificate' and return # rubocop:disable Style/AndOr
+      end
     end
+
+    redirect_to :upload_certificate
   end
 
   def confirm

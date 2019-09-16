@@ -88,6 +88,7 @@ en:
       not_rsa: is not RSA
       small_key: key size is less than 2048 bits
       not_signing: signing certificate is needed
+      invalid_file_type: invalid file type
   profile:
     title: "User Information"
     welcome: Welcome
