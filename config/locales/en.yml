@@ -218,12 +218,14 @@ en:
     wait_for_an_email: Wait for an email from GOV.UK Verify confirming your new signing certificate is in use
     how_long_it_takes: This usually takes around 10 minutes from the time you uploaded the new signing certificate.
     delete_old_signing_key_and_cert: Then you can delete the old signing key and certificate from your %{component} configuration.
+    connection_broken_or_compromised: What to do if your connection is broken or compromised
     certificates_expiring: "%{number} certificates are expiring soon."
     urls:
       msa_encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
       msa_signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate
       vsp_encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate
       vsp_signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate
+      connection_broken_or_compromised: https://prototype-docs.cloudapps.digital/emergency-procedures/#emergency-procedures
     before_you_start:
       title: Before you start
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
