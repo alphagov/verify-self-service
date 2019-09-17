@@ -4,6 +4,7 @@ RSpec.describe 'View certificate page', type: :system do
   include CertificateSupport
   let(:msa_encryption_certificate) { create(:msa_encryption_certificate) }
   let(:sp_encryption_certificate) { create(:sp_encryption_certificate) }  
+  let(:vsp_encryption_certificate) { create(:vsp_encryption_certificate) }  
 
   before(:each) do
     @user = login_certificate_manager_user
@@ -15,7 +16,12 @@ RSpec.describe 'View certificate page', type: :system do
       component: msa_encryption_certificate.component,
       encryption_certificate_id: msa_encryption_certificate.id
     )
+    ReplaceEncryptionCertificateEvent.create(
+      component: vsp_encryption_certificate.component,
+      encryption_certificate_id: vsp_encryption_certificate.id
+    )
   end
+
   context 'shows existing msa' do
     it 'encryption certificate information and navigates to next page' do
       msa_component = msa_encryption_certificate.component
@@ -37,9 +43,28 @@ RSpec.describe 'View certificate page', type: :system do
 
   context 'shows existing vsp' do
     it 'encryption certificate information and navigates to next page' do
+      vsp_component = vsp_encryption_certificate.component
+      visit view_certificate_path(vsp_component.component_type, vsp_component.id, vsp_component.encryption_certificate_id)
+      expect(page).to have_content 'Verify Service Provider: encryption certificate'
+      click_link 'Replace certificate'
+      expect(current_path).to eql before_you_start_path(vsp_component.component_type, vsp_component.id, vsp_component.encryption_certificate_id)
+    end
+
+    it 'signing certificate information and navigates to next page' do
+      vsp_signing_certificate = create(:vsp_signing_certificate)
+      vsp_component = vsp_signing_certificate.component
+      visit view_certificate_path(vsp_component.component_type, vsp_component.id, vsp_component.signing_certificates[0])
+      expect(page).to have_content 'Verify Service Provider: signing certificate'
+      click_link 'Add new certificate'
+      expect(current_path).to eql before_you_start_path(vsp_component.component_type, vsp_component.id, vsp_component.signing_certificates[0])
+    end
+  end
+
+  context 'shows existing sp' do
+    it 'encryption certificate information and navigates to next page' do
       sp_component = sp_encryption_certificate.component
       visit view_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
-      expect(page).to have_content 'Verify Service Provider: encryption certificate'
+      expect(page).to have_content 'Service Provider: encryption certificate'
       click_link 'Replace certificate'
       expect(current_path).to eql before_you_start_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
     end
@@ -48,7 +73,7 @@ RSpec.describe 'View certificate page', type: :system do
       sp_signing_certificate = create(:sp_signing_certificate)
       sp_component = sp_signing_certificate.component
       visit view_certificate_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
-      expect(page).to have_content 'Verify Service Provider: signing certificate'
+      expect(page).to have_content 'Service Provider: signing certificate'
       click_link 'Add new certificate'
       expect(current_path).to eql before_you_start_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
     end

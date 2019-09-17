@@ -3,7 +3,7 @@
     <table class="govuk-table">
       <h2 class="govuk-heading-m"><%= component.environment.capitalize %></h2>
       <caption class="govuk-table__caption govuk-!-margin-bottom-1">
-        <%= component.component_type == COMPONENT_TYPE::MSA ? t('user_journey.msa_long') : t('user_journey.vsp_long') %> 
+       <%= t("user_journey.component_name.#{display_component(component)}") %>
         <span class="component-supporting-text">
           <%= t 'user_journey.used_by' %>
         </span>

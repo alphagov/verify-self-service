@@ -1,17 +1,8 @@
 <p>
-  <%= t 'user_journey.before_you_start.find_out_more' %>
-  <% if certificate.component_type == COMPONENT_TYPE::MSA %>
-    <% if certificate.encryption? %>
-      <%= link_to t('user_journey.before_you_start.rotate_key_and_certificate', component: COMPONENT_TYPE::MSA_SHORT, certificate: CERTIFICATE_USAGE::ENCRYPTION), t('user_journey.urls.msa_encryption') %>
-    <% else %>
-      <%= link_to t('user_journey.before_you_start.rotate_key_and_certificate', component: COMPONENT_TYPE::MSA_SHORT, certificate: CERTIFICATE_USAGE::SIGNING), t('user_journey.urls.msa_signing') %>
-    <% end %>
-  <% else %>
-    <% if certificate.encryption? %>
-      <%= link_to t('user_journey.before_you_start.rotate_key_and_certificate', component: COMPONENT_TYPE::VSP_SHORT, certificate: CERTIFICATE_USAGE::ENCRYPTION), t('user_journey.urls.vsp_encryption') %>
-    <% else %>
-      <%= link_to t('user_journey.before_you_start.rotate_key_and_certificate', component: COMPONENT_TYPE::VSP_SHORT, certificate: CERTIFICATE_USAGE::SIGNING), t('user_journey.urls.vsp_signing') %>
-    <% end %>
-  <% end %>
-  <%= t 'user_journey.before_you_start.in_documentation' %> 
+  <%= t('user_journey.find_out_more', 
+    link: link_to(t('user_journey.rotate_key_and_certificate', 
+      component: display_component(certificate.component), 
+      certificate: certificate.usage), t("user_journey.urls.#{display_component(certificate.component)}.#{certificate.usage}"))
+    ).html_safe 
+  %>
 </p>

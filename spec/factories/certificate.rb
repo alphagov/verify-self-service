@@ -7,6 +7,11 @@ FactoryBot.define do
       component { create(:msa_component) }
     end
 
+    factory :vsp_encryption_certificate, class: Certificate do
+      usage { CERTIFICATE_USAGE::ENCRYPTION }
+      component { create(:sp_component, vsp: :true) }
+    end
+
     factory :sp_encryption_certificate, class: Certificate do
       usage { CERTIFICATE_USAGE::ENCRYPTION }
       component { create(:sp_component) }
@@ -15,6 +20,11 @@ FactoryBot.define do
     factory :msa_signing_certificate, class: Certificate do
       usage { CERTIFICATE_USAGE::SIGNING }
       component { create(:msa_component) }
+    end
+
+    factory :vsp_signing_certificate, class: Certificate do
+      usage { CERTIFICATE_USAGE::SIGNING }
+      component { create(:sp_component, vsp: :true) }
     end
 
     factory :sp_signing_certificate, class: Certificate do
