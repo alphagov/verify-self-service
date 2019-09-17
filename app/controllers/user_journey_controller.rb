@@ -18,6 +18,10 @@ class UserJourneyController < ApplicationController
     end
   end
 
+  def before_you_start
+    @dual_running = params[:dual_running]
+  end
+
   def upload_certificate
     component_id = params[component_key(params)]
     component_type = component_name_from_params(params)

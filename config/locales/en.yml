@@ -288,6 +288,7 @@ en:
     certificates_expiring: "%{number} certificates are expiring soon."
     find_out_more: Find out more about %{link} in the documentation.
     rotate_key_and_certificate: rotating your %{component} %{certificate} key and certificate
+    continue: Continue
     urls:
       MSA:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
@@ -299,6 +300,9 @@ en:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-encryption/#rotate-your-service-provider-encryption-key-and-certificate
         signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
       connection_broken_or_compromised: https://prototype-docs.cloudapps.digital/emergency-procedures/#emergency-procedures
+    dual_running:
+      title: Does your service provider support dual running?
+      support_dual_running: If your service provider supports dual running, it can try to decrypt messages from the GOV.UK Verify Hub using both your old and new encryption keys. Your connection will not break.
     before_you_start:
       title: Before you start
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
@@ -310,7 +314,6 @@ en:
       create_key_and_certificate: Create a new key and certificate
       create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
       must_update: You must update your %{component} configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
-      continue: Continue
       have_updated: I have updated my %{component} configuration
     certificate:
       title: Upload or paste your new certificate

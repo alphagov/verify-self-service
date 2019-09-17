@@ -28,4 +28,4 @@
   </div>
 <% end %>
 
-<%= link_to @certificate.encryption? ? t('user_journey.before_you_start.have_updated', component: display_component(@certificate.component)) : t('user_journey.before_you_start.continue'), upload_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+<%= link_to @certificate.encryption? ? t('user_journey.before_you_start.have_updated', component: display_component(@certificate.component)) : t('user_journey.continue'), upload_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 

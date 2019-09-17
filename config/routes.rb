@@ -54,6 +54,7 @@ Rails.application.routes.draw do
   post 'profile/update-role', to: 'profile#update_role'
 
   get '/component/:component_type/:component_id/certificate/:certificate_id', to: 'user_journey#view_certificate', as: 'view_certificate'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/dual-running', to: 'user_journey#dual_running', as: 'dual_running'
   get '/component/:component_type/:component_id/certificate/:certificate_id/before-you-start', to: 'user_journey#before_you_start', as: 'before_you_start'
   get '/component/:component_type/:component_id/certificate/:certificate_id/upload-certificate', to: 'user_journey#upload_certificate', as: 'upload_certificate'
   get '/component/:component_type/:component_id/certificate/:certificate_id/check-your-certificate', to: 'user_journey#upload_certificate', as: 'check_your_certificate'

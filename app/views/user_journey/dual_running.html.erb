@@ -1,0 +1,21 @@
+<%= render 'shared/certificate_details', certificate: @certificate %>
+
+<%= form_tag(before_you_start_path, method: "get") do %>
+  <div class="govuk-form-group">
+    <h1 class="govuk-heading-l"><%= t 'user_journey.dual_running.title' %></h1>
+    <span id="dual-running-hint" class="govuk-hint">
+      <%= t 'user_journey.dual_running.support_dual_running' %>
+    </span>
+    <div class="govuk-radios govuk-radios--inline">
+      <div class="govuk-radios__item ">
+        <%= radio_button_tag( :dual_running, "yes", false, class: 'govuk-radios__input') %>
+        <%= label_tag(:dual_running_yes, "Yes", class: 'govuk-label govuk-radios__label') %>
+      </div>
+      <div class="govuk-radios__item ">
+        <%= radio_button_tag(:dual_running, "no", false, class: 'govuk-radios__input') %>
+        <%= label_tag(:dual_running_no, "No", class: 'govuk-label govuk-radios__label') %>
+      </div>
+    </div>
+    <%= submit_tag(t('user_journey.continue'), class: "govuk-button", data: { module: "govuk-button" }) %>
+  </div>
+<% end %>
