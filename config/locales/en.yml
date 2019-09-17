@@ -54,7 +54,7 @@ en:
       title: Invite a new user
       button: Invite user
       button_to: Invite user to
-      gds_warning: You're inviting a GDS user with full permissions to the system
+      gds_warning: You're inviting a GDS user with full permissions to the service
       success: An invitation has been sent to the new user's email address
       errors:
         already_exists: This email address is already being used, enter a unique one
