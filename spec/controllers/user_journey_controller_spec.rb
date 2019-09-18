@@ -159,13 +159,13 @@ RSpec.describe UserJourneyController, type: :controller do
       certmgr_stub_auth
       certificate = create(:msa_encryption_certificate)
       msa_component = certificate.component
-      post(:confirm,
+      post :confirm,
            params: {
              component_type: msa_component.component_type,
              component_id: msa_component.id,
              certificate_id: msa_encryption_cert.id,
-             certificate: { new_certificate: certificate.value } }
-          )
+             certificate: { new_certificate: certificate.value }
+           }
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:confirmation)
     end
@@ -188,6 +188,43 @@ RSpec.describe UserJourneyController, type: :controller do
            }
 
       expect(response).to redirect_to :upload_certificate
+      expect(flash[:error]).to include(I18n.t('certificates.errors.valid_too_long'))
+    end
+
+    it 'should redirect to upload certificate page when certificate file is invalid' do
+      certmgr_stub_auth
+      post :submit,
+           params: {
+             component_type: msa_component.component_type,
+             component_id: msa_component.id,
+             certificate_id: msa_encryption_cert.id,
+             certificate: {
+               cert_file: upload_file(
+                 name: 'invalid.txt',
+                 type: 'text/rtf',
+                 content: 'It was a bright, cold day in April and the clocks were striking thirteen'
+               )
+             }
+           }
+
+      expect(response).to redirect_to :upload_certificate
+      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid_file_type'))
+    end
+  end
+
+  context 'confirm with invalid certificate' do
+    it 'should render upload certificate page when certificate is invalid' do
+      certmgr_stub_auth
+      post :confirm,
+           params: {
+             component_type: msa_component.component_type,
+             component_id: msa_component.id,
+             certificate_id: msa_encryption_cert.id,
+             certificate: { new_certificate: 'Snowman wakes before dawn' }
+           }
+
+      expect(subject).to render_template(:upload_certificate)
+      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid'))
     end
   end
 end

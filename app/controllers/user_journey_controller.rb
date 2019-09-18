@@ -44,12 +44,22 @@ class UserJourneyController < ApplicationController
       end
     end
 
-    redirect_to :upload_certificate
+    error_message = extractor.tap { |x|
+      x.errors.merge!(@new_certificate.errors) if @new_certificate
+    }.errors.full_messages.join(', ')
+
+    Rails.logger.info(error_message)
+    redirect_to :upload_certificate, flash: { error: error_message }
   end
 
   def confirm
     new_certificate_value = params[:certificate][:new_certificate]
-    @upload = UploadCertificateEvent.create(usage: @certificate.usage, value: new_certificate_value, component_id: params[:component_id], component_type: params[:component_type])
+    @upload = UploadCertificateEvent.create(
+      usage: @certificate.usage,
+      value: new_certificate_value,
+      component_id: params[:component_id],
+      component_type: params[:component_type]
+    )
 
     if @upload.valid?
       component = klass_component(@upload.component_type).find_by_id(@upload.component_id)
@@ -63,7 +73,11 @@ class UserJourneyController < ApplicationController
 
       render :confirmation
     else
-      Rails.logger.info(@upload.errors.full_messages)
+      @upload.errors.full_messages.join(', ').tap do |error_message|
+        Rails.logger.info(error_message)
+        flash.now[:error] = error_message
+      end
+
       render :upload_certificate
     end
   end
