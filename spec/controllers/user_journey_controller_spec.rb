@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe UserJourneyController, type: :controller do
   include AuthSupport
   include CertificateSupport
+
   let(:msa_component) { create(:msa_component) }
   let(:msa_encryption_cert) { create(:msa_encryption_certificate) }
 

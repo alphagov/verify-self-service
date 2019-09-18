@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe CertificateExtractor, type: :model do
+  include TempFileHelpers
+
   let(:cert) { PKI.new.generate_signed_cert }
 
   context 'file type validation' do
@@ -87,21 +89,5 @@ RSpec.describe CertificateExtractor, type: :model do
 
   def create_extractor(value: '', cert_file: nil)
     CertificateExtractor.new(value: value, cert_file: cert_file)
-  end
-
-  def upload_file(name:, type:, content:)
-    ActionDispatch::Http::UploadedFile.new(
-      filename: name,
-      head: 'Content-Disposition: form-data; name=certificate[cert_file]',
-      type: type,
-      tempfile: create_tempfile(name: name, content: content)
-    )
-  end
-
-  def create_tempfile(name:, content:)
-    Tempfile.new(name).tap do |f|
-      f.write(content)
-      f.close
-    end
   end
 end
