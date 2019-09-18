@@ -112,6 +112,18 @@ en:
     banner: "There are features on this page which are only avialable in the development environment."
     assume_roles_heading: "Switch Roles"
     assume_roles_legend: "Select which role(s) you wish to assume?"
+  password:
+    change_password_heading: "Change Your Password"
+    change_password: "Change Password"
+    password_changed: "Password changed successfully"
+    change_password_legend: "You can change your password by entering your current password followed by a new password in the space provide and the same new password again in the confirmation space."
+    current_password_lbl: "Current password:"
+    new_password_lbl: "New password:"
+    confirm_password_lbl: "Confirm new password:"
+    change_password_btn: "Change Password"
+    errors:
+      old_password_mismatch: "Your old password does not match the one we have on record"
+      new_password_mismatch: "Your new password did not match your confirmation password"
   events:
     title: Events
     type: Type

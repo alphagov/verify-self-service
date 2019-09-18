@@ -8,6 +8,7 @@ FactoryBot.define do
     cognito_groups { ['test'] }
     team { create(:team).id }
     session_start_time { Time.now.to_s }
+    access_token { SecureRandom.uuid }
 
     factory :gds_user do
       email { 'test.test@digital.cabinet-office.gov.uk' }

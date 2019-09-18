@@ -42,6 +42,8 @@ Rails.application.routes.draw do
   post '/mfa-enrolment', to: 'mfa#enrol', as: :enrol_to_mfa
 
   get 'profile', to: 'profile#show'
+  get 'profile/change-password', to: 'profile#password_form'
+  post 'profile/change-password', to: 'profile#update_password'
   post 'profile/switch-client', to: 'profile#switch_client'
   post 'profile/update-role', to: 'profile#update_role'
 
