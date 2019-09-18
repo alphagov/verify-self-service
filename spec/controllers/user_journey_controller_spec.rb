@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe UserJourneyController, type: :controller do
   include AuthSupport
   include CertificateSupport
+  include TempFileHelpers
 
   let(:msa_component) { create(:msa_component) }
   let(:msa_encryption_cert) { create(:msa_encryption_certificate) }
@@ -38,7 +39,7 @@ RSpec.describe UserJourneyController, type: :controller do
 
     it 'should show the user their team components' do
       certmgr_stub_auth
-      sp_component = FactoryBot.create(:sp_component, team_id: @user.team)
+      sp_component = create(:sp_component, team_id: @user.team)
       get :index
       expect(response).to have_http_status(:success)
       expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
@@ -47,7 +48,7 @@ RSpec.describe UserJourneyController, type: :controller do
 
     it 'should not show user components with different id' do
       certmgr_stub_auth
-      FactoryBot.create(:sp_component)
+      create(:sp_component)
       get :index
       expect(response).to have_http_status(:success)
       expect(@controller.instance_variable_get(:@sp_components).length).to eq(0)
@@ -56,8 +57,8 @@ RSpec.describe UserJourneyController, type: :controller do
 
     it 'should only show the user their team components with the same id' do
       certmgr_stub_auth
-      sp_component = FactoryBot.create(:sp_component, team_id: @user.team)
-      FactoryBot.create(:sp_component)
+      sp_component = create(:sp_component, team_id: @user.team)
+      create(:sp_component)
       get :index
       expect(response).to have_http_status(:success)
       expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
@@ -119,7 +120,7 @@ RSpec.describe UserJourneyController, type: :controller do
   end
 
   context '#check_your_certificate' do
-    it 'renders upload certificate page' do
+    it 'renders upload certificate page when cert pasted' do
       certmgr_stub_auth
       post :submit,
            params: {
@@ -128,6 +129,26 @@ RSpec.describe UserJourneyController, type: :controller do
              certificate_id: msa_encryption_cert.id,
              certificate: { value: msa_encryption_cert.value }
            }
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:check_your_certificate)
+    end
+
+    it 'renders upload certificate page when cert file uploaded' do
+      certmgr_stub_auth
+      post :submit,
+           params: {
+             component_type: msa_component.component_type,
+             component_id: msa_component.id,
+             certificate_id: msa_encryption_cert.id,
+             certificate: {
+               cert_file: upload_file(
+                 name: 'valid.pem',
+                 type: CertificateExtractor::MIME_PEM,
+                 content: PKI.new.generate_signed_cert.to_pem
+               )
+             }
+           }
+
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:check_your_certificate)
     end
@@ -147,6 +168,26 @@ RSpec.describe UserJourneyController, type: :controller do
           )
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:confirmation)
+    end
+  end
+
+  context 'submit with invalid certificate' do
+    it 'should redirect to upload certificate page when certificate is invalid' do
+      certmgr_stub_auth
+      post :submit,
+           params: {
+             component_type: msa_component.component_type,
+             component_id: msa_component.id,
+             certificate_id: msa_encryption_cert.id,
+             certificate: {
+               value: create(
+                 :msa_encryption_certificate,
+                 value: PKI.new.generate_encoded_cert(expires_in: 9000.months)
+               ).value
+             }
+           }
+
+      expect(response).to redirect_to :upload_certificate
     end
   end
 end

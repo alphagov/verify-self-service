@@ -3,6 +3,7 @@ class UserJourneyController < ApplicationController
   include ControllerConcern
   include ComponentConcern
   include CertificateConcern
+  include X509Validator
 
   before_action :find_certificate, except: :index
 
@@ -37,8 +38,9 @@ class UserJourneyController < ApplicationController
         component: @component
       )
 
-      if @new_certificate.valid?
-        render 'user_journey/check_your_certificate' and return # rubocop:disable Style/AndOr
+      if @new_certificate.valid? && valid_x509?(@new_certificate)
+        render 'user_journey/check_your_certificate'
+        return
       end
     end
 

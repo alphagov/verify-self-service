@@ -1,4 +1,12 @@
 module X509Validator
+  def valid_x509?(record, value = nil)
+    x509_cert = x509_certificate(record, value || record.value)
+    return false if x509_cert.nil?
+
+    certificate_has_appropriate_not_after(record, x509_cert).nil? &&
+      certificate_key_is_supported(record, x509_cert).nil?
+  end
+
   def x509_certificate(record, value)
     load_as_x509_certificate(value).tap do |x509|
       record.errors.add(:certificate, I18n.t('certificates.errors.invalid')) if x509.nil?
