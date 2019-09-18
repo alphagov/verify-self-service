@@ -18,16 +18,16 @@
 <div>
   <h2  class="govuk-heading-m"><%= t 'profile.welcome' %> <%= @user.full_name %></h2>
 
-<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+<div class="govuk-accordion" data-module="govuk-accordion" id="profile-accordion">
   <div class="govuk-accordion__section ">
     <div class="govuk-accordion__section-header">
       <h2 class="govuk-accordion__section-heading">
-        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+        <span class="govuk-accordion__section-button" id="profile-heading-your-info">
           <%= t 'profile.heading' %>
         </span>
       </h2>
     </div>
-    <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+    <div id="profile-content-your-info" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
       <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.id' %></span><%= @user.user_id %></p>
       <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.given_name' %></span><%= @user.given_name %></p>
       <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.family_name' %></span><%= @user.family_name %></p>
@@ -43,12 +43,12 @@
   <div class="govuk-accordion__section ">
     <div class="govuk-accordion__section-header">
       <h2 class="govuk-accordion__section-heading">
-        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+        <span class="govuk-accordion__section-button" id="profile-heading-permissions">
           <%= t 'profile.permissions_heading' %>
         </span>
       </h2>
     </div>
-    <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
+    <div id="profile-content-permissions" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
       <div class="govuk-form-group">
         <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
           <div class="govuk-checkboxes">
@@ -78,12 +78,12 @@
   <div class="govuk-accordion__section ">
     <div class="govuk-accordion__section-header">
       <h2 class="govuk-accordion__section-heading">
-        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+        <span class="govuk-accordion__section-button" id="profile-heading-change-password">
           <%= t 'profile.change_password_heading' %>
         </span>
       </h2>
     </div>
-    <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+    <div id="profile-content-change-password" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
       <div class="govuk-form-group">
         <%= link_to t('profile.change_password_btn'), profile_change_password_path, class: 'govuk-button'  %>
       </div>
@@ -94,7 +94,7 @@
       <div class="govuk-accordion__section ">
         <div class="govuk-accordion__section-header">
           <h2 class="govuk-accordion__section-heading">
-            <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+            <span class="govuk-accordion__section-button" id="profile-heading-switch-auth">
               <%= t 'profile.client_switch_heading' %>
             </span>
             <strong class="govuk-tag">
@@ -102,7 +102,7 @@
             </strong>
           </h2>
         </div>
-        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+        <div id="profile-content-switch-auth" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
           <div class="govuk-form-group">
             <%= form_for:client_switch, url: profile_switch_client_path do |f| %>
             <fieldset class="govuk-fieldset" aria-describedby="changed-name-hint">
@@ -134,7 +134,7 @@
       <div class="govuk-accordion__section ">
         <div class="govuk-accordion__section-header">
           <h2 class="govuk-accordion__section-heading">
-            <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+            <span class="govuk-accordion__section-button" id="profile-heading-assume-roles">
               <%= t 'profile.assume_roles_heading' %>
             </span>
             <strong class="govuk-tag">
@@ -142,7 +142,7 @@
             </strong>
           </h2>
         </div>
-        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+        <div id="profile-content-assume-roles" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
            <%= form_for:assume_roles, url: profile_update_role_path do |f| %>
             <div class="govuk-form-group">
               <fieldset class="govuk-fieldset" aria-describedby="assume-roles-hint">

@@ -22,13 +22,6 @@ RSpec.describe ProfileController, type: :controller do
     end
 
     context 'changing passwords' do
-      it 'errors when new passwords dont match' do
-        usermgr_stub_auth
-        post :update_password, params: { change_password_form: { 'old_password': 'password', 'password': 'wrong', 'password_confirmation': 'right' } }
-        expect(response).to have_http_status(:bad_request)
-        expect(flash.now[:errors]).to eq('Password confirmation doesn\'t match Password')
-      end
-
       it 'advises password changed when successful' do
         usermgr_stub_auth
         post :update_password, params: { change_password_form: { 'old_password': 'oldPassword1', 'password': 'newPassword1', 'password_confirmation': 'newPassword1' } }
