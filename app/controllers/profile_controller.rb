@@ -23,14 +23,14 @@ class ProfileController < ApplicationController
         new_password: @password_form.password,
         access_token: current_user.access_token
       )
-      flash[:notice] = t('profile.password_changed')
+      flash[:notice] = t('password.password_changed')
       redirect_to profile_path
     else
       flash.now[:errors] = @password_form.errors.full_messages.join(', ')
       render :password_form, status: :bad_request
     end
   rescue InvalidOldPasswordError
-    flash[:error] = t('profile.old_password_mismatch')
+    flash[:error] = t('password.errors.old_password_mismatch')
     render :password_form, status: :bad_request
   rescue InvalidNewPasswordError
     flash[:error] = t('devise.sessions.InvalidPasswordException')

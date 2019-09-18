@@ -27,7 +27,7 @@ RSpec.describe ProfileController, type: :controller do
         post :update_password, params: { change_password_form: { 'old_password': 'oldPassword1', 'password': 'newPassword1', 'password_confirmation': 'newPassword1' } }
         expect(subject).to redirect_to(profile_path)
         expect(flash.now[:error]).to be_nil
-        expect(flash.now[:notice]).to eq(t('profile.password_changed'))
+        expect(flash.now[:notice]).to eq(t('password.password_changed'))
       end
 
       it 'errors when password does not meet acceptence criteria' do
@@ -49,7 +49,7 @@ RSpec.describe ProfileController, type: :controller do
         )
         post :update_password, params: { change_password_form: { 'old_password': 'wrong_password', 'password': 'newpassword', 'password_confirmation': 'newpassword' } }
         expect(response).to have_http_status(:bad_request)
-        expect(flash.now[:error]).to eq(t('profile.old_password_mismatch'))
+        expect(flash.now[:error]).to eq(t('password.errors.old_password_mismatch'))
       end
     end
 
