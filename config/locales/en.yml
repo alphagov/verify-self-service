@@ -149,6 +149,8 @@ en:
       profile: "Profile"
       teams: "Team Management"
       events: "Events Viewer"
+      footer:
+        cookies: Cookies
     main_layout:
       team_members: Team Members
   services:

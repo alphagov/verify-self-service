@@ -55,4 +55,5 @@ Rails.application.routes.draw do
   get '/component/:component_type/:component_id/certificate/:certificate_id/confirmation', to: 'user_journey#confirmation', as: 'confirmation'
   post '/component/:component_type/:component_id/certificate/:certificate_id/confirmation', to: 'user_journey#confirm', as: 'confirm'
 
+  get '/cookies', to: 'static#cookies'
 end
