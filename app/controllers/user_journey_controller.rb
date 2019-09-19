@@ -27,7 +27,7 @@ class UserJourneyController < ApplicationController
   end
 
   def submit
-    extractor = CertificateExtractor.new(params[:certificate])
+    extractor = CertificateExtractor.new(params)
 
     if extractor.valid?
       @new_certificate_value = extractor.call
