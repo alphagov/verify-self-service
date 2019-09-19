@@ -4,6 +4,7 @@ require 'erb'
 class SessionsController < Devise::SessionsController
   include ERB::Util
   include AuthenticationBackend
+  layout 'full_width_layout'
 
   before_action :load_secret_code, only: %i(create new)
   before_action :challenge_flash_messages, only: %i(create new)
