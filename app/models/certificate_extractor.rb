@@ -2,7 +2,7 @@ class CertificateExtractor
   include ActiveModel::Model
   include CertificateConcern
 
-  validate :file_content_type, if: :cert_file
+  validate :file_content_type, :contents, if: :cert_file
 
   MIME_X509_CA = 'application/x-x509-ca-cert'.freeze
   MIME_PEM = 'application/x-pem-file'.freeze
@@ -15,8 +15,7 @@ class CertificateExtractor
 
   def call
     return value unless cert_file
-
-    to_x509(File.read(cert_file.tempfile)).to_s
+    contents.to_s
   end
 
 private
@@ -26,6 +25,14 @@ private
   def file_content_type
     unless VALID_CONTENT_TYPES.include?(cert_file.content_type)
       errors.add(:certificate, I18n.t('certificates.errors.invalid_file_type'))
+    end
+  end
+
+  def contents
+    @contents ||= begin
+      to_x509(File.read(cert_file.tempfile))
+    rescue OpenSSL::X509::CertificateError
+      errors.add(:certificate, I18n.t('certificates.errors.invalid'))
     end
   end
 end

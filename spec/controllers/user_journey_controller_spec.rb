@@ -210,6 +210,26 @@ RSpec.describe UserJourneyController, type: :controller do
       expect(response).to redirect_to :upload_certificate
       expect(flash[:error]).to include(I18n.t('certificates.errors.invalid_file_type'))
     end
+
+    it 'should redirect to upload certificate page with valid file extension but invalid content' do
+      certmgr_stub_auth
+      post :submit,
+           params: {
+             component_type: msa_component.component_type,
+             component_id: msa_component.id,
+             certificate_id: msa_encryption_cert.id,
+             certificate: {
+               cert_file: upload_file(
+                 name: 'invalid.crt',
+                 type: CertificateExtractor::MIME_PEM,
+                 content: 'Whats it going to be then, eh?'
+               )
+             }
+           }
+
+      expect(response).to redirect_to :upload_certificate
+      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid'))
+    end
   end
 
   context 'confirm with invalid certificate' do
