@@ -3,8 +3,17 @@ require 'rails_helper'
 RSpec.describe UserJourneyController, type: :controller do
   include AuthSupport
   include CertificateSupport
+  include TempFileHelpers
+
   let(:msa_component) { create(:msa_component) }
   let(:msa_encryption_cert) { create(:msa_encryption_certificate) }
+  let(:params) do
+    {
+      component_type: msa_component.component_type,
+      component_id: msa_component.id,
+      certificate_id: msa_encryption_cert.id
+    }
+  end
 
   before do
     ReplaceEncryptionCertificateEvent.create(
@@ -37,7 +46,7 @@ RSpec.describe UserJourneyController, type: :controller do
 
     it 'should show the user their team components' do
       certmgr_stub_auth
-      sp_component = FactoryBot.create(:sp_component, team_id: @user.team)
+      sp_component = create(:sp_component, team_id: @user.team)
       get :index
       expect(response).to have_http_status(:success)
       expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
@@ -46,7 +55,7 @@ RSpec.describe UserJourneyController, type: :controller do
 
     it 'should not show user components with different id' do
       certmgr_stub_auth
-      FactoryBot.create(:sp_component)
+      create(:sp_component)
       get :index
       expect(response).to have_http_status(:success)
       expect(@controller.instance_variable_get(:@sp_components).length).to eq(0)
@@ -55,8 +64,8 @@ RSpec.describe UserJourneyController, type: :controller do
 
     it 'should only show the user their team components with the same id' do
       certmgr_stub_auth
-      sp_component = FactoryBot.create(:sp_component, team_id: @user.team)
-      FactoryBot.create(:sp_component)
+      sp_component = create(:sp_component, team_id: @user.team)
+      create(:sp_component)
       get :index
       expect(response).to have_http_status(:success)
       expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
@@ -67,23 +76,14 @@ RSpec.describe UserJourneyController, type: :controller do
   context '#view_certificate ' do
     it 'renders the view certificate page' do
       certmgr_stub_auth
-      get :view_certificate,
-          params: {
-            component_type: msa_component.component_type,
-            component_id: msa_component.id,
-            certificate_id: msa_encryption_cert.id
-          }
+      get :view_certificate, params: params
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:view_certificate)
     end
 
     it 'returns http redirect for unauthorised user' do
       usermgr_stub_auth
-      get :view_certificate,params: {
-        component_type: msa_component.component_type,
-        component_id: msa_component.id,
-        certificate_id: msa_encryption_cert.id
-      }
+      get :view_certificate, params: params
       expect(flash[:warn]).to match(t('shared.errors.authorisation'))
       expect(response).to have_http_status(:forbidden)
     end
@@ -92,12 +92,7 @@ RSpec.describe UserJourneyController, type: :controller do
   context '#before_you_start' do
     it 'renders the before you start page' do
       certmgr_stub_auth
-      get :before_you_start,
-          params: {
-            component_type: msa_component.component_type,
-            component_id: msa_component.id,
-            certificate_id: msa_encryption_cert.id
-          }
+      get :before_you_start, params: params
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:before_you_start)
     end
@@ -106,27 +101,38 @@ RSpec.describe UserJourneyController, type: :controller do
   context '#upload_certificate ' do
     it 'renders upload certificate page' do
       certmgr_stub_auth
-      get :upload_certificate,
-          params: {
-            component_type: msa_component.component_type,
-            component_id: msa_component.id,
-            certificate_id: msa_encryption_cert.id
-          }
+      get :upload_certificate, params: params
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:upload_certificate)
     end
   end
 
   context '#check_your_certificate' do
-    it 'renders upload certificate page' do
+    it 'renders upload certificate page when cert pasted' do
       certmgr_stub_auth
       post :submit,
-           params: {
-             component_type: msa_component.component_type,
-             component_id: msa_component.id,
-             certificate_id: msa_encryption_cert.id,
+           params: params.merge({
+             'upload-certificate': 'string',
              certificate: { value: msa_encryption_cert.value }
-           }
+           })
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:check_your_certificate)
+    end
+
+    it 'renders upload certificate page when cert file uploaded' do
+      certmgr_stub_auth
+      post :submit,
+           params: params.merge({
+             'upload-certificate': 'file',
+             certificate: {
+               cert_file: upload_file(
+                 name: 'valid.pem',
+                 type: CertificateExtractor::MIME_PEM,
+                 content: PKI.new.generate_signed_cert.to_pem
+               )
+             }
+           })
+
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:check_your_certificate)
     end
@@ -137,15 +143,134 @@ RSpec.describe UserJourneyController, type: :controller do
       certmgr_stub_auth
       certificate = create(:msa_encryption_certificate)
       msa_component = certificate.component
-      post(:confirm,
-           params: {
-             component_type: msa_component.component_type,
-             component_id: msa_component.id,
-             certificate_id: msa_encryption_cert.id,
-             certificate: { new_certificate: certificate.value } }
-          )
+      post :confirm,
+           params: params.merge({
+             'upload-certificate': 'string',
+             certificate: { new_certificate: certificate.value }
+           })
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:confirmation)
+    end
+  end
+
+  context 'submit with invalid certificate' do
+    it 'should redirect to upload certificate page when certificate is invalid' do
+      certmgr_stub_auth
+      post :submit,
+           params: params.merge({
+             'upload-certificate': 'string',
+             certificate: {
+               value: create(
+                 :msa_encryption_certificate,
+                 value: PKI.new.generate_encoded_cert(expires_in: 9000.months)
+               ).value
+             }
+           })
+
+      expect(response).to redirect_to :upload_certificate
+      expect(flash[:error]).to include(I18n.t('certificates.errors.valid_too_long'))
+    end
+
+    it 'should redirect to upload certificate page when certificate file is invalid' do
+      certmgr_stub_auth
+      post :submit,
+           params: params.merge({
+             'upload-certificate': 'file',
+             certificate: {
+               cert_file: upload_file(
+                 name: 'invalid.txt',
+                 type: 'text/rtf',
+                 content: 'It was a bright, cold day in April and the clocks were striking thirteen'
+               )
+             }
+           })
+
+      expect(response).to redirect_to :upload_certificate
+      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid_file_type'))
+    end
+
+    it 'should redirect to upload certificate page with valid file extension but invalid content' do
+      certmgr_stub_auth
+      post :submit,
+           params: params.merge({
+             'upload-certificate': 'file',
+             certificate: {
+               cert_file: upload_file(
+                 name: 'invalid.crt',
+                 type: CertificateExtractor::MIME_PEM,
+                 content: 'Whats it going to be then, eh?'
+               )
+             }
+           })
+
+      expect(response).to redirect_to :upload_certificate
+      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid'))
+    end
+  end
+
+  context 'should choose the method selected by the radio button' do
+    it 'file radio button selected' do
+      certmgr_stub_auth
+      post :submit,
+           params: params.merge({
+             'upload-certificate': 'file',
+             certificate: {
+               cert_file: upload_file(
+                 name: 'valid.pem',
+                 type: CertificateExtractor::MIME_PEM,
+                 content: PKI.new.generate_signed_cert.to_pem
+               ),
+               value: 'Time is not a line but a dimension, like the dimensions of space'
+             }
+           })
+
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:check_your_certificate)
+    end
+
+    it 'pasted cert radio button chosen' do
+      certmgr_stub_auth
+      post :submit,
+           params: params.merge({
+             'upload-certificate': 'string',
+             certificate: {
+               cert_file: upload_file(
+                 name: 'valid.pem',
+                 type: CertificateExtractor::MIME_PEM,
+                 content: 'It was a pleasure to burn'
+               ),
+               value: msa_encryption_cert.value
+             }
+           })
+
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:check_your_certificate)
+    end
+
+    it 'will attempt to extract only the selected radio button value' do
+      certmgr_stub_auth
+      post :submit,
+           params: params.merge({
+             'upload-certificate': 'file',
+             certificate: { value: msa_encryption_cert.value }
+           })
+
+      expect(response).to redirect_to :upload_certificate
+      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid_file_type'))
+    end
+  end
+
+  context 'confirm with invalid certificate' do
+    it 'should render upload certificate page when certificate is invalid' do
+      certmgr_stub_auth
+      post :confirm,
+           params: params.merge({
+             'upload-certificate': 'string',
+             certificate: { new_certificate: 'Snowman wakes before dawn' }
+           })
+
+      expect(subject).to render_template(:upload_certificate)
+      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid'))
     end
   end
 end

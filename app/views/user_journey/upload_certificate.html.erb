@@ -11,21 +11,18 @@
       </legend>
       <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-5" data-module="govuk-radios">
         <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="upload-certificate-conditional" name="upload-certificate" type="radio" value="certficate" data-aria-controls="conditional-upload-certificate-conditional">
+          <input class="govuk-radios__input" id="upload-certificate-conditional" name="upload-certificate" type="radio" value="file" data-aria-controls="conditional-upload-certificate-conditional">
           <label class="govuk-label govuk-radios__label" for="upload-certificate-conditional">
             <%= t 'user_journey.certificate.upload_certificate_file_header' %>
           </label>
         </div>
         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-upload-certificate-conditional">
           <div class="govuk-form-group">
-            <label class="govuk-label" for="file-upload">
-              <%= t 'user_journey.certificate.upload_certificate_file_body' %>
-            </label>
-            <%= f.file_field :cert_file, class: "govuk-file-upload", id: "file-upload" %>
+            <%= f.file_field :cert_file, class: "govuk-file-upload" %>
           </div>
         </div>
         <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="upload-certificate-conditional-2" name="upload-certificate" type="radio" value="certificate" data-aria-controls="conditional-upload-certificate-conditional-2">
+          <input class="govuk-radios__input" id="upload-certificate-conditional-2" name="upload-certificate" type="radio" value="string" data-aria-controls="conditional-upload-certificate-conditional-2">
           <label class="govuk-label govuk-radios__label" for="upload-certificate-conditional-2">
             <%= t 'user_journey.certificate.paste_certificate' %>
           </label>

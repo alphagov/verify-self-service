@@ -1,6 +1,6 @@
 class Certificate < Aggregate
   include CertificateConcern
-  validates_inclusion_of :usage, in: %w[signing encryption]
+  validates_inclusion_of :usage, in: [CERTIFICATE_USAGE::SIGNING, CERTIFICATE_USAGE::ENCRYPTION]
   validates_presence_of :usage, :value, :component
   belongs_to :component, polymorphic: true
 

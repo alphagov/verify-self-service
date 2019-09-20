@@ -90,7 +90,7 @@ en:
       not_rsa: is not RSA
       small_key: key size is less than 2048 bits
       not_signing: signing certificate is needed
-      invalid_file_type: invalid file type
+      invalid_file_type: is an invalid file type
   profile:
     title: "User Information"
     welcome: Welcome
@@ -250,7 +250,7 @@ en:
       VSP:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate
         signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate
-      SP: 
+      SP:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-encryption/#rotate-your-service-provider-encryption-key-and-certificate
         signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
       connection_broken_or_compromised: https://prototype-docs.cloudapps.digital/emergency-procedures/#emergency-procedures
@@ -268,7 +268,7 @@ en:
       continue: Continue
       have_updated: I have updated my %{component} configuration
     certificate:
-      component_name: 
+      component_name:
         MSA: "Matching Service Adapter: "
         VSP: "Verify Service Provider: "
         SP: "Service Provider: "
