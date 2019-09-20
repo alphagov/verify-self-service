@@ -15,10 +15,8 @@ private
 
   def validate_roles
     valid_roles = [ROLE::CERTIFICATE_MANAGER, ROLE::USER_MANAGER, ROLE::GDS]
-    if (invalid_roles = (roles.to_a - valid_roles))
-      invalid_roles.each do |role|
-        errors.add(:roles, role + " is not a valid role")
-      end
+    (roles.to_a - valid_roles).each do |role|
+      errors.add(:roles, role + " is not a valid role")
     end
   end
 end

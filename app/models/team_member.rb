@@ -1,5 +1,5 @@
 class TeamMember
-  attr_accessor :user_id, :given_name, :family_name, :email, :roles
+  attr_reader :user_id, :given_name, :family_name, :email, :roles
 
   def initialize(user_id:, given_name:, family_name:, email:, roles:)
     @user_id = user_id

@@ -53,6 +53,7 @@ en:
     title_no_team: Team members
     title_for_team: Team members for
     invite_button: Invite a new user
+    change_link: Change details
     invite:
       title: Invite a new user
       button: Invite user
@@ -66,10 +67,13 @@ en:
         invalid_role: "%{role} is not a valid role"
         generic_error: Something went wrong when creating the user, try again
         team_missing: This team does not exist
-
+    permissions:
+      can: Can
+      cannot: Cannot
+    show:
+      select_one: Select at least one
     update:
       button: Save
-
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members

@@ -23,20 +23,20 @@
 
           <li>
             <span class="tick-cross-<%= member.cert_manager? ? 'tick' : 'cross' %>">
-                  <span class="govuk-visually-hidden"><%= member.cert_manager? ? 'Can' : 'Cannot' %></span>
+                  <span class="govuk-visually-hidden"><%= member.cert_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
               <%= t 'users.roles.certmgr' %>
             </span>
           </li>
           <li>
             <span class="tick-cross-<%= member.user_manager? ? 'tick' : 'cross' %>">
-                  <span class="govuk-visually-hidden"><%= member.user_manager? ? 'Can' : 'Cannot' %></span>
+                  <span class="govuk-visually-hidden"><%= member.user_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
              <%= t 'users.roles.usermgr' %>
             </span>
           </li>
         </div>
         <% if @user.email != member.email %>
         <li class="tick-cross-list-edit-link">
-          <%= link_to "Change Details", update_user_path(member.user_id) %>
+          <%= link_to t('users.change_link'), update_user_path(member.user_id) %>
         </li>
         <% end %>
       </ul>

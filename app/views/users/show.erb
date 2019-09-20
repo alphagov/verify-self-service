@@ -25,7 +25,7 @@
       Permissions
     </legend>
     <span id="new-team-member-hint" class="govuk-hint">
-    Select at least one
+    <%= t('users.show.select_one') %>
     </span>
     <div class="govuk-checkboxes">
       <div class="govuk-checkboxes__item">
@@ -36,16 +36,9 @@
         <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::USER_MANAGER, nil) %>
         <%= f.label :roles, t("users.roles.#{ROLE::USER_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
       </div>
-      <!-- TODO: hide or move away for non-gds users -->
-      <div class="govuk-checkboxes__item">
-        <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::GDS, nil) %>
-        <%= f.label :roles, 'GDS', class: 'govuk-label govuk-checkboxes__label' %>
-      </div>
     </div>
   </fieldset>
 </div>
-
-  <!-- TODO: Add team once ready -->
 
   <div class="actions">
     <%= f.submit t('users.update.button'), class: "govuk-button", data: { module: "govuk-button" } %>

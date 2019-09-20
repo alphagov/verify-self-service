@@ -10,8 +10,9 @@ class InitialSeeder
     create_gds_group unless gds_group_exists?
     if gds_user_exists?
       add_gds_users_to_group
+    else
+      create_gds_user
     end
-    create_gds_user
   end
 
   def gds_group_exists?

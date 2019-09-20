@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :controller do
   include AuthSupport, CognitoSupport
 
-  let(:user_id) { "3487568374563874" }
+  let(:user_id) { SecureRandom::uuid }
 
   let(:cognito_users) {
     {:users => [
-        {username: "3487568374563874",
+        {username: user_id,
          attributes: [{name: "given_name", value: "Cherry"},
                           {name: "family_name", value: "One"},
                           {name: "email", value: "cherry.one@test.com"},
@@ -16,7 +16,7 @@ RSpec.describe UsersController, type: :controller do
   }
 
   let(:cognito_user) {
-    { username: "3487568374563874",
+    { username: user_id,
       user_attributes: [{name: "given_name", value: "Cherry"},
                         {name: "family_name", value: "One"},
                         {name: "email", value: "cherry.one@test.com"},
@@ -48,8 +48,6 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to render_template(:index)
         expect(response).to have_http_status(:success)
       end
-
-
 
     end
 
