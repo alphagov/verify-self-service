@@ -14,9 +14,10 @@ module AuthSupport
     stub_auth
   end
 
-  def certmgr_stub_auth
+  def certmgr_stub_auth(team = nil)
     @request.env["devise.mapping"] = Devise.mappings[:user]
-    @user = FactoryBot.create(:certificate_manager_user)
+    if (team.nil?) then team = FactoryBot.create(:team) end
+    @user = FactoryBot.create(:certificate_manager_user, team: team.id)
     stub_auth
   end
 
