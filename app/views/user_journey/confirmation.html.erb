@@ -3,20 +3,52 @@
 <%= render 'shared/certificate_details', certificate: @certificate %>
 
 <h1 class="govuk-heading-l"><%= t 'user_journey.adding_certificate_to_config' %></h1>
-<p><%= t('user_journey.confirmation.what_to_expect', type: @certificate.usage ) %></p>
-<h2 class="govuk-heading-m"><%= t 'user_journey.confirmation.next_steps' %></h2>
-<ul class="govuk-list govuk-list--number">
-  <% if @certificate.signing? && @certificate.component_type == COMPONENT_TYPE::MSA %>
-    <li><%= t 'user_journey.confirmation.msa_add_new_key_and_certificate' %></li>
-  <% end %>
-  <li><%= t 'user_journey.confirmation.rotate_other_certificates' %></li>
-  <li><%= t('user_journey.confirmation.received_email', usage: @certificate.usage, component: display_component(@certificate.component)) %></li>
-  <% if @certificate.signing? && @certificate.component_type == COMPONENT_TYPE::MSA %>
-    <li><%= t 'user_journey.confirmation.tell_us_to_stop_using_old_certificate' %></li>
-  <% end %>
-</ul>
 
-<% if @certificate.signing? %>
+<% if !@dual_running %>
+  <p><%= t('user_journey.confirmation.what_to_expect', type: @certificate.usage ) %></p>
+  <p><%= t 'user_journey.confirmation.certificate_rotations_are_independent' %></p>
+  <h2 class="govuk-heading-m"><%= t 'user_journey.confirmation.next_steps' %></h2>
+<% end %>
+
+<% if @dual_running == "no" %>
+  <p><%= t 'user_journey.dual_running.not_support_dual_running' %></p>
+  <p><%= t 'user_journey.dual_running.how_long_it_takes' %></p>
+  <h2 class="govuk-heading-m"><%= t 'user_journey.confirmation.next_steps' %></h2>
+  <h3 class="govuk-heading-s"><%= t 'user_journey.confirmation.if_you_already_added' %></h3>
+  <ul class="govuk-list govuk-list--number">
+    <li><%= t 'user_journey.confirmation.connection_break' %></li>
+    <li><%= t 'user_journey.confirmation.apply_changes' %></li>
+  </ul>
+  <h3 class="govuk-heading-s"><%= t 'user_journey.confirmation.if_you_have_not_already_added' %></h3>
+  <ul class="govuk-list govuk-list--number">
+    <li><%= t 'user_journey.confirmation.add_new_signing_key_and_certificate' %></li>
+    <li><%= t 'user_journey.confirmation.connection_break' %></li>
+    <li><%= t 'user_journey.confirmation.apply_changes' %></li>
+  </ul>
+<% elsif @certificate.encryption? %>
+  <ul class="govuk-list govuk-list--number">
+    <li><%= t 'user_journey.confirmation.rotate_other_certificates' %></li>
+    <li><%= t('user_journey.confirmation.received_email', usage: @certificate.usage, component: display_component(@certificate.component)) %></li>
+  </ul>
+<% elsif @certificate.component_type == COMPONENT_TYPE::MSA %>
+  <ul class="govuk-list govuk-list--number">
+    <li><%= t 'user_journey.confirmation.msa_add_new_key_and_certificate' %></li>
+    <li><%= t('user_journey.restart_component', component: display_component(@certificate.component)) %></li>
+    <li><%= t('user_journey.confirmation.received_email', usage: @certificate.usage, component: display_component(@certificate.component)) %></li>
+    <li><%= t('user_journey.restart_component', component: display_component(@certificate.component)) %></li>
+    <li><%= t 'user_journey.confirmation.tell_verify' %></li>
+  </ul>
+<% elsif @certificate.component_type == COMPONENT_TYPE::SP %>
+  <ul class="govuk-list govuk-list--number">
+    <li><%= t('user_journey.confirmation.received_email', usage: @certificate.usage, component: display_component(@certificate.component)) %></li>
+    <li><%= display_component(@certificate.component) == COMPONENT_TYPE::SP_SHORT ? t('user_journey.confirmation.apply_changes') : t('user_journey.restart_component', component: display_component(@certificate.component)) %></li>
+    <li><%= t 'user_journey.confirmation.tell_verify' %></li>
+  </ul>
+<% end %>
+
+<%= render 'shared/component_certificate_doc_links', certificate: @certificate  %>
+
+<% if !@dual_running %>
   <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
@@ -25,7 +57,5 @@
     </strong>
   </div>
 <% end %>
-
-<%= render 'shared/component_certificate_doc_links', certificate: @certificate  %>
 
 <%= link_to t('user_journey.confirmation.rotate_more'), root_path, class: "secondary-link secondary-link__confirmation" %> 

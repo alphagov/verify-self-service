@@ -3,8 +3,8 @@
 <%= render 'shared/certificate_details', certificate: @certificate %>
 
 <div class="govuk-form-group">
-  <%= form_for @upload, url: submit_path, as: :certificate, multipart: true do |f| %>
-    <%= render 'shared/upload_errors' %>
+  <%= form_for @upload, url: submit_path(dual_running: @dual_running), as: :certificate, multipart: true do |f| %>
+    <%= error_message_on(f.object.errors, :certificate) %>
     <fieldset class="govuk-fieldset" aria-describedby="upload-certificate-conditional-hint">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 class="govuk-fieldset__heading">

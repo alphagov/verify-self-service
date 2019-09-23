@@ -289,6 +289,9 @@ en:
     find_out_more: Find out more about %{link} in the documentation.
     rotate_key_and_certificate: rotating your %{component} %{certificate} key and certificate
     continue: Continue
+    'no': 'No'
+    'yes': 'Yes'
+    restart_component: Restart the %{component} to apply the changes
     urls:
       MSA:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
@@ -303,6 +306,13 @@ en:
     dual_running:
       title: Does your service provider support dual running?
       support_dual_running: If your service provider supports dual running, it can try to decrypt messages from the GOV.UK Verify Hub using both your old and new encryption keys. Your connection will not break.
+      not_support_dual_running: Because your service provider does not support dual running, your connection to GOV.UK Verify will break when the GOV.UK Verify Hub starts using your new encryption certificate.
+      how_long_it_takes: This usually takes around 10 minutes
+      if_you_already_added: 'If you have already added the new key and certificate to your service provider configuration:'
+      connection_break: Wait for your connection to GOV.UK Verify to break.
+      apply_changes: Apply the changes to fix the connection.
+      if_you_have_not_already_added: 'If you have not already added the new key and certificate to your service provider configuration:'
+      add_new_signing_key_and_certificate: the new signing key and certificate to your service provider.
     before_you_start:
       title: Before you start
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
@@ -315,6 +325,9 @@ en:
       create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
       must_update: You must update your %{component} configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
       have_updated: I have updated my %{component} configuration
+      not_support_dual_running: Because your service provider does not support dual running, there will be an outage when you rotate the encryption key.
+      update_advice: We recommend you do the update during periods of low traffic for your service.
+      minimise_downtime: You could replace the old encryption key and certificate with the new ones in your service provider configuration now. This will help minimise downtime. Do not apply the changes until your connection is broken.
     certificate:
       title: Upload or paste your new certificate
       title_check: Check your new certificate
@@ -339,6 +352,12 @@ en:
       upload_new: Upload your new %{certificate} certificate
       upload_certificate_file_header: Upload a certificate file
       paste_certificate: Paste certificate text into a text box
+      certificate_will_be_replaced: Once you confirm you wish to use this certificate, your old %{component} %{certificate} certificate will be replaced with the new one in the GOV.UK Verify Hub configuration.
+      encrypt_messages_for_your_service: The GOV.UK Verify Hub will then be using your new certificate to encrypt messages for your service.
+      how_long_it_takes: This takes around 10 minutes. Your connection will not break.
+      will_replace_old_certificate: Using this certificate will replace your old encryption certificate in GOV.UK Verify's configuration within 10 minutes.
+      sp_doesnt_support_dual_running: Because your service provider does not support dual running, your connection will break when the GOV.UK Verify Hub starts using your new certificate.
+      restore_connection: At this point, you will need to restore your connection.
     confirmation:
       title: Confirmation
       what_to_expect: This usually takes around 10 minutes. We'll email you when your new %{type} certificate is in use.
@@ -349,3 +368,6 @@ en:
       msa_add_new_key_and_certificate: Add the new signing key and certificate to your Matching Service Adapter (MSA) configuration.
       tell_us_to_stop_using_old_certificate: Tell GOV.UK Verify to stop using your old certificate using this tool.
       configuration_warning: You must update your %{component} configuration by %{date}, or your service’s connection to GOV.UK Verify will break.
+      certificate_rotations_are_independent: You can rotate other certificates while you wait for the email - certificate rotations are independent of each other.
+      tell_verify: Tell GOV.UK Verify to stop using your old (or 'secondary') certificate using this tool.
+      apply_changes: Apply the changes.

@@ -6,7 +6,11 @@ class UserJourneyController < ApplicationController
   include X509Validator
 
   before_action :find_certificate, except: :index
+<<<<<<< HEAD
   helper_method :error_class, :checked, :text_box_value
+=======
+  before_action :dual_running, except: :index
+>>>>>>> wmqZinth: wire up the new flow with content updates
 
   def index
     if current_user.permissions.component_management
@@ -18,8 +22,12 @@ class UserJourneyController < ApplicationController
     end
   end
 
-  def before_you_start
-    @dual_running = params[:dual_running]
+  def is_dual_running
+    if @dual_running == "no"
+      redirect_to before_you_start_path(dual_running: @dual_running)
+    else
+      redirect_to :before_you_start
+    end
   end
 
   def upload_certificate
@@ -49,10 +57,12 @@ class UserJourneyController < ApplicationController
       end
     end
 
-    # For the purposes of the form :(
-    @upload = extractor
-    Rails.logger.info(merge_errors(@upload, @new_certificate))
-    render :upload_certificate
+    error_message = extractor.tap { |x|
+      x.errors.merge!(@new_certificate.errors) if @new_certificate
+    }.errors.full_messages.join(', ')
+
+    Rails.logger.info(error_message)
+    redirect_to upload_certificate_path(dual_running: @dual_running), flash: { error: error_message }
   end
 
   def confirm
@@ -116,5 +126,7 @@ private
 
   def errors_present?
     (%i(certificate value cert_file) & @upload.errors.keys).any?
+  def dual_running
+    @dual_running = params[:dual_running]
   end
 end

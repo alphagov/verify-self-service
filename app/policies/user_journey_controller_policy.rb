@@ -22,6 +22,10 @@ class UserJourneyControllerPolicy < ApplicationPolicy
     user.permissions.certificate_management
   end
 
+  def is_dual_running?
+    user.permissions.certificate_management
+  end
+
   def upload_certificate?
     user.permissions.certificate_management
   end

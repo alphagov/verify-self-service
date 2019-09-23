@@ -67,7 +67,7 @@ RSpec.describe 'View certificate page', type: :system do
       visit view_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
       expect(page).to have_content 'Service Provider: encryption certificate'
       click_link 'Replace certificate'
-      expect(current_path).to eql before_you_start_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+      expect(current_path).to eql dual_running_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
     end
 
     it 'signing certificate information and navigates to next page' do
