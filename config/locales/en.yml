@@ -70,6 +70,7 @@ en:
     permissions:
       can: Can
       cannot: Cannot
+      legend: Permissions
     show:
       select_one: Select at least one
     update:
