@@ -2,7 +2,16 @@
   <h1 class="govuk-heading-xl"><%= t 'team.heading' %></h1>
   <ul class="govuk-list">
     <% @teams.reverse.each do |team| %>
-      <li><%= link_to team.name, admin_users_path(team.id) %></li>
+      <li>
+      <% if team.name == TEAMS::GDS %>
+        <%= link_to team.name.upcase, admin_users_path(team.id) %>
+          <strong class="govuk-tag">
+            <%= t('users.admin_team') %>
+          </strong>
+        </li>
+      <% else team.name == TEAMS::GDS %>
+        <%= link_to team.name, admin_users_path(team.id) %>
+      <% end %>
     <% end %>
   </ul>
 <% else %>
