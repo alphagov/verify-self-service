@@ -13,6 +13,7 @@ class TeamsController < ApplicationController
     @team = team_event.team
     if @team.valid? && team_event.valid?
       flash.now[:success] = "#{@team.name} #{t('team.new.success')}."
+
       redirect_to teams_path
     else
       @team.errors.merge!(team_event.errors)

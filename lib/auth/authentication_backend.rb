@@ -123,6 +123,30 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e)
   end
 
+  def get_users_in_group(group_name:, limit: 60)
+    client.list_users_in_group(user_pool_id: user_pool_id,
+        group_name: group_name,
+        limit: limit).users
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError
+    []
+  end
+
+  def get_user(user_id:)
+    client.admin_get_user(user_pool_id: user_pool_id, username: user_id)
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e.message)
+  end
+
+  def update_user_roles(user_id:, roles:)
+    client.admin_update_user_attributes(
+      user_pool_id: user_pool_id,
+      username: user_id,
+      user_attributes: [{ name: "custom:roles", value: roles.join(',') }]
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e.message)
+  end
+
   def find_users_by_role(limit: 60, role:)
     users = get_users(limit: limit)
     users.users.select { |user|

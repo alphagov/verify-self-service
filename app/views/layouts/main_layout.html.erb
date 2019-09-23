@@ -1,6 +1,6 @@
 <% content_for :main do %>
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
+    <div class="govuk-grid-column-one-quarter">
     <div class="side-navigation">
       <ul class="govuk-list">
         <li class="<%= 'active' if 'user_journey'.include?(params[:controller])  %>">
@@ -12,7 +12,7 @@
       </ul>
     </div>
     </div>
-    <div class="govuk-grid-column-two-thirds">
+    <div class="govuk-grid-column-three-quarters">
       <%= yield %>
     </div>
   </div>

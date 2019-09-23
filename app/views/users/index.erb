@@ -1,21 +1,47 @@
-<% if @gds %>
-  <h1 class="govuk-heading-xl"><%= t 'users.title_no_team' %></h1>
-  <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+<% if @gds && params['team_id'].nil? %>
+  <h1 class="govuk-heading-xl"><%= t 'team.heading' %></h1>
+  <ul class="govuk-list">
     <% @teams.reverse.each do |team| %>
-      <div class="govuk-accordion__section ">
-        <div class="govuk-accordion__section-header">
-          <h2 class="govuk-accordion__section-heading">
-            <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
-              <%= team.name %>
-            </span>
-          </h2>
-        </div>
-        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-          <p class='govuk-body'><%= link_to "#{t('users.invite.button')}", invite_to_team_path(team.id), class: 'govuk-button'%></p>
-        </div>
-      </div>
+      <li><%= link_to team.name, admin_users_path(team.id) %></li>
     <% end %>
+  </ul>
 <% else %>
-  <h1 class="govuk-heading-xl"><%= t 'users.title_for_team' %> <%= @team.name %></h1>
+  <% if @gds %>
+    <%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
+  <% end %>
+  <h1 class="govuk-heading-l"><%= t 'users.title_for_team' %> <%= @team.name %></h1>
+
+  <div class="user-list">
+    <% @team_members.each do |member| %>
+      <div class="user-list-item" id="<%= member.user_id %>">
+      <h3 class="govuk-heading-s">
+        <%= member.full_name %>
+    <span class="hint govuk-body govuk-!-padding-left-1"><%= @user.email == member.email ? t('users.you') : member.email %></span>
+    </h3>
+      <ul class="govuk-list tick-cross-list">
+        <div class="tick-cross-list-permissions">
+
+          <li>
+            <span class="tick-cross-<%= member.cert_manager? ? 'tick' : 'cross' %>">
+                  <span class="govuk-visually-hidden"><%= member.cert_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
+              <%= t 'users.roles.certmgr' %>
+            </span>
+          </li>
+          <li>
+            <span class="tick-cross-<%= member.user_manager? ? 'tick' : 'cross' %>">
+                  <span class="govuk-visually-hidden"><%= member.user_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
+             <%= t 'users.roles.usermgr' %>
+            </span>
+          </li>
+        </div>
+        <% if @user.email != member.email %>
+        <li class="tick-cross-list-edit-link">
+          <%= link_to t('users.change_link'), update_user_path(member.user_id) %>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+    <% end %>
+  </div>
   <%= link_to "#{t('users.invite.button')}", invite_to_team_path(@team.id), class: 'govuk-button'%>
 <% end %>

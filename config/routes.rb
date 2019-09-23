@@ -35,8 +35,11 @@ Rails.application.routes.draw do
   get '/admin/events/:page', to: 'events#page'
 
   get '/users', to: 'users#index', as: :users
+  get '/users/team/:team_id', to: 'users#index', as: :admin_users
   get '/users/team/:team_id/invite', to: 'users#invite', as: :invite_to_team
   post '/users/team/:team_id/invite', to: 'users#new', as: :invite_to_team_post
+  get '/users/:user_id/update', to: 'users#show', as: :update_user
+  post '/users/:user_id/update', to: 'users#update', as: :update_user_post
 
   get '/mfa-enrolment', to: 'mfa#index', as: :mfa_enrolment
   post '/mfa-enrolment', to: 'mfa#enrol', as: :enrol_to_mfa

@@ -5,12 +5,47 @@ class UsersController < ApplicationController
   layout 'main_layout'
 
   def index
-    @gds = current_user.permissions.team_management
+    @user = current_user
+    @gds = current_user.permissions.admin_management
+
     if @gds
-      @teams = Team.all
+      if params['team_id']
+        @team = Team.find_by_id(params['team_id'])
+        @team_members = get_users_in_group(group_name: @team.team_alias).map { |cognito_user| as_team_member(cognito_user: cognito_user) }
+      else
+        @teams = Team.all
+      end
     else
       @team = Team.find_by_id(current_user.team)
+      @team_members = get_users_in_group(group_name: @team.team_alias).map { |cognito_user| as_team_member(cognito_user: cognito_user) }
     end
+  end
+
+  def show
+    user_id = params['user_id']
+    cognito_user = get_user(user_id: user_id)
+    @team_member = as_team_member(cognito_user: cognito_user)
+    @form = UpdateUserRolesForm.new(roles: @team_member.roles)
+  rescue AuthenticationBackendException
+    flash[:error] = "User does not exist."
+    redirect_to users_path
+  end
+
+  def update
+    @form = UpdateUserRolesForm.new(roles: params.dig('update_user_roles_form', 'roles'))
+    if @form.valid?
+      update_user_roles(user_id: params['user_id'], roles: @form.roles)
+      redirect_to users_path
+    else
+      user_id = params['user_id']
+      cognito_user = get_user(user_id: user_id)
+      @team_member = as_team_member(cognito_user: cognito_user)
+      flash.now[:errors] = @form.errors.full_messages.join(', ')
+      render :show, status: :bad_request
+    end
+  rescue AuthenticationBackendException
+    flash.now[:errors] = t 'devise.failure.unknown_cognito_error'
+    render :show, status: :internal_server_error
   end
 
   def invite
@@ -41,6 +76,18 @@ private
     end
   end
 
+  def as_team_member(cognito_user:)
+    user = cognito_user.to_h
+    user_id = user[:username]
+    attributes_key = user.key?(:user_attributes) ? :user_attributes : :attributes
+    attributes = user[attributes_key].to_h { |attr| [attr[:name], attr[:value]] }
+    given_name = attributes['given_name']
+    family_name = attributes['family_name']
+    email = attributes['email']
+    roles = attributes['custom:roles'].split(%r{,\s*})
+    TeamMember.new(user_id: user_id, given_name: given_name, family_name: family_name, email: email, roles: roles)
+  end
+
   def setup_user_in_cognito
     add_user(
       email: @form.email,
@@ -51,7 +98,7 @@ private
   end
 
   def add_user_to_team_in_cognito(new_user, team)
-    add_user_to_group(username: new_user.username, group: team.name)
+    add_user_to_group(username: new_user.username, group: team.team_alias)
   end
 
   def invite_user
