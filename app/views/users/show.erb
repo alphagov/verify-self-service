@@ -18,29 +18,30 @@
     </li>
   </ul>
 
-
-  <div class="govuk-form-group">
-  <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend">
-      <%= t('users.permissions.legend') %>
-    </legend>
-    <span id="new-team-member-hint" class="govuk-hint">
-    <%= t('users.show.select_one') %>
-    </span>
-    <div class="govuk-checkboxes">
-      <div class="govuk-checkboxes__item">
-        <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::CERTIFICATE_MANAGER, nil) %>
-        <%= f.label :roles, t("users.roles.#{ROLE::CERTIFICATE_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
-      </div>
-      <div class="govuk-checkboxes__item">
-        <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::USER_MANAGER, nil) %>
-        <%= f.label :roles, t("users.roles.#{ROLE::USER_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
-      </div>
+  <% unless @team_member.gds? %>
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend">
+          <%= t('users.permissions.legend') %>
+        </legend>
+        <span id="new-team-member-hint" class="govuk-hint">
+        <%= t('users.show.select_one') %>
+        </span>
+        <div class="govuk-checkboxes">
+          <div class="govuk-checkboxes__item">
+            <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::CERTIFICATE_MANAGER, nil) %>
+            <%= f.label :roles, t("users.roles.#{ROLE::CERTIFICATE_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
+          </div>
+          <div class="govuk-checkboxes__item">
+            <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::USER_MANAGER, nil) %>
+            <%= f.label :roles, t("users.roles.#{ROLE::USER_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
+          </div>
+        </div>
+      </fieldset>
     </div>
-  </fieldset>
-</div>
 
-  <div class="actions">
-    <%= f.submit t('users.update.button'), class: "govuk-button", data: { module: "govuk-button" } %>
-  </div>
+    <div class="actions">
+      <%= f.submit t('users.update.button'), class: "govuk-button", data: { module: "govuk-button" } %>
+    </div>
+  <% end %>
 <% end %>

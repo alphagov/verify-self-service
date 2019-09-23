@@ -20,4 +20,8 @@ class TeamMember
   def user_manager?
     @roles.include? ROLE::USER_MANAGER
   end
+
+  def gds?
+    @roles.include? ROLE::GDS
+  end
 end

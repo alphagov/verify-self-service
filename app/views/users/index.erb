@@ -9,7 +9,7 @@
   <% if @gds %>
     <%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
   <% end %>
-  <h1 class="govuk-heading-l"><%= t 'users.title_for_team' %> <%= @team.name %></h1>
+  <h1 class="govuk-heading-l"><%= t 'users.title_for_team' %> <%= @team.name == TEAMS::GDS ? TEAMS::GDS.upcase : @team.name %></h1>
 
   <div class="user-list">
     <% @team_members.each do |member| %>
@@ -19,21 +19,22 @@
     <span class="hint govuk-body govuk-!-padding-left-1"><%= @user.email == member.email ? t('users.you') : member.email %></span>
     </h3>
       <ul class="govuk-list tick-cross-list">
-        <div class="tick-cross-list-permissions">
-
-          <li>
-            <span class="tick-cross-<%= member.cert_manager? ? 'tick' : 'cross' %>">
-                  <span class="govuk-visually-hidden"><%= member.cert_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
-              <%= t 'users.roles.certmgr' %>
-            </span>
-          </li>
-          <li>
-            <span class="tick-cross-<%= member.user_manager? ? 'tick' : 'cross' %>">
-                  <span class="govuk-visually-hidden"><%= member.user_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
-             <%= t 'users.roles.usermgr' %>
-            </span>
-          </li>
-        </div>
+        <% unless member.gds? %>
+          <div class="tick-cross-list-permissions">
+            <li>
+              <span class="tick-cross-<%= member.cert_manager? ? 'tick' : 'cross' %>">
+                <span class="govuk-visually-hidden"><%= member.cert_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
+                <%= t 'users.roles.certmgr' %>
+              </span>
+            </li>
+            <li>
+              <span class="tick-cross-<%= member.user_manager? ? 'tick' : 'cross' %>">
+                <span class="govuk-visually-hidden"><%= member.user_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
+                <%= t 'users.roles.usermgr' %>
+              </span>
+            </li>
+          </div>
+        <% end %>
         <% if @user.email != member.email %>
         <li class="tick-cross-list-edit-link">
           <%= link_to t('users.change_link'), update_user_path(member.user_id) %>
