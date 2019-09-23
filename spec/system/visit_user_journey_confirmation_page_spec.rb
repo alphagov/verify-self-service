@@ -84,5 +84,11 @@ RSpec.describe 'Confirmation page', type: :system do
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
+
+    it 'signing with dual running set to no displays unique content' do
+      sp_component = sp_encryption_certificate.component
+      visit confirmation_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id, 'no')
+      expect(page).to have_content 'Because your service provider does not support dual running'
+    end
   end
 end
