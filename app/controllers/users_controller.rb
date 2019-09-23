@@ -33,11 +33,14 @@ class UsersController < ApplicationController
 
   def update
     @form = UpdateUserRolesForm.new(roles: params.dig('update_user_roles_form', 'roles'))
+    user_id = params['user_id']
     if @form.valid?
-      update_user_roles(user_id: params['user_id'], roles: @form.roles)
+      update_user_roles(user_id: user_id, roles: @form.roles)
+      UserRolesUpdatedEvent.create(data:
+                                     { user_id: user_id,
+                                       roles: @form.roles.join(',') })
       redirect_to users_path
     else
-      user_id = params['user_id']
       cognito_user = get_user(user_id: user_id)
       @team_member = as_team_member(cognito_user: cognito_user)
       flash.now[:errors] = @form.errors.full_messages.join(', ')
