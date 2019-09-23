@@ -22,7 +22,7 @@
       <fieldset class="govuk-fieldset">
         <div class="govuk-checkboxes">
           <div class="govuk-checkboxes__item">
-            <%= f.check_box(:roles, { class: 'govuk-checkboxes__input', multiple: true, checked: true, disabled: true }, ROLE::GDS, nil) %>
+            <%= f.check_box(:roles, { class: 'govuk-checkboxes__input', multiple: true, checked: true }, ROLE::GDS, nil) %>
             <%= f.label :roles, 'GDS', class: 'govuk-label govuk-checkboxes__label' %>
           </div>
         </div>
