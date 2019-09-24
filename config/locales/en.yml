@@ -79,7 +79,7 @@ en:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
     you: (you)
-
+    admin_team: admin team
   certificates:
     caption: "%{heading}"
     header_id: ID
