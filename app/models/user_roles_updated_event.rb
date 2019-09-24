@@ -1,0 +1,2 @@
+class UserRolesUpdatedEvent < Event
+end
