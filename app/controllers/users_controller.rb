@@ -64,6 +64,7 @@ class UsersController < ApplicationController
       invite_user
     else
       flash.now[:errors] = @form.errors.full_messages.join(', ')
+      @gds_team = Team.find_by_id(params[:team_id])&.name == TEAMS::GDS
       render :invite, status: :bad_request
     end
   end
@@ -122,6 +123,7 @@ private
 
     if e
       Rails.logger.error e
+      @gds_team = team.name == TEAMS::GDS
       render :invite, status: :bad_request
     else
       UserInvitedEvent.create(data:
