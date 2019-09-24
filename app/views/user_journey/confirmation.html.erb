@@ -27,8 +27,8 @@
   </ul>
 <% elsif @certificate.encryption? %>
   <ul class="govuk-list govuk-list--number">
-    <li><%= t 'user_journey.confirmation.rotate_other_certificates' %></li>
     <li><%= t('user_journey.confirmation.received_email', usage: @certificate.usage, component: display_component(@certificate.component)) %></li>
+    <li><%= t('user_journey.restart_component', component: display_component(@certificate.component)) %></li>
   </ul>
 <% elsif @certificate.component_type == COMPONENT_TYPE::MSA %>
   <ul class="govuk-list govuk-list--number">
@@ -41,14 +41,14 @@
 <% elsif @certificate.component_type == COMPONENT_TYPE::SP %>
   <ul class="govuk-list govuk-list--number">
     <li><%= t('user_journey.confirmation.received_email', usage: @certificate.usage, component: display_component(@certificate.component)) %></li>
-    <li><%= display_component(@certificate.component) == COMPONENT_TYPE::SP_SHORT ? t('user_journey.confirmation.apply_changes') : t('user_journey.restart_component', component: display_component(@certificate.component)) %></li>
+    <li><%= display_component(@certificate.component) == 'service provider' ? t('user_journey.confirmation.apply_changes') : t('user_journey.restart_component', component: display_component(@certificate.component)) %></li>
     <li><%= t 'user_journey.confirmation.tell_verify' %></li>
   </ul>
 <% end %>
 
 <%= render 'shared/component_certificate_doc_links', certificate: @certificate  %>
 
-<% if !@dual_running %>
+<% if !@dual_running && @certificate.signing? %>
   <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">

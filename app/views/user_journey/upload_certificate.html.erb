@@ -11,6 +11,7 @@
           <%= t('user_journey.certificate.upload_new', certificate: @certificate.usage) %>
         </h1>
       </legend>
+      <span id="upload-certificate-conditional-hint" class="govuk-hint govuk-hint__black "> <%= t 'user_journey.certificate.choose_one' %></span>
       <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-5" data-module="govuk-radios">
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="upload-certificate-conditional" name="upload-certificate"

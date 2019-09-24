@@ -267,7 +267,7 @@ en:
     component_name:
       MSA: Matching Service Adapter
       VSP: Verify Service Provider
-      SP: Service Provider
+      'service provider': Service Provider
     used_by: used by
     certificate: Certificate
     status: Status
@@ -299,7 +299,7 @@ en:
       VSP:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate
         signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate
-      SP:
+      'service provider':
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-encryption/#rotate-your-service-provider-encryption-key-and-certificate
         signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
       connection_broken_or_compromised: https://prototype-docs.cloudapps.digital/emergency-procedures/#emergency-procedures
@@ -318,16 +318,17 @@ en:
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
       MSA: Before you upload your Matching Service Adapter (MSA) %{type} certificate,
       VSP: Before you upload your Verify Service Provider (VSP) %{type} certificate,
-      SP: Before you upload your Service Provider (SP) %{type} certificate,
+      'service provider': Before you upload your service provider %{type} certificate,
       you_must: "you must:"
       create_signing_key_and_certificate: "you must create a new signing key and certificate."
-      create_key_and_certificate: Create a new key and certificate
+      create_key_and_certificate: Create a new encryption key and certificate
       create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
       must_update: You must update your %{component} configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
       have_updated: I have updated my %{component} configuration
       not_support_dual_running: Because your service provider does not support dual running, there will be an outage when you rotate the encryption key.
       update_advice: We recommend you do the update during periods of low traffic for your service.
       minimise_downtime: You could replace the old encryption key and certificate with the new ones in your service provider configuration now. This will help minimise downtime. Do not apply the changes until your connection is broken.
+      must_create_key_and_certificate: You must create a new encryption key and certificate.
     certificate:
       title: Upload or paste your new certificate
       title_check: Check your new certificate
@@ -335,7 +336,7 @@ en:
       component_name:
         MSA: "Matching Service Adapter: "
         VSP: "Verify Service Provider: "
-        SP: "Service Provider: "
+        'service provider': "Service Provider: "
       check_certificate_title: Check you've uploaded the right certificate
       contains_the_following: "The certificate you uploaded contains the following information:"
       valid_from: Valid from
@@ -358,6 +359,7 @@ en:
       will_replace_old_certificate: Using this certificate will replace your old encryption certificate in GOV.UK Verify's configuration within 10 minutes.
       sp_doesnt_support_dual_running: Because your service provider does not support dual running, your connection will break when the GOV.UK Verify Hub starts using your new certificate.
       restore_connection: At this point, you will need to restore your connection.
+      choose_one: 'Choose one of the following:'
     confirmation:
       title: Confirmation
       what_to_expect: This usually takes around 10 minutes. We'll email you when your new %{type} certificate is in use.

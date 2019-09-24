@@ -69,8 +69,8 @@ RSpec.describe 'Confirmation page', type: :system do
     it 'encryption and successfully goes to next page' do
       sp_component = sp_encryption_certificate.component
       visit confirmation_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
-      expect(page).to have_content COMPONENT_TYPE::SP_SHORT
-      expect(page).to have_content 'delete the old encryption key and certificate from your SP configuration'
+      expect(page).to have_content 'service provider'
+      expect(page).to have_content 'delete the old encryption key and certificate from your service provider configuration'
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
@@ -79,8 +79,8 @@ RSpec.describe 'Confirmation page', type: :system do
       certificate = create(:sp_signing_certificate, component: create(:sp_component, team_id: user.team))
       sp_component = certificate.component
       visit confirmation_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
-      expect(page).to have_content COMPONENT_TYPE::SP_SHORT
-      expect(page).to have_content 'delete the old signing key and certificate from your SP configuration'
+      expect(page).to have_content 'service provider'
+      expect(page).to have_content 'delete the old signing key and certificate from your service provider configuration'
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
