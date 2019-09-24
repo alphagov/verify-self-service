@@ -10,7 +10,7 @@ Rails.application.configure do
   config.content_security_policy do |policy|
     policy.default_src :self
     policy.font_src    :self, ENV["ASSET_HOST"]
-    policy.img_src     :self, ENV["ASSET_HOST"]
+    policy.img_src     :self, :data, ENV["ASSET_HOST"]
     policy.object_src  :none
     policy.script_src  :self, ENV["ASSET_HOST"]
     policy.style_src   :self, ENV["ASSET_HOST"]
