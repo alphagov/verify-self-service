@@ -155,7 +155,7 @@
                   <% role_string = "ROLE::#{role}".constantize %>
                   <% is_checked = @user.roles.split(',').include?(role_string) %>
                     <div class="govuk-checkboxes__item">
-                      <%= f.check_box 'role_selection', { :checked => is_checked,:multiple => true, :class => "govuk-checkboxes__input" }, role_string, nil  %>
+                      <%= f.check_box 'role_selection', { checked: is_checked, multiple: true, class: 'govuk-checkboxes__input' }, role_string, nil  %>
                       
                       <label class="govuk-label govuk-checkboxes__label" for="assume_roles_role_selection_<%= role_string %>">
                         <% if role.to_s == 'GDS' %><%= role %><% else %><%= role.to_s.titlecase %><% end %>

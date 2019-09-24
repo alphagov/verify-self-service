@@ -29,11 +29,11 @@
         </span>
         <div class="govuk-checkboxes">
           <div class="govuk-checkboxes__item">
-            <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::CERTIFICATE_MANAGER, nil) %>
+            <%= f.check_box(:roles, { class: 'govuk-checkboxes__input', multiple: true }, ROLE::CERTIFICATE_MANAGER, nil) %>
             <%= f.label :roles, t("users.roles.#{ROLE::CERTIFICATE_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
           </div>
           <div class="govuk-checkboxes__item">
-            <%= f.check_box(:roles, { :class => 'govuk-checkboxes__input', :multiple => true }, ROLE::USER_MANAGER, nil) %>
+            <%= f.check_box(:roles, { class: 'govuk-checkboxes__input', multiple: true }, ROLE::USER_MANAGER, nil) %>
             <%= f.label :roles, t("users.roles.#{ROLE::USER_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
           </div>
         </div>
