@@ -6,10 +6,10 @@
       <% if team.name == TEAMS::GDS %>
         <%= link_to team.name.upcase, admin_users_path(team.id) %>
           <strong class="govuk-tag">
-            <%= t('users.admin_team') %>
+            <%= t 'users.admin_team' %>
           </strong>
         </li>
-      <% else team.name == TEAMS::GDS %>
+      <% else %>
         <%= link_to team.name, admin_users_path(team.id) %>
       <% end %>
     <% end %>
