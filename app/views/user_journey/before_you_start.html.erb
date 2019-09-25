@@ -2,9 +2,9 @@
 
 <%= render 'shared/certificate_details', certificate: @certificate %>
 
-<h1 class="govuk-heading-l"> <%= t 'user_journey.before_you_start.title' %></h1>
+<h1 class="govuk-heading-l"><%= t 'user_journey.before_you_start.title' %></h1>
 
-<% if @dual_running == 'no' %>
+<% if @not_dual_running %>
   <p><%= t 'user_journey.before_you_start.not_support_dual_running' %></p>
   <p><%= t 'user_journey.before_you_start.update_advice' %></p>
   <p><%= t "user_journey.before_you_start.#{display_component(@certificate.component)}", type: @certificate.usage %>
@@ -30,7 +30,7 @@
 
 <%= render 'shared/component_certificate_doc_links', certificate: @certificate %>
 
-<% if @certificate.encryption? && !@dual_running %>
+<% if @certificate.encryption? && @not_dual_running.nil? %>
   <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
@@ -40,8 +40,8 @@
   </div>
 <% end %>
 
-<% if @dual_running == 'no' %>
-  <%= link_to t('user_journey.continue'), upload_certificate_path(dual_running: @dual_running), class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+<% if @not_dual_running %>
+  <%= link_to t('user_journey.continue'), upload_certificate_path(dual_running: @not_dual_running), class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
 <% else %>
   <%= link_to @certificate.encryption? ? t('user_journey.before_you_start.have_updated', component: display_component(@certificate.component)) : t('user_journey.continue'), upload_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
 <% end %>

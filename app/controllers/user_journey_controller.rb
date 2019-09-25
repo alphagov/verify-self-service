@@ -6,11 +6,8 @@ class UserJourneyController < ApplicationController
   include X509Validator
 
   before_action :find_certificate, except: :index
-<<<<<<< HEAD
   helper_method :error_class, :checked, :text_box_value
-=======
   before_action :dual_running, except: :index
->>>>>>> wmqZinth: wire up the new flow with content updates
 
   def index
     if current_user.permissions.component_management
@@ -23,10 +20,15 @@ class UserJourneyController < ApplicationController
   end
 
   def is_dual_running
-    if @dual_running == "no"
-      redirect_to before_you_start_path(dual_running: @dual_running)
+    if params.key?(:dual_running)
+      if @not_dual_running
+        redirect_to before_you_start_path(dual_running: @not_dual_running)
+      else
+        redirect_to :before_you_start
+      end
     else
-      redirect_to :before_you_start
+      Rails.logger.info(@not_dual_running)
+      redirect_to dual_running_path, flash: { error: I18n.t('user_journey.errors.select_option') }
     end
   end
 
@@ -57,12 +59,10 @@ class UserJourneyController < ApplicationController
       end
     end
 
-    error_message = extractor.tap { |x|
-      x.errors.merge!(@new_certificate.errors) if @new_certificate
-    }.errors.full_messages.join(', ')
-
-    Rails.logger.info(error_message)
-    redirect_to upload_certificate_path(dual_running: @dual_running), flash: { error: error_message }
+    # For the purposes of the form :(
+    @upload = extractor
+    Rails.logger.info(merge_errors(@upload, @new_certificate))
+    render :upload_certificate
   end
 
   def confirm
@@ -97,6 +97,10 @@ private
     @certificate = Certificate.find_by_id(params[:certificate_id])
   end
 
+  def dual_running
+    @not_dual_running = params[:dual_running].blank? ? nil : true
+  end
+
   def merge_errors(primary, *objects)
     objects.compact.each { |object| primary.errors.merge!(object.errors) }
     primary.errors.full_messages.join(', ')
@@ -126,7 +130,5 @@ private
 
   def errors_present?
     (%i(certificate value cert_file) & @upload.errors.keys).any?
-  def dual_running
-    @dual_running = params[:dual_running]
   end
 end

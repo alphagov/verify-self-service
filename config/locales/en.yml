@@ -263,6 +263,8 @@ en:
     edit:
       heading: Associate team to
   user_journey:
+    errors:
+      select_option: Must select an option
     title: Dashboard
     component_name:
       MSA: Matching Service Adapter
@@ -304,7 +306,8 @@ en:
         signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
       connection_broken_or_compromised: https://prototype-docs.cloudapps.digital/emergency-procedures/#emergency-procedures
     dual_running:
-      title: Does your service provider support dual running?
+      title: Dual running
+      title_support_dual_running: Does your service provider support dual running?
       support_dual_running: If your service provider supports dual running, it can try to decrypt messages from the GOV.UK Verify Hub using both your old and new encryption keys. Your connection will not break.
       not_support_dual_running: Because your service provider does not support dual running, your connection to GOV.UK Verify will break when the GOV.UK Verify Hub starts using your new encryption certificate.
       how_long_it_takes: This usually takes around 10 minutes

@@ -51,7 +51,7 @@ RSpec.describe 'Before you start page', type: :system do
 
     it 'sp encryption journey with dual running set to no displays unqiue content' do
       sp_component = sp_encryption_certificate.component
-      visit before_you_start_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id, 'no')
+      visit before_you_start_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id, true)
       expect(page).to have_content 'Because your service provider does not support dual running, there will be an outage when you rotate the encryption key.'
     end
   end
