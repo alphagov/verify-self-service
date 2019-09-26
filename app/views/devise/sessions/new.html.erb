@@ -11,7 +11,12 @@
             <%= render "sign_in_form", f:f %>
         <% end %>
             <div class="actions">
-            <%= f.submit "Log in", class: "govuk-button", data: { module: "govuk-button" } %>
+                <%= f.submit "Log in", class: "govuk-button", data: { module: "govuk-button" } %>
+            </div>
+        <% end %>
+        <% if session[:challenge_name].nil? %>
+            <div>
+                <%= link_to t('password.forgot_link'), forgot_password_path %>
             </div>
         <% end %>
     </div>

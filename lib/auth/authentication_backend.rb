@@ -10,6 +10,8 @@ module AuthenticationBackend
   class GroupExistsException < StandardError; end
   class InvalidOldPasswordError < StandardError; end
   class InvalidNewPasswordError < StandardError; end
+  class ToManyAttemptsError < StandardError; end
+  class UserBadStateError < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
@@ -29,6 +31,28 @@ module AuthenticationBackend
     return process_response(cognito_response: resp, params: params) if resp.present?
 
     raise AuthenticationBackendException.new("No Response Back from Authentication Service to process")
+  end
+
+  def request_password_reset(params)
+    client.forgot_password(
+      client_id: cognito_client_id,
+      username: params[:email]
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
+    raise UserBadStateError.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
+    raise UserGroupNotFoundException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::LimitExceededException => e
+    raise ToManyAttemptsError.new(e)
+  end
+
+  def reset_password(params)
+    client.confirm_forgot_password(
+      client_id: cognito_client_id,
+      username: params[:email],
+      confirmation_code: params[:code],
+      password: params[:password]
+      )
   end
 
   def create_group(name:, description:)

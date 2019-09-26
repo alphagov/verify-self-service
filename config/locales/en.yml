@@ -127,6 +127,10 @@ en:
     assume_roles_heading: "Switch Roles"
     assume_roles_legend: "Select which role(s) you wish to assume?"
   password:
+    forgot_link: "Forgotten your password?"
+    forgot_password_legend: "Enter your e-mail address below and we'll send you an e-mail with a code you can use to change your password."
+    your_email_lbl: "Your e-mail address:"
+    request_reset: "Send Code"
     change_password_heading: "Change Your Password"
     change_password: "Change Password"
     password_changed: "Password changed successfully"
@@ -135,9 +139,13 @@ en:
     new_password_lbl: "New password:"
     confirm_password_lbl: "Confirm new password:"
     change_password_btn: "Change Password"
+    password_recovered: "Your password has now been changed.  Please login with your new password"
     errors:
+      email_missing: "Your e-mail address is missing"
       old_password_mismatch: "Your old password does not match the one we have on record"
       new_password_mismatch: "Your new password did not match your confirmation password"
+      to_many_attempts: "You've made to many attempts to reset your password"
+      bad_state: "Your username needs to login for the first time.  Please login using the temporary password which was e-mailed to you."
   events:
     title: Events
     type: Type

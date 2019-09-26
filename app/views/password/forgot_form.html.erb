@@ -1,0 +1,14 @@
+<h1 class="govuk-heading-l"><%= t 'password.forgot_link' %></h1>
+
+<%= form_for @form, url: forgot_password_path do |f| %>
+  <fieldset class="govuk-fieldset" aria-describedby="changed-password-hint">
+    <span id="changed-password-hint" class="govuk-hint">
+      <%= t 'password.forgot_password_legend' %>
+    </span>
+    <div class="govuk-form-group">
+      <%= f.label :email, t('password.your_email_lbl'), class: "govuk-label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "govuk-input govuk-input--width-20" %>
+    </div>
+  </fieldset>
+  <%= f.submit t('password.request_reset'), class: "govuk-button", data: { module: "govuk-button" } %>
+<% end %>
