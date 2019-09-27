@@ -47,9 +47,11 @@ protected
 
   def check_component_authorization(component_id: params['component_id'], component_type: params['component_type'])
     if component_id.present?
-      component = klass_component(component_type).find_by_id(component_id)
-      team = component.team
-      authorize team unless team.nil?
+      component = klass_component(component_type)&.find_by_id(component_id)
+      if component.present?
+        team = component.team
+        authorize team unless team.nil?
+      end
     end
   rescue Pundit::NotAuthorizedError
     flash[:warn] = t('shared.errors.authorisation')
