@@ -106,22 +106,6 @@ RSpec.describe UserJourneyController, type: :controller do
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:upload_certificate)
     end
-
-    it 'does not render the upload certificate page when team is not matching' do
-      certmgr_stub_auth
-      foreign_team = FactoryBot.create(:team, id: SecureRandom.uuid)
-      foreign_component = FactoryBot.create(:sp_component, team_id: foreign_team.id)
-      get :upload_certificate,
-          params: {
-            component_type: foreign_component.component_type,
-            component_id: foreign_component.id,
-            certificate_id: msa_encryption_cert.id
-          }
-      expect(response).to_not have_http_status(:success)
-      expect(subject).to_not render_template(:upload_certificate)
-      expect(response).to have_http_status(:forbidden)
-      expect(flash[:warn]).to eq t('shared.errors.authorisation')
-    end
   end
 
   context '#check_your_certificate' do
@@ -294,6 +278,35 @@ RSpec.describe UserJourneyController, type: :controller do
 
       expect(subject).to render_template(:upload_certificate)
       expect(flash[:error]).to include(I18n.t('certificates.errors.invalid'))
+    end
+  end
+
+  context 'Enforcement of component team restrictions' do
+    it 'prevents rendering of the upload certificate page when team is not matching' do
+      certmgr_stub_auth
+      foreign_team = FactoryBot.create(:team, id: SecureRandom.uuid)
+      foreign_component = FactoryBot.create(:sp_component, team_id: foreign_team.id)
+      get :upload_certificate,
+          params: {
+            component_type: foreign_component.component_type,
+            component_id: foreign_component.id,
+            certificate_id: msa_encryption_cert.id
+          }
+      expect(response).to_not have_http_status(:success)
+      expect(subject).to_not render_template(:upload_certificate)
+      expect(response).to have_http_status(:forbidden)
+      expect(flash[:warn]).to eq t('shared.errors.authorisation')
+    end
+
+    it 'behaves gracefully if a non-existent component is accessed' do
+      certmgr_stub_auth
+      get :upload_certificate,
+          params: {
+            component_type: :sp_component,
+            component_id: 'bad id',
+            certificate_id: msa_encryption_cert.id
+          }
+          expect(subject).to render_template(:upload_certificate)
     end
   end
 end
