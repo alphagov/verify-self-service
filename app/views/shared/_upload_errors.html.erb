@@ -1,0 +1,19 @@
+<% if @upload.errors&.any? %>
+  <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      <%= t 'shared.errors.problem' %>
+    </h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <% @upload.errors.each do |key| %>
+          <li data-turbolinks="false">
+            <%=
+              link_to "#{@upload.errors&.full_messages_for(key).first}" ,
+              "#certificate_#{params[:certificate].key?(:cert_file) ? 'cert_file' : 'value'}"
+            %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+   </div>
+<% end %>

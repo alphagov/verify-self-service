@@ -6,6 +6,7 @@ class UserJourneyController < ApplicationController
   include X509Validator
 
   before_action :find_certificate, except: :index
+  helper_method :error_class, :checked, :text_box_value
 
   def index
     if current_user.permissions.component_management
@@ -44,12 +45,12 @@ class UserJourneyController < ApplicationController
       end
     end
 
-    error_message = extractor.tap { |x|
-      x.errors.merge!(@new_certificate.errors) if @new_certificate
-    }.errors.full_messages.join(', ')
-
-    Rails.logger.info(error_message)
-    redirect_to :upload_certificate, flash: { error: error_message }
+    @upload = UploadCertificateEvent.new(
+      component_id: params[component_key(params)],
+      component_type: component_name_from_params(params)
+    )
+    Rails.logger.info(merge_errors(@upload, extractor, @new_certificate))
+    render :upload_certificate
   end
 
   def confirm
@@ -73,11 +74,7 @@ class UserJourneyController < ApplicationController
 
       render :confirmation
     else
-      @upload.errors.full_messages.join(', ').tap do |error_message|
-        Rails.logger.info(error_message)
-        flash.now[:error] = error_message
-      end
-
+      Rails.logger.info(@upload.errors.full_messages.join(', '))
       render :upload_certificate
     end
   end
@@ -86,5 +83,36 @@ private
 
   def find_certificate
     @certificate = Certificate.find_by_id(params[:certificate_id])
+  end
+
+  def merge_errors(primary, *objects)
+    objects.compact.each { |object| primary.errors.merge!(object.errors) }
+    primary.errors.full_messages.join(', ')
+  end
+
+  def error_class(type)
+    if errors_present?
+      if type == 'file' && params['upload-certificate'] == 'file'
+        'govuk-file-upload--error'
+      elsif type == 'string' && params['upload-certificate'] == 'string'
+        'govuk-textarea--error'
+      end
+    end
+  end
+
+  def checked(type)
+    if errors_present? && type == params['upload-certificate']
+      "checked=checked"
+    end
+  end
+
+  def text_box_value
+    if errors_present? && params['upload-certificate'] == 'string'
+      params[:certificate][:value]
+    end
+  end
+
+  def errors_present?
+    (%i(certificate value cert_file) & @upload.errors.keys).any?
   end
 end
