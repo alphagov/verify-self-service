@@ -7,7 +7,7 @@ class ChangePasswordForm
   validates_confirmation_of :password
   validates :password, length: { minimum: 8 }
 
-  def initialize(params)
+  def initialize(params = {})
     @old_password = params[:old_password]
     @password = params[:password]
     @password_confirmation = params[:password_confirmation]

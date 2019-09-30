@@ -9,7 +9,7 @@ class PasswordController < ApplicationController
   layout 'main_layout', only: :password_form
 
   def password_form
-    @password_form = ChangePasswordForm.new({})
+    @password_form = ChangePasswordForm.new
   end
 
   def update_password
@@ -38,7 +38,7 @@ class PasswordController < ApplicationController
   end
 
   def forgot_form
-    @form = ForgottenPasswordForm.new({})
+    @form = ForgottenPasswordForm.new
   end
 
   def send_code
@@ -46,22 +46,19 @@ class PasswordController < ApplicationController
     if @form.valid?
       request_password_reset(@form.to_h)
       session[:email] = @form.email
-      @form = PasswordRecoveryForm.new({})
+      @form = PasswordRecoveryForm.new
       render :user_code
     else
       flash.now[:errors] = @form.errors.full_messages.join(', ')
       render :forgot_form, status: :bad_request
     end
-  rescue ToManyAttemptsError
-    flash.now[:errors] = t('password.errors.to_many_attempts')
-    render :forgot_form, status: :bad_request
-  rescue UserBadStateError
-    flash.now[:errors] = t('password.erros.bad_state')
-    render :forgot_form, status: :bad_request
+  rescue TooManyAttemptsError, UserBadStateError, UserGroupNotFoundException
+    @form = PasswordRecoveryForm.new
+    render :user_code
   end
 
   def user_code
-    @form = PasswordRecoveryForm.new({})
+    @form = PasswordRecoveryForm.new
     @email = session[:email]
   end
 
@@ -82,5 +79,7 @@ class PasswordController < ApplicationController
         render :user_code, status: :bad_request
       end
     end
+  rescue NotAuthorizedException, UserGroupNotFoundException
+    redirect_to new_user_session_path
   end
 end

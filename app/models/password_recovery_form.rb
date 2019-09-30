@@ -9,7 +9,7 @@ class PasswordRecoveryForm
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, length: { minimum: 8 }
 
-  def initialize(params)
+  def initialize(params = {})
     @code = params[:code]
     @email = params[:email]
     @password = params[:password]

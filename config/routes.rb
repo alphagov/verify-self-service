@@ -44,8 +44,8 @@ Rails.application.routes.draw do
   get '/mfa-enrolment', to: 'mfa#index', as: :mfa_enrolment
   post '/mfa-enrolment', to: 'mfa#enrol', as: :enrol_to_mfa
 
-  get 'change-password', to: 'password#password_form'
-  post 'change-password', to: 'password#update_password'
+  get '/profile/change-password', to: 'password#password_form'
+  post '/profile/change-password', to: 'password#update_password'
   get 'forgot-password', to: 'password#forgot_form'
   post 'forgot-password', to: 'password#send_code'
   get 'reset-password', to: 'password#user_code'

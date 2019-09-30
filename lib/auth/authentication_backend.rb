@@ -10,7 +10,7 @@ module AuthenticationBackend
   class GroupExistsException < StandardError; end
   class InvalidOldPasswordError < StandardError; end
   class InvalidNewPasswordError < StandardError; end
-  class ToManyAttemptsError < StandardError; end
+  class TooManyAttemptsError < StandardError; end
   class UserBadStateError < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
@@ -39,11 +39,14 @@ module AuthenticationBackend
       username: params[:email]
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
+    Rails.logger.error("User #{params[:email]} is not set up properly but is trying to reset their password")
     raise UserBadStateError.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
+    Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
     raise UserGroupNotFoundException.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::LimitExceededException => e
-    raise ToManyAttemptsError.new(e)
+    Rails.logger.error("User #{params[:email]} has made to many attempts to reset their password")
+    raise TooManyAttemptsError.new(e)
   end
 
   def reset_password(params)
@@ -53,6 +56,11 @@ module AuthenticationBackend
       confirmation_code: params[:code],
       password: params[:password]
       )
+  rescue Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
+    raise NotAuthorizedException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
+    Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
+    raise UserGroupNotFoundException.new(e)
   end
 
   def create_group(name:, description:)
