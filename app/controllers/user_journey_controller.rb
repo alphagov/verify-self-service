@@ -45,11 +45,9 @@ class UserJourneyController < ApplicationController
       end
     end
 
-    @upload = UploadCertificateEvent.new(
-      component_id: params[component_key(params)],
-      component_type: component_name_from_params(params)
-    )
-    Rails.logger.info(merge_errors(@upload, extractor, @new_certificate))
+    # For the purposes of the form :(
+    @upload = extractor
+    Rails.logger.info(merge_errors(@upload, @new_certificate))
     render :upload_certificate
   end
 
