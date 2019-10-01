@@ -146,9 +146,9 @@ RSpec.describe UsersController, type: :controller do
     end
 
     describe '#show' do
-
       it 'renders the update user page' do
         stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+        stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
 
         expect(subject).to receive(:as_team_member).and_call_original
 
@@ -158,8 +158,10 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to render_template(:show)
       end
 
+
       it 'redirects to all teams page when user_id is not found' do
         stub_cognito_response(method: :admin_get_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         get :show, :params => { :user_id => user_id }
         expect(flash[:error]).to eq("User does not exist.")
         expect(response).to have_http_status(:redirect)
@@ -170,12 +172,14 @@ RSpec.describe UsersController, type: :controller do
     describe '#update' do
       it 'updates the user roles' do
         stub_cognito_response(method: :admin_update_user_attributes, payload: {})
+        stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         post :update, :params => { :update_user_roles_form => { :roles => [ROLE::CERTIFICATE_MANAGER]}, :user_id => user_id}
         expect(subject).to redirect_to(users_path)
       end
 
       it 'displays an error when validation fails' do
         stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+        stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         post :update, :params => { :update_user_roles_form => { :roles => []}, :user_id => user_id}
         expect(subject).to render_template(:show)
         expect(response).to have_http_status(:bad_request)
@@ -183,6 +187,7 @@ RSpec.describe UsersController, type: :controller do
 
       it 'displays an error when authentication backend returns an error' do
         stub_cognito_response(method: :admin_update_user_attributes, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         post :update, :params => { :update_user_roles_form => { :roles => [ROLE::CERTIFICATE_MANAGER]}, :user_id => user_id}
         expect(subject).to render_template(:show)
         expect(response).to have_http_status(:internal_server_error)

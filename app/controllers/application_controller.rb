@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   before_action :check_team_authorization
   before_action :check_component_authorization
   before_action :check_max_session_time
+  before_action :check_member_authorization
 
 protected
 
@@ -40,6 +41,16 @@ protected
 
   def check_team_authorization(team_id: params[:team_id])
     authorize Team.find_by_id(team_id) unless team_id.nil? || !Team.exists?(team_id)
+  rescue Pundit::NotAuthorizedError
+    flash[:warn] = t('shared.errors.authorisation')
+    redirect_to root_path, status: :forbidden
+  end
+
+  def check_member_authorization(user_id: params[:user_id])
+    return unless user_id.present?
+
+    member = Member.new(user_id)
+    authorize member
   rescue Pundit::NotAuthorizedError
     flash[:warn] = t('shared.errors.authorisation')
     redirect_to root_path, status: :forbidden
