@@ -10,6 +10,8 @@ module AuthenticationBackend
   class GroupExistsException < StandardError; end
   class InvalidOldPasswordError < StandardError; end
   class InvalidNewPasswordError < StandardError; end
+  class TooManyAttemptsError < StandardError; end
+  class UserBadStateError < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
@@ -29,6 +31,36 @@ module AuthenticationBackend
     return process_response(cognito_response: resp, params: params) if resp.present?
 
     raise AuthenticationBackendException.new("No Response Back from Authentication Service to process")
+  end
+
+  def request_password_reset(params)
+    client.forgot_password(
+      client_id: cognito_client_id,
+      username: params[:email]
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
+    Rails.logger.error("User #{params[:email]} is not set up properly but is trying to reset their password")
+    raise UserBadStateError.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
+    Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
+    raise UserGroupNotFoundException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::LimitExceededException => e
+    Rails.logger.error("User #{params[:email]} has made to many attempts to reset their password")
+    raise TooManyAttemptsError.new(e)
+  end
+
+  def reset_password(params)
+    client.confirm_forgot_password(
+      client_id: cognito_client_id,
+      username: params[:email],
+      confirmation_code: params[:code],
+      password: params[:password]
+      )
+  rescue Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
+    raise NotAuthorizedException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
+    Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
+    raise UserGroupNotFoundException.new(e)
   end
 
   def create_group(name:, description:)

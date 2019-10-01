@@ -11,35 +11,6 @@ class ProfileController < ApplicationController
     @user = current_user
   end
 
-  def password_form
-    @password_form = ChangePasswordForm.new({})
-  end
-
-  def update_password
-    @password_form = ChangePasswordForm.new(params[:change_password_form])
-    if @password_form.valid?
-      change_password(
-        current_password: @password_form.old_password,
-        new_password: @password_form.password,
-        access_token: current_user.access_token
-      )
-      flash[:notice] = t('password.password_changed')
-      redirect_to profile_path
-    else
-      flash.now[:errors] = @password_form.errors.full_messages.join(', ')
-      render :password_form, status: :bad_request
-    end
-  rescue InvalidOldPasswordError
-    flash[:error] = t('password.errors.old_password_mismatch')
-    render :password_form, status: :bad_request
-  rescue InvalidNewPasswordError
-    flash[:error] = t('devise.sessions.InvalidPasswordException')
-    render :password_form, status: :bad_request
-  rescue AuthenticationBackendException
-    flash[:error] = t('devise.failure.unknown_cognito_response')
-    render :password_form, status: :bad_request
-  end
-
   def switch_client
     if params[:client] == 'cognito'
       CognitoStubClient.switch_to_cognito
