@@ -13,12 +13,12 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
  && apt-get install -y yarn
 
 RUN apt-get install -y firefox-esr
-RUN apt-get install -y postgresql-9.6
+RUN apt-get install -y postgresql-11
 
 USER postgres
 
 RUN  /etc/init.d/postgresql start &&\
     psql --command "CREATE DATABASE vss_test;" -U postgres &&\
-    sed -i 's/local   all             postgres                                peer/local   all             postgres                                trust/g' /etc/postgresql/9.6/main/pg_hba.conf
+    sed -i 's/local   all             postgres                                peer/local   all             postgres                                trust/g' /etc/postgresql/11/main/pg_hba.conf
 
 USER root
