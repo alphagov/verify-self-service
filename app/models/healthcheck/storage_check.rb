@@ -12,7 +12,7 @@ module Healthcheck
               bucket: bucket,
               key: FILES::HEALTHCHECK,
               body: '',
-              server_side_encryption: 'AES256'
+              server_side_encryption: 'AES256',
             )
           end
         rescue Aws::S3::Errors::ServiceError
@@ -28,7 +28,7 @@ module Healthcheck
     def healthcheck_file_exists?(bucket)
       SelfService.service(:storage_client).get_object(
         bucket: bucket,
-        key: FILES::HEALTHCHECK
+        key: FILES::HEALTHCHECK,
       )
     rescue Aws::S3::Errors::NoSuchKey
       false

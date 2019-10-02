@@ -52,7 +52,7 @@ class InitialSeeder
       email: admin_email,
       given_name: 'Jakub',
       family_name: 'Miarka',
-      roles: [TEAMS::GDS]
+      roles: [TEAMS::GDS],
     )
     add_user_to_group(username: admin_email, group: TEAMS::GDS)
   end

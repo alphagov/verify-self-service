@@ -37,7 +37,7 @@ class CognitoChooser
     register_jwks
     register_client(
       client: Aws::CognitoIdentityProvider::Client.new,
-      is_stub: false
+      is_stub: false,
     )
   end
 
@@ -46,7 +46,7 @@ class CognitoChooser
     register_client(client: Aws::CognitoIdentityProvider::Client.new(
       region: Rails.configuration.aws_region,
       access_key_id: aws_access_key,
-      secret_access_key: aws_secret_key
+      secret_access_key: aws_secret_key,
     ), is_stub: false)
   end
 
@@ -55,7 +55,7 @@ class CognitoChooser
     Rails.configuration.cognito_client_id = SecureRandom.uuid
     Rails.configuration.cognito_user_pool_id = SecureRandom.uuid
     register_client(
-      client: CognitoStubClient.stub_client
+      client: CognitoStubClient.stub_client,
     )
   end
 

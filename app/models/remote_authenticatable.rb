@@ -105,10 +105,10 @@ module Devise
               family_name: record.family_name,
               session_start_time: record.session_start_time,
               team: record.team,
-              cognito_groups: groups
+              cognito_groups: groups,
             },
             # Used for salt in serialize_from_session, causes error if missing
-            nil
+            nil,
           ]
         end
       end

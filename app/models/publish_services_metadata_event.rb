@@ -18,7 +18,7 @@ class PublishServicesMetadataEvent < Event
       bucket: hub_environment_bucket,
       key: FILES::CONFIG_METADATA,
       body: StringIO.new(metadata.to_json),
-      server_side_encryption: 'AES256'
+      server_side_encryption: 'AES256',
     )
   rescue Aws::S3::Errors::ServiceError
     Rails.logger.error("Failed to publish config metadata for event #{event_id}")

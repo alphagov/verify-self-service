@@ -36,7 +36,7 @@ module AuthenticationBackend
   def request_password_reset(params)
     client.forgot_password(
       client_id: cognito_client_id,
-      username: params[:email]
+      username: params[:email],
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
     Rails.logger.error("User #{params[:email]} is not set up properly but is trying to reset their password")
@@ -54,7 +54,7 @@ module AuthenticationBackend
       client_id: cognito_client_id,
       username: params[:email],
       confirmation_code: params[:code],
-      password: params[:password]
+      password: params[:password],
       )
   rescue Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
     raise NotAuthorizedException.new(e)
@@ -67,7 +67,7 @@ module AuthenticationBackend
     client.create_group(
       group_name: name,
       description: description,
-      user_pool_id: user_pool_id
+      user_pool_id: user_pool_id,
     )
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
     raise AuthenticationBackendException.new(e)
@@ -88,14 +88,14 @@ module AuthenticationBackend
   def enrol_totp_device(access_token:, totp_code:)
     client.verify_software_token(
       access_token: access_token,
-      user_code: totp_code
+      user_code: totp_code,
     )
     client.set_user_mfa_preference(
       access_token: access_token,
       software_token_mfa_settings: {
         enabled: true,
-        preferred_mfa: true
-      }
+        preferred_mfa: true,
+      },
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e)
@@ -111,23 +111,23 @@ module AuthenticationBackend
       user_attributes: [
         {
           name: 'email',
-          value: email
+          value: email,
         },
         {
           name: 'given_name',
-          value: given_name
+          value: given_name,
         },
         {
           name: 'family_name',
-          value: family_name
+          value: family_name,
         },
         {
           name: 'custom:roles',
-          value: roles.join(",")
-        }
+          value: roles.join(","),
+        },
       ],
       username: email,
-      user_pool_id: user_pool_id
+      user_pool_id: user_pool_id,
   )
   rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException,
          Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e
@@ -140,7 +140,7 @@ module AuthenticationBackend
     client.admin_add_user_to_group(
       user_pool_id: user_pool_id,
       username: username,
-      group_name: group
+      group_name: group,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e)
@@ -149,7 +149,7 @@ module AuthenticationBackend
   def get_users(limit: 60)
     client.list_users(
       user_pool_id: user_pool_id,
-      limit: limit
+      limit: limit,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e)
@@ -173,7 +173,7 @@ module AuthenticationBackend
     client.admin_update_user_attributes(
       user_pool_id: user_pool_id,
       username: user_id,
-      user_attributes: [{ name: "custom:roles", value: roles.join(',') }]
+      user_attributes: [{ name: "custom:roles", value: roles.join(',') }],
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e.message)
@@ -191,7 +191,7 @@ module AuthenticationBackend
   def get_group(group_name:)
     client.get_group(
       group_name: group_name,
-      user_pool_id: user_pool_id
+      user_pool_id: user_pool_id,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException => e
     raise UserGroupNotFoundException.new(e)
@@ -210,7 +210,7 @@ module AuthenticationBackend
     client.change_password(
       previous_password: current_password,
       proposed_password: new_password,
-      access_token: access_token
+      access_token: access_token,
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
     raise InvalidOldPasswordError.new(e)
@@ -255,7 +255,7 @@ private
     {
       email: params[:email],
       cognito_response: cognito_response,
-      secret_code: token_resp.secret_code
+      secret_code: token_resp.secret_code,
     }
   end
 
@@ -268,8 +268,8 @@ private
       auth_flow: 'USER_PASSWORD_AUTH',
       auth_parameters: {
         'USERNAME' => email,
-        'PASSWORD' => password
-      }
+        'PASSWORD' => password,
+      },
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException,
          Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
@@ -310,7 +310,7 @@ private
       session_id: params[:cognito_session_id],
       challenge_name: "#{params[:challenge_name]}_RETRY",
       challenge_parameters: params[:challenge_parameters],
-      flash_message: { code: e.code, message: e.message }
+      flash_message: { code: e.code, message: e.message },
     }
     ChallengeResponse.new(response_hash)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
@@ -323,7 +323,7 @@ private
       client_id: cognito_client_id,
       session: session,
       challenge_name: challenge_name,
-      challenge_responses: challenge_responses
+      challenge_responses: challenge_responses,
     )
   end
 

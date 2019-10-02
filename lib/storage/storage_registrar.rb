@@ -16,7 +16,7 @@ class StorageRegistrar
   def register_production_client
     SelfService.register_service(
       name: :storage_client,
-      client: Aws::S3::Client.new(logger: Rails.logger, log_level: :info)
+      client: Aws::S3::Client.new(logger: Rails.logger, log_level: :info),
     )
   end
 
@@ -28,7 +28,7 @@ class StorageRegistrar
 
     SelfService.register_service(
       name: :storage_client,
-      client: s3_client
+      client: s3_client,
     )
   end
 
@@ -39,7 +39,7 @@ class StorageRegistrar
 
     SelfService.register_service(
       name: :storage_client,
-      client: s3_client
+      client: s3_client,
     )
   end
 end

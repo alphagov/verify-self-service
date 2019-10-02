@@ -20,7 +20,7 @@ class NewMsaComponentEvent < AggregatedEvent
       team_id: team_id,
       environment: environment,
       entity_id: entity_id,
-      created_at: created_at
+      created_at: created_at,
     }
   end
 

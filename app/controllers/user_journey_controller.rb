@@ -22,7 +22,7 @@ class UserJourneyController < ApplicationController
     component_type = component_name_from_params(params)
     @upload = UploadCertificateEvent.new(
       component_id: component_id,
-      component_type: component_type
+      component_type: component_type,
     )
   end
 
@@ -35,7 +35,7 @@ class UserJourneyController < ApplicationController
       @new_certificate = Certificate.new(
         usage: @certificate.usage,
         value: @new_certificate_value,
-        component: @component
+        component: @component,
       )
 
       if @new_certificate.valid? && valid_x509?(@new_certificate)
@@ -58,7 +58,7 @@ class UserJourneyController < ApplicationController
       usage: @certificate.usage,
       value: new_certificate_value,
       component_id: params[:component_id],
-      component_type: params[:component_type]
+      component_type: params[:component_type],
     )
 
     if @upload.valid?
@@ -67,7 +67,7 @@ class UserJourneyController < ApplicationController
       if @upload.certificate.encryption?
         ReplaceEncryptionCertificateEvent.create(
           component: component,
-          encryption_certificate_id: @upload.certificate.id
+          encryption_certificate_id: @upload.certificate.id,
         )
       end
 
