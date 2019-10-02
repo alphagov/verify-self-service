@@ -22,7 +22,7 @@ class UserJourneyController < ApplicationController
     component_type = component_name_from_params(params)
     @upload = UploadCertificateEvent.new(
       component_id: component_id,
-      component_type: component_type
+      component_type: component_type,
     )
   end
 
@@ -35,18 +35,18 @@ class UserJourneyController < ApplicationController
       @new_certificate = Certificate.new(
         usage: @certificate.usage,
         value: @new_certificate_value,
-        component: @component
+        component: @component,
       )
 
       if @new_certificate.valid? && valid_x509?(@new_certificate)
-        render 'user_journey/check_your_certificate'
+        render "user_journey/check_your_certificate"
         return
       end
     end
 
     error_message = extractor.tap { |x|
       x.errors.merge!(@new_certificate.errors) if @new_certificate
-    }.errors.full_messages.join(', ')
+    }.errors.full_messages.join(", ")
 
     Rails.logger.info(error_message)
     redirect_to :upload_certificate, flash: { error: error_message }
@@ -58,7 +58,7 @@ class UserJourneyController < ApplicationController
       usage: @certificate.usage,
       value: new_certificate_value,
       component_id: params[:component_id],
-      component_type: params[:component_type]
+      component_type: params[:component_type],
     )
 
     if @upload.valid?
@@ -67,13 +67,13 @@ class UserJourneyController < ApplicationController
       if @upload.certificate.encryption?
         ReplaceEncryptionCertificateEvent.create(
           component: component,
-          encryption_certificate_id: @upload.certificate.id
+          encryption_certificate_id: @upload.certificate.id,
         )
       end
 
       render :confirmation
     else
-      @upload.errors.full_messages.join(', ').tap do |error_message|
+      @upload.errors.full_messages.join(", ").tap do |error_message|
         Rails.logger.info(error_message)
         flash.now[:error] = error_message
       end

@@ -2,7 +2,7 @@ class Event < ApplicationRecord
   include UserInfo
   after_initialize :default_values
   before_create :set_user_id
-  scope :newest_first, -> { order('created_at DESC') }
+  scope :newest_first, -> { order("created_at DESC") }
 
 private
 

@@ -1,5 +1,5 @@
-require 'net/http'
-require 'json'
+require "net/http"
+require "json"
 
 class JwksLoader
   def initialize
@@ -22,7 +22,7 @@ private
       response = Net::HTTP.get(URI("https://cognito-idp.#{region}.amazonaws.com/#{user_pool_id}/.well-known/jwks.json"))
       Rails.logger.debug "Response from cognito #{response}"
       json = JSON.parse(response)
-      { keys: json.fetch('keys').map { |data| HashWithIndifferentAccess.new(data) } }
+      { keys: json.fetch("keys").map { |data| HashWithIndifferentAccess.new(data) } }
     end
     Rails.logger.debug "Populated Cache store information: #{Rails.cache.inspect}"
     # Don't remove this as the debug statement above will return true instead

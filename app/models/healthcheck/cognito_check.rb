@@ -1,4 +1,4 @@
-require 'auth/authentication_backend'
+require "auth/authentication_backend"
 
 module Healthcheck
   class CognitoCheck

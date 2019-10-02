@@ -5,7 +5,7 @@ class ChangeComponentEvent < AggregatedEvent
   def attributes_to_apply
     changes = component
               .attributes
-              .slice(component.changed.join(','))
+              .slice(component.changed.join(","))
 
     self.data = changes
     changes

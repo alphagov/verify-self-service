@@ -31,7 +31,7 @@ class MsaComponentsController < ApplicationController
     msa_component = MsaComponent.find_by_id(params[:id])
     msa_component.team_id = params.dig(:component, :team_id)
     event = ChangeComponentEvent.create(
-      component: msa_component
+      component: msa_component,
     )
     unless event.valid?
       error_message = event.errors.full_messages

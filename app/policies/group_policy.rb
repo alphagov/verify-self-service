@@ -28,7 +28,7 @@ class GroupPolicy < ApplicationPolicy
 private
 
   def check_membership(user, object_id)
-    return true if user.roles.include?('gds')
+    return true if user.roles.include?("gds")
 
     object_id == user&.team
   end

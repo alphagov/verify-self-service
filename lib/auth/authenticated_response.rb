@@ -1,4 +1,4 @@
-require_relative 'authentication_backend'
+require_relative "authentication_backend"
 
 class AuthenticatedResponse
   attr_reader :response_type, :params, :id_token, :access_token

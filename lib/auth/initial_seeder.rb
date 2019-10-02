@@ -1,4 +1,4 @@
-require 'auth/authentication_backend'
+require "auth/authentication_backend"
 
 class InitialSeeder
   include AuthenticationBackend
@@ -6,7 +6,7 @@ class InitialSeeder
   def initialize
     return if SelfService.service(:cognito_stub)
 
-    Rails.logger.info('Initializing the seed sequence...')
+    Rails.logger.info("Initializing the seed sequence...")
     create_gds_group unless gds_group_exists?
     if gds_user_exists?
       add_gds_users_to_group
@@ -19,18 +19,18 @@ class InitialSeeder
     begin
       get_group(group_name: TEAMS::GDS)
     rescue AuthenticationBackend::UserGroupNotFoundException
-      Rails.logger.warn('The GDS group does not exist in the authentication backend!')
+      Rails.logger.warn("The GDS group does not exist in the authentication backend!")
       return false
     rescue AuthenticationBackend::AuthenticationBackendException => e
       Rails.logger.warn("Error occurred when checking GDS group: #{e}")
       return false
     end
-    Rails.logger.info('The GDS group already exists in  the authentication backend.')
+    Rails.logger.info("The GDS group already exists in  the authentication backend.")
     if Team.exists?(team_alias: TEAMS::GDS)
-      Rails.logger.info('The GDS group already exists in database.')
+      Rails.logger.info("The GDS group already exists in database.")
       true
     else
-      Rails.logger.info('The GDS group does not exist in database.')
+      Rails.logger.info("The GDS group does not exist in database.")
       false
     end
   end
@@ -47,19 +47,19 @@ class InitialSeeder
   end
 
   def create_gds_user
-    admin_email = ENV['COGNITO_SEEDING_EMAIL'] || 'jakub.miarka+gdsadmin@digital.cabinet-office.gov.uk'
+    admin_email = ENV["COGNITO_SEEDING_EMAIL"] || "jakub.miarka+gdsadmin@digital.cabinet-office.gov.uk"
     add_user(
       email: admin_email,
-      given_name: 'Jakub',
-      family_name: 'Miarka',
-      roles: [TEAMS::GDS]
+      given_name: "Jakub",
+      family_name: "Miarka",
+      roles: [TEAMS::GDS],
     )
     add_user_to_group(username: admin_email, group: TEAMS::GDS)
   end
 
   def add_gds_users_to_group(gds_users = @gds_users)
     gds_users.each { |user|
-      user_email = user.attributes.find { |att| att.name == 'email' }
+      user_email = user.attributes.find { |att| att.name == "email" }
       if user_email.value.end_with?(TEAMS::GDS_EMAIL_DOMAIN)
         Rails.logger.info("Adding user #{user.username} to the GDS group.")
         add_user_to_group(username: user.username, group: TEAMS::GDS)

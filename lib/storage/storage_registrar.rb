@@ -1,14 +1,14 @@
 class StorageRegistrar
   def initialize
-    Rails.logger.info 'Loading storage client...'
+    Rails.logger.info "Loading storage client..."
     if Rails.env.production?
-      Rails.logger.info 'registering production storage client'
+      Rails.logger.info "registering production storage client"
       register_production_client
     elsif Rails.env.development?
-      Rails.logger.info 'registering development storage client'
+      Rails.logger.info "registering development storage client"
       register_dev_client
     else
-      Rails.logger.info 'registering stub storage client'
+      Rails.logger.info "registering stub storage client"
       register_stub_client
     end
   end
@@ -16,7 +16,7 @@ class StorageRegistrar
   def register_production_client
     SelfService.register_service(
       name: :storage_client,
-      client: Aws::S3::Client.new(logger: Rails.logger, log_level: :info)
+      client: Aws::S3::Client.new(logger: Rails.logger, log_level: :info),
     )
   end
 
@@ -28,7 +28,7 @@ class StorageRegistrar
 
     SelfService.register_service(
       name: :storage_client,
-      client: s3_client
+      client: s3_client,
     )
   end
 
@@ -39,7 +39,7 @@ class StorageRegistrar
 
     SelfService.register_service(
       name: :storage_client,
-      client: s3_client
+      client: s3_client,
     )
   end
 end

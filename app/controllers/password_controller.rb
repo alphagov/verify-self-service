@@ -1,4 +1,4 @@
-require 'auth/authentication_backend'
+require "auth/authentication_backend"
 
 class PasswordController < ApplicationController
   include AuthenticationBackend
@@ -6,7 +6,7 @@ class PasswordController < ApplicationController
   skip_before_action :authenticate_user!, except: %w[password_form update_password]
   skip_before_action :set_user, except: %w[password_form update_password]
 
-  layout 'main_layout', only: :password_form
+  layout "main_layout", only: :password_form
 
   def password_form
     @password_form = ChangePasswordForm.new
@@ -18,22 +18,22 @@ class PasswordController < ApplicationController
       change_password(
         current_password: @password_form.old_password,
         new_password: @password_form.password,
-        access_token: current_user.access_token
+        access_token: current_user.access_token,
       )
-      flash[:notice] = t('password.password_changed')
+      flash[:notice] = t("password.password_changed")
       redirect_to profile_path
     else
-      flash.now[:errors] = @password_form.errors.full_messages.join(', ')
+      flash.now[:errors] = @password_form.errors.full_messages.join(", ")
       render :password_form, status: :bad_request
     end
   rescue InvalidOldPasswordError
-    flash[:error] = t('password.errors.old_password_mismatch')
+    flash[:error] = t("password.errors.old_password_mismatch")
     render :password_form, status: :bad_request
   rescue InvalidNewPasswordError
-    flash[:error] = t('devise.sessions.InvalidPasswordException')
+    flash[:error] = t("devise.sessions.InvalidPasswordException")
     render :password_form, status: :bad_request
   rescue AuthenticationBackendException
-    flash[:error] = t('devise.failure.unknown_cognito_response')
+    flash[:error] = t("devise.failure.unknown_cognito_response")
     render :password_form, status: :bad_request
   end
 
@@ -49,7 +49,7 @@ class PasswordController < ApplicationController
       @form = PasswordRecoveryForm.new
       render :user_code
     else
-      flash.now[:errors] = @form.errors.full_messages.join(', ')
+      flash.now[:errors] = @form.errors.full_messages.join(", ")
       render :forgot_form, status: :bad_request
     end
   rescue TooManyAttemptsError, UserBadStateError, UserGroupNotFoundException
@@ -64,7 +64,7 @@ class PasswordController < ApplicationController
 
   def process_code
     if session[:email].nil? && params[:password_recovery_form][:email].nil?
-      flash.now[:errors] = t('email_missing')
+      flash.now[:errors] = t("email_missing")
       render :forgot_form, status: :bad_request
     else
       @form = PasswordRecoveryForm.new(params[:password_recovery_form])
@@ -72,10 +72,10 @@ class PasswordController < ApplicationController
       if @form.valid?
         reset_password(@form.to_h)
         session.delete(:email)
-        flash[:notice] = t('password.password_recovered')
+        flash[:notice] = t("password.password_recovered")
         redirect_to new_user_session_path
       else
-        flash.now[:errors] = @form.errors.full_messages.join(', ')
+        flash.now[:errors] = @form.errors.full_messages.join(", ")
         render :user_code, status: :bad_request
       end
     end

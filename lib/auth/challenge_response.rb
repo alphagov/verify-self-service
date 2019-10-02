@@ -1,4 +1,4 @@
-require_relative 'authentication_backend'
+require_relative "authentication_backend"
 
 class ChallengeResponse
   attr_reader :email, :response_type, :client_id, :session_id,
@@ -17,7 +17,7 @@ class ChallengeResponse
   end
 
   def to_h
-    instance_variables.map { |var| [var.to_s.delete('@').to_sym, instance_variable_get(var)] }.to_h
+    instance_variables.map { |var| [var.to_s.delete("@").to_sym, instance_variable_get(var)] }.to_h
   end
 
 private

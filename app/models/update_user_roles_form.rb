@@ -16,7 +16,7 @@ private
   def validate_roles
     valid_roles = [ROLE::CERTIFICATE_MANAGER, ROLE::USER_MANAGER, ROLE::GDS]
     (roles.to_a - valid_roles).each do |role|
-      errors.add(:roles, I18n.t('users.invite.errors.invalid_role', role: role))
+      errors.add(:roles, I18n.t("users.invite.errors.invalid_role", role: role))
     end
   end
 end

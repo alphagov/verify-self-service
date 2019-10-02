@@ -34,18 +34,18 @@ protected
     # Voodoo created by a witch doctor in a tikimask. Do not touch - is cursed.
     authorize "#{controller_name.titlecase.gsub(/\s+/, '').gsub('/', '::')}Controller".constantize.new
   rescue Pundit::NotAuthorizedError
-    flash[:warn] = t('shared.errors.authorisation')
+    flash[:warn] = t("shared.errors.authorisation")
     redirect_to root_path, status: :forbidden
   end
 
   def check_team_authorization(team_id: params[:team_id])
     authorize Team.find_by_id(team_id) unless team_id.nil? || !Team.exists?(team_id)
   rescue Pundit::NotAuthorizedError
-    flash[:warn] = t('shared.errors.authorisation')
+    flash[:warn] = t("shared.errors.authorisation")
     redirect_to root_path, status: :forbidden
   end
 
-  def check_component_authorization(component_id: params['component_id'], component_type: params['component_type'])
+  def check_component_authorization(component_id: params["component_id"], component_type: params["component_type"])
     if component_id.present?
       component = klass_component(component_type)&.find_by_id(component_id)
       if component.present?
@@ -54,7 +54,7 @@ protected
       end
     end
   rescue Pundit::NotAuthorizedError
-    flash[:warn] = t('shared.errors.authorisation')
+    flash[:warn] = t("shared.errors.authorisation")
     redirect_to root_path, status: :forbidden
   end
 

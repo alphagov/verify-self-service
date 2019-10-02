@@ -9,7 +9,7 @@ module X509Validator
 
   def x509_certificate(record, value)
     load_as_x509_certificate(value).tap do |x509|
-      record.errors.add(:certificate, I18n.t('certificates.errors.invalid')) if x509.nil?
+      record.errors.add(:certificate, I18n.t("certificates.errors.invalid")) if x509.nil?
     end
   end
 
@@ -21,11 +21,11 @@ module X509Validator
 
   def certificate_has_appropriate_not_after(record, x509)
     if x509.not_after < Time.now
-      record.errors.add(:certificate, I18n.t('certificates.errors.expired'))
+      record.errors.add(:certificate, I18n.t("certificates.errors.expired"))
     elsif x509.not_after < Time.now + 30.days
-      record.errors.add(:certificate, I18n.t('certificates.errors.expires_soon'))
+      record.errors.add(:certificate, I18n.t("certificates.errors.expires_soon"))
     elsif x509.not_after > Time.now + 1.year
-      record.errors.add(:certificate, I18n.t('certificates.errors.valid_too_long'))
+      record.errors.add(:certificate, I18n.t("certificates.errors.valid_too_long"))
     end
   end
 
@@ -41,13 +41,13 @@ module X509Validator
     if x509.public_key.is_a?(OpenSSL::PKey::RSA)
       certificate_is_strong(record, x509)
     else
-      record.errors.add(:certificate, I18n.t('certificates.errors.not_rsa'))
+      record.errors.add(:certificate, I18n.t("certificates.errors.not_rsa"))
     end
   end
 
   def certificate_is_strong(record, x509)
-    return if x509.public_key.params['n'].num_bits >= 2048
+    return if x509.public_key.params["n"].num_bits >= 2048
 
-    record.errors.add(:certificate, I18n.t('certificates.errors.small_key'))
+    record.errors.add(:certificate, I18n.t("certificates.errors.small_key"))
   end
 end

@@ -24,7 +24,7 @@ class UploadCertificateEvent < AggregatedEvent
       value: self.value,
       component_id: self.component_id,
       component_type: self.component_type,
-      created_at: self.created_at
+      created_at: self.created_at,
     }
   end
 
@@ -49,10 +49,10 @@ private
   end
 
   def certificate_is_new
-    errors.add(:certificate, I18n.t('components.errors.already_exists')) if certificate.persisted?
+    errors.add(:certificate, I18n.t("components.errors.already_exists")) if certificate.persisted?
   end
 
   def component_is_persisted
-    errors.add(:component, I18n.t('components.errors.must_exist')) unless component&.persisted?
+    errors.add(:component, I18n.t("components.errors.must_exist")) unless component&.persisted?
   end
 end

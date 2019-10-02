@@ -1,21 +1,21 @@
-require 'rqrcode'
-require 'erb'
+require "rqrcode"
+require "erb"
 
 class SessionsController < Devise::SessionsController
   include ERB::Util
   include AuthenticationBackend
-  layout 'full_width_layout'
+  layout "full_width_layout"
 
   before_action :load_secret_code, only: %i(create new)
   before_action :challenge_flash_messages, only: %i(create new)
 
   def create
     if session[:challenge_parameters].nil?
-      sign_in_form = SignInForm.new(params['user'])
+      sign_in_form = SignInForm.new(params["user"])
       if sign_in_form.valid?
         super
       else
-        flash[:errors] = sign_in_form.errors.full_messages.join(', ')
+        flash[:errors] = sign_in_form.errors.full_messages.join(", ")
         redirect_to new_session_path(resource_name)
       end
     else
@@ -32,10 +32,10 @@ class SessionsController < Devise::SessionsController
   end
 
   def challenge_flash_messages
-    return if session.to_h.dig('challenge_parameters', 'flash_message').nil?
+    return if session.to_h.dig("challenge_parameters", "flash_message").nil?
 
-    msg = session.to_h.dig('challenge_parameters', 'flash_message', 'code')
-    session[:challenge_parameters].delete('flash_message')
+    msg = session.to_h.dig("challenge_parameters", "flash_message", "code")
+    session[:challenge_parameters].delete("flash_message")
     set_flash_message! :warn, msg.to_sym, now: true
   end
 

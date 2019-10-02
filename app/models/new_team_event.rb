@@ -1,4 +1,4 @@
-require 'auth/authentication_backend'
+require "auth/authentication_backend"
 
 class NewTeamEvent < AggregatedEvent
   include AuthenticationBackend
@@ -6,7 +6,7 @@ class NewTeamEvent < AggregatedEvent
   belongs_to_aggregate :team
   data_attributes :name, :team_alias
 
-  validates_presence_of :name, message: I18n.t('team.errors.blank_name')
+  validates_presence_of :name, message: I18n.t("team.errors.blank_name")
 
   validate :create_cognito_group
 
@@ -18,7 +18,7 @@ class NewTeamEvent < AggregatedEvent
     {
       name: name,
       team_alias: team_alias,
-      created_at: created_at
+      created_at: created_at,
     }
   end
 
@@ -30,13 +30,13 @@ class NewTeamEvent < AggregatedEvent
     Rails.logger.warn("The group #{name} already existed in Cognito...")
   rescue AuthenticationBackend::AuthenticationBackendException => e
     Rails.logger.error("#{I18n.t('team.errors.failed')} -> #{e.message}")
-    errors.add(:team, I18n.t('team.errors.failed'))
+    errors.add(:team, I18n.t("team.errors.failed"))
   end
 
   def team_alias
     @team_alias ||= begin
       unless name.blank?
-        name.delete(' ').strip.match(TEAMS::GROUP_NAME_REGEX)[0]
+        name.delete(" ").strip.match(TEAMS::GROUP_NAME_REGEX)[0]
       end
     end
   end

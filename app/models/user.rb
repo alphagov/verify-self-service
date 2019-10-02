@@ -1,4 +1,4 @@
-require_relative 'remote_authenticatable'
+require_relative "remote_authenticatable"
 
 class User
   include ActiveModel::Serialization
@@ -29,6 +29,6 @@ class User
   end
 
   def to_hash
-    instance_variables.map { |var| [var.to_s.delete('@'), instance_variable_get(var)] }.to_h
+    instance_variables.map { |var| [var.to_s.delete("@"), instance_variable_get(var)] }.to_h
   end
 end

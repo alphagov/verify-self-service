@@ -8,7 +8,7 @@ module UserJourneyHelper
   end
 
   def position(certificate)
-    primary_signing_certificate?(certificate) ? 'primary' : 'secondary'
+    primary_signing_certificate?(certificate) ? "primary" : "secondary"
   end
 
   def certificate_status(certificate)

@@ -4,22 +4,22 @@ class Component < Aggregate
   has_many :signing_certificates,
            -> {
              where(usage: CERTIFICATE_USAGE::SIGNING)
-           }, class_name: 'Certificate', as: :component
+           }, class_name: "Certificate", as: :component
   has_many :encryption_certificates,
            -> {
-             where(usage: CERTIFICATE_USAGE::ENCRYPTION).order(created_at: 'desc')
-           }, class_name: 'Certificate', as: :component
+             where(usage: CERTIFICATE_USAGE::ENCRYPTION).order(created_at: "desc")
+           }, class_name: "Certificate", as: :component
   has_many :enabled_signing_certificates,
            -> {
-             where(usage: CERTIFICATE_USAGE::SIGNING, enabled: true).order(created_at: 'desc')
-           }, class_name: 'Certificate', as: :component
+             where(usage: CERTIFICATE_USAGE::SIGNING, enabled: true).order(created_at: "desc")
+           }, class_name: "Certificate", as: :component
   has_many :disabled_signing_certificates,
            -> {
              where(usage: CERTIFICATE_USAGE::SIGNING, enabled: false)
-           }, class_name: 'Certificate', as: :component
+           }, class_name: "Certificate", as: :component
 
   belongs_to :encryption_certificate,
-             -> { where(usage: CERTIFICATE_USAGE::ENCRYPTION) }, class_name: 'Certificate', optional: true
+             -> { where(usage: CERTIFICATE_USAGE::ENCRYPTION) }, class_name: "Certificate", optional: true
 
   belongs_to :team
 
@@ -31,7 +31,7 @@ class Component < Aggregate
       event_id: event_id,
       connected_services: service_providers.map(&:services_to_metadata).flatten,
       matching_service_adapters: MsaComponent.all_components_for_metadata.map(&:to_metadata),
-      service_providers: service_providers.map(&:to_metadata)
+      service_providers: service_providers.map(&:to_metadata),
     }
   end
 
@@ -45,7 +45,7 @@ class Component < Aggregate
     services.map do |service|
       {
         entity_id: service.entity_id,
-        service_provider_id: service.sp_component_id
+        service_provider_id: service.sp_component_id,
       }
     end
   end
@@ -58,7 +58,7 @@ class Component < Aggregate
     {
       name: name,
       encryption_certificate: encryption_certificate&.to_metadata,
-      signing_certificates: enabled_signing_certificates.map(&:to_metadata)
+      signing_certificates: enabled_signing_certificates.map(&:to_metadata),
     }.merge(additional_metadata)
   end
 end

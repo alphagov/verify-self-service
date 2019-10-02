@@ -34,7 +34,7 @@ class AggregatedEvent < Event
   end
 
   def name_is_present
-    errors.add(:name, I18n.t('events.errors.missing_name')) unless name.present?
+    errors.add(:name, I18n.t("events.errors.missing_name")) unless name.present?
   end
 
 private

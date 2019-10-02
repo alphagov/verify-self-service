@@ -4,7 +4,7 @@ class UserRolePermissions
 
   def initialize(roles_str, email = nil)
     all_users
-    roles = roles_str.nil? ? [] : roles_str.split(',').map(&:strip)
+    roles = roles_str.nil? ? [] : roles_str.split(",").map(&:strip)
     user_manager if roles.include?(ROLE::USER_MANAGER)
     cert_manager if roles.include?(ROLE::CERTIFICATE_MANAGER)
     component_manager if roles.include?(ROLE::COMPONENT_MANAGER)
@@ -24,7 +24,7 @@ class UserRolePermissions
   end
 
   def to_hash
-    instance_variables.map { |var| [var.to_s.delete('@'), instance_variable_get(var)] }.to_h
+    instance_variables.map { |var| [var.to_s.delete("@"), instance_variable_get(var)] }.to_h
   end
 
 private

@@ -1,4 +1,4 @@
-require 'auth/authentication_backend'
+require "auth/authentication_backend"
 
 module Devise
   module Models
@@ -33,18 +33,18 @@ module Devise
 
       def complete_auth(resp)
         claims = get_user_info(resp.id_token)[0]
-        self.login_id = claims['email']
-        self.user_id = claims['sub']
-        self.email = claims['email']
-        self.phone_number = claims['phone_number']
+        self.login_id = claims["email"]
+        self.user_id = claims["sub"]
+        self.email = claims["email"]
+        self.phone_number = claims["phone_number"]
         self.access_token = resp.access_token
-        self.roles = claims['custom:roles']
-        self.permissions = UserRolePermissions.new(claims['custom:roles'], claims['email'])
+        self.roles = claims["custom:roles"]
+        self.permissions = UserRolePermissions.new(claims["custom:roles"], claims["email"])
         self.full_name = "#{claims['given_name']} #{claims['family_name']}"
-        self.given_name = claims['given_name']
-        self.family_name = claims['family_name']
-        self.team = Team.find_by_team_alias(claims['cognito:groups'][0])&.id unless claims['cognito:groups'].nil?
-        self.cognito_groups = claims['cognito:groups']
+        self.given_name = claims["given_name"]
+        self.family_name = claims["family_name"]
+        self.team = Team.find_by_team_alias(claims["cognito:groups"][0])&.id unless claims["cognito:groups"].nil?
+        self.cognito_groups = claims["cognito:groups"]
         self.session_start_time = Time.now.to_s
         self
       end
@@ -69,19 +69,19 @@ module Devise
         #
         def serialize_from_session(data, _salt)
           resource = new
-          resource.login_id = data['login_id']
-          resource.user_id = data['user_id']
-          resource.email = data['email']
-          resource.phone_number = data['phone_number']
-          resource.access_token = data['access_token']
-          resource.roles = data['roles']
-          resource.permissions = UserRolePermissions.new(data['roles'], data['email'])
+          resource.login_id = data["login_id"]
+          resource.user_id = data["user_id"]
+          resource.email = data["email"]
+          resource.phone_number = data["phone_number"]
+          resource.access_token = data["access_token"]
+          resource.roles = data["roles"]
+          resource.permissions = UserRolePermissions.new(data["roles"], data["email"])
           resource.full_name = "#{data['given_name']} #{data['family_name']}"
-          resource.given_name = data['given_name']
-          resource.family_name = data['family_name']
-          resource.session_start_time = data['session_start_time']
-          resource.team = data['team']
-          resource.cognito_groups = data['cognito_groups']&.split(',')
+          resource.given_name = data["given_name"]
+          resource.family_name = data["family_name"]
+          resource.session_start_time = data["session_start_time"]
+          resource.team = data["team"]
+          resource.cognito_groups = data["cognito_groups"]&.split(",")
           resource
         end
 
@@ -92,7 +92,7 @@ module Devise
         # You might want to include some authentication data
         #
         def serialize_into_session(record)
-          groups = record.cognito_groups.join(',') unless record.cognito_groups.nil?
+          groups = record.cognito_groups.join(",") unless record.cognito_groups.nil?
           [
             {
               email: record.email,
@@ -105,10 +105,10 @@ module Devise
               family_name: record.family_name,
               session_start_time: record.session_start_time,
               team: record.team,
-              cognito_groups: groups
+              cognito_groups: groups,
             },
             # Used for salt in serialize_from_session, causes error if missing
-            nil
+            nil,
           ]
         end
       end

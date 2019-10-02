@@ -1,4 +1,4 @@
-require 'auth/jwks_loader'
+require "auth/jwks_loader"
 
 class CognitoChooser
   def initialize
@@ -6,7 +6,7 @@ class CognitoChooser
     if Rails.env.production?
       Rails.logger.info "choosing production client"
       register_production_client
-    elsif aws_access_key.present? && aws_secret_key.present? && Rails.env != 'test'
+    elsif aws_access_key.present? && aws_secret_key.present? && Rails.env != "test"
       Rails.logger.info "choosing dev client"
       register_dev_client
     elsif %w(test development).include? Rails.env
@@ -15,7 +15,7 @@ class CognitoChooser
       CognitoStubClient.register_jwks
       CognitoStubClient.setup_stubs
     else
-      raise StandandError('Unable to configure AWS Cognito Client.  Exiting.')
+      raise StandandError("Unable to configure AWS Cognito Client.  Exiting.")
     end
   end
 
@@ -37,7 +37,7 @@ class CognitoChooser
     register_jwks
     register_client(
       client: Aws::CognitoIdentityProvider::Client.new,
-      is_stub: false
+      is_stub: false,
     )
   end
 
@@ -46,16 +46,16 @@ class CognitoChooser
     register_client(client: Aws::CognitoIdentityProvider::Client.new(
       region: Rails.configuration.aws_region,
       access_key_id: aws_access_key,
-      secret_access_key: aws_secret_key
+      secret_access_key: aws_secret_key,
     ), is_stub: false)
   end
 
   def register_stub_client
-    require 'auth/jwks_loader_stub'
+    require "auth/jwks_loader_stub"
     Rails.configuration.cognito_client_id = SecureRandom.uuid
     Rails.configuration.cognito_user_pool_id = SecureRandom.uuid
     register_client(
-      client: CognitoStubClient.stub_client
+      client: CognitoStubClient.stub_client,
     )
   end
 

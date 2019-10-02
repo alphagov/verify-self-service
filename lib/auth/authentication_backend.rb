@@ -1,6 +1,6 @@
-require_relative 'challenge_response'
-require_relative 'authenticated_response'
-require 'securerandom'
+require_relative "challenge_response"
+require_relative "authenticated_response"
+require "securerandom"
 
 module AuthenticationBackend
   class NotAuthorizedException < StandardError; end
@@ -14,10 +14,10 @@ module AuthenticationBackend
   class UserBadStateError < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
-  AUTHENTICATED = 'authenticated'.freeze
-  CHALLENGE = 'challenge'.freeze
-  RETRY = 'retry'.freeze
-  OK = 'ok'.freeze
+  AUTHENTICATED = "authenticated".freeze
+  CHALLENGE = "challenge".freeze
+  RETRY = "retry".freeze
+  OK = "ok".freeze
 
   # Authenticaiton flows start here and will return either
   # an authentication response, a challenge response or an
@@ -36,7 +36,7 @@ module AuthenticationBackend
   def request_password_reset(params)
     client.forgot_password(
       client_id: cognito_client_id,
-      username: params[:email]
+      username: params[:email],
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
     Rails.logger.error("User #{params[:email]} is not set up properly but is trying to reset their password")
@@ -54,7 +54,7 @@ module AuthenticationBackend
       client_id: cognito_client_id,
       username: params[:email],
       confirmation_code: params[:code],
-      password: params[:password]
+      password: params[:password],
       )
   rescue Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
     raise NotAuthorizedException.new(e)
@@ -67,7 +67,7 @@ module AuthenticationBackend
     client.create_group(
       group_name: name,
       description: description,
-      user_pool_id: user_pool_id
+      user_pool_id: user_pool_id,
     )
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
     raise AuthenticationBackendException.new(e)
@@ -88,14 +88,14 @@ module AuthenticationBackend
   def enrol_totp_device(access_token:, totp_code:)
     client.verify_software_token(
       access_token: access_token,
-      user_code: totp_code
+      user_code: totp_code,
     )
     client.set_user_mfa_preference(
       access_token: access_token,
       software_token_mfa_settings: {
         enabled: true,
-        preferred_mfa: true
-      }
+        preferred_mfa: true,
+      },
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e)
@@ -110,24 +110,24 @@ module AuthenticationBackend
       temporary_password: temporary_password,
       user_attributes: [
         {
-          name: 'email',
-          value: email
+          name: "email",
+          value: email,
         },
         {
-          name: 'given_name',
-          value: given_name
+          name: "given_name",
+          value: given_name,
         },
         {
-          name: 'family_name',
-          value: family_name
+          name: "family_name",
+          value: family_name,
         },
         {
-          name: 'custom:roles',
-          value: roles.join(",")
-        }
+          name: "custom:roles",
+          value: roles.join(","),
+        },
       ],
       username: email,
-      user_pool_id: user_pool_id
+      user_pool_id: user_pool_id,
   )
   rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException,
          Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e
@@ -140,7 +140,7 @@ module AuthenticationBackend
     client.admin_add_user_to_group(
       user_pool_id: user_pool_id,
       username: username,
-      group_name: group
+      group_name: group,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e)
@@ -149,7 +149,7 @@ module AuthenticationBackend
   def get_users(limit: 60)
     client.list_users(
       user_pool_id: user_pool_id,
-      limit: limit
+      limit: limit,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e)
@@ -173,7 +173,7 @@ module AuthenticationBackend
     client.admin_update_user_attributes(
       user_pool_id: user_pool_id,
       username: user_id,
-      user_attributes: [{ name: "custom:roles", value: roles.join(',') }]
+      user_attributes: [{ name: "custom:roles", value: roles.join(",") }],
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e.message)
@@ -183,7 +183,7 @@ module AuthenticationBackend
     users = get_users(limit: limit)
     users.users.select { |user|
       user.attributes.find { |att|
-        att.name == 'custom:roles' && att.value.include?(role)
+        att.name == "custom:roles" && att.value.include?(role)
       }
     }
   end
@@ -191,7 +191,7 @@ module AuthenticationBackend
   def get_group(group_name:)
     client.get_group(
       group_name: group_name,
-      user_pool_id: user_pool_id
+      user_pool_id: user_pool_id,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException => e
     raise UserGroupNotFoundException.new(e)
@@ -210,7 +210,7 @@ module AuthenticationBackend
     client.change_password(
       previous_password: current_password,
       proposed_password: new_password,
-      access_token: access_token
+      access_token: access_token,
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
     raise InvalidOldPasswordError.new(e)
@@ -237,10 +237,10 @@ private
   # When we get this we massage the cognito response to give it the new
   # session token from AWS.
   def create_challenge_response(cognito_response:, params:)
-    if cognito_response.challenge_name == 'MFA_SETUP'
+    if cognito_response.challenge_name == "MFA_SETUP"
       response_hash = setup_mfa_response(cognito_response: cognito_response, params: params)
-    elsif cognito_response.challenge_name.include?('_RETRY')
-      cognito_response.challenge_name = cognito_response.challenge_name.gsub('_RETRY', '')
+    elsif cognito_response.challenge_name.include?("_RETRY")
+      cognito_response.challenge_name = cognito_response.challenge_name.gsub("_RETRY", "")
       response_hash = cognito_response.to_h
     else
       response_hash = { email: params[:email], cognito_response: cognito_response }
@@ -255,7 +255,7 @@ private
     {
       email: params[:email],
       cognito_response: cognito_response,
-      secret_code: token_resp.secret_code
+      secret_code: token_resp.secret_code,
     }
   end
 
@@ -265,11 +265,11 @@ private
   def initiate_auth(email:, password:)
     client.initiate_auth(
       client_id: cognito_client_id,
-      auth_flow: 'USER_PASSWORD_AUTH',
+      auth_flow: "USER_PASSWORD_AUTH",
       auth_parameters: {
-        'USERNAME' => email,
-        'PASSWORD' => password
-      }
+        "USERNAME" => email,
+        "PASSWORD" => password,
+      },
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException,
          Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
@@ -281,19 +281,19 @@ private
   # Returns an authentication response normally with JWT
   def respond_to_challenge(params)
     challenge_name = params[:challenge_name]
-    username = params[:challenge_parameters]['USER_ID_FOR_SRP'] || params[:email]
+    username = params[:challenge_parameters]["USER_ID_FOR_SRP"] || params[:email]
     challenge_responses = { "USERNAME": username }
     case challenge_name
-    when 'NEW_PASSWORD_REQUIRED'
+    when "NEW_PASSWORD_REQUIRED"
       challenge_responses.merge!("NEW_PASSWORD": params[:new_password])
       send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
-    when 'SMS_MFA', 'SOFTWARE_TOKEN_MFA'
+    when "SMS_MFA", "SOFTWARE_TOKEN_MFA"
       challenge_responses.merge!('SOFTWARE_TOKEN_MFA_CODE': params[:totp_code])
       send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
-    when 'MFA_SETUP'
+    when "MFA_SETUP"
       totp_resp = client.verify_software_token(session: params[:cognito_session_id], user_code: params[:totp_code])
-      if totp_resp.status == 'SUCCESS'
-        challenge_responses.merge!('ANSWER': 'SOFTWARE_TOKEN_MFA')
+      if totp_resp.status == "SUCCESS"
+        challenge_responses.merge!('ANSWER': "SOFTWARE_TOKEN_MFA")
         send_challenge(session: totp_resp.session, challenge_name: challenge_name, challenge_responses: challenge_responses)
       else
         raise AuthenticationBackendException.new("Unknown status returned by cognito when verifying software token.  Status returned: #{totp_resp.status}")
@@ -310,7 +310,7 @@ private
       session_id: params[:cognito_session_id],
       challenge_name: "#{params[:challenge_name]}_RETRY",
       challenge_parameters: params[:challenge_parameters],
-      flash_message: { code: e.code, message: e.message }
+      flash_message: { code: e.code, message: e.message },
     }
     ChallengeResponse.new(response_hash)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
@@ -323,7 +323,7 @@ private
       client_id: cognito_client_id,
       session: session,
       challenge_name: challenge_name,
-      challenge_responses: challenge_responses
+      challenge_responses: challenge_responses,
     )
   end
 

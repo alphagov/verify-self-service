@@ -1,8 +1,8 @@
 module CertificateConcern
   extend ActiveSupport::Concern
 
-  BEGIN_CERT = '-----BEGIN CERTIFICATE-----'.freeze
-  END_CERT = '-----END CERTIFICATE-----'.freeze
+  BEGIN_CERT = "-----BEGIN CERTIFICATE-----".freeze
+  END_CERT = "-----END CERTIFICATE-----".freeze
 
   def to_x509(value)
     OpenSSL::X509::Certificate.new(value)
