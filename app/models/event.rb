@@ -14,7 +14,7 @@ private
     self.data ||= {}
   end
 
-  def self.data_attributes(*names) # rubocop:disable  IneffectiveAccessModifier
+  def self.data_attributes(*names) # rubocop:disable  Lint/IneffectiveAccessModifier
     names.each do |name|
       define_method name do
         self.data ||= {}
