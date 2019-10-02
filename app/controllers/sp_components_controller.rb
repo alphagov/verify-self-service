@@ -31,7 +31,7 @@ class SpComponentsController < ApplicationController
     spcomponent = SpComponent.find_by_id(params[:id])
     spcomponent.team_id = params.dig(:component, :team_id)
     event = ChangeComponentEvent.create(
-      component: spcomponent
+      component: spcomponent,
     )
     unless event.valid?
       error_message = event.errors.full_messages

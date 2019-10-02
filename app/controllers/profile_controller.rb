@@ -29,7 +29,7 @@ class ProfileController < ApplicationController
       role_str = params[:assume_roles][:role_selection].join(',')
       if params[:assume_roles][:role_selection].include?(ROLE::GDS)
         CognitoStubClient.update_user(
-          role: role_str, email_domain: TEAMS::GDS_EMAIL_DOMAIN
+          role: role_str, email_domain: TEAMS::GDS_EMAIL_DOMAIN,
         )
       else
         CognitoStubClient.update_user(role: role_str)

@@ -24,7 +24,7 @@ class UploadCertificateEvent < AggregatedEvent
       value: self.value,
       component_id: self.component_id,
       component_type: self.component_type,
-      created_at: self.created_at
+      created_at: self.created_at,
     }
   end
 

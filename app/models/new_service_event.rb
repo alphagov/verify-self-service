@@ -14,7 +14,7 @@ class NewServiceEvent < AggregatedEvent
       sp_component_id: sp_component_id,
       msa_component_id: msa_component_id,
       name: name,
-      created_at: created_at
+      created_at: created_at,
     }
   end
 end

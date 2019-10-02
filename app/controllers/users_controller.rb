@@ -97,7 +97,7 @@ private
       email: @form.email,
       given_name: @form.given_name,
       family_name: @form.family_name,
-      roles: @form.roles
+      roles: @form.roles,
     )
   end
 

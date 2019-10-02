@@ -7,7 +7,7 @@ class CertificatesController < ApplicationController
     component_type = component_name_from_params(params)
     @upload = UploadCertificateEvent.new(
       component_id: component_id,
-      component_type: component_type
+      component_type: component_type,
     )
   end
 
@@ -19,7 +19,7 @@ class CertificatesController < ApplicationController
       if @upload.certificate.encryption?
         ReplaceEncryptionCertificateEvent.create(
           component: component,
-          encryption_certificate_id: @upload.certificate.id
+          encryption_certificate_id: @upload.certificate.id,
         )
       end
 
@@ -39,7 +39,7 @@ class CertificatesController < ApplicationController
       flash[:notice] = error_message
     end
     redirect_to polymorphic_url(
-      klass_component(certificate.component_type).find_by_id(certificate.component_id)
+      klass_component(certificate.component_type).find_by_id(certificate.component_id),
     )
   end
 
@@ -52,18 +52,18 @@ class CertificatesController < ApplicationController
       flash[:notice] = error_message
     end
     redirect_to polymorphic_url(
-      klass_component(certificate.component_type).find_by_id(certificate.component_id)
+      klass_component(certificate.component_type).find_by_id(certificate.component_id),
     )
   end
 
   def replace
     component = klass_component(
-      component_name_from_params(params)
+      component_name_from_params(params),
     ).find_by_id(params[:component])
     certificate = Certificate.find_by_id(params[:id])
     event = ReplaceEncryptionCertificateEvent.create(
       component: component,
-      encryption_certificate_id: certificate.id
+      encryption_certificate_id: certificate.id,
     )
     unless event.valid?
       error_message = event.errors.full_messages
@@ -82,7 +82,7 @@ private
           .permit(:value, :usage)
           .merge(
             component_id: component_id,
-            component_type: component_type
+            component_type: component_type,
           )
   end
 end

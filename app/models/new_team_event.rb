@@ -18,7 +18,7 @@ class NewTeamEvent < AggregatedEvent
     {
       name: name,
       team_alias: team_alias,
-      created_at: created_at
+      created_at: created_at,
     }
   end
 

@@ -18,7 +18,7 @@ class PasswordController < ApplicationController
       change_password(
         current_password: @password_form.old_password,
         new_password: @password_form.password,
-        access_token: current_user.access_token
+        access_token: current_user.access_token,
       )
       flash[:notice] = t('password.password_changed')
       redirect_to profile_path

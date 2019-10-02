@@ -24,7 +24,7 @@ class NewSpComponentEvent < AggregatedEvent
       environment: environment,
       component_type: COMPONENT_TYPE::SP,
       vsp: component_type == COMPONENT_TYPE::VSP,
-      created_at: created_at
+      created_at: created_at,
     }
   end
 
