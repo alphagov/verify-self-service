@@ -46,8 +46,7 @@ class PasswordController < ApplicationController
     if @form.valid?
       session[:email] = @form.email
       request_password_reset(@form.to_h)
-      @form = PasswordRecoveryForm.new
-      render :user_code
+      redirect_to reset_password_path
     else
       flash.now[:errors] = @form.errors.full_messages.join(', ')
       render :forgot_form, status: :bad_request
@@ -60,10 +59,10 @@ class PasswordController < ApplicationController
 
   def process_code
     if session[:email].nil? && params[:password_recovery_form][:email].nil?
-      flash.now[:errors] = t('email_missing')
-      render :forgot_form, status: :bad_request
+      flash.now[:errors] = t('password.email_missing')
+      redirect_to forgot_password_path
     else
-      @form = PasswordRecoveryForm.new(params[:password_recovery_form])
+      @form = PasswordRecoveryForm.new(params[:password_recovery_form] || {})
       @form.email = session[:email] if @form.email.nil?
       if @form.valid?
         reset_password(@form.to_h)
