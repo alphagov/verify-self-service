@@ -11,7 +11,10 @@
             <%= render "sign_in_form", f:f %>
         <% end %>
             <div class="actions">
-                <%= f.submit "Log in", class: "govuk-button", data: { module: "govuk-button" } %>
+                <%= f.submit t('login.login'), class: "govuk-button govuk-!-margin-right-1", data: { module: "govuk-button" } %>
+                <% unless session[:challenge_name].nil? %>
+                    <%= link_to t('login.cancel'), cancel_path , class: "govuk-button govuk-button--secondary", data: { module: "govuk-button" } %>
+                <% end %>
             </div>
         <% end %>
         <% if session[:challenge_name].nil? %>

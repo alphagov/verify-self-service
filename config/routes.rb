@@ -64,4 +64,8 @@ Rails.application.routes.draw do
   post '/component/:component_type/:component_id/certificate/:certificate_id/confirmation', to: 'user_journey#confirm', as: 'confirm'
 
   get '/cookies', to: 'static#cookies'
+
+  devise_scope :user do 
+    get '/users/cancel' => "sessions#cancel", as: :cancel
+  end
 end
