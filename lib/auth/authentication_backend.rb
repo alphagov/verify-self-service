@@ -9,9 +9,11 @@ module AuthenticationBackend
   class UsernameExistsException < StandardError; end
   class GroupExistsException < StandardError; end
   class InvalidOldPasswordError < StandardError; end
-  class InvalidNewPasswordError < StandardError; end
-  class TooManyAttemptsError < StandardError; end
-  class UserBadStateError < StandardError; end
+  class InvalidNewPasswordException < StandardError; end
+  class InvalidConfirmationCodeException < StandardError; end
+  class ExpiredConfirmationCodeException < StandardError; end
+  class UserNotFoundException < StandardError; end
+  class UserNotConfirmedException < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
@@ -19,7 +21,7 @@ module AuthenticationBackend
   RETRY = 'retry'.freeze
   OK = 'ok'.freeze
 
-  # Authenticaiton flows start here and will return either
+  # Authentication flows start here and will return either
   # an authentication response, a challenge response or an
   # exception.
   def authentication_flow(params)
@@ -38,15 +40,16 @@ module AuthenticationBackend
       client_id: cognito_client_id,
       username: params[:email],
     )
-  rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
+  rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException
     Rails.logger.error("User #{params[:email]} is not set up properly but is trying to reset their password")
-    raise UserBadStateError.new(e)
-  rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
+  rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException
     Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
-    raise UserGroupNotFoundException.new(e)
-  rescue Aws::CognitoIdentityProvider::Errors::LimitExceededException => e
+  rescue Aws::CognitoIdentityProvider::Errors::LimitExceededException
     Rails.logger.error("User #{params[:email]} has made to many attempts to reset their password")
-    raise TooManyAttemptsError.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::UserNotConfirmedException
+    Rails.logger.error("User #{params[:email]} does not have a confirmed email to perform password reset")
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    Rails.logger.error(e)
   end
 
   def reset_password(params)
@@ -57,10 +60,14 @@ module AuthenticationBackend
       password: params[:password],
       )
   rescue Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
-    raise NotAuthorizedException.new(e)
+    raise InvalidConfirmationCodeException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
+    raise InvalidNewPasswordException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::ExpiredCodeException => e
+    raise ExpiredConfirmationCodeException.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
     Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
-    raise UserGroupNotFoundException.new(e)
+    raise UserNotFoundException.new(e)
   end
 
   def create_group(name:, description:)
@@ -215,7 +222,7 @@ module AuthenticationBackend
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
     raise InvalidOldPasswordError.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
-    raise InvalidNewPasswordError.new(e)
+    raise InvalidNewPasswordException.new(e)
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     Rails.logger.warn "An unknown cognito error occured with message: #{e}"
     raise AuthenticationBackendException.new(e)

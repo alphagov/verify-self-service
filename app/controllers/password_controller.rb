@@ -29,7 +29,7 @@ class PasswordController < ApplicationController
   rescue InvalidOldPasswordError
     flash[:error] = t('password.errors.old_password_mismatch')
     render :password_form, status: :bad_request
-  rescue InvalidNewPasswordError
+  rescue InvalidNewPasswordException
     flash[:error] = t('devise.sessions.InvalidPasswordException')
     render :password_form, status: :bad_request
   rescue AuthenticationBackendException
@@ -42,24 +42,20 @@ class PasswordController < ApplicationController
   end
 
   def send_code
-    @form = ForgottenPasswordForm.new(params[:forgotten_password_form])
+    @form = ForgottenPasswordForm.new(params[:forgotten_password_form] || {})
     if @form.valid?
-      request_password_reset(@form.to_h)
       session[:email] = @form.email
+      request_password_reset(@form.to_h)
       @form = PasswordRecoveryForm.new
       render :user_code
     else
       flash.now[:errors] = @form.errors.full_messages.join(', ')
       render :forgot_form, status: :bad_request
     end
-  rescue TooManyAttemptsError, UserBadStateError, UserGroupNotFoundException
-    @form = PasswordRecoveryForm.new
-    render :user_code
   end
 
   def user_code
     @form = PasswordRecoveryForm.new
-    @email = session[:email]
   end
 
   def process_code
@@ -79,7 +75,17 @@ class PasswordController < ApplicationController
         render :user_code, status: :bad_request
       end
     end
-  rescue NotAuthorizedException, UserGroupNotFoundException
+  rescue UserNotFoundException
+    session.delete(:email)
     redirect_to new_user_session_path
+  rescue ExpiredConfirmationCodeException
+    flash[:error] = t('password.errors.code_expired')
+    redirect_to forgot_password_path
+  rescue InvalidConfirmationCodeException
+    flash[:error] = t('password.errors.code_invalid')
+    render :user_code, status: :bad_request
+  rescue InvalidNewPasswordException
+    flash[:error] = t('password.errors.invalid_password')
+    render :user_code, status: :bad_request
   end
 end

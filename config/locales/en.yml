@@ -143,9 +143,9 @@ en:
     errors:
       email_missing: "Your e-mail address is missing"
       old_password_mismatch: "Your old password does not match the one we have on record"
-      new_password_mismatch: "Your new password did not match your confirmation password"
-      to_many_attempts: "You've made to many attempts to reset your password"
-      bad_state: "Your username needs to login for the first time.  Please login using the temporary password which was e-mailed to you."
+      invalid_password: The password does not match the password requirements
+      code_expired: The confirmation code expired, please request a new one
+      code_invalid: The confirmation code is invalid, please try again
   events:
     title: Events
     type: Type
