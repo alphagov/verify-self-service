@@ -156,5 +156,11 @@ RSpec.describe PasswordController, type: :controller do
       expect(subject).to redirect_to(new_user_session_path)
       expect(flash[:notice]).to be_nil
     end
+
+    it 'user redirected to the forgotten password page when params missing' do
+      post :process_code
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(forgot_password_path)
+    end
   end
 end

@@ -58,11 +58,11 @@ class PasswordController < ApplicationController
   end
 
   def process_code
-    if session[:email].nil? && params[:password_recovery_form][:email].nil?
+    if session[:email].nil? && params&.dig(:password_recovery_form, :email).nil?
       flash.now[:errors] = t('password.email_missing')
       redirect_to forgot_password_path
     else
-      @form = PasswordRecoveryForm.new(params[:password_recovery_form] || {})
+      @form = PasswordRecoveryForm.new(params[:password_recovery_form])
       @form.email = session[:email] if @form.email.nil?
       if @form.valid?
         reset_password(@form.to_h)
