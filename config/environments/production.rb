@@ -138,5 +138,8 @@ Rails.application.configure do
   config.after_initialize do
     require 'auth/initial_seeder'
     InitialSeeder.new unless ENV['DISABLE_COGNITO_SEEDING'].present?
+
+    require 'data/integrity_checker'
+    IntegrityChecker.new
   end
 end
