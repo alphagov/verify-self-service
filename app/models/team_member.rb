@@ -1,12 +1,13 @@
 class TeamMember
-  attr_reader :user_id, :given_name, :family_name, :email, :roles
+  attr_reader :user_id, :given_name, :family_name, :email, :roles, :status
 
-  def initialize(user_id:, given_name:, family_name:, email:, roles:)
+  def initialize(user_id:, given_name:, family_name:, email:, roles:, status:)
     @user_id = user_id
     @email = email
     @given_name = given_name
     @family_name = family_name
     @roles = roles
+    @status = status
   end
 
   def full_name
@@ -23,5 +24,9 @@ class TeamMember
 
   def gds?
     @roles.include? ROLE::GDS
+  end
+
+  def user_status?(status)
+    @status == status
   end
 end

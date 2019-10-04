@@ -5,7 +5,13 @@
 
 <%= form_for @form, url: update_user_post_path, class: 'govuk-form-group' do |f| %>
 
-  <p>
+  <% if @gds || (@team_member.user_status?('FORCE_CHANGE_PASSWORD') || @team_member.user_status?('RESET_REQUIRED')) %>
+    <p class="govuk-body">
+      <%= t('users.status_label') %> <%= t("users.status.#{@team_member.status}") %>
+    </p>
+  <% end %>
+
+  <p class="govuk-body">
     <%= @team_member.email  %><a class="govuk-!-padding-left-1 govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden">email address</span></a>
   </p>
 

@@ -79,6 +79,15 @@ en:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
     you: (you)
+    status_label: "Status:"
+    status:
+      FORCE_CHANGE_PASSWORD: (invitation sent)
+      UNCONFIRMED: Unconfirmed
+      CONFIRMED: Confirmed
+      ARCHIVED: Archived
+      COMPROMISED: Compromised
+      UNKNOWN: Unknown
+      RESET_REQUIRED: (password reset required)
     admin_team: admin team
   certificates:
     caption: "%{heading}"

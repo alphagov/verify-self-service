@@ -45,9 +45,16 @@
           </div>
         <% end %>
         <% if @user.email != member.email %>
-        <li class="tick-cross-list-edit-link">
-          <%= link_to t('users.change_link'), update_user_path(member.user_id) %>
-        </li>
+          <li class="tick-cross-list-edit-link">
+            <%= link_to t('users.change_link'), update_user_path(member.user_id) %>
+          </li>
+          <% if @gds || (member.user_status?('FORCE_CHANGE_PASSWORD') || member.user_status?('RESET_REQUIRED')) %>
+            <li class="tick-cross-list-status">
+              <span class="govuk-body">
+                <%= t("users.status.#{member.status}") %>
+              </span>
+            </li>
+          <% end %>
         <% end %>
       </ul>
     </div>
