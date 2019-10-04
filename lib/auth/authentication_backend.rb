@@ -121,6 +121,10 @@ module AuthenticationBackend
           value: email,
         },
         {
+          name: 'email_verified',
+          value: 'True',
+        },
+        {
           name: 'given_name',
           value: given_name,
         },
