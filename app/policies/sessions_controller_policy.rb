@@ -10,4 +10,8 @@ class SessionsControllerPolicy < ApplicationPolicy
   def destroy?
     true
   end
+
+  def cancel?
+    true
+  end
 end

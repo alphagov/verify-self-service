@@ -38,6 +38,8 @@ en:
     gds: GDS
   login:
     heading: Log in
+    login: Log in
+    cancel: Cancel
     mfa_heading: Log in - One Time Password Request
     mfa_description: Please enter your one time code from your authenticator app
     new_password_heading: Set up your new password

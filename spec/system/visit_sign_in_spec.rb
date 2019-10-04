@@ -9,7 +9,7 @@ RSpec.describe 'Sign in', type: :system do
     sign_in('unregistered@example.com', 'testtest')
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Invalid Username or Password.'
+    expect(page).to have_content t('devise.failure.user.invalid_login')
   end
 
   scenario 'user can sign in with valid credentials' do
@@ -18,7 +18,7 @@ RSpec.describe 'Sign in', type: :system do
     sign_in(user.email, user.password)
 
     expect(current_path).to eql root_path
-    expect(page).to have_content 'Signed in successfully.'
+    expect(page).to have_content t('devise.sessions.signed_in')
   end
 
   scenario 'user cant sign in with unsigned jwt' do
@@ -31,7 +31,7 @@ RSpec.describe 'Sign in', type: :system do
     sign_in(user.email, user.password)
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Unknown authentication response.'
+    expect(page).to have_content t('devise.failure.user.unknown_cognito_response')
   end
 
   scenario 'user can sign in with valid 2FA credentials' do
@@ -40,16 +40,33 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Log in - One Time Password Request'
+    expect(page).to have_content t('login.mfa_heading')
 
     fill_in "user[totp_code]", with: "000000"
-    click_button("commit")
+    click_button(t('login.login'))
     expect(current_path).to eql root_path
-    expect(page).to have_content 'Signed in successfully.'
+    expect(page).to have_content t('devise.sessions.signed_in')
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
+  end
+
+  scenario 'user can abandon the sign-in flow' do
+    setup_2fa_stub
+
+    user = FactoryBot.create(:user_manager_user)
+    sign_in(user.email, user.password)
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content t('login.mfa_heading')
+    old_session_id = page.get_rack_session_key('session_id')
+    visit root_path
+    click_link(t('login.cancel'))
+
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content t('login.heading')
+    expect(page.get_rack_session.length).to eql 1
+    expect(page.get_rack_session_key('session_id')).not_to eql old_session_id
   end
 
   scenario 'user cant sign in with wrong 2FA credentials' do
@@ -59,12 +76,12 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Log in - One Time Password Request'
+    expect(page).to have_content t('login.mfa_heading')
 
     fill_in "user[totp_code]", with: "999999"
-    click_button("commit")
+    click_button(t('login.login'))
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Invalid Username or Password.'
+    expect(page).to have_content t('devise.failure.user.invalid_login')
   end
 
   scenario 'user cannot sign in with wrong email' do
@@ -74,7 +91,7 @@ RSpec.describe 'Sign in', type: :system do
     sign_in('invalid@email.com', user.password)
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Invalid Username or Password.'
+    expect(page).to have_content t('devise.failure.user.invalid_login')
   end
 
   scenario 'user cannot sign in with wrong password' do
@@ -82,7 +99,7 @@ RSpec.describe 'Sign in', type: :system do
     sign_in(user.email, 'invalidpassword')
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Invalid Username or Password.'
+    expect(page).to have_content t('devise.failure.user.invalid_login')
   end
 
   scenario 'user cannot access pages if not signed in' do
@@ -99,12 +116,12 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Set up your new password'
+    expect(page).to have_content t('login.new_password_heading')
 
     fill_in "user[new_password]", with: "000000"
-    click_button("commit")
+    click_button(t('login.login'))
     expect(current_path).to eql root_path
-    expect(page).to have_content 'Signed in successfully.'
+    expect(page).to have_content t('devise.sessions.signed_in')
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
@@ -119,14 +136,14 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Set up your MFA'
+    expect(page).to have_content t('mfa_enrolment.heading')
     expect(page).to have_selector(".mfa-qr-code svg")
 
     fill_in "user[totp_code]", with: "000000"
-    click_button("commit")
+    click_button(t('login.login'))
 
     expect(current_path).to eql root_path
-    expect(page).to have_content 'Signed in successfully.'
+    expect(page).to have_content t('devise.sessions.signed_in')
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
@@ -141,11 +158,11 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content 'Set up your MFA'
+    expect(page).to have_content t('mfa_enrolment.heading')
     expect(page).to have_selector(".mfa-qr-code svg")
 
     fill_in "user[totp_code]", with: "000000"
-    click_button("commit")
+    click_button(t('login.login'))
 
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content t('devise.sessions.EnableSoftwareTokenMFAException')

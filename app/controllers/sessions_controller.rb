@@ -31,6 +31,11 @@ class SessionsController < Devise::SessionsController
     respond_to_on_destroy
   end
 
+  def cancel
+    reset_session
+    redirect_to new_user_session_path
+  end
+
   def challenge_flash_messages
     return if session.to_h.dig('challenge_parameters', 'flash_message').nil?
 
