@@ -19,7 +19,8 @@ en:
       unknown_cognito_error: "Something went wrong in our backend. Try again later."
       unknown_cognito_response: "Something went wrong in our backend. Try again later."
       user:
-        invalid_login: "Invalid Username or Password. Please try again."
+        invalid_login: "Invalid username or password. Please try again."
+        temporary_password_expired: "Your temporary password expired. Please contact your admin for a new one."
         unknown_cognito_response: "Unknown authentication response."
     mailer:
       confirmation_instructions:

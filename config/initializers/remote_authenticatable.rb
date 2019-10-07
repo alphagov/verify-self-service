@@ -27,8 +27,12 @@ module Devise
             end
           rescue AuthenticationBackend::NotAuthorizedException => error
             clean_up_session
-            Rails.logger.error error
+            Rails.logger.warn error
             return fail!(:invalid_login)
+          rescue AuthenticationBackend::TemporaryPasswordExpiredException => error
+            clean_up_session
+            Rails.logger.warn error
+            return fail!(:temporary_password_expired)
           rescue StandardError => error
             Rails.logger.error error
             clean_up_session

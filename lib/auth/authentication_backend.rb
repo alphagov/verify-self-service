@@ -4,6 +4,7 @@ require 'securerandom'
 
 module AuthenticationBackend
   class NotAuthorizedException < StandardError; end
+  class TemporaryPasswordExpiredException < StandardError; end
   class UserGroupNotFoundException < StandardError; end
   class AuthenticationBackendException < StandardError; end
   class UsernameExistsException < StandardError; end
@@ -284,7 +285,11 @@ private
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException,
          Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
-    raise NotAuthorizedException.new(e)
+    if e.message == 'Temporary password has expired and must be reset by an administrator.'
+      raise TemporaryPasswordExpiredException.new(e)
+    else
+      raise NotAuthorizedException.new(e)
+    end
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
     raise AuthenticationBackendException.new(e)
   end

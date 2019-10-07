@@ -102,6 +102,15 @@ RSpec.describe 'Sign in', type: :system do
     expect(page).to have_content t('devise.failure.user.invalid_login')
   end
 
+  scenario 'user cannot sign in with an expired password' do
+    SelfService.service(:cognito_client).stub_responses(:initiate_auth, Aws::CognitoIdentityProvider::Errors::NotAuthorizedException.new(nil, 'Temporary password has expired and must be reset by an administrator.'))
+    user = FactoryBot.create(:user_manager_user)
+    sign_in(user.email, 'expiredpassword')
+
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content t('devise.failure.user.temporary_password_expired')
+  end
+
   scenario 'user cannot access pages if not signed in' do
     visit new_msa_component_path
 
