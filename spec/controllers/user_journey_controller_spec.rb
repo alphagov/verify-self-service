@@ -170,8 +170,10 @@ RSpec.describe UserJourneyController, type: :controller do
              }
            })
 
-      expect(response).to redirect_to :upload_certificate
-      expect(flash[:error]).to include(I18n.t('certificates.errors.valid_too_long'))
+      expect(subject).to render_template(:upload_certificate)
+      expect(
+        assigns(:upload).errors.full_messages.first
+      ).to include(I18n.t('certificates.errors.valid_too_long'))
     end
 
     it 'should redirect to upload certificate page when certificate file is invalid' do
@@ -189,8 +191,10 @@ RSpec.describe UserJourneyController, type: :controller do
              }
            })
 
-      expect(response).to redirect_to :upload_certificate
-      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid_file_type'))
+      expect(subject).to render_template(:upload_certificate)
+      expect(
+        assigns(:upload).errors.full_messages.first
+      ).to include(I18n.t('certificates.errors.invalid_file_type'))
     end
 
     it 'should redirect to upload certificate page with valid file extension but invalid content' do
@@ -208,8 +212,10 @@ RSpec.describe UserJourneyController, type: :controller do
              }
            })
 
-      expect(response).to redirect_to :upload_certificate
-      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid'))
+      expect(subject).to render_template(:upload_certificate)
+      expect(
+        assigns(:upload).errors.full_messages.first
+      ).to include(I18n.t('certificates.errors.invalid'))
     end
   end
 
@@ -262,8 +268,10 @@ RSpec.describe UserJourneyController, type: :controller do
              certificate: { value: msa_encryption_cert.value, component: msa_component }
            })
 
-      expect(response).to redirect_to :upload_certificate
-      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid_file_type'))
+      expect(subject).to render_template(:upload_certificate)
+      expect(
+        assigns(:upload).errors.full_messages.first
+      ).to include(I18n.t('certificates.errors.invalid_file_type'))
     end
   end
 
@@ -277,15 +285,17 @@ RSpec.describe UserJourneyController, type: :controller do
            })
 
       expect(subject).to render_template(:upload_certificate)
-      expect(flash[:error]).to include(I18n.t('certificates.errors.invalid'))
+      expect(
+        assigns(:upload).errors.full_messages.first
+      ).to include(I18n.t('certificates.errors.invalid'))
     end
   end
 
   context 'Enforcement of component team restrictions' do
     it 'prevents rendering of the upload certificate page when team is not matching' do
       certmgr_stub_auth
-      foreign_team = FactoryBot.create(:team, id: SecureRandom.uuid)
-      foreign_component = FactoryBot.create(:sp_component, team_id: foreign_team.id)
+      foreign_team = create(:team, id: SecureRandom.uuid)
+      foreign_component = create(:sp_component, team_id: foreign_team.id)
       get :upload_certificate,
           params: {
             component_type: foreign_component.component_type,
@@ -306,7 +316,7 @@ RSpec.describe UserJourneyController, type: :controller do
             component_id: 'bad id',
             certificate_id: msa_encryption_cert.id
           }
-          expect(subject).to render_template(:upload_certificate)
+      expect(subject).to render_template(:upload_certificate)
     end
   end
 end
