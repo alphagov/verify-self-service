@@ -140,6 +140,6 @@ Rails.application.configure do
     InitialSeeder.new unless ENV['DISABLE_COGNITO_SEEDING'].present?
 
     require 'data/integrity_checker'
-    IntegrityChecker.new
+    IntegrityChecker.new unless ENV['DISABLE_INTEGRITY_CHECKER'].present?
   end
 end
