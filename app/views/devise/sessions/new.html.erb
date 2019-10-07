@@ -18,8 +18,8 @@
             </div>
         <% end %>
         <% if session[:challenge_name].nil? %>
-            <div>
-                <%= link_to t('password.forgot_link'), forgot_password_path %>
+            <p class="govuk-body">
+                <%= link_to t('password.forgot_link'), forgot_password_path, class: 'govuk-link' %>
             </div>
         <% end %>
     </div>

@@ -39,18 +39,21 @@ RSpec.describe PasswordController, type: :controller do
     let(:email) { 'test@test.com' }
 
     it 'sends code to user if form valid' do
+      expect_any_instance_of(AuthenticationBackend).to receive(:request_password_reset)
       post :send_code, params: { forgotten_password_form: { 'email': 'test@test.com' } }
-      expect(response).to have_http_status(:success)
-      expect(subject).to render_template(:user_code)
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(reset_password_path)
     end
 
     it 'does not send code to user if params missing' do
+      expect_any_instance_of(AuthenticationBackend).not_to receive(:request_password_reset)
       post :send_code
       expect(response).to have_http_status(:bad_request)
       expect(subject).to render_template(:forgot_form)
     end
 
     it 'does not send code to user if email missing' do
+      expect_any_instance_of(AuthenticationBackend).not_to receive(:request_password_reset)
       post :send_code, params: { forgotten_password_form: { 'blah': 'blah' } }
       expect(response).to have_http_status(:bad_request)
       expect(subject).to render_template(:forgot_form)
@@ -63,8 +66,8 @@ RSpec.describe PasswordController, type: :controller do
       )
       expect(Rails.logger).to receive(:error).with("User #{email} has made to many attempts to reset their password")
       post :send_code, params: { forgotten_password_form: { 'email': email } }
-      expect(response).to have_http_status(:success)
-      expect(subject).to render_template(:user_code)
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(reset_password_path)
     end
 
     it 'renders the user_code page on UserBadStateError' do
@@ -74,8 +77,8 @@ RSpec.describe PasswordController, type: :controller do
       )
       expect(Rails.logger).to receive(:error).with("User #{email} is not set up properly but is trying to reset their password")
       post :send_code, params: { forgotten_password_form: { 'email': email } }
-      expect(response).to have_http_status(:success)
-      expect(subject).to render_template(:user_code)
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(reset_password_path)
     end
 
     it 'renders the user_code page on UserGroupNotFoundException' do
@@ -85,8 +88,8 @@ RSpec.describe PasswordController, type: :controller do
       )
       expect(Rails.logger).to receive(:error).with("User #{email} is not present but is trying to reset their password")
       post :send_code, params: { forgotten_password_form: { 'email': email } }
-      expect(response).to have_http_status(:success)
-      expect(subject).to render_template(:user_code)
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(reset_password_path)
     end
 
     it 'renders the user_code page on any exceptions' do
@@ -95,13 +98,14 @@ RSpec.describe PasswordController, type: :controller do
         payload: 'ServiceError'
       )
       post :send_code, params: { forgotten_password_form: { 'email': email } }
-      expect(response).to have_http_status(:success)
-      expect(subject).to render_template(:user_code)
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(reset_password_path)
     end
   end
 
   context 'resetting password' do
     it 'user redirected to new session with success message' do
+      expect_any_instance_of(AuthenticationBackend).to receive(:reset_password)
       post :process_code, params: { password_recovery_form: { 'email': 'test@test.com', 'code': '123456', 'password': 'password', 'password_confirmation': 'password' } }
       expect(response).to have_http_status(:redirect)
       expect(subject).to redirect_to(new_user_session_path)
@@ -151,6 +155,12 @@ RSpec.describe PasswordController, type: :controller do
       expect(response).to have_http_status(:redirect)
       expect(subject).to redirect_to(new_user_session_path)
       expect(flash[:notice]).to be_nil
+    end
+
+    it 'user redirected to the forgotten password page when params missing' do
+      post :process_code
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(forgot_password_path)
     end
   end
 end
