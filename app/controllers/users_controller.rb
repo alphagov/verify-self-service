@@ -82,19 +82,6 @@ private
     end
   end
 
-  def as_team_member(cognito_user:)
-    user = cognito_user.to_h
-    user_id = user[:username]
-    status = user[:user_status]
-    attributes_key = user.key?(:user_attributes) ? :user_attributes : :attributes
-    attributes = user[attributes_key].to_h { |attr| [attr[:name], attr[:value]] }
-    given_name = attributes['given_name']
-    family_name = attributes['family_name']
-    email = attributes['email']
-    roles = attributes['custom:roles'].split(%r{,\s*})
-    TeamMember.new(user_id: user_id, given_name: given_name, family_name: family_name, email: email, roles: roles, status: status)
-  end
-
   def setup_user_in_cognito
     add_user(
       email: @form.email,
