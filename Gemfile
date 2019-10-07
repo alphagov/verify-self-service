@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.3'
+gem 'rails', '~> 6.0.0'
 # Use postgres as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
@@ -37,40 +39,44 @@ gem 'colorize'
 
 gem 'kaminari', '~> 1.1'
 
-gem 'aws-sdk-s3'
 gem 'aws-sdk-cognitoidentityprovider'
+gem 'aws-sdk-s3'
 
 gem 'devise'
-gem 'pundit'
-gem 'rqrcode'
-gem 'request_store'
 gem 'jwt'
+gem 'pundit'
+gem 'request_store'
+gem 'rqrcode'
 
 gem 'email_validator'
 
-gem 'sentry-raven'
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'rspec-rails'
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'capybara'
-  gem 'selenium-webdriver'
-  gem 'geckodriver-helper'
-  gem 'pry'
-  gem 'govuk-lint'
   gem 'factory_bot_rails'
+  gem 'geckodriver-helper'
+  gem 'govuk-lint'
+  gem 'pry'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
+  gem 'rspec-rails', '>= 4.0.0.beta2'
+  gem 'selenium-webdriver'
 end
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-gem 'dotenv-rails', require: 'dotenv/rails-now', group: [:development, :test]
+group :production do
+  gem 'sentry-raven'
+end
+
+gem 'dotenv-rails', require: 'dotenv/rails-now', group: %i[development test]
