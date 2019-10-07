@@ -2,7 +2,7 @@
 .user-list {
   margin-bottom: 30px;
   &-item {
-    padding: 15px 150px 15px 0;
+    padding: 15px 150px 25px 0;
     border-top: 1px solid govuk-colour("mid-grey");
     position: relative;
     h3 {
@@ -35,7 +35,7 @@
   &-edit-link{
     text-align: right;
     position: absolute;
-    top: -25px;
+    top: -35px;
     right: -150px;
 
     li {
@@ -64,9 +64,9 @@
   box-shadow: inset 20px 0 0 0 rgba(255, 255, 255, 0.6);
 }
 
-.tick-cross-list-edit-link {
+.tick-cross-list-status {
   text-align: right;
   position: absolute;
-  top: -35px;
   right: -150px;
+  top: 0;
 }
