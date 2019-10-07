@@ -175,6 +175,13 @@ module AuthenticationBackend
     []
   end
 
+  def list_groups(limit: 60)
+    client.list_groups(
+      user_pool_id: user_pool_id,
+      limit: limit,
+    )
+  end
+
   def get_user(user_id:)
     client.admin_get_user(user_pool_id: user_pool_id, username: user_id)
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e

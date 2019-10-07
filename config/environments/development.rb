@@ -67,9 +67,12 @@ Rails.application.configure do
   config.cognito_client_id = ENV['AWS_COGNITO_CLIENT_ID']
   config.cognito_user_pool_id = ENV['AWS_COGNITO_USER_POOL_ID']
 
-  # To seed Cognito (uncomment, if needed to be run):
-  # config.after_initialize do
+  # To seed Cognito and check data integrity (uncomment, if needed to be run):
+  config.after_initialize do
   #   require 'auth/initial_seeder'
   #   InitialSeeder.new
-  # end
+  #
+     require 'data/integrity_checker'
+     IntegrityChecker.new
+  end
 end
