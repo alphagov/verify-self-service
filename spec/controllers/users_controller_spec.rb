@@ -67,7 +67,7 @@ RSpec.describe UsersController, type: :controller do
       it 'redirects to all teams page when user_id is not found' do
         stub_cognito_response(method: :admin_get_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
         get :show, :params => { :user_id => user_id }
-        expect(flash[:error]).to eq("User does not exist.")
+        expect(flash[:error]).to eq(t('users.errors.invalid_user'))
         expect(response).to have_http_status(:redirect)
         expect(subject).to redirect_to(users_path)
       end
@@ -163,7 +163,7 @@ RSpec.describe UsersController, type: :controller do
         stub_cognito_response(method: :admin_get_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
         stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         get :show, :params => { :user_id => user_id }
-        expect(flash[:error]).to eq("User does not exist.")
+        expect(flash[:error]).to eq(t('users.errors.invalid_user'))
         expect(response).to have_http_status(:redirect)
         expect(subject).to redirect_to(users_path)
       end
@@ -248,6 +248,28 @@ RSpec.describe UsersController, type: :controller do
         }
         expect(response).to have_http_status(:forbidden)
         expect(flash[:warn]).to eq t('shared.errors.authorisation')
+      end
+    end
+
+    describe '#resend_invitation' do
+      it 'resends the invitation successfully' do
+        stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+        stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+        expect_any_instance_of(AuthenticationBackend).to receive(:resend_invite)
+        get :resend_invitation, params: { user_id: user_id} 
+        expect(subject).to redirect_to(update_user_path(user_id: user_id))
+        expect(flash[:error]).to be_nil
+        expect(flash[:success]).to eq(t('users.update.resend_invitation.success'))
+      end
+
+      it 'displays an error when it fails' do
+        stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+        stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+        stub_cognito_response(method: :admin_create_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        get :resend_invitation, params: { user_id: user_id} 
+        expect(subject).to redirect_to(update_user_path(user_id: user_id))
+        expect(flash[:error]).to eq(t('users.update.resend_invitation.error'))
+        expect(flash[:success]).to be_nil
       end
     end
   end

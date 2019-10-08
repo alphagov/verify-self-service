@@ -16,6 +16,7 @@ class MemberPolicy < ApplicationPolicy
 
   alias_method :show?, :member_authorized?
   alias_method :update?, :member_authorized?
+  alias_method :resend_invitation?, :member_authorized?
 
 private
 

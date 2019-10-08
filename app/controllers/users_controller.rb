@@ -28,7 +28,7 @@ class UsersController < ApplicationController
     @team_member = as_team_member(cognito_user: cognito_user)
     @form = UpdateUserRolesForm.new(roles: @team_member.roles)
   rescue AuthenticationBackendException
-    flash[:error] = "User does not exist."
+    flash[:error] = t('users.errors.invalid_user')
     redirect_to users_path
   end
 
@@ -69,6 +69,18 @@ class UsersController < ApplicationController
       @gds_team = Team.find_by_id(params[:team_id])&.name == TEAMS::GDS
       render :invite, status: :bad_request
     end
+  end
+
+  def resend_invitation
+    begin
+      user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+      resend_invite(username: user.email)
+      flash[:success] = t('users.update.resend_invitation.success')
+    rescue AuthenticationBackendException => e
+      flash[:error] = t('users.update.resend_invitation.error')
+      Rails.logger.error e
+    end
+    redirect_to update_user_path(user_id: params[:user_id])
   end
 
 private

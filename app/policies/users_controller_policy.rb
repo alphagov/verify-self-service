@@ -25,4 +25,8 @@ class UsersControllerPolicy < ApplicationPolicy
   def new?
     user.permissions.user_management
   end
+
+  def resend_invitation?
+    user.permissions.user_management
+  end
 end

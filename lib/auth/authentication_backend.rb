@@ -110,12 +110,8 @@ module AuthenticationBackend
   end
 
   def add_user(email:, given_name:, family_name:, roles:)
-    temporary_password = ""
-    until password_meets_criteria?(temporary_password) do
-      temporary_password = generate_password
-    end
     client.admin_create_user(
-      temporary_password: temporary_password,
+      temporary_password: create_temporary_password,
       user_attributes: [
         {
           name: 'email',
@@ -145,6 +141,17 @@ module AuthenticationBackend
          Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e
     raise UsernameExistsException.new(e)
   rescue StandardError => e
+    raise AuthenticationBackendException.new(e)
+  end
+
+  def resend_invite(username:)
+    client.admin_create_user(
+      temporary_password: create_temporary_password,
+      message_action: 'RESEND',
+      username: username,
+      user_pool_id: user_pool_id,
+  )
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e)
   end
 
@@ -373,6 +380,14 @@ private
 
   def user_pool_id
     Rails.configuration.cognito_user_pool_id
+  end
+
+  def create_temporary_password
+    temporary_password = ''
+    until password_meets_criteria?(temporary_password) do
+      temporary_password = generate_password
+    end
+    temporary_password
   end
 
   def generate_password

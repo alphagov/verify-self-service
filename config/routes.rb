@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   post '/users/team/:team_id/invite', to: 'users#new', as: :invite_to_team_post
   get '/users/:user_id/update', to: 'users#show', as: :update_user
   post '/users/:user_id/update', to: 'users#update', as: :update_user_post
+  get '/users/:user_id/resend-invitation', to: 'users#resend_invitation', as: :resend_invitation
 
   get '/mfa-enrolment', to: 'mfa#index', as: :mfa_enrolment
   post '/mfa-enrolment', to: 'mfa#enrol', as: :enrol_to_mfa
