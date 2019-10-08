@@ -77,6 +77,10 @@ en:
       select_one: Select at least one
     update:
       button: Save
+      resend_invitation:
+        link: Resend
+        success: The invitation has been successfully resent
+        error: There was an error resending the invitation
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
@@ -91,6 +95,8 @@ en:
       UNKNOWN: Unknown
       RESET_REQUIRED: (password reset required)
     admin_team: admin team
+    errors:
+      invalid_user: User does not exist
   certificates:
     caption: "%{heading}"
     header_id: ID
