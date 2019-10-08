@@ -1,4 +1,6 @@
-<h1 class="govuk-heading-l"><%= t 'password.forgot_link' %></h1>
+<%= page_title t('password.title_forgotten') %>
+
+<h1 class="govuk-heading-l"><%= t('password.forgot_link') %></h1>
 
 <%= form_for @form, url: forgot_password_path do |f| %>
   <fieldset class="govuk-fieldset" aria-describedby="changed-password-hint">

@@ -37,6 +37,7 @@ en:
     gds_full: Government Digital Service
     gds: GDS
   login:
+    title: Log in
     heading: Log in
     login: Log in
     cancel: Cancel
@@ -52,7 +53,7 @@ en:
     errors:
       generic_error: "Something went wrong, try again"
   users:
-    title_no_team: Team members
+    title: Team members
     title_for_team: Team members for
     invite_button: Invite a new user
     change_link: Change details
@@ -74,6 +75,7 @@ en:
       cannot: Cannot
       legend: Permissions
     show:
+      title: "Manage user: %{name}"
       select_one: Select at least one
     update:
       button: Save
@@ -98,6 +100,7 @@ en:
     errors:
       invalid_user: User does not exist
   certificates:
+    title: Upload a new certificate
     caption: "%{heading}"
     header_id: ID
     header_name: Name
@@ -144,6 +147,9 @@ en:
     assume_roles_heading: "Switch Roles"
     assume_roles_legend: "Select which role(s) you wish to assume?"
   password:
+    title_change: Change your password
+    title_forgotten: Forgotten password
+    title_reset: Set up a new password
     forgot_link: Forgotten your password?
     forgot_password_legend: Enter your e-mail address below and we'll send you an e-mail with a code you can use to change your password.
     your_email_lbl: "Your e-mail address:"
@@ -195,10 +201,12 @@ en:
     main_layout:
       team_members: Team Members
   services:
+    title: Services
     heading: All services
     add_new: Add new service
     new:
-      heading: Add a Service
+      title: Create a new service
+      heading: Add a service
     service_name: Service name
     service_id: Service Entity ID
     create_service: Create service
@@ -209,11 +217,13 @@ en:
       problem: There is a problem
       authorisation: You are not authorised to perform this action
   team:
+    title: Teams
     heading: All teams
     name: Name
     add_team: Add new team
     associate_team: Associate team
     new:
+      title: New team
       heading: Add a team
       team_name_field: Team name
       create_team: Create team
@@ -226,6 +236,8 @@ en:
       name_not_unique: This team name is already being used, enter a unique one
   components:
     title: Manage certificates
+    new_sp_title: Create a new SP component
+    new_msa_title: Create a new MSA component
     name: Name
     team: Team
     entity_id: Entity ID
@@ -260,6 +272,7 @@ en:
     edit:
       heading: Associate team to
   user_journey:
+    title: Dashboard
     component_name:
       MSA: Matching Service Adapter
       VSP: Verify Service Provider
@@ -309,14 +322,15 @@ en:
       continue: Continue
       have_updated: I have updated my %{component} configuration
     certificate:
+      title: Upload or paste your new certificate
+      title_check: Check your new certificate
+      title_current: Current certificate
       component_name:
         MSA: "Matching Service Adapter: "
         VSP: "Verify Service Provider: "
         SP: "Service Provider: "
       check_certificate_title: Check you've uploaded the right certificate
       contains_the_following: "The certificate you uploaded contains the following information:"
-      date: Date
-      amount: Amount
       valid_from: Valid from
       valid_until: Valid until
       common_name: Common name
@@ -333,6 +347,7 @@ en:
       upload_certificate_file_body: Upload file
       paste_certificate: Paste certificate text into a text box
     confirmation:
+      title: Confirmation
       what_to_expect: This usually takes around 10 minutes. We'll email you when your new %{type} certificate is in use.
       next_steps: Next steps
       rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.
