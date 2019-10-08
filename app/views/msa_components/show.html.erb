@@ -73,6 +73,3 @@
   <%= render "services/list/services_table" %>
 <% end %>
 
-<%= link_to t('components.add_service'),
-    polymorphic_url([:new, @component, :service], component: @component),
-    class: 'govuk-button', data: { module: "govuk-button" } %>

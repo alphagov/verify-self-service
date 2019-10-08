@@ -6,9 +6,7 @@
   </legend>
 
   <%= error_summary_for(@service_event&.errors, :service_event) %>
-  <%= form_for @service_event,
-      url: polymorphic_url([@component, :services], component: @component),
-      as: :service do |f| %>
+  <%= form_for @service_event, url: services_path, as: :service do |f| %>
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @service_event.errors.key?(:name) %>">
       <h3 class="govuk-heading-m"><%= t 'services.service_name' %></h3>
       <%=error_message_on(f.object.errors, :name) %>
