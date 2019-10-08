@@ -33,4 +33,12 @@ class UsersControllerPolicy < ApplicationPolicy
   def update_email?
     user.permissions.user_management
   end
+
+  def show_update_email_verification_code?
+    user.permissions.user_management
+  end
+
+  def update_email_verification_code?
+    user.permissions.user_management
+  end
 end

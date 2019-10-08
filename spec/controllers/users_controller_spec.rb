@@ -104,12 +104,16 @@ RSpec.describe UsersController, type: :controller do
       end
     end
 
+    # user_pool_id: user_pool_id,
+    # username: user_id,
+    # user_attributes: [{ name: "email", value: email }]
+
     describe '#update_email' do
       it 'updates the user email address' do
-        post :update_email, :params => { :update_user_email_form => { :email => "test@test1.com"}, :user_id => user_id}
+        post :update_email, :params => { :update_user_email_form => { :email => "test1@test.com"}, :user_id => user_id}
         expect(response).to have_http_status(:success)
 
-        # TODO expect(subject).to redirect_to(update_user_path)
+        expect(subject).to redirect_to(update_user_path)
       end
     end
 

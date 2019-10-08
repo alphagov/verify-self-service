@@ -9,3 +9,4 @@ class UpdateUserEmailForm
     @email = options["update_user_email_form"]["email"] unless options.empty?
   end
 end
+  
