@@ -94,9 +94,10 @@
             <h2 class="govuk-visually-hidden">Support links</h2>
             <ul class="govuk-footer__inline-list">
               <li class="govuk-footer__inline-list-item">
-                <a class="govuk-footer__link" href="<%= cookies_path %>">
-                  <%= t('layout.application.footer.cookies') %>
-                </a>
+                <%= link_to t('layout.application.footer.cookies'), cookies_path, class: "govuk-footer__link" %>
+              </li>
+              <li class="govuk-footer__inline-list-item">
+                <%= link_to t('layout.application.footer.privacy'), privacy_notice_path, class: "govuk-footer__link" %>
               </li>
             </ul>
 

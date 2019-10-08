@@ -189,6 +189,7 @@ en:
       events: "Events Viewer"
       footer:
         cookies: Cookies
+        privacy: Privacy policy
     main_layout:
       team_members: Team Members
   services:
