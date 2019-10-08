@@ -1,3 +1,5 @@
+<%= page_title t('profile.title') %>
+
 <% if Rails.env.development? %>
   <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
@@ -9,14 +11,12 @@
       </span>
     </p>
   </div>
+<% end %>
 
-
-  <p>&nbsp;</p>
-<%end%>
-<h1  class="govuk-heading-l"><%= t 'profile.title' %></h1>
+<h1 class="govuk-heading-l"><%= t 'profile.title' %></h1>
 
 <div>
-  <h2  class="govuk-heading-m"><%= t 'profile.welcome' %> <%= @user.full_name %></h2>
+  <h2 class="govuk-heading-m"><%= t 'profile.welcome' %> <%= @user.full_name %></h2>
 
 <div class="govuk-accordion" data-module="govuk-accordion" id="profile-accordion">
   <div class="govuk-accordion__section ">

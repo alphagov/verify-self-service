@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="govuk-template ">
+<html lang="en" class="govuk-template">
   <head>
     <meta name="robots" content="noindex,nofollow">
 
-    <title><%= t 'layout.application.title' %></title>
+    <title><%= display_page_title %></title>
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -19,7 +20,7 @@
 
 </head>
 
-  <body class="govuk-template__body ">
+  <body class="govuk-template__body">
 
     <%= javascript_tag nonce: true do %>
       document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');

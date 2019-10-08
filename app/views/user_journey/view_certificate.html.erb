@@ -1,3 +1,5 @@
+<%= page_title t('user_journey.certificate.title_current') %>
+
 <% if @certificate.signing? && @certificate.component.enabled_signing_certificates.length == 2 %>
   <div class="govuk-error-summary <%= primary_signing_certificate?(@certificate) ? "govuk-error-summary--grey" : "govuk-error-summary--orange" %>" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
     <h2 class="govuk-error-summary__title" id="error-summary-title"><%= primary_signing_certificate?(@certificate) ? t('user_journey.adding_certificate_to_config') : t('user_journey.wait_for_an_email') %></h2>
