@@ -18,7 +18,6 @@ RSpec.describe 'Sign in', type: :system do
     sign_in(user.email, user.password)
 
     expect(current_path).to eql root_path
-    expect(page).to have_content t('devise.sessions.signed_in')
   end
 
   scenario 'user cant sign in with unsigned jwt' do
@@ -45,7 +44,6 @@ RSpec.describe 'Sign in', type: :system do
     fill_in "user[totp_code]", with: "000000"
     click_button(t('login.login'))
     expect(current_path).to eql root_path
-    expect(page).to have_content t('devise.sessions.signed_in')
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
@@ -130,7 +128,6 @@ RSpec.describe 'Sign in', type: :system do
     fill_in "user[new_password]", with: "000000"
     click_button(t('login.login'))
     expect(current_path).to eql root_path
-    expect(page).to have_content t('devise.sessions.signed_in')
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
@@ -152,7 +149,6 @@ RSpec.describe 'Sign in', type: :system do
     click_button(t('login.login'))
 
     expect(current_path).to eql root_path
-    expect(page).to have_content t('devise.sessions.signed_in')
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false

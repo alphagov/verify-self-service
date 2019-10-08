@@ -12,7 +12,6 @@ RSpec.describe 'Sign out', type: :system do
 
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
-    expect(page).to have_content t('devise.sessions.signed_in')
     click_link t('layout.application.sign_out_link')
 
     expect(current_path).to eql new_user_session_path
