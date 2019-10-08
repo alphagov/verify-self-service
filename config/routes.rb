@@ -42,9 +42,6 @@ Rails.application.routes.draw do
   post '/users/:user_id/update', to: 'users#update', as: :update_user_post
   get '/users/:user_id/resend-invitation', to: 'users#resend_invitation', as: :resend_invitation
 
-  get '/mfa-enrolment', to: 'mfa#index', as: :mfa_enrolment
-  post '/mfa-enrolment', to: 'mfa#enrol', as: :enrol_to_mfa
-
   get '/profile/change-password', to: 'password#password_form'
   post '/profile/change-password', to: 'password#update_password'
   get 'forgot-password', to: 'password#forgot_form'

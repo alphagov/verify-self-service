@@ -49,18 +49,13 @@ en:
     heading: Set up your MFA
     no_qr: Unable to scan the QR code?
     no_qr_instructions: "Insert the code below in the authenticator app instead:"
-    success: You have been successfully enroled to MFA, please login now
-    errors:
-      generic_error: "Something went wrong, try again"
   users:
     title: Team members
     title_for_team: Team members for
-    invite_button: Invite a new user
     change_link: Change details
     invite:
       title: Invite a new user
       button: Invite user
-      button_to: Invite user to
       gds_warning: You're inviting a GDS user with full permissions to the service
       success: An invitation has been sent to the new user's email address
       errors:
@@ -137,10 +132,7 @@ en:
     phone: "Phone number: "
     team: "Team: "
     cognito_groups: "Cognito Groups: "
-    logout: logout
-    permissions: "Permissions"
     permissions_heading: "Your Permissions"
-    access: "Access"
     client_switch_heading: "Switch Authentication Clients"
     client_switch_legend: "In development you can switch between using cognito and the stub authentication clients. If you use the stub client you can assume different roles."
     banner: "There are features on this page which are only avialable in the development environment."
@@ -156,7 +148,6 @@ en:
     request_reset: Send code
     change_password_heading: Change your password
     reset_password_heading: Set your new password
-    change_password: Change password
     password_changed: Password changed successfully
     change_password_legend: You can change your password by entering your current password followed by a new password in the space provide and the same new password again in the confirmation space.
     reset_password_legend: You can reset your password by entering the code you have received via email. 
@@ -230,7 +221,6 @@ en:
       success: created successfully
     errors:
       errored: errored
-      invalid: Invalid team name
       failed: Failed to create team
       blank_name: Enter a team name
       name_not_unique: This team name is already being used, enter a unique one
@@ -344,7 +334,6 @@ en:
       add_new: Add new certificate
       upload_new: Upload your new %{certificate} certificate
       upload_certificate_file_header: Upload a certificate file
-      upload_certificate_file_body: Upload file
       paste_certificate: Paste certificate text into a text box
     confirmation:
       title: Confirmation
