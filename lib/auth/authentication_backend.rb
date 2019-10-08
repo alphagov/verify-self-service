@@ -8,6 +8,7 @@ module AuthenticationBackend
   class UserGroupNotFoundException < StandardError; end
   class AuthenticationBackendException < StandardError; end
   class UsernameExistsException < StandardError; end
+  class AliasExistsException < StandardError; end
   class GroupExistsException < StandardError; end
   class InvalidOldPasswordError < StandardError; end
   class InvalidNewPasswordException < StandardError; end
@@ -179,6 +180,18 @@ module AuthenticationBackend
     client.admin_get_user(user_pool_id: user_pool_id, username: user_id)
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new(e.message)
+  end
+
+  def update_user_email(user_id:, email:)
+    client.admin_update_user_attributes(
+      user_pool_id: user_pool_id,
+      username: user_id,
+      user_attributes: [{ name: "email", value: email }],
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException => e
+    raise AliasExistsException.new(e)
+  rescue StandardError => e
+    raise AuthenticationBackendException.new(e)
   end
 
   def update_user_roles(user_id:, roles:)

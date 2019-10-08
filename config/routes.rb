@@ -40,6 +40,8 @@ Rails.application.routes.draw do
   post '/users/team/:team_id/invite', to: 'users#new', as: :invite_to_team_post
   get '/users/:user_id/update', to: 'users#show', as: :update_user
   post '/users/:user_id/update', to: 'users#update', as: :update_user_post
+  get '/users/:user_id/update-email', to: 'users#show_update_email', as: :update_user_email_address
+  post '/users/:user_id/update-email', to: 'users#update_email', as: :update_user_email_address_post
 
   get '/mfa-enrolment', to: 'mfa#index', as: :mfa_enrolment
   post '/mfa-enrolment', to: 'mfa#enrol', as: :enrol_to_mfa
@@ -65,7 +67,7 @@ Rails.application.routes.draw do
 
   get '/cookies', to: 'static#cookies'
 
-  devise_scope :user do 
+  devise_scope :user do
     get '/users/cancel' => "sessions#cancel", as: :cancel
   end
 end

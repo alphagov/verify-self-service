@@ -25,4 +25,12 @@ class UsersControllerPolicy < ApplicationPolicy
   def new?
     user.permissions.user_management
   end
+
+  def show_update_email?
+    user.permissions.user_management
+  end
+
+  def update_email?
+    user.permissions.user_management
+  end
 end

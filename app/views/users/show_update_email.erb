@@ -1,0 +1,12 @@
+<h1 class="govuk-heading-xl">Change email</h1>
+
+<%= form_for @form, url: update_user_email_address_post_path, class: 'govuk-form-group' do |f| %>
+  <div class="govuk-form-group">
+    <%= f.label :email, class: "govuk-label" %>
+    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "govuk-input govuk-input--width-20" %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit t('users.show_update_email.button'), class: "govuk-button", data: { module: "govuk-button" } %>
+  </div>
+<% end %>

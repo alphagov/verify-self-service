@@ -75,8 +75,15 @@ en:
       legend: Permissions
     show:
       select_one: Select at least one
+      change_email: Change email address
     update:
       button: Save
+    show_update_email:
+      button: Submit
+    update_email:
+      errors:
+        already_exists: This email address is already being used, enter a unique one
+        generic_error: Something went wrong when changing the email address, try again
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members

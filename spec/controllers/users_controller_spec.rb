@@ -95,6 +95,24 @@ RSpec.describe UsersController, type: :controller do
       end
     end
 
+    describe '#show_update_email' do
+      it 'renders the update email page' do
+        get :show_update_email, :params => { :user_id => user_id }
+
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show_update_email)
+      end
+    end
+
+    describe '#update_email' do
+      it 'updates the user email address' do
+        post :update_email, :params => { :update_user_email_form => { :email => "test@test1.com"}, :user_id => user_id}
+        expect(response).to have_http_status(:success)
+
+        # TODO expect(subject).to redirect_to(update_user_path)
+      end
+    end
+
     describe '#invite' do
       it 'renders the invite page' do
         get :invite, :params => { :team_id => @user.team }

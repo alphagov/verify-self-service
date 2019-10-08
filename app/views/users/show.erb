@@ -12,7 +12,7 @@
   <% end %>
 
   <p class="govuk-body">
-    <%= @team_member.email  %><a class="govuk-!-padding-left-1 govuk-link--no-visited-state" href="#">Change<span class="govuk-visually-hidden">email address</span></a>
+    <%= @team_member.email %><%= link_to t("users.show.change_email"), update_user_email_address_path, class: 'govuk-!-padding-left-1 govuk-link--no-visited-state' %>
   </p>
 
   <ul class="govuk-list">
