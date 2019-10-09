@@ -186,7 +186,10 @@ module AuthenticationBackend
     client.admin_update_user_attributes(
       user_pool_id: user_pool_id,
       username: user_id,
-      user_attributes: [{ name: "email", value: email }],
+      user_attributes: [
+        { name: "email", value: email },
+        { name: 'email_verified', value: 'True' },
+      ],
     )
   rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException => e
     raise AliasExistsException.new(e)

@@ -5,8 +5,7 @@ class UpdateUserEmailForm
   validates_presence_of :email
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
 
-  def initialize(options = {})
-    @email = options["update_user_email_form"]["email"] unless options.empty?
+  def initialize(params = {})
+    @email = params[:email]
   end
 end
-  

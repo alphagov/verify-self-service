@@ -103,16 +103,11 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to render_template(:show_update_email)
       end
     end
-
-    # user_pool_id: user_pool_id,
-    # username: user_id,
-    # user_attributes: [{ name: "email", value: email }]
-
+    
     describe '#update_email' do
       it 'updates the user email address' do
-        post :update_email, :params => { :update_user_email_form => { :email => "test1@test.com"}, :user_id => user_id}
-        expect(response).to have_http_status(:success)
-
+        stub_cognito_response(method: :admin_update_user_attributes, payload: {})
+        post :update_email, :params => { update_user_email_form: { email: "test1@test.com"}, user_id: user_id}
         expect(subject).to redirect_to(update_user_path)
       end
     end

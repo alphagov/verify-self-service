@@ -76,31 +76,20 @@ class UsersController < ApplicationController
   end
 
   def update_email
-   @form = UpdateUserEmailForm.new(params)
-
+    @form = UpdateUserEmailForm.new(params["update_user_email_form"])
     if @form.valid?
-      update_user_email(user_id: params["user_id"], email: params["update_user_email_form"]["email"])
-      redirect_to show_update_email_verification_code_path
+      update_user_email(user_id: params["user_id"], email: @form.email)
+      redirect_to update_user_path
     else
       flash.now[:errors] = @form.errors.full_messages.join(', ')
       render :show_update_email
     end
-
-    rescue AuthenticationBackend::AliasExistsException => e
+  rescue AuthenticationBackend::AliasExistsException
     flash.now[:errors] = t('users.update_email.errors.already_exists')
     render :show_update_email
-
-    rescue AuthenticationBackend::AuthenticationBackendException => e
+  rescue AuthenticationBackend::AuthenticationBackendException
     flash.now[:errors] = t('users.update_email.errors.generic_error')
     render :show_update_email
-  end
-
-  def show_update_email_verification_code
-    # @form = UpdateEmailVerificationCodeForm.new({})
-  end
-
-  def update_email_verification_code
-
   end
 
 private
