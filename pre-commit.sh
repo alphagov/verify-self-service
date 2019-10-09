@@ -31,7 +31,7 @@ else
   fi
 fi
 
-bundle exec govuk-lint-ruby app lib
+bundle exec rubocop
 
 bundle check || bundle install
 

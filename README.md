@@ -27,13 +27,13 @@ You can use `bundle exec rspec $PATH_TO_SPEC` to run individual spec files.
 
 ### Linting
 
-This is done using the [govuk-lint](https://github.com/alphagov/govuk-lint) gem. It runs with the pre-commit but you can also run it manually:
+This is done using Rubocop and the [govuk-lint](https://github.com/alphagov/govuk-lint) rules. It runs with the pre-commit but you can also run it manually:
 
-`bundle exec govuk-lint-ruby app lib`
+`bundle exec rubocop`
 
 To automagically fix any issues use the `-a` flag:
 
-`bundle exec govuk-lint-ruby app lib -a`
+`bundle exec rubocop -a`
 
 ## Licence
 
