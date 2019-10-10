@@ -51,7 +51,7 @@ RSpec.describe TeamsController, type: :controller do
       post :create, params: { team: { name: 'not a valid team name' } }
 
       expect(response).to have_http_status(:success)
-      expect(flash.now[:errors]).not_to be_nil
+      expect(subject.instance_variable_get(:@team).errors[:team]).to eq([t('team.errors.failed')])
       expect(flash.now[:success]).to be_nil
     end
   end

@@ -5,7 +5,7 @@
     <h1 class="govuk-fieldset__heading"><%= t 'services.new.heading' %></h1>
   </legend>
 
-  <%= error_messages_for(@service_event&.errors) %>
+  <%= error_summary_for(@service_event&.errors, :service_event) %>
   <%= form_for @service_event,
       url: polymorphic_url([@component, :services], component: @component),
       as: :service do |f| %>
