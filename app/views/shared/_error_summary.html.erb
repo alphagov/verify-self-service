@@ -5,11 +5,13 @@
     </h2>
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
-        <% errors.each do |key| %>
+      <% errors.keys.each do |key| %>
+        <% errors.full_messages_for(key).each do |error| %>
           <li data-turbolinks="false">
-            <%= link_to "#{errors&.full_messages_for(key).first}" , "#component_#{key}" %>
+            <%= link_to error, "##{name}_#{key}" %>
           </li>
         <% end %>
+      <% end %>
       </ul>
     </div>
    </div>

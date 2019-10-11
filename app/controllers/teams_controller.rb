@@ -18,7 +18,6 @@ class TeamsController < ApplicationController
     else
       @team.errors.merge!(team_event.errors)
       Rails.logger.info(@team.errors.full_messages)
-      flash.now[:errors] = "#{@team.name} #{t('team.errors.errored')} - #{@team.errors.full_messages.join(',')}."
       render :new
     end
   end

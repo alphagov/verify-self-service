@@ -5,7 +5,7 @@
     <h1 class="govuk-fieldset__heading"><%= t 'certificates.upload' %></h1>
   </legend>
 
-  <%= error_messages_for(@upload&.errors) %>
+  <%= error_summary_for(@upload&.errors, :certificate) %>
   <% if @upload.data['component_type'] == COMPONENT_TYPE::MSA %>
     <%= render 'certificates/new/msa_cert' %>
   <% else %>

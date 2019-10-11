@@ -1,6 +1,6 @@
 module ErrorHelper
-  def error_messages_for(errors)
-    render partial: 'shared/error_messages', locals: { errors: errors }
+  def error_summary_for(errors, name)
+    render partial: 'shared/error_summary', locals: { errors: errors, name: name }
   end
 
   def error_message_on(errors, method)

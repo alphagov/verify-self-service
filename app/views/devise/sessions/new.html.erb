@@ -2,7 +2,7 @@
 
  <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
-        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <%= form_for(resource || User.new, as: resource_name, url: session_path(resource_name)) do |f| %>
         <% if %w[SOFTWARE_TOKEN_MFA SMS_MFA].include? session[:challenge_name] %>
             <%= render "mfa_form", f:f %>
         <% elsif session[:challenge_name] == 'MFA_SETUP'%>
@@ -10,7 +10,7 @@
         <% elsif session[:challenge_name] == "NEW_PASSWORD_REQUIRED" %>
             <%= render "new_password_required_form", f:f %>
         <% else %>
-            <%= render "sign_in_form", f:f %>
+            <%= render "sign_in_form", f:f, sign_in_form: @sign_in_form %>
         <% end %>
             <div class="actions">
                 <%= f.submit t('login.login'), class: "govuk-button govuk-!-margin-right-1", data: { module: "govuk-button" } %>
