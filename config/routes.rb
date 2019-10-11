@@ -41,6 +41,8 @@ Rails.application.routes.draw do
   get '/users/:user_id/update', to: 'users#show', as: :update_user
   post '/users/:user_id/update', to: 'users#update', as: :update_user_post
   get '/users/:user_id/resend-invitation', to: 'users#resend_invitation', as: :resend_invitation
+  get '/users/:user_id/update-email', to: 'users#show_update_email', as: :update_user_email_address
+  post '/users/:user_id/update-email', to: 'users#update_email', as: :update_user_email_address_post
 
   get '/profile/change-password', to: 'password#password_form'
   post '/profile/change-password', to: 'password#update_password'

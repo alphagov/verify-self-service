@@ -83,6 +83,27 @@ class UsersController < ApplicationController
     redirect_to update_user_path(user_id: params[:user_id])
   end
 
+  def show_update_email
+    @form = UpdateUserEmailForm.new({})
+  end
+
+  def update_email
+    @form = UpdateUserEmailForm.new(params["update_user_email_form"])
+    if @form.valid?
+      update_user_email(user_id: params["user_id"], email: @form.email)
+      redirect_to update_user_path
+    else
+      flash.now[:errors] = @form.errors.full_messages.join(', ')
+      render :show_update_email, status: :bad_request
+    end
+  rescue AuthenticationBackend::UsernameExistsException
+    flash.now[:errors] = t('users.update_email.errors.already_exists')
+    render :show_update_email, status: :bad_request
+  rescue AuthenticationBackend::AuthenticationBackendException
+    flash.now[:errors] = t('users.update_email.errors.generic_error')
+    render :show_update_email, status: :bad_request
+  end
+
 private
 
   def team_valid?
