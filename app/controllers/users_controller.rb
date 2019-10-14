@@ -95,14 +95,15 @@ class UsersController < ApplicationController
       redirect_to update_user_path
     else
       @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
-      flash.now[:errors] = @form.errors.full_messages.join(', ')
       render :show_update_email, status: :bad_request
     end
   rescue AuthenticationBackend::UsernameExistsException
-    flash.now[:errors] = t('users.update_email.errors.already_exists')
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+    @form.errors.add(:email, t('users.update_email.errors.already_exists', email: @form.email))
     render :show_update_email, status: :bad_request
   rescue AuthenticationBackend::AuthenticationBackendException
-    flash.now[:errors] = t('users.update_email.errors.generic_error')
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+    @form.errors.add(:base, t('users.update_email.errors.generic_error'))
     render :show_update_email, status: :bad_request
   end
 
@@ -112,7 +113,7 @@ private
     if Team.exists?(params[:team_id])
       true
     else
-      @form.errors.add(t('invite.error.team.missing'))
+      @form.errors.add(:base, t('invite.error.team.missing'))
       false
     end
   end
