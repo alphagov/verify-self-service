@@ -89,7 +89,7 @@ class UsersController < ApplicationController
   end
 
   def update_email
-    @form = UpdateUserEmailForm.new(params[:update_user_email_form])
+    @form = UpdateUserEmailForm.new(params[:update_user_email_form] || {})
     if @form.valid?
       update_user_email(user_id: params[:user_id], email: @form.email)
       redirect_to update_user_path

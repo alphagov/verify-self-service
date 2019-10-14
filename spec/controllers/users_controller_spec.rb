@@ -143,29 +143,41 @@ RSpec.describe UsersController, type: :controller do
     describe '#update_email' do
       it 'updates the user email address' do
         stub_cognito_response(method: :admin_update_user_attributes, payload: {})
-        post :update_email, :params => { update_user_email_form: { email: "test1@test.com"}, user_id: user_id}
+        post :update_email, :params => { update_user_email_form: { email: 'test1@test.com'}, user_id: user_id}
         expect(subject).to redirect_to(update_user_path)
       end
 
       it 'fails with error when form not valid' do
         stub_cognito_response(method: :admin_update_user_attributes, payload: {})
-        post :update_email, :params => { update_user_email_form: { email: ""}, user_id: user_id}
+        post :update_email, :params => { update_user_email_form: { email: ''}, user_id: user_id}
         expect(response).to have_http_status(:bad_request)
         expect(subject).to render_template(:show_update_email)
       end
 
-      it 'fails with error when form not valid' do
-        form = UpdateUserEmailForm.new({ email: ""})
-        form.valid?
-        post :update_email, :params => { update_user_email_form: { email: ""}, user_id: user_id}
+      it 'fails with error when email is not valid' do
+        post :update_email, :params => { update_user_email_form: { email: ''}, user_id: user_id}
         expect(response).to have_http_status(:bad_request)
         expect(subject).to render_template(:show_update_email)
-        expect(flash[:errors]).to match(form.errors.full_messages.join(', '))
+        expect(flash[:errors]).to match(/Email can't be blank/)
+      end
+
+      it 'fails with error when the form is not valid' do
+        post :update_email, :params => { update_user_email_form: { blah: 'blah'}, user_id: user_id}
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:show_update_email)
+        expect(flash[:errors]).to match(/Email can't be blank/)
+      end
+
+      it 'fails with error when form is missing' do
+        post :update_email, :params => { user_id: user_id}
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:show_update_email)
+        expect(flash[:errors]).to match(/Email can't be blank/)
       end
 
       it 'fails with error when email already exists' do
         stub_cognito_response(method: :admin_update_user_attributes, payload: 'AliasExistsException')
-        post :update_email, :params => { update_user_email_form: { email: "test@test.com"}, user_id: user_id}
+        post :update_email, :params => { update_user_email_form: { email: 'test@test.com'}, user_id: user_id}
         expect(response).to have_http_status(:bad_request)
         expect(subject).to render_template(:show_update_email)
         expect(flash[:errors]).to match(t('users.update_email.errors.already_exists'))
@@ -173,7 +185,7 @@ RSpec.describe UsersController, type: :controller do
 
       it 'fails with error when a cognito error is thrown' do
         stub_cognito_response(method: :admin_update_user_attributes, payload: 'ServiceError')
-        post :update_email, :params => { update_user_email_form: { email: "test@test.com"}, user_id: user_id}
+        post :update_email, :params => { update_user_email_form: { email: 'test@test.com'}, user_id: user_id}
         expect(response).to have_http_status(:bad_request)
         expect(subject).to render_template(:show_update_email)
         expect(flash[:errors]).to match(t('users.update_email.errors.generic_error'))
