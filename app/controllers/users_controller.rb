@@ -84,15 +84,17 @@ class UsersController < ApplicationController
   end
 
   def show_update_email
-    @form = UpdateUserEmailForm.new({})
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+    @form = UpdateUserEmailForm.new(email: @user.email)
   end
 
   def update_email
-    @form = UpdateUserEmailForm.new(params["update_user_email_form"])
+    @form = UpdateUserEmailForm.new(params[:update_user_email_form])
     if @form.valid?
-      update_user_email(user_id: params["user_id"], email: @form.email)
+      update_user_email(user_id: params[:user_id], email: @form.email)
       redirect_to update_user_path
     else
+      @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
       flash.now[:errors] = @form.errors.full_messages.join(', ')
       render :show_update_email, status: :bad_request
     end

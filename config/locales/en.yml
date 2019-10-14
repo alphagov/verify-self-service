@@ -65,8 +65,13 @@ en:
         invalid_role: "%{role} is not a valid role"
         generic_error: Something went wrong when creating the user, try again
         team_missing: This team does not exist
-    change_email:
-      title: Change Users E-mail Address
+    update_email:
+      title: Change team member's email address
+      intro: "This will change the email address for %{name}."
+      label: Email address
+      button: Save
+      errors:
+        already_exists: This email address is already being used by a different user
     permissions:
       can: Can
       cannot: Cannot
