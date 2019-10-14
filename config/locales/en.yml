@@ -72,6 +72,7 @@ en:
       button: Save
       errors:
         already_exists: This email address is already being used by a different user
+        generic_error: Error occurred while updating the user's email. Please try again.
     permissions:
       can: Can
       cannot: Cannot
