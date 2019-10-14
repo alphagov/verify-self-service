@@ -15,40 +15,49 @@
 
 <h1 class="govuk-heading-l"><%= t 'profile.title' %></h1>
 
-<div>
-  <h2 class="govuk-heading-m"><%= t 'profile.welcome' %> <%= @user.full_name %></h2>
+<table class="govuk-table">  
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-visually-hidden" scope="col">Item</th>
+      <th class="govuk-table__header govuk-visually-hidden" scope="col">Your details</th>
+      <th class="govuk-table__header govuk-visually-hidden" scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Name</td>
+      <td class="govuk-table__cell"><%= @user.full_name %></td>
+      <td class="govuk-table__cell"><a href="#">Change</a></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Email address</td>
+      <td class="govuk-table__cell"><%= @user.email %></td>
+      <td class="govuk-table__cell"><a href="#">Change</a></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Password</td>
+      <td class="govuk-table__cell">Last changed X days ago</td>
+      <td class="govuk-table__cell"> <%= link_to 'Change', profile_change_password_path  %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">Multi-factor authentication</td>
+      <td class="govuk-table__cell">Set up</td>
+      <td class="govuk-table__cell"><a href="#">Change</a></td>
+    </tr>
+  </tbody>
+</table>
 
-<div class="govuk-accordion" data-module="govuk-accordion" id="profile-accordion">
-  <div class="govuk-accordion__section ">
-    <div class="govuk-accordion__section-header">
-      <h2 class="govuk-accordion__section-heading">
-        <span class="govuk-accordion__section-button" id="profile-heading-your-info">
-          <%= t 'profile.heading' %>
-        </span>
-      </h2>
-    </div>
-    <div id="profile-content-your-info" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.id' %></span><%= @user.user_id %></p>
-      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.given_name' %></span><%= @user.given_name %></p>
-      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.family_name' %></span><%= @user.family_name %></p>
-      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.email' %></span><%= @user.email %></p>
-      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.phone' %></span><%= @user.phone_number %></p>
-      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.roles' %></span><%= @user.roles %></p>
-      <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.team' %></span><%= @user.team %></p>
-      <% if @user.permissions.team_management %>
-        <p class="govuk-body"><span class="govuk-body govuk-!-font-weight-bold"><%= t 'profile.cognito_groups' %></span><%= @user.cognito_groups.join(', ') unless @user.team.nil? %></p>
-      <% end %>
-    </div>
-  </div>
+<% if Rails.env.development? %>
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
   <div class="govuk-accordion__section ">
     <div class="govuk-accordion__section-header">
       <h2 class="govuk-accordion__section-heading">
         <span class="govuk-accordion__section-button" id="profile-heading-permissions">
-          <%= t 'profile.permissions_heading' %>
+          Your permissions
         </span>
       </h2>
     </div>
-    <div id="profile-content-permissions" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
+     <div id="profile-content-permissions" class="govuk-accordion__section-content" aria-labelledby="profile-heading-permissions">
       <div class="govuk-form-group">
         <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
           <div class="govuk-checkboxes">
@@ -61,36 +70,12 @@
                 </label>
               </div>
             <% end %>
-            <% if @breakerofchains %>
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="breaker_of_chains" name="breaker_of_chains" type="checkbox" value="breaker_of_chains"
-                checked disabled>
-                <label class="govuk-label govuk-checkboxes__label" for="breaker_of_chains">
-                  Breaker of Chains
-                </label>
-              </div>
-            <% end %>
           </div>
         </fieldset>
       </div>
     </div>
   </div>
-  <div class="govuk-accordion__section ">
-    <div class="govuk-accordion__section-header">
-      <h2 class="govuk-accordion__section-heading">
-        <span class="govuk-accordion__section-button" id="profile-heading-change-password">
-          <%= t 'password.change_password_heading' %>
-        </span>
-      </h2>
-    </div>
-    <div id="profile-content-change-password" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
-      <div class="govuk-form-group">
-        <%= link_to t('password.change_password_btn'), profile_change_password_path, class: 'govuk-button'  %>
-      </div>
-    </div>
-  </div>
-  <% if Rails.env.development? %>
-    <% if @cognito_available %>
+  <% if @cognito_available %>
       <div class="govuk-accordion__section ">
         <div class="govuk-accordion__section-header">
           <h2 class="govuk-accordion__section-heading">
@@ -170,5 +155,5 @@
         </div>
       </div>
     <% end %>
-  <% end %>
 </div>
+<% end %>

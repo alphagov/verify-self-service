@@ -130,8 +130,7 @@ en:
       not_signing: signing certificate is needed
       invalid_file_type: is an invalid file type
   profile:
-    title: "User Information"
-    welcome: Welcome
+    title: Your profile
     heading: "Your Profile"
     id: "User ID: "
     given_name: "Given Name: "
