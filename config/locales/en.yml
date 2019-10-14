@@ -78,6 +78,7 @@ en:
       legend: Permissions
     show:
       title: "Manage user: %{name}"
+      change_email: Change
       select_one: Select at least one
     update:
       button: Save

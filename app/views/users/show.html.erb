@@ -1,4 +1,4 @@
-<%= page_title t('users.show.title', user: @team_member.full_name) %>
+<%= page_title t('users.show.title', name: @team_member.full_name) %>
 
 <%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
 
@@ -8,14 +8,14 @@
 
   <% if @gds || (@team_member.user_status?('FORCE_CHANGE_PASSWORD') || @team_member.user_status?('RESET_REQUIRED')) %>
     <p class="govuk-body">
-      <%= t('users.status_label') %> <%= t("users.status.#{@team_member.status}") %> - <% if @team_member.user_status?('FORCE_CHANGE_PASSWORD') %>
-        <%= link_to t('users.update.resend_invitation.link'), resend_invitation_path, class: 'govuk-link'%>
+      <%= t('users.status_label') %> <%= t("users.status.#{@team_member.status}") %> <% if @team_member.user_status?('FORCE_CHANGE_PASSWORD') %>
+         - <%= link_to t('users.update.resend_invitation.link'), resend_invitation_path, class: 'govuk-link'%>
       <% end %>
     </p>
   <% end %>
 
   <p class="govuk-body">
-    <%= @team_member.email %><%= link_to t("users.show.change_email"), update_user_email_address_path, class: 'govuk-!-padding-left-1 govuk-link--no-visited-state' %>
+    <%= @team_member.email %><%= link_to t('users.show.change_email'), update_user_email_address_path, class: 'govuk-!-padding-left-1 govuk-link--no-visited-state' %>
   </p>
 
   <ul class="govuk-list">
