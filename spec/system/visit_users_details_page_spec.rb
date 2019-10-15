@@ -55,6 +55,4 @@ RSpec.describe 'Update user Page', type: :system do
       expect(page).to have_content member_first_name + ' ' + member_family_name
     end
   end
-
-
 end
