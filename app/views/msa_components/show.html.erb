@@ -5,6 +5,8 @@
 <h2 class="govuk-heading-l"><%= @component.component_type %></h2>
 
 <%= link_to t('components.upload'), new_msa_component_certificate_path(@component), class: 'govuk-button', data: { module: "govuk-button" } %>
+<%= link_to t('components.edit'), edit_msa_component_path(@component), class: 'govuk-button', data: { module: "govuk-button" } %>
+
 
 <%= render partial: "certificates/status/certificate_table",
   locals: { certificates: @component.enabled_signing_certificates,
@@ -74,4 +76,3 @@
 <%= link_to t('components.add_service'),
     polymorphic_url([:new, @component, :service], component: @component),
     class: 'govuk-button', data: { module: "govuk-button" } %>
-

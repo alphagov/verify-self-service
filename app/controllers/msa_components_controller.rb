@@ -11,6 +11,12 @@ class MsaComponentsController < ApplicationController
     @teams = Team.all
   end
 
+  def edit
+    @component = MsaComponent.find(params[:id])
+    @hub_environments = Rails.configuration.hub_environments.keys
+    @teams = Team.all
+  end
+
   def show
     @component = MsaComponent.find_by_id(params[:id])
   end
@@ -28,16 +34,19 @@ class MsaComponentsController < ApplicationController
   end
 
   def update
-    msa_component = MsaComponent.find_by_id(params[:id])
-    msa_component.team_id = params.dig(:component, :team_id)
-    event = ChangeComponentEvent.create(
-      component: msa_component,
-    )
-    unless event.valid?
-      error_message = event.errors.full_messages
-      flash[:notice] = error_message
+    @component = MsaComponent.find_by_id(params[:id])
+    @component.assign_attributes(component_params)
+    @event = ChangeComponentEvent.create(component: @component)
+
+    if @event.valid?
+      redirect_to msa_components_path
+    else
+      Rails.logger.info(@event.errors.full_messages)
+      @teams = Team.all
+      @hub_environments = Rails.configuration.hub_environments.keys
+
+      render :edit
     end
-    redirect_to msa_components_path
   end
 
 private
