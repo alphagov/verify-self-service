@@ -67,12 +67,16 @@ Rails.application.configure do
   config.cognito_client_id = ENV['AWS_COGNITO_CLIENT_ID']
   config.cognito_user_pool_id = ENV['AWS_COGNITO_USER_POOL_ID']
 
+  # Increase the timeout for devs
+  config.session_expiry = 120.minutes
+  config.session_inactivity = 120.minutes
+
   # To seed Cognito and check data integrity (uncomment, if needed to be run):
-  config.after_initialize do
+   config.after_initialize do
   #   require 'auth/initial_seeder'
   #   InitialSeeder.new
   #
      require 'data/integrity_checker'
      IntegrityChecker.new
-  end
+   end
 end
