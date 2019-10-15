@@ -92,6 +92,7 @@ class UsersController < ApplicationController
     @form = UpdateUserEmailForm.new(params[:update_user_email_form] || {})
     if @form.valid?
       update_user_email(user_id: params[:user_id], email: @form.email)
+      UpdateUserEmailEvent.create(data: { user_id: params[:user_id], email: @form.email })
       redirect_to update_user_path
     else
       @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))

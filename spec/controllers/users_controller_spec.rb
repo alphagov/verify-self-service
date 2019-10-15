@@ -143,7 +143,9 @@ RSpec.describe UsersController, type: :controller do
     describe '#update_email' do
       it 'updates the user email address' do
         stub_cognito_response(method: :admin_update_user_attributes, payload: {})
-        post :update_email, :params => { update_user_email_form: { email: 'test1@test.com'}, user_id: user_id}
+        post :update_email, :params => { update_user_email_form: { email: 'test1@test.com'}, user_id: user_id }
+        expect(UpdateUserEmailEvent.last.data["email"]).to eq('test1@test.com')
+        expect(UpdateUserEmailEvent.last.data["user_id"]).to eq(user_id)
         expect(subject).to redirect_to(update_user_path)
       end
 
