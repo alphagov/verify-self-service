@@ -25,7 +25,6 @@
 }
 .certificate-details {
   margin: 8px 0 25px;
-
   dd {
     @extend %govuk-body-s;
     background-color: #dee0e2;
@@ -45,4 +44,7 @@ dt {
 }
 .govuk-hint__black {
   color: $govuk-text-colour;
+}
+.email-wrapper {
+  word-break: break-all;
 }
