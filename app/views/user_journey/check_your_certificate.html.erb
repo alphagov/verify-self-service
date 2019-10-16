@@ -12,8 +12,8 @@
   <p><%= t 'user_journey.certificate.sp_doesnt_support_dual_running' %></p>
   <p><%= t 'user_journey.certificate.restore_connection' %></p>
 <% else %>
-  <p><%= t('user_journey.certificate.certificate_will_be_replaced', component: display_component(@certificate.component), certificate: @certificate.usage) %></p>
-  <p><%= t('user_journey.certificate.encrypt_messages_for_your_service', component: display_component(@certificate.component), certificate: @certificate.usage) %></p>
+  <p><%= t('user_journey.certificate.certificate_will_be_replaced', component: @certificate.component.display, certificate: @certificate.usage) %></p>
+  <p><%= t('user_journey.certificate.encrypt_messages_for_your_service', component: @certificate.component.display, certificate: @certificate.usage) %></p>
   <p><%= t 'user_journey.certificate.how_long_it_takes' %></p>
 <% end %>
 
