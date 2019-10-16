@@ -130,6 +130,70 @@ RSpec.describe UsersController, type: :controller do
         expect(flash.now[:errors]).not_to be_nil
       end
     end
+
+    describe '#show_update_email' do
+      it 'renders the update email page' do
+        get :show_update_email, :params => { :user_id => user_id }
+
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show_update_email)
+      end
+    end
+
+    describe '#update_email' do
+      it 'updates the user email address' do
+        stub_cognito_response(method: :admin_update_user_attributes, payload: {})
+        post :update_email, :params => { update_user_email_form: { email: 'test1@test.com'}, user_id: user_id }
+        expect(UpdateUserEmailEvent.last.data["email"]).to eq('test1@test.com')
+        expect(UpdateUserEmailEvent.last.data["user_id"]).to eq(user_id)
+        expect(subject).to redirect_to(update_user_path)
+      end
+
+      it 'fails with error when form not valid' do
+        stub_cognito_response(method: :admin_update_user_attributes, payload: {})
+        post :update_email, :params => { update_user_email_form: { email: ''}, user_id: user_id}
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:show_update_email)
+      end
+
+      it 'fails with error when email is not valid' do
+        stub_cognito_response(method: :admin_get_user, payload: cognito_user)
+        post :update_email, :params => { update_user_email_form: { email: ''}, user_id: user_id}
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:show_update_email)
+        expect(subject.instance_variable_get('@form').errors.full_messages).to include("Email can't be blank")
+      end
+
+      it 'fails with error when the form is not valid' do
+        post :update_email, :params => { update_user_email_form: { blah: 'blah'}, user_id: user_id}
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:show_update_email)
+        expect(subject.instance_variable_get('@form').errors.full_messages).to include('Email is invalid')
+      end
+
+      it 'fails with error when form is missing' do
+        post :update_email, :params => { user_id: user_id}
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:show_update_email)
+        expect(subject.instance_variable_get('@form').errors.full_messages).to include('Email is invalid')
+      end
+
+      it 'fails with error when email already exists' do
+        stub_cognito_response(method: :admin_update_user_attributes, payload: 'AliasExistsException')
+        post :update_email, :params => { update_user_email_form: { email: 'test@test.com'}, user_id: user_id}
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:show_update_email)
+        expect(subject.instance_variable_get('@form').errors.full_messages_for(:email)).to include('Email ' + t('users.update_email.errors.already_exists', email: 'test@test.com'))
+      end
+
+      it 'fails with error when a cognito error is thrown' do
+        stub_cognito_response(method: :admin_update_user_attributes, payload: 'ServiceError')
+        post :update_email, :params => { update_user_email_form: { email: 'test@test.com'}, user_id: user_id}
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:show_update_email)
+        expect(subject.instance_variable_get('@form').errors.full_messages_for(:base)).to include(t('users.update_email.errors.generic_error'))
+      end
+    end
   end
 
   context 'User Manager' do

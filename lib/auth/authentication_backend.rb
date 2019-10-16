@@ -194,6 +194,21 @@ module AuthenticationBackend
     []
   end
 
+  def update_user_email(user_id:, email:)
+    client.admin_update_user_attributes(
+      user_pool_id: user_pool_id,
+      username: user_id,
+      user_attributes: [
+        { name: "email", value: email },
+        { name: 'email_verified', value: 'True' },
+      ],
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException => e
+    raise UsernameExistsException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
+  end
+
   def list_groups(limit: 60)
     client.list_groups(
       user_pool_id: user_pool_id,

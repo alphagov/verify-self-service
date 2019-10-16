@@ -1,0 +1,21 @@
+<%= page_title t('users.update_email.title') %>
+
+<%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
+
+<%= error_summary_for(@form.errors, :update_user_email_form) %>
+
+<h1 class="govuk-heading-l"><%= t('users.update_email.title') %></h1>
+
+<p class="govuk-body"><%= t('users.update_email.intro', name: @user.full_name ) %></p>
+
+<%= form_for @form, url: update_user_email_address_post_path, class: 'govuk-form-group' do |f| %>
+  <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:email) %>">
+    <%= error_message_on(f.object.errors, :email) %>
+    <%= f.label :email, t('users.update_email.label'), class: "govuk-label" %>
+    <%= f.email_field :email, class: "govuk-input govuk-input--width-30" %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit t('users.update_email.button'), class: "govuk-button", data: { module: "govuk-button" } %>
+  </div>
+<% end %>
