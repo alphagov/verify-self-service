@@ -3,14 +3,15 @@
 <%= render 'shared/certificate_details', certificate: @certificate %>
 
 <div class="govuk-form-group">
-  <%= form_for @upload, url: submit_path, as: :certificate, multipart: true do |f| %>
-    <%= render 'shared/upload_errors' %>
+  <%= form_for @upload, url: submit_path(dual_running: @not_dual_running), as: :certificate, multipart: true do |f| %>
+    <%= error_message_on(f.object.errors, :certificate) %>
     <fieldset class="govuk-fieldset" aria-describedby="upload-certificate-conditional-hint">
       <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
         <h1 class="govuk-fieldset__heading">
           <%= t('user_journey.certificate.upload_new', certificate: @certificate.usage) %>
         </h1>
       </legend>
+      <span id="upload-certificate-conditional-hint" class="govuk-hint govuk-hint__black "> <%= t 'user_journey.certificate.choose_one' %></span>
       <div class="govuk-radios govuk-radios--conditional govuk-!-margin-bottom-5" data-module="govuk-radios">
         <div class="govuk-radios__item">
           <input class="govuk-radios__input" id="upload-certificate-conditional" name="upload-certificate"
@@ -41,6 +42,6 @@
         </div>
       </div>
     </fieldset>
-    <%= f.submit t('user_journey.before_you_start.continue'), class: "govuk-button", data: { module: "govuk-button" } %>
+    <%= f.submit t('user_journey.continue'), class: "govuk-button", data: { module: "govuk-button" } %>
   <% end %>
 </div>

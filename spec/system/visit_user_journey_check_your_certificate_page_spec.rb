@@ -54,10 +54,19 @@ RSpec.describe 'Check your certificate page', type: :system do
       fill_in 'certificate_value', with: sp_encryption_certificate.value
       click_button 'Continue'
       expect(current_path).to eql check_your_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
-      expect(page).to have_content COMPONENT_TYPE::SP_SHORT
+      expect(page).to have_content COMPONENT_TYPE::SP_LONG
       expect(page).to have_content 'Encryption'
       click_button 'Use this certificate'
       expect(current_path).to eql confirmation_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+    end
+
+    it 'sp encryption journey with dual running set to no displays unique content' do
+      sp_component = sp_encryption_certificate.component
+      visit upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id, true)
+      fill_in 'certificate_value', with: sp_encryption_certificate.value
+      click_button 'Continue'
+      expect(current_path).to eql check_your_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id, true)
+      expect(page).to have_content 'Because your service provider does not support dual running, your connection will break when the GOV.UK Verify Hub starts using your new certificate.'
     end
   end
 
@@ -95,7 +104,7 @@ RSpec.describe 'Check your certificate page', type: :system do
       fill_in 'certificate_value', with: sp_signing_certificate.value
       click_button 'Continue'
       expect(current_path).to eql check_your_certificate_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
-      expect(page).to have_content COMPONENT_TYPE::SP_SHORT
+      expect(page).to have_content COMPONENT_TYPE::SP_LONG
       expect(page).to have_content 'Signing'
       click_button 'Use this certificate'
       expect(current_path).to eql confirmation_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])

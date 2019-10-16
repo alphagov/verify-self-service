@@ -33,7 +33,7 @@ module UserJourneyHelper
     elsif component.vsp
       COMPONENT_TYPE::VSP_SHORT
     else
-      COMPONENT_TYPE::SP_SHORT
+      COMPONENT_TYPE::SP_LONG
     end
   end
 end

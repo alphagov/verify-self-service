@@ -90,6 +90,40 @@ RSpec.describe UserJourneyController, type: :controller do
     end
   end
 
+  context '#dual_running ' do
+    it 'renders the dual running page' do
+      certmgr_stub_auth(team)
+      get :dual_running, params: params
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:dual_running)
+    end
+
+    it 'should show the next page with the dual running option' do
+      certmgr_stub_auth(team)
+      get :is_dual_running,
+        params: params.merge({
+          dual_running: 'no'
+        })
+      expect(response).to redirect_to before_you_start_path(dual_running: true)
+    end
+
+    it 'should show the next page without the dual running option' do
+      certmgr_stub_auth(team)
+      get :is_dual_running,
+        params: params.merge({
+          dual_running: ''
+        })
+      expect(response).to redirect_to before_you_start_path
+    end
+
+    it 'should show error message when an option has not been selected' do
+      certmgr_stub_auth(team)
+      get :is_dual_running, params: params
+      expect(response).to redirect_to :dual_running
+      expect(flash[:error]).to include(I18n.t('user_journey.errors.select_option'))
+    end
+  end
+
   context '#before_you_start' do
     it 'renders the before you start page' do
       certmgr_stub_auth(team)
