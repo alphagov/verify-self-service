@@ -24,5 +24,12 @@ RSpec.describe NewTeamEvent, type: :model do
       error_message_on_name = event.errors[:name].first
       expect(error_message_on_name).to eq t('team.errors.blank_name')
     end
+
+    it 'when team already exists with a different name but same resulting alias' do
+      existing_team = create(:team, name: 'test team name', team_alias: 'testteamname')
+      new_team_event = NewTeamEvent.create(name: 'testteamname')
+      expect(new_team_event.team.valid?).to be false
+      expect(new_team_event).not_to be_persisted
+    end
   end
 end

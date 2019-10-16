@@ -18,7 +18,7 @@ class TeamsController < ApplicationController
   def create
     team_event = NewTeamEvent.create(team_params)
     @team = team_event.team
-    if @team.valid? && team_event.valid?
+    if @team.valid? && team_event.errors.empty?
       flash.now[:success] = "#{@team.name} #{t('team.new.success')}."
 
       redirect_to teams_path
