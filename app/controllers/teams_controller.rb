@@ -8,6 +8,13 @@ class TeamsController < ApplicationController
     @team = NewTeamEvent.new
   end
 
+  def destroy
+    team = Team.find_by_id(params[:id])
+    change_event = DeleteTeamEvent.create(team: team, data: { group: team.name })
+    flash[:error] = change_event.errors.full_messages.join(', ') unless change_event.errors.empty?
+    redirect_to teams_path
+  end
+
   def create
     team_event = NewTeamEvent.create(team_params)
     @team = team_event.team

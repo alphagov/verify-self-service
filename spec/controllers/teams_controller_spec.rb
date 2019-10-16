@@ -55,4 +55,34 @@ RSpec.describe TeamsController, type: :controller do
       expect(flash.now[:success]).to be_nil
     end
   end
+
+  describe 'DELETE #destroy' do
+    let(:team) { create(:team, name: 'super-awesome-team-soon-to-be-deleted') }
+
+    it 'successfully deletes the team and group in cognito' do
+      Rails.configuration.cognito_user_pool_id = 'dummy'
+      stub_cognito_response( method: :delete_group, payload: {})
+      expect_any_instance_of(AuthenticationBackend).to receive(:delete_group)
+
+      delete :destroy, params: { id: team.id }
+
+      expect(subject).to redirect_to(teams_path)
+      expect(flash[:error]).to be_nil
+      expect(Team.exists?(team.id)).to be false
+    end
+
+    it 'does not delete team if delete a group in cognito fails' do
+      Rails.configuration.cognito_user_pool_id = 'dummy'
+      stub_cognito_response(
+        method: :delete_group,
+        payload: 'ServiceError'
+      )
+
+      delete :destroy, params: { id: team.id }
+
+      expect(subject).to redirect_to(teams_path)
+      expect(flash[:error]).to include(t('team.errors.failed_to_delete'))
+      expect(Team.exists?(team.id)).to be true
+    end
+  end
 end

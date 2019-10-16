@@ -14,8 +14,8 @@
         <tr class="govuk-table__row">
           <td class="govuk-table__cell" scope="row"><%= team.name %></td>
           <td class="govuk-table__cell govuk-table__cell--numeric" scope="row">
-          <%= link_to t('users.invite.button'), invite_to_team_path(team.id), class: 'govuk-button govuk-button--secondary'%>
-
+            <%= link_to t('users.invite.button'), invite_to_team_path(team.id), class: 'govuk-button govuk-button--secondary'%>
+            <%= link_to 'Delete', team_path(team.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'govuk-button govuk-button--warning' %>
           </td>
         </tr>
       <% end %>
