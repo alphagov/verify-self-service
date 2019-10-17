@@ -2,7 +2,7 @@
   <dt class="govuk-visually-hidden govuk-body-s">Environment</dt>
   <dd><%= certificate.component.environment.capitalize %></dd>
   <dt class="govuk-visually-hidden">Component</dt>
-  <dd><%= certificate.component.display %></dd>
+  <dd><%= certificate.component.type == COMPONENT_TYPE::SP_SHORT ? t("user_journey.component_name.SP").capitalize : certificate.component.display %></dd> 
   <dt class="govuk-visually-hidden">Certificate</dt>
   <dd><%= certificate.usage.capitalize + " certificate" %></dd>
 </dl>
