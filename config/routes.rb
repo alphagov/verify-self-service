@@ -46,6 +46,11 @@ Rails.application.routes.draw do
 
   get '/profile/change-password', to: 'password#password_form'
   post '/profile/change-password', to: 'password#update_password'
+  get '/profile/setup-mfa', to: 'profile#setup_mfa', as: :setup_mfa
+  get '/profile/update-mfa/new-code', to: 'profile#request_new_code', as: :request_new_code
+  get '/profile/update-mfa', to: 'profile#warn_mfa'
+  get '/profile/update-mfa/get-code', to: 'profile#show_change_mfa'
+  post '/profile/update-mfa', to: 'profile#change_mfa', as: :update_mfa_post
   get 'forgot-password', to: 'password#forgot_form'
   post 'forgot-password', to: 'password#send_code'
   get 'reset-password', to: 'password#user_code'

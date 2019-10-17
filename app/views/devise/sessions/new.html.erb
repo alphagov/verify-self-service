@@ -6,7 +6,7 @@
         <% if %w[SOFTWARE_TOKEN_MFA SMS_MFA].include? session[:challenge_name] %>
             <%= render "mfa_form", f:f %>
         <% elsif session[:challenge_name] == 'MFA_SETUP'%>
-            <%= render "mfa_enrolment", f:f %>
+            <%= render "shared/mfa_enrolment", f:f %>
         <% elsif session[:challenge_name] == "NEW_PASSWORD_REQUIRED" %>
             <%= render "new_password_required_form", f:f %>
         <% else %>

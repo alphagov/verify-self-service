@@ -22,4 +22,24 @@ class ProfileControllerPolicy < ApplicationPolicy
 
     true
   end
+
+  def setup_mfa?
+    true
+  end
+
+  def show_change_mfa?
+    true
+  end
+
+  def change_mfa?
+    true
+  end
+
+  def request_new_code?
+    true
+  end
+
+  def warn_mfa?
+    true
+  end
 end
