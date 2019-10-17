@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe ProfileController, type: :controller do
   include AuthSupport, CognitoSupport
 
-  after(:each) do
-    Rails.env = 'test'
-  end
-
   describe "Profile Controller" do
     context 'logging in' do
       it "redirect to login if no user" do
@@ -18,6 +14,15 @@ RSpec.describe ProfileController, type: :controller do
         usermgr_stub_auth
         get :show
         expect(response.status).to eq(200)
+      end
+    end
+
+    describe "GET #show" do
+      it "renders the show page" do
+        usermgr_stub_auth
+        get :show
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show)
       end
     end
 
