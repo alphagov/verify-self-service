@@ -1,19 +1,25 @@
 <%= page_title t('user_journey.certificate.title_current') %>
 
 <% if @certificate.signing? && @certificate.component.enabled_signing_certificates.length == 2 %>
-  <div class="govuk-error-summary <%= primary_signing_certificate?(@certificate) ? "govuk-error-summary--grey" : "govuk-error-summary--orange" %>" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
-    <h2 class="govuk-error-summary__title" id="error-summary-title"><%= primary_signing_certificate?(@certificate) ? t('user_journey.adding_certificate_to_config') : t('user_journey.wait_for_an_email') %></h2>
-    <div class="govuk-error-summary__body">
-      <% if primary_signing_certificate?(@certificate) %>
-        <p><%= t 'user_journey.we_will_email_you' %></p>
-        <p><%= t('user_journey.add_new_signing_key_warning', component: @certificate.component.display, date: date_to_readable_long_format(@certificate.x509.not_after)) %></p>
-      <% elsif secondary_signing_certificate?(@certificate) %>
+  <% if primary_signing_certificate?(@certificate) && @certificate.deploying? %>
+    <div class="govuk-error-summary govuk-error-summary--grey" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title"><%= t('user_journey.adding_certificate_to_config') %></h2>
+      <div class="govuk-error-summary__body">
+        <p><%= t('user_journey.we_will_email_you') %></p>
+        <p><%= t('user_journey.add_new_signing_key_warning', component: @certificate.component.display, date: date_to_readable_long_format(@certificate.x509.not_after)) %></p>      
+        <p><%= render 'shared/component_certificate_doc_links', certificate: @certificate %></p>
+      </div>
+    </div>
+  <% elsif secondary_signing_certificate?(@certificate) && deployment_in_progress?(@certificate) %>
+    <div class="govuk-error-summary govuk-error-summary--orange" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title"><%= t('user_journey.wait_for_an_email') %></h2>
+      <div class="govuk-error-summary__body">      
         <p><%= t 'user_journey.how_long_it_takes' %></p>
         <p><%= t('user_journey.delete_old_signing_key_and_cert', component: @certificate.component.display) %></p>
-      <% end %>
-      <p><%= render 'shared/component_certificate_doc_links', certificate: @certificate %></p>
+        <p><%= render 'shared/component_certificate_doc_links', certificate: @certificate %></p>
+      </div>
     </div>
-  </div>
+  <% end %>  
 <% end %>
 
 <h1 class="govuk-heading-l">
@@ -25,13 +31,18 @@
 </h1>
 
 <%= render 'shared/user_certificate_view', certificate: @certificate, full_details: true %>
-<% if @certificate.signing? %>
+
+<% if @certificate.encryption? %>
+  <% if @certificate.component.type == COMPONENT_TYPE::SP_SHORT %>
+    <%= link_to t('user_journey.certificate.replace'), dual_running_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
+  <% else %>
+    <%= link_to t('user_journey.certificate.replace'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
+  <% end %>
+
+<% else %>
   <% if @certificate.component.enabled_signing_certificates.length < 2 %>
     <%= link_to t('user_journey.certificate.add_new'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+  <% elsif secondary_signing_certificate?(@certificate) && !deployment_in_progress?(@certificate) %>
+    TODO: OPTION TO REMOVE/DISABLE OLD CERT
   <% end %>
-<% elsif @certificate.component.display == COMPONENT_TYPE::SP_LONG && @certificate.encryption? %>
-  <%= link_to t('user_journey.certificate.replace'), dual_running_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
-<% else %>
-  <%= link_to t('user_journey.certificate.replace'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
 <% end %>
-

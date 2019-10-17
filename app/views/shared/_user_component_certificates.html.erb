@@ -19,7 +19,7 @@
           <tr class="govuk-table__row" id="<%= component.encryption_certificate_id %>">
             <td class="govuk-table__cell"><%= link_to t('user_journey.encryption_certificate'), view_certificate_path(component.component_type, component.id, component.encryption_certificate_id) %></td>
             <td class="govuk-table__cell">
-              <div class="app-certificate-tag <%= 'app-certificate-tag-expiring' if component.encryption_certificate.expires_soon? %>">
+              <div class="app-certificate-tag <%= 'app-certificate-tag-expiring' if component.encryption_certificate.expires_soon? %> <%= 'app-certificate-tag-deploying' if component.encryption_certificate.deploying? %>">
                 <strong class="govuk-tag"><%= certificate_status(component.encryption_certificate) %></strong>
               </div>
             </td>
@@ -42,7 +42,7 @@
               <% end %>
             </td>
             <td class="govuk-table__cell">
-              <div class="app-certificate-tag <%= 'app-certificate-tag-deploying' if position(signing) == 'primary' && component.enabled_signing_certificates.length == 2 %><%= 'app-certificate-tag-expiring' if signing.expires_soon? %>">
+              <div class="app-certificate-tag <%= 'app-certificate-tag-deploying' if signing.deploying? %><%= 'app-certificate-tag-expiring' if signing.expires_soon? %>">
                 <strong class="govuk-tag"><%= certificate_status(signing) %></strong>
               </div>
             </td>
