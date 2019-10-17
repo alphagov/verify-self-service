@@ -17,4 +17,8 @@ class TeamsControllerPolicy < ApplicationPolicy
   def create?
     user.permissions.team_management
   end
+
+  def destroy?
+    user.permissions.team_management
+  end
 end

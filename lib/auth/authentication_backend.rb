@@ -85,6 +85,18 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e)
   end
 
+  def delete_group(name:)
+    client.delete_group(
+      group_name: name,
+      user_pool_id: user_pool_id,
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException
+    Rails.logger.warn('The group does not exist/already been deleted')
+    {}
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
+  end
+
   # Returns a secret shared code to associate a TOTP app/device with
   def associate_device(access_token:)
     associate = client.associate_software_token(session: access_token)
@@ -180,6 +192,21 @@ module AuthenticationBackend
         limit: limit).users
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError
     []
+  end
+
+  def update_user_email(user_id:, email:)
+    client.admin_update_user_attributes(
+      user_pool_id: user_pool_id,
+      username: user_id,
+      user_attributes: [
+        { name: "email", value: email },
+        { name: 'email_verified', value: 'True' },
+      ],
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException => e
+    raise UsernameExistsException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
   end
 
   def list_groups(limit: 60)

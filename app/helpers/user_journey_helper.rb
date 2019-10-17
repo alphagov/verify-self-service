@@ -26,14 +26,4 @@ module UserJourneyHelper
   def certificate_expiry_count(msa_components, sp_components)
     (msa_components + sp_components).map(&:certificates).flatten.select(&:expires_soon?).count
   end
-
-  def display_component(component)
-    if component.component_type == COMPONENT_TYPE::MSA
-      COMPONENT_TYPE::MSA_SHORT
-    elsif component.vsp
-      COMPONENT_TYPE::VSP_SHORT
-    else
-      COMPONENT_TYPE::SP_SHORT
-    end
-  end
 end

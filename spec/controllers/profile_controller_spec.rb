@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe ProfileController, type: :controller do
   include AuthSupport, CognitoSupport
 
-  after(:each) do
-    Rails.env = 'test'
-  end
-
   describe "Profile Controller" do
     context 'logging in' do
       it "redirect to login if no user" do
@@ -21,12 +17,19 @@ RSpec.describe ProfileController, type: :controller do
       end
     end
 
+    describe "GET #show" do
+      it "renders the show page" do
+        usermgr_stub_auth
+        get :show
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show)
+      end
+    end
+
     context 'running in test' do
       it "profile does not populate instance variables when in test" do
         usermgr_stub_auth
         get :show
-        expect(@controller.instance_variable_get(:@stub_available)).to eq(nil)
-        expect(@controller.instance_variable_get(:@breakerofchains)).to eq(nil)
         expect(@controller.instance_variable_get(:@using_stub)).to eq(nil)
       end
     end
@@ -36,8 +39,6 @@ RSpec.describe ProfileController, type: :controller do
         Rails.env = 'production'
         usermgr_stub_auth
         get :show
-        expect(@controller.instance_variable_get(:@stub_available)).to eq(nil)
-        expect(@controller.instance_variable_get(:@breakerofchains)).to eq(nil)
         expect(@controller.instance_variable_get(:@using_stub)).to eq(nil)
       end
     end
@@ -47,8 +48,6 @@ RSpec.describe ProfileController, type: :controller do
         Rails.env = 'development'
         usermgr_stub_auth
         get :show
-        expect(@controller.instance_variable_get(:@stub_available)).to eq(true)
-        expect(@controller.instance_variable_get(:@breakerofchains)).to eq(false)
         expect(@controller.instance_variable_get(:@using_stub)).to eq(true)
       end
     end

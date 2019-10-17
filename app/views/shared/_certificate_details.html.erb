@@ -2,7 +2,7 @@
   <dt class="govuk-visually-hidden govuk-body-s">Environment</dt>
   <dd><%= certificate.component.environment.capitalize %></dd>
   <dt class="govuk-visually-hidden">Component</dt>
-  <dd><%= display_component(certificate.component) %></dd>
+  <dd><%= certificate.component.display %></dd>
   <dt class="govuk-visually-hidden">Certificate</dt>
   <dd><%= certificate.usage.capitalize + " certificate" %></dd>
 </dl>

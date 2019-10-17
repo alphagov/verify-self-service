@@ -54,3 +54,6 @@ yarn-error.log
 
 .generators
 .vscode
+
+# cached rubocop rules pulled locally
+.rubocop-h*

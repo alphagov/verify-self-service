@@ -1,7 +1,7 @@
 -   repo: local
     hooks:
     -   id: lint
-        name: govuk linter
-        entry: bundle exec govuk-lint-ruby
+        name: rubocop
+        entry: rubocop
         files: (^app|^lib)
         language: system

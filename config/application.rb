@@ -46,5 +46,9 @@ module VerifySelfService
 
     # The cache reload time for the JWKS file from amazon
     config.jwks_cache_expiry = 1.hour
+
+    # Set a css_compressor so sassc-rails does not overwrite the compressor when running 
+    # workaround until https://github.com/sass/libsass/milestone/35 is shipped
+    config.assets.css_compressor = nil
   end
 end

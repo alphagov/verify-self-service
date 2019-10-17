@@ -1,11 +1,14 @@
+<%= error_summary_for(sign_in_form&.errors, :user) %>
 <h2 class="govuk-heading-l"><%= t('login.heading') %></h2>
 
-<div class="govuk-form-group">
+<div class="govuk-form-group <%= ' govuk-form-group--error' if sign_in_form&.errors&.key?(:email) %>">
+  <%= error_message_on(sign_in_form&.errors, :email) %>
   <%= f.label :email, class: "govuk-label" %>
-  <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "govuk-input govuk-input--width-20" %>
+  <%= f.email_field :email, autocomplete: "email", class: "govuk-input govuk-input--width-20 #{sign_in_form&.errors&.key?(:email) ? 'govuk-input--error' : ''}" %>
 </div>
 
-<div class="govuk-form-group">
+<div class="govuk-form-group <%= ' govuk-form-group--error' if sign_in_form&.errors&.key?(:password) %>">
+  <%= error_message_on(sign_in_form&.errors, :password) %>
   <%= f.label :password, class: "govuk-label" %>
-  <%= f.password_field :password, autocomplete: "current-password", class: "govuk-input govuk-input--width-20" %>
+  <%= f.password_field :password, autocomplete: "current-password", class: "govuk-input govuk-input--width-20  #{sign_in_form&.errors&.key?(:password) ? 'govuk-input--error' : ''}" %>
 </div> 

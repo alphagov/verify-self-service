@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :teams, path: 'admin/teams', only: %i[index new create]
+  resources :teams, path: 'admin/teams'
 
   devise_for :users, controllers: { sessions: 'sessions' }
 
@@ -41,6 +41,8 @@ Rails.application.routes.draw do
   get '/users/:user_id/update', to: 'users#show', as: :update_user
   post '/users/:user_id/update', to: 'users#update', as: :update_user_post
   get '/users/:user_id/resend-invitation', to: 'users#resend_invitation', as: :resend_invitation
+  get '/users/:user_id/update-email', to: 'users#show_update_email', as: :update_user_email_address
+  post '/users/:user_id/update-email', to: 'users#update_email', as: :update_user_email_address_post
 
   get '/profile/change-password', to: 'password#password_form'
   post '/profile/change-password', to: 'password#update_password'
@@ -54,12 +56,14 @@ Rails.application.routes.draw do
   post 'profile/update-role', to: 'profile#update_role'
 
   get '/component/:component_type/:component_id/certificate/:certificate_id', to: 'user_journey#view_certificate', as: 'view_certificate'
-  get '/component/:component_type/:component_id/certificate/:certificate_id/before-you-start', to: 'user_journey#before_you_start', as: 'before_you_start'
-  get '/component/:component_type/:component_id/certificate/:certificate_id/upload-certificate', to: 'user_journey#upload_certificate', as: 'upload_certificate'
-  get '/component/:component_type/:component_id/certificate/:certificate_id/check-your-certificate', to: 'user_journey#upload_certificate', as: 'check_your_certificate'
-  post '/component/:component_type/:component_id/certificate/:certificate_id/check-your-certificate', to: 'user_journey#submit', as: 'submit'
-  get '/component/:component_type/:component_id/certificate/:certificate_id/confirmation', to: 'user_journey#confirmation', as: 'confirmation'
-  post '/component/:component_type/:component_id/certificate/:certificate_id/confirmation', to: 'user_journey#confirm', as: 'confirm'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/dual-running', to: 'user_journey#dual_running', as: 'dual_running'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/is-dual-running', to: 'user_journey#is_dual_running', as: 'is_dual_running'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/before-you-start(/:dual_running)', to: 'user_journey#before_you_start', as: 'before_you_start'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/upload-certificate(/:dual_running)', to: 'user_journey#upload_certificate', as: 'upload_certificate'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/check-your-certificate(/:dual_running)', to: 'user_journey#upload_certificate', as: 'check_your_certificate'
+  post '/component/:component_type/:component_id/certificate/:certificate_id/check-your-certificate(/:dual_running)', to: 'user_journey#submit', as: 'submit'
+  get '/component/:component_type/:component_id/certificate/:certificate_id/confirmation(/:dual_running)', to: 'user_journey#confirmation', as: 'confirmation'
+  post '/component/:component_type/:component_id/certificate/:certificate_id/confirmation(/:dual_running)', to: 'user_journey#confirm', as: 'confirm'
 
   get '/cookies', to: 'static#cookies'
   get '/privacy-notice', to: 'static#privacy'

@@ -6,10 +6,10 @@
     <div class="govuk-error-summary__body">
       <% if primary_signing_certificate?(@certificate) %>
         <p><%= t 'user_journey.we_will_email_you' %></p>
-        <p><%= t('user_journey.add_new_signing_key_warning', component: display_component(@certificate.component), date: date_to_readable_long_format(@certificate.x509.not_after)) %></p>
+        <p><%= t('user_journey.add_new_signing_key_warning', component: @certificate.component.display, date: date_to_readable_long_format(@certificate.x509.not_after)) %></p>
       <% elsif secondary_signing_certificate?(@certificate) %>
         <p><%= t 'user_journey.how_long_it_takes' %></p>
-        <p><%= t('user_journey.delete_old_signing_key_and_cert', component: display_component(@certificate.component)) %></p>
+        <p><%= t('user_journey.delete_old_signing_key_and_cert', component: @certificate.component.display) %></p>
       <% end %>
       <p><%= render 'shared/component_certificate_doc_links', certificate: @certificate %></p>
     </div>
@@ -17,7 +17,7 @@
 <% end %>
 
 <h1 class="govuk-heading-l">
-  <%= t("user_journey.certificate.component_name.#{display_component(@certificate.component)}") %>
+  <%= t("user_journey.certificate.component_name.#{@certificate.component.type}") %>
   <%= t('user_journey.certificate.certificate', type: @certificate.usage ) %>
   <% if @certificate.signing? && @certificate.component.enabled_signing_certificates.length == 2 %>
     <%= t "user_journey.#{position(@certificate)}" %>
@@ -25,11 +25,13 @@
 </h1>
 
 <%= render 'shared/user_certificate_view', certificate: @certificate, full_details: true %>
-
 <% if @certificate.signing? %>
   <% if @certificate.component.enabled_signing_certificates.length < 2 %>
     <%= link_to t('user_journey.certificate.add_new'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
   <% end %>
-<% elsif @certificate.encryption? %>
+<% elsif @certificate.component.display == COMPONENT_TYPE::SP_LONG && @certificate.encryption? %>
+  <%= link_to t('user_journey.certificate.replace'), dual_running_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
+<% else %>
   <%= link_to t('user_journey.certificate.replace'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
 <% end %>
+

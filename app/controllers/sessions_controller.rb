@@ -11,12 +11,11 @@ class SessionsController < Devise::SessionsController
 
   def create
     if session[:challenge_parameters].nil?
-      sign_in_form = SignInForm.new(params['user'])
-      if sign_in_form.valid?
+      @sign_in_form = SignInForm.new(params['user'])
+      if @sign_in_form.valid?
         super
       else
-        flash[:errors] = sign_in_form.errors.full_messages.join(', ')
-        redirect_to new_session_path(resource_name)
+        render :new
       end
     else
       super

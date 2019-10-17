@@ -6,7 +6,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
   root = PKI.new
   entity_id = 'http://test-entity-id'
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
-  team = Team.create(name: SecureRandom.alphanumeric, id: SecureRandom.uuid)
+  team = Team.create(name: SecureRandom.alphanumeric, id: SecureRandom.uuid, team_alias: SecureRandom.alphanumeric)
   component = NewMsaComponentEvent.create(
     name: 'fake_name', entity_id: entity_id, team_id: team.id, environment: 'staging'
   ).msa_component

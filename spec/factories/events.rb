@@ -17,6 +17,10 @@ FactoryBot.define do
     name { SecureRandom.alphanumeric }
   end
 
+  factory :delete_team_event do
+    team { create(:team) }
+  end
+
   factory :replace_encryption_certificate_event do
     component { create(:sp_component) }
     encryption_certificate_id { create(:sp_encryption_certificate).id }

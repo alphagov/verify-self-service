@@ -83,13 +83,38 @@ class UsersController < ApplicationController
     redirect_to update_user_path(user_id: params[:user_id])
   end
 
+  def show_update_email
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+    @form = UpdateUserEmailForm.new(email: @user.email)
+  end
+
+  def update_email
+    @form = UpdateUserEmailForm.new(params[:update_user_email_form] || {})
+    if @form.valid?
+      update_user_email(user_id: params[:user_id], email: @form.email)
+      UpdateUserEmailEvent.create(data: { user_id: params[:user_id], email: @form.email })
+      redirect_to update_user_path
+    else
+      @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+      render :show_update_email, status: :bad_request
+    end
+  rescue AuthenticationBackend::UsernameExistsException
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+    @form.errors.add(:email, t('users.update_email.errors.already_exists', email: @form.email))
+    render :show_update_email, status: :bad_request
+  rescue AuthenticationBackend::AuthenticationBackendException
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+    @form.errors.add(:base, t('users.update_email.errors.generic_error'))
+    render :show_update_email, status: :bad_request
+  end
+
 private
 
   def team_valid?
     if Team.exists?(params[:team_id])
       true
     else
-      @form.errors.add(t('invite.error.team.missing'))
+      @form.errors.add(:base, t('invite.error.team.missing'))
       false
     end
   end

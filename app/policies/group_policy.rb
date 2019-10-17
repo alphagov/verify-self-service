@@ -17,6 +17,8 @@ class GroupPolicy < ApplicationPolicy
   alias_method :destroy?, :team_authorized?
   alias_method :invite?, :team_authorized?
   alias_method :before_you_start?, :team_authorized?
+  alias_method :dual_running?, :team_authorized?
+  alias_method :is_dual_running?, :team_authorized?
   alias_method :view_certificate?, :team_authorized?
   alias_method :upload_certificate?, :team_authorized?
   alias_method :upload?, :team_authorized?

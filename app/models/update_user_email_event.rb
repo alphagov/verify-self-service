@@ -1,0 +1,2 @@
+class UpdateUserEmailEvent < Event
+end

@@ -61,4 +61,18 @@ class Component < Aggregate
       signing_certificates: enabled_signing_certificates.map(&:to_metadata),
     }.merge(additional_metadata)
   end
+
+  def type
+    if component_type == COMPONENT_TYPE::MSA
+      COMPONENT_TYPE::MSA_SHORT
+    elsif vsp
+      COMPONENT_TYPE::VSP_SHORT
+    else
+      COMPONENT_TYPE::SP_SHORT
+    end
+  end
+
+  def display
+    I18n.t("user_journey.component_name.#{type}")
+  end
 end

@@ -44,9 +44,15 @@ RSpec.describe 'Before you start page', type: :system do
     it 'shows before you start page for sp encryption and successfully goes to next page' do
       sp_component = sp_encryption_certificate.component
       visit before_you_start_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
-      expect(page).to have_content 'Service Provider (SP) encryption certificate'
-      click_link 'I have updated my SP configuration'
+      expect(page).to have_content 'service provider encryption certificate'
+      click_link 'I have updated my service provider configuration'
       expect(current_path).to eql upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+    end
+
+    it 'sp encryption journey with dual running set to no displays unqiue content' do
+      sp_component = sp_encryption_certificate.component
+      visit before_you_start_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id, true)
+      expect(page).to have_content 'Because your service provider does not support dual running, there will be an outage when you rotate the encryption key.'
     end
   end
 
@@ -73,7 +79,7 @@ RSpec.describe 'Before you start page', type: :system do
       certificate = create(:sp_signing_certificate, component: create(:sp_component, team_id: user.team))
       sp_component = certificate.component
       visit before_you_start_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
-      expect(page).to have_content 'Service Provider (SP) signing certificate'
+      expect(page).to have_content 'service provider signing certificate'
       click_link 'Continue'
       expect(current_path).to eql upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
     end

@@ -1,4 +1,14 @@
+inherit_from:
+  - https://raw.githubusercontent.com/alphagov/govuk-lint/master/configs/rubocop/all.yml
+
 Style/ConditionalAssignment:
   Enabled: false
 Style/StringLiterals:
   Enabled: false
+
+AllCops:
+  Include: 
+    - 'app/**/*.rb'
+    - 'lib/**/*.rb'
+  Exclude:
+    - 'bin/**'

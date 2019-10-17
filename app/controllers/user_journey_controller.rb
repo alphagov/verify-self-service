@@ -7,6 +7,7 @@ class UserJourneyController < ApplicationController
 
   before_action :find_certificate, except: :index
   helper_method :error_class, :checked, :text_box_value
+  before_action :dual_running, except: :index
 
   def index
     if current_user.permissions.component_management
@@ -15,6 +16,19 @@ class UserJourneyController < ApplicationController
     else
       @sp_components = SpComponent.where(team_id: current_user.team)
       @msa_components = MsaComponent.where(team_id: current_user.team)
+    end
+  end
+
+  def is_dual_running
+    if params.key?(:dual_running)
+      if @not_dual_running
+        redirect_to before_you_start_path(dual_running: @not_dual_running)
+      else
+        redirect_to :before_you_start
+      end
+    else
+      Rails.logger.info(@not_dual_running)
+      redirect_to dual_running_path, flash: { error: I18n.t('user_journey.errors.select_option') }
     end
   end
 
@@ -81,6 +95,10 @@ private
 
   def find_certificate
     @certificate = Certificate.find_by_id(params[:certificate_id])
+  end
+
+  def dual_running
+    @not_dual_running = params[:dual_running].blank? ? nil : true
   end
 
   def merge_errors(primary, *objects)
