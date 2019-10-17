@@ -130,23 +130,24 @@ en:
       not_signing: signing certificate is needed
       invalid_file_type: is an invalid file type
   profile:
-    title: "User Information"
-    welcome: Welcome
-    heading: "Your Profile"
-    id: "User ID: "
-    given_name: "Given Name: "
-    family_name: "Family Name: "
-    roles: "Roles: "
-    email: "E-mail address: "
-    phone: "Phone number: "
-    team: "Team: "
-    cognito_groups: "Cognito Groups: "
-    permissions_heading: "Your Permissions"
-    client_switch_heading: "Switch Authentication Clients"
-    client_switch_legend: "In development you can switch between using cognito and the stub authentication clients. If you use the stub client you can assume different roles."
-    banner: "There are features on this page which are only avialable in the development environment."
-    assume_roles_heading: "Switch Roles"
-    assume_roles_legend: "Select which role(s) you wish to assume?"
+    title: Your profile
+    item: Item
+    details: Your details
+    action: Action
+    name: Name
+    email: Email Address
+    password: Password
+    change: Change
+    mfa: Multi-factor authentication
+    set_up: Set up
+    permissions: Your permissions
+    dev: DEV
+    cognito_client: Cognito Client
+    stub_client: Stub Client
+    client_switch_heading: Switch Authentication Clients
+    client_switch_legend: In development you can switch between using cognito and the stub authentication clients. If you use the stub client you can assume different roles.
+    assume_roles_heading: Switch Roles
+    assume_roles_legend: Select which role(s) you wish to assume?
   password:
     title_change: Change your password
     title_forgotten: Forgotten password
@@ -193,9 +194,9 @@ en:
       menu: Menu
       warning: Warning
       message: "%{message}"
-      profile: "Profile"
-      teams: "Team Management"
-      events: "Events Viewer"
+      profile: Your profile
+      teams: Team Management
+      events: Events Viewer
       footer:
         cookies: Cookies
         privacy: Privacy policy
