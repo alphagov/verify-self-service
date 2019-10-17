@@ -27,4 +27,8 @@ class Certificate < Aggregate
   def expires_soon?
     x509.not_after - Time.now < 30.day
   end
+
+  def deploying?
+    updated_at >= 10.minutes.ago
+  end
 end
