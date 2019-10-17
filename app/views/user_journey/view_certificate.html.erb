@@ -19,7 +19,15 @@
         <p><%= render 'shared/component_certificate_doc_links', certificate: @certificate %></p>
       </div>
     </div>
-  <% end %>  
+  <% end %>
+<% elsif @certificate.encryption? && @certificate.deploying? %>
+  <div class="govuk-error-summary govuk-error-summary--grey" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title"><%= t('user_journey.replacing_certificate_in_config') %></h2>
+      <div class="govuk-error-summary__body">
+        <p><%= t('user_journey.we_will_email_you') %></p>
+        <p><%= render 'shared/component_certificate_doc_links', certificate: @certificate %></p>
+      </div>
+    </div>
 <% end %>
 
 <h1 class="govuk-heading-l">
@@ -32,7 +40,7 @@
 
 <%= render 'shared/user_certificate_view', certificate: @certificate, full_details: true %>
 
-<% if @certificate.encryption? %>
+<% if @certificate.encryption? && !@certificate.deploying?%>
   <% if @certificate.component.type == COMPONENT_TYPE::SP_SHORT %>
     <%= link_to t('user_journey.certificate.replace'), dual_running_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %>
   <% else %>

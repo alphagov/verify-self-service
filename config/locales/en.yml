@@ -296,6 +296,7 @@ en:
     two_signing_certificate: Signing certificate %{type}
     primary: (primary)
     secondary: (secondary)
+    replacing_certificate_in_config: GOV.UK Verify is replacing your existing certificate with the new one
     adding_certificate_to_config: GOV.UK Verify is adding your certificate to its configuration
     we_will_email_you: This usually takes around 10 minutes. We'll email you when this is done.
     add_new_signing_key_warning: After receiving this email you must add the new signing key to your %{component} config by %{date}, or your service’s connection to GOV.UK Verify will break.
