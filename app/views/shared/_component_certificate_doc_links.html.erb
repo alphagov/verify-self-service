@@ -1,8 +1,8 @@
 <p>
   <%= t('user_journey.find_out_more', 
     link: link_to(t('user_journey.rotate_key_and_certificate', 
-      component: display_component(certificate.component), 
-      certificate: certificate.usage), t("user_journey.urls.#{display_component(certificate.component)}.#{certificate.usage}"))
+      component: @certificate.component.display, 
+      certificate: certificate.usage), t("user_journey.urls.#{@certificate.component.type}.#{certificate.usage}"))
     ).html_safe 
   %>
 </p>

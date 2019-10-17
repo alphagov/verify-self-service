@@ -277,10 +277,14 @@ en:
     errors:
       select_option: Must select an option
     title: Dashboard
-    component_name:
+    component_long_name:
       MSA: Matching Service Adapter
       VSP: Verify Service Provider
-      'service provider': Service Provider
+      SP: Service Provider
+    component_name:
+      MSA: MSA
+      VSP: VSP
+      SP: service provider
     used_by: used by
     certificate: Certificate
     status: Status
@@ -312,7 +316,7 @@ en:
       VSP:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate
         signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate
-      'service provider':
+      SP:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-encryption/#rotate-your-service-provider-encryption-key-and-certificate
         signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
       connection_broken_or_compromised: https://prototype-docs.cloudapps.digital/emergency-procedures/#emergency-procedures
@@ -332,7 +336,7 @@ en:
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
       MSA: Before you upload your Matching Service Adapter (MSA) %{type} certificate,
       VSP: Before you upload your Verify Service Provider (VSP) %{type} certificate,
-      'service provider': Before you upload your service provider %{type} certificate,
+      SP: Before you upload your service provider %{type} certificate,
       you_must: "you must:"
       create_signing_key_and_certificate: "you must create a new signing key and certificate."
       create_key_and_certificate: Create a new encryption key and certificate
@@ -350,7 +354,7 @@ en:
       component_name:
         MSA: "Matching Service Adapter: "
         VSP: "Verify Service Provider: "
-        'service provider': "Service Provider: "
+        SP: "Service Provider: "
       check_certificate_title: Check you've uploaded the right certificate
       contains_the_following: "The certificate you uploaded contains the following information:"
       valid_from: Valid from
