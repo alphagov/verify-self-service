@@ -30,11 +30,11 @@ class CognitoStubClient
   def self.setup_user(user_hash)
     SelfService.service(:cognito_client).stub_responses(
       :respond_to_auth_challenge,
-      challenge_name: nil, authentication_result: { access_token: 'valid-token', id_token: user_hash_to_jwt(user_hash) },
+      challenge_name: "MFA_SETUP", authentication_result: { access_token: 'valid-token', id_token: user_hash_to_jwt(user_hash) },
     )
     SelfService.service(:cognito_client).stub_responses(
       :initiate_auth,
-      challenge_name: nil,
+      challenge_name: "MFA_SETUP",
       session: "",
       challenge_parameters: { "FRIENDLY_DEVICE_NAME" => "Authy", "USER_ID_FOR_SRP" => "" },
       authentication_result: { access_token: 'valid-token', id_token: user_hash_to_jwt(user_hash) },
