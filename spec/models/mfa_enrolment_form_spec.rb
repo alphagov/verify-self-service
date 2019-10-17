@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe MfaEnrolmentForm, type: :model do
 
   it 'is valid with valid attributes' do
-    expect(MfaEnrolmentForm.new({ code: 'abcdefg' })).to be_valid
+    expect(MfaEnrolmentForm.new({ totp_code: 'abcdefg' })).to be_valid
   end
 
   it 'is not valid with no params' do

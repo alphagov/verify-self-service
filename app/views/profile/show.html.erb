@@ -30,8 +30,18 @@
     </tr>
     <tr class="govuk-table__row">
       <td class="govuk-table__cell"><%= t 'profile.mfa' %></td>
-      <td class="govuk-table__cell"><%= t 'profile.set_up' %></td>
-      <td class="govuk-table__cell"></td>
+      <td class="govuk-table__cell">
+        <% unless @mfa_status ==  'SOFTWARE_TOKEN_MFA'%>
+          <%= link_to t('profile.set_up'), setup_mfa_path, class: 'govuk-link' %>
+        <% else %>
+          <%= t 'profile.software_token' %>
+        <% end %>
+      </td>
+      <td class="govuk-table__cell">
+        <% if @mfa_status ==  'SOFTWARE_TOKEN_MFA' %>
+          <%= link_to t('profile.change'), profile_update_mfa_path, class: 'govuk-link' %>
+        <% end %>
+      </td>
     </tr>
   </tbody>
 </table>

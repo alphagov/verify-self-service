@@ -1,11 +1,11 @@
 class MfaEnrolmentForm
   include ActiveModel::Model
 
-  attr_reader :code
+  attr_reader :totp_code
 
-  validates_presence_of :code
+  validates_presence_of :totp_code
 
   def initialize(hash)
-    @code = hash[:code]
+    @totp_code = hash[:totp_code]
   end
 end

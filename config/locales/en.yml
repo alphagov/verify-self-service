@@ -143,6 +143,9 @@ en:
     password: Password
     change: Change
     mfa: Multi-factor authentication
+    software_token: 2nd Factor Authentication Present
+    update_token_heading: Update your 2nd factor software token
+    mfa_success: Your 2nd factor authentication preferences have been updated.
     set_up: Set up
     permissions: Your permissions
     dev: DEV

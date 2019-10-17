@@ -287,6 +287,48 @@ module AuthenticationBackend
     TeamMember.new(user_id: user_id, given_name: given_name, family_name: family_name, email: email, roles: roles, status: status)
   end
 
+  def refresh_token(refresh_token:)
+    client.initiate_auth(
+      client_id: cognito_client_id,
+      auth_flow: 'REFRESH_TOKEN_AUTH',
+      auth_parameters: {
+        'REFRESH_TOKEN' => refresh_token,
+      },
+    )
+  end
+
+  def mfa_setup?(access_token:)
+    client.set_user_mfa_preference(
+      software_token_mfa_settings: {
+        enabled: true,
+        preferred_mfa: true,
+      },
+      access_token: access_token,
+    )
+    true
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError
+    false
+  end
+
+  def get_user_info(access_token:)
+    client.get_user(access_token: access_token)
+  end
+
+  def get_secret_code_for_mfa(access_token:)
+    token_resp = client.associate_software_token(access_token: access_token)
+    token_resp.secret_code
+  end
+
+  def verify_code_for_mfa(access_token:, code:)
+    client.verify_software_token(
+      access_token: access_token,
+      user_code: code,
+      friendly_device_name: "Software TOTP Generator",
+    ).status
+  rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException => e
+    raise InvalidConfirmationCodeException.new(e)
+  end
+
 private
 
   def process_response(cognito_response:, params:)
@@ -364,7 +406,9 @@ private
       totp_resp = client.verify_software_token(session: params[:cognito_session_id], user_code: params[:totp_code])
       if totp_resp.status == 'SUCCESS'
         challenge_responses.merge!('ANSWER': 'SOFTWARE_TOKEN_MFA')
-        send_challenge(session: totp_resp.session, challenge_name: challenge_name, challenge_responses: challenge_responses)
+        resp = send_challenge(session: totp_resp.session, challenge_name: challenge_name, challenge_responses: challenge_responses)
+        mfa_setup?(access_token: resp.authentication_result[:access_token]) unless resp.authentication_result[:access_token].nil?
+        resp
       else
         raise AuthenticationBackendException.new("Unknown status returned by cognito when verifying software token.  Status returned: #{totp_resp.status}")
       end

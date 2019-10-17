@@ -1,0 +1,14 @@
+<%= page_title t('password.title_change') %>
+
+<h1 class="govuk-heading-l"><%= t 'profile.update_token_heading' %></h1>
+
+<div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-warning-text__assistive">Warning</span>
+    Once you click continue your existing software token will no longer be valid.
+  </strong>
+</div>
+
+<%= link_to t('user_journey.continue'), profile_update_mfa_get_code_path, class: "govuk-button govuk-!-margin-right-1", data: { module: "govuk-button" } %>
+<%= link_to t('login.cancel'), profile_path , class: "govuk-button govuk-button--secondary", data: { module: "govuk-button" } %>
