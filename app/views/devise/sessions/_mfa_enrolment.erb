@@ -2,8 +2,10 @@
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-xl"><%= t('mfa_enrolment.heading') %></h1>
     <p class="govuk-body"><%= t('mfa_enrolment.description') %></p>
-      <div>
-        <%= raw(@secret_code_svg) %>
+      <div id="qr-code">  
+        <svg>
+          <%= raw(@secret_code_svg) %>
+        </svg>
       </div>
     <p class="govuk-body"> 
       <details class="govuk-details" data-module="govuk-details">
