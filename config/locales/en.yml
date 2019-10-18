@@ -338,7 +338,9 @@ en:
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.
       MSA: Before you upload your Matching Service Adapter (MSA) %{type} certificate,
       VSP: Before you upload your Verify Service Provider (VSP) %{type} certificate,
-      SP: Before you upload your service provider %{type} certificate,
+      SP: 'Before you upload your service provider %{type} certificate,'
+      encryption:
+        SP: 'Before you upload your service provider encryption certificate:'
       you_must: "you must:"
       create_signing_key_and_certificate: "you must create a new signing key and certificate."
       create_key_and_certificate: Create a new encryption key and certificate
@@ -356,7 +358,7 @@ en:
       component_name:
         MSA: "Matching Service Adapter: "
         VSP: "Verify Service Provider: "
-        SP: "Service Provider: "
+        SP: "Service provider: "
       check_certificate_title: Check you've uploaded the right certificate
       contains_the_following: "The certificate you uploaded contains the following information:"
       valid_from: Valid from
