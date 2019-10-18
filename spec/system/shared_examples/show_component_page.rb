@@ -68,15 +68,13 @@ RSpec.shared_examples "show component page" do |component_type|
       certs = component.enabled_signing_certificates
       visit polymorphic_url(component)
 
-      certs.each do |certificate|
-        show_page.disable_signing_certificate(certificate)
-      end
+      show_page.disable_signing_certificate(certs[0])
 
       disabled_certs = component.disabled_signing_certificates
 
       expect(show_page).to have_selector('h1', text: component.name)
       expect(show_page).to have_disabled_signing_certificate(disabled_certs[0])
-      expect(show_page).to have_disabled_signing_certificate(disabled_certs[1])
+      expect(show_page).not_to have_disabled_signing_certificate(disabled_certs[1])
     end
 
     it 'displays encryption certificate for component' do

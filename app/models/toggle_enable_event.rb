@@ -3,7 +3,7 @@ class ToggleEnableEvent < AggregatedEvent
 
   belongs_to_aggregate :certificate
   validates_presence_of :certificate
-  validate :certificate_is_signing?
+  validate :certificate_is_signing?, :not_only_certificate?
   after_save TriggerMetadataEventCallback.publish
 
   def attributes_to_apply
@@ -15,6 +15,14 @@ private
   def certificate_is_signing?
     return if certificate.signing?
 
-    errors.add(:signing_certificate_event, I18n.t('certificates.errors.not_signing'))
+    errors.add(:certificate, I18n.t('certificates.errors.not_signing'))
+  end
+
+  def not_only_certificate?
+    return if certificate.encryption?
+    return if enabled
+    return if certificate.component.enabled_signing_certificates.length == 2
+
+    errors.add(:certificate, I18n.t('certificates.errors.cannot_disable'))
   end
 end

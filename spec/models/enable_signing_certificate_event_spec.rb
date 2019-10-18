@@ -14,6 +14,12 @@ RSpec.describe EnableSigningCertificateEvent, type: :model do
     ).certificate
   end
 
+  let(:signing_certificate_secondary) do
+    UploadCertificateEvent.create(
+      usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: component
+    ).certificate
+  end
+
   let(:expired_signing_certificate) do
     UploadCertificateEvent.create(
       usage: CERTIFICATE_USAGE::SIGNING, value: expired_cert_value, component: component
@@ -46,6 +52,7 @@ RSpec.describe EnableSigningCertificateEvent, type: :model do
   end
 
   it 'can enable a disabled certificate' do
+    signing_certificate_secondary
     disabled_cert = disable_signing_certificate_event.certificate
     expect(disabled_cert.enabled).to eq(false)
     enabled_cert = enable_signing_certificate_event.certificate

@@ -129,6 +129,7 @@ en:
       small_key: key size is less than 2048 bits
       not_signing: signing certificate is needed
       invalid_file_type: is an invalid file type
+      cannot_disable: Cannot disable the only signing certificate on a component
   profile:
     title: Your profile
     item: Item
@@ -380,6 +381,12 @@ en:
       sp_doesnt_support_dual_running: Because your service provider does not support dual running, your connection will break when the GOV.UK Verify Hub starts using your new certificate.
       restore_connection: At this point, you will need to restore your connection.
       choose_one: 'Choose one of the following:'
+      stop_using_primary_heading: Stop using this primary certificate
+      stop_using_primary_warning_html: "This is your primary (most recent) certificate. During a normal certificate rotation you should be disabling your %{href} instead."
+      stop_using_secondary_link: secondary certificate
+      stop_using_secondary_heading: Stop using this secondary certificate
+      stop_using_secondary_warning: By clicking the button below, GOV.UK Verify will stop using this certificate within 10 minutes. Make sure you're no longer using the corresponding private key.
+      stop_using: Stop using this certificate
     confirmation:
       title: Confirmation
       what_to_expect: This usually takes around 10 minutes. We'll email you when your new %{type} certificate is in use.

@@ -51,6 +51,22 @@
   <% if @certificate.component.enabled_signing_certificates.length < 2 %>
     <%= link_to t('user_journey.certificate.add_new'), before_you_start_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
   <% elsif secondary_signing_certificate?(@certificate) && !deployment_in_progress?(@certificate) %>
-    TODO: OPTION TO REMOVE/DISABLE OLD CERT
+    <div class="govuk-error-summary govuk-error-summary--grey" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title"><%= t('user_journey.certificate.stop_using_secondary_heading')%></h2>
+      <div class="govuk-error-summary__body">
+        <p><%= t('user_journey.certificate.stop_using_secondary_warning')%></p>
+        <p><%= render 'shared/component_certificate_doc_links', certificate: @certificate %></p>
+        <%= link_to t('user_journey.certificate.stop_using'), disable_certificate_path, method: :patch, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+      </div>
+    </div>
+  <% else %>
+    <div class="govuk-error-summary govuk-error-summary--orange" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="error-summary">
+      <h2 class="govuk-error-summary__title" id="error-summary-title"><%= t('user_journey.certificate.stop_using_primary_heading')%></h2>
+      <div class="govuk-error-summary__body">
+        <p><%= t('user_journey.certificate.stop_using_primary_warning_html', href: link_to(t('user_journey.certificate.stop_using_secondary_link'), view_certificate_path(@certificate.component.component_type, @certificate.component.id, @certificate.component.enabled_signing_certificates.second)))%></p>
+        <p><%= render 'shared/component_certificate_doc_links', certificate: @certificate %></p>
+        <%= link_to t('user_journey.certificate.stop_using'), disable_certificate_path, method: :patch, class: "govuk-button govuk-button--warning", data: { module: "govuk-button" }, role:"button" %> 
+      </div>
+    </div>
   <% end %>
 <% end %>

@@ -4,53 +4,58 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
   include CertificateSupport
   root = PKI.new
   good_cert_value = root.generate_encoded_cert(expires_in: 2.months)
-  expired_cert_value = root.generate_encoded_cert(expires_in: -2.months)
   let(:component) { create(:sp_component) }
 
-  let(:signing_certificate) do
-    UploadCertificateEvent.create(
-      usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: component
-    ).certificate
+  let(:upload_signing_certificate_primary) {
+    create(:upload_certificate_event, component: component)
+  }
+
+  let(:upload_signing_certificate_secondary) do
+    create(:upload_certificate_event, component: component)
   end
 
-  let(:expired_signing_certificate) do
-    UploadCertificateEvent.create(
-      usage: CERTIFICATE_USAGE::SIGNING, value: expired_cert_value, component: component
-    ).certificate
-  end
 
-  let(:encryption_certificate) do
-    UploadCertificateEvent.create(
-      usage: CERTIFICATE_USAGE::ENCRYPTION, value: good_cert_value, component: component
-    ).certificate
-  end
+  it 'disables a secondary signing certificate and persists' do
+    upload_signing_certificate_primary
+    upload_signing_certificate_secondary
 
-  let(:disable_signing_certificate_event) do
-    DisableSigningCertificateEvent.create(certificate: signing_certificate)
-  end
-
-  it 'disables a signing certificate' do
-    cert = disable_signing_certificate_event.certificate
+    event = DisableSigningCertificateEvent.create(
+      certificate: upload_signing_certificate_secondary.certificate
+    )
+    cert = upload_signing_certificate_secondary.certificate
     expect(cert.enabled).to eq(false)
-  end
-
-  it 'must be persisted' do
-    event = disable_signing_certificate_event
-    expect(event).to be_valid
+    expect(event.errors).to be_empty
     expect(event).to be_persisted
   end
 
-  it 'cannot be created with expired certificate' do
-    event = DisableSigningCertificateEvent.create(
-      certificate: expired_signing_certificate
+  it 'does not allow disabling a cert if it is the only one' do
+    upload_signing_certificate_primary
+    upload_signing_certificate_secondary
+
+    expect(component.enabled_signing_certificates.length).to eq 2
+
+    disable_secondary_event = DisableSigningCertificateEvent.create(
+      certificate: upload_signing_certificate_secondary.certificate
     )
-    expect(event.certificate).not_to be_valid
-    expect(event).not_to be_persisted
+    secondary_cert = upload_signing_certificate_secondary.certificate
+    expect(secondary_cert.enabled).to eq(false)
+    expect(disable_secondary_event.errors).to be_empty
+    expect(disable_secondary_event).to be_persisted
+    expect(secondary_cert.component.enabled_signing_certificates.length).to eq 1
+
+    disable_primary_event = DisableSigningCertificateEvent.create(
+      certificate: upload_signing_certificate_primary.certificate
+    )
+    primary_cert = upload_signing_certificate_primary.certificate
+    expect(primary_cert.enabled).to eq(true)
+    expect(disable_primary_event.errors[:certificate]).to eq([t('certificates.errors.cannot_disable')])
+    expect(disable_primary_event).not_to be_persisted
+    expect(primary_cert.component.enabled_signing_certificates.length).to eq 1
   end
 
   it 'must be signing' do
     event = DisableSigningCertificateEvent.create(
-      certificate: encryption_certificate
+      certificate: create(:sp_encryption_certificate, component: component)
     )
     cert = event.certificate
     expect(cert.usage).to eq(CERTIFICATE_USAGE::ENCRYPTION)
@@ -59,7 +64,11 @@ RSpec.describe DisableSigningCertificateEvent, type: :model do
 
   context '#trigger_publish_event' do
     it 'when signing certificate is disabled' do
-      event = disable_signing_certificate_event
+      upload_signing_certificate_primary
+      upload_signing_certificate_secondary
+      event = DisableSigningCertificateEvent.create(
+        certificate: upload_signing_certificate_secondary.certificate
+      )
 
       resulting_event = PublishServicesMetadataEvent.all.select do |evt|
         evt.event_id == event.id
