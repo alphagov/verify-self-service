@@ -3,10 +3,6 @@ class ProfileController < ApplicationController
   include MfaQrHelper
 
   def show
-    # Clean up the session if the user didn't successfully complete
-    # changing their MFA.
-    session.delete(:secret_code)
-    session.delete(:retry)
     if Rails.env.development?
       @using_stub = SelfService.service(:cognito_stub)
       @cognito_available = SelfService.service_present?(:real_client)
@@ -47,44 +43,46 @@ class ProfileController < ApplicationController
 
   def setup_mfa
     if mfa_setup?(access_token: current_user.access_token)
+      flash[:notice] = t('profile.mfa_setup_correctly')
       redirect_to profile_path
     else
-      redirect_to change_mfa_path
+      redirect_to profile_update_mfa_path
     end
   end
 
   def show_change_mfa
     @form = MfaEnrolmentForm.new({})
-    @secret_code = session[:secret_code] || get_secret_code_for_mfa(access_token: current_user.access_token)
+    @secret_code = session[:secret_code] || associate_device(access_token: current_user.access_token)
     @secret_code_svg = generate_new_qr(secret_code: @secret_code, email: current_user.email)
-    session[:secret_code] = @secret_code
-    session[:retry] = false
+    flash[:secret_code] = @secret_code
   end
 
   def warn_mfa; end
 
   def request_new_code
     @form = MfaEnrolmentForm.new({})
-    @secret_code = get_secret_code_for_mfa(access_token: current_user.access_token)
+    @secret_code = associate_device(access_token: current_user.access_token)
     @secret_code_svg = generate_new_qr(secret_code: @secret_code, email: current_user.email)
-    session[:secret_code] = @secret_code
-    session[:retry] = false
+    flash[:secret_code] = @secret_code
     render :show_change_mfa
   end
 
   def change_mfa
-    session[:retry] = true
-    @secret_code = session[:secret_code]
-    @secret_code_svg = generate_new_qr(secret_code: @secret_code, email: current_user.email)
     @form = MfaEnrolmentForm.new(params[:mfa_enrolment_form])
     if @form.valid?
       verify_code_for_mfa(access_token: current_user.access_token, code: @form.totp_code)
       flash[:sucess] = t('profile.mfa_success')
       redirect_to profile_path
     else
+      flash[:retry] = true
+      @secret_code = flash.discard[:secret_code]
+      @secret_code_svg = generate_new_qr(secret_code: @secret_code, email: current_user.email)
       render :show_change_mfa, status: :bad_request
     end
   rescue InvalidConfirmationCodeException
+    flash[:retry] = true
+    @secret_code = flash.discard[:secret_code]
+    @secret_code_svg = generate_new_qr(secret_code: @secret_code, email: current_user.email)
     render :show_change_mfa, status: :bad_request
   end
 end

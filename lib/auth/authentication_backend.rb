@@ -99,7 +99,7 @@ module AuthenticationBackend
 
   # Returns a secret shared code to associate a TOTP app/device with
   def associate_device(access_token:)
-    associate = client.associate_software_token(session: access_token)
+    associate = client.associate_software_token(access_token: access_token)
     associate.secret_code
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     raise AuthenticationBackendException.new("Error occurred associating device with error #{e.message}")
@@ -287,16 +287,6 @@ module AuthenticationBackend
     TeamMember.new(user_id: user_id, given_name: given_name, family_name: family_name, email: email, roles: roles, status: status)
   end
 
-  def refresh_token(refresh_token:)
-    client.initiate_auth(
-      client_id: cognito_client_id,
-      auth_flow: 'REFRESH_TOKEN_AUTH',
-      auth_parameters: {
-        'REFRESH_TOKEN' => refresh_token,
-      },
-    )
-  end
-
   def mfa_setup?(access_token:)
     client.set_user_mfa_preference(
       software_token_mfa_settings: {
@@ -314,19 +304,15 @@ module AuthenticationBackend
     client.get_user(access_token: access_token)
   end
 
-  def get_secret_code_for_mfa(access_token:)
-    token_resp = client.associate_software_token(access_token: access_token)
-    token_resp.secret_code
-  end
-
   def verify_code_for_mfa(access_token:, code:)
     client.verify_software_token(
       access_token: access_token,
       user_code: code,
-      friendly_device_name: "Software TOTP Generator",
     ).status
   rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException => e
     raise InvalidConfirmationCodeException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
   end
 
 private

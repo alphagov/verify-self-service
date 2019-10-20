@@ -1,9 +1,4 @@
-require 'rqrcode'
-require 'erb'
-
 class SessionsController < Devise::SessionsController
-  include ERB::Util
-  include AuthenticationBackend
   include MfaQrHelper
 
   layout 'full_width_layout'
