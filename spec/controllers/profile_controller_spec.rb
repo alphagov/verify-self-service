@@ -52,4 +52,51 @@ RSpec.describe ProfileController, type: :controller do
       end
     end
   end
+
+  context 'setup mfa' do
+    it 'returns to profile if mfa is already setup' do
+      usermgr_stub_auth
+      get :setup_mfa
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(profile_path)
+    end
+
+    it 'redirects to change mfa' do
+      usermgr_stub_auth
+      stub_cognito_response(
+        method: :set_user_mfa_preference,
+        payload: 'ServiceError',
+      )
+      get :setup_mfa
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(profile_update_mfa_path)
+    end
+  end
+
+  context 'change_mfa' do
+    it 'renders the page again if form is not valid' do
+      usermgr_stub_auth
+      post :change_mfa, params: { mfa_enrolment_form: { 'totp_code': nil } }
+      expect(response).to have_http_status(:bad_request)
+      expect(subject).to render_template(:show_change_mfa)
+    end
+
+    it 'redirects to the profile page on success' do
+      usermgr_stub_auth
+      post :change_mfa, params: { mfa_enrolment_form: { 'totp_code': '123456' } }
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(profile_path)
+    end
+
+    it 'renders the page again on code mismatch' do
+      usermgr_stub_auth
+      stub_cognito_response(
+        method: :verify_software_token,
+        payload: 'EnableSoftwareTokenMFAException',
+      )
+      post :change_mfa, params: { mfa_enrolment_form: { 'totp_code': '123456' } }
+      expect(response).to have_http_status(:bad_request)
+      expect(subject).to render_template(:show_change_mfa)
+    end
+  end
 end
