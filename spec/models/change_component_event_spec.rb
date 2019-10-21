@@ -11,39 +11,24 @@ RSpec.describe ChangeComponentEvent, type: :model do
     ChangeComponentEvent.create(component: sp_component)
   end
 
-  context 'on MSA' do
-    it 'must be valid' do
-      expect(msa_change_event).to be_valid
-      expect(msa_change_event).to be_persisted
-      expect(msa_change_event.aggregate_type).to eq COMPONENT_TYPE::MSA
-    end
+  # Common fields tested within these shared examples
+  include_examples 'change component event', %w[msa sp]
 
-    it 'has team id assigned to event metadata' do
-      old_team_id = msa_component.team_id
+  context 'MSA specific fields' do
+    it 'errors when entity ID is not present' do
+      msa_component.entity_id = ''
 
-      new_team = create(:team)
-      msa_component.team_id = new_team.id
-
-      expect(new_team.id).not_to eq old_team_id
-      expect(msa_change_event.team_id).to eq new_team.id
+      expect(msa_change_event).to_not be_valid
+      expect(msa_change_event.errors[:entity_id]).to eql [t('components.errors.missing_entity_id')]
     end
   end
 
-  context 'on SP' do
-    it 'must be valid' do
-      expect(sp_change_event).to be_valid
-      expect(sp_change_event).to be_persisted
-      expect(sp_change_event.aggregate_type).to eq COMPONENT_TYPE::SP
-    end
+  context 'SP specific fields' do
+    it 'errors when component_type is not present' do
+      sp_component.component_type = ''
 
-    it 'has team id assigned to event metadata' do
-      old_team_id = sp_component.team_id
-
-      new_team = create(:team)
-      sp_component.team_id = new_team.id
-
-      expect(new_team.id).not_to eq old_team_id
-      expect(sp_change_event.team_id).to eq new_team.id
+      expect(sp_change_event).to_not be_valid
+      expect(sp_change_event.errors[:component_type]).to eql [t('components.errors.invalid_type')]
     end
   end
 end

@@ -27,4 +27,31 @@ RSpec.describe MsaComponentsController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
+
+  describe "GET #edit" do
+     it "returns http success" do
+       compmgr_stub_auth
+       get :edit, params: { id: msa_component.id }
+       expect(response).to have_http_status(:success)
+     end
+   end
+
+  describe "PATCH #update" do
+    it "returns http success" do
+      compmgr_stub_auth
+
+      patch :update, params: { id: msa_component.id, component: { :name => 'test name', :entity_id => 'https://test.com', :environment => 'staging', :team_id => msa_component.team.id }}
+
+      expect(subject).to redirect_to(msa_components_path)
+    end
+
+    it 'errors when invalid' do
+      compmgr_stub_auth
+
+      patch :update, params: { id: msa_component.id, component: { :name => '', :entity_id => 'https://test.com', :environment => 'staging', :team_id => msa_component.team.id }}
+
+      expect(response).to have_http_status(:success)
+      expect(response).to render_template("edit")
+    end
+  end
 end

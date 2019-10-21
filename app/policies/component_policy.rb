@@ -25,10 +25,10 @@ class ComponentPolicy < ApplicationPolicy
   end
 
   def edit?
-    update?
+    user.permissions.component_management
   end
 
   def update?
-    user.permissions.certificate_management
+    user.permissions.component_management
   end
 end

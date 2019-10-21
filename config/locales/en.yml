@@ -160,7 +160,7 @@ en:
     reset_password_heading: Set your new password
     password_changed: Password changed successfully
     change_password_legend: You can change your password by entering your current password followed by a new password in the space provide and the same new password again in the confirmation space.
-    reset_password_legend: You can reset your password by entering the code you have received via email. 
+    reset_password_legend: You can reset your password by entering the code you have received via email.
     current_password_lbl: "Current password:"
     new_password_lbl: "New password:"
     confirm_password_lbl: "Confirm new password:"
@@ -223,7 +223,6 @@ en:
     heading: All teams
     name: Name
     add_team: Add new team
-    associate_team: Associate team
     new:
       title: New team
       heading: Add a team
@@ -240,12 +239,17 @@ en:
   components:
     title: Manage certificates
     new_sp_title: Create a new SP component
+    edit_sp_title: Edit SP Component
     new_msa_title: Create a new MSA component
+    edit_msa_title: Edit MSA Component
     name: Name
     team: Team
     entity_id: Entity ID
     view_link: View component
+    edit_link: Edit component
+    edit: Edit
     upload: Upload
+    update: Update
     create_new_component: Create new %{type} component
     component_heading: "%{type} Components"
     component_name_field: "%{type} Component name"
@@ -253,6 +257,7 @@ en:
     create_component: Create %{type} component
     environment: Environment
     upload_component: Upload your %{type} component
+    edit_your_component: Edit your %{type} component
     component_entity_id: "%{type} Component Entity ID"
     sign_cert_enabled: Signing Certificates (Enabled)
     sign_cert_disabled: Signing Certificates (Disabled)

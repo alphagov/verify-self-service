@@ -21,7 +21,7 @@
           <td class="govuk-table__cell" scope="row"><%= component.environment %></td>
           <td class="govuk-table__cell">
             <%= link_to t('components.view_link'), sp_component_path(component), class: 'govuk-button' %>
-            <%= link_to t('team.associate_team'), edit_sp_component_path(component), class: 'govuk-button' %>
+            <%= link_to t('components.edit_link'), edit_sp_component_path(component), class: 'govuk-button' %>
           </td>
         </tr>
       <% end %>

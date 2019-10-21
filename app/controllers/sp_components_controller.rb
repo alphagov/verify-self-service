@@ -15,6 +15,12 @@ class SpComponentsController < ApplicationController
     @component = SpComponent.find(params[:id])
   end
 
+  def edit
+    @component = SpComponent.find(params[:id])
+    @hub_environments = Rails.configuration.hub_environments.keys
+    @teams = Team.all
+  end
+
   def create
     @component = NewSpComponentEvent.create(component_params)
     @hub_environments = Rails.configuration.hub_environments.keys
@@ -28,16 +34,19 @@ class SpComponentsController < ApplicationController
   end
 
   def update
-    spcomponent = SpComponent.find_by_id(params[:id])
-    spcomponent.team_id = params.dig(:component, :team_id)
-    event = ChangeComponentEvent.create(
-      component: spcomponent,
-    )
-    unless event.valid?
-      error_message = event.errors.full_messages
-      flash[:notice] = error_message
+    @component = SpComponent.find_by_id(params[:id])
+    @component.assign_attributes(component_params)
+    @event = ChangeComponentEvent.create(component: @component)
+
+    if @event.valid?
+      redirect_to sp_components_path
+    else
+      Rails.logger.info(@event.errors.full_messages)
+      @teams = Team.all
+      @hub_environments = Rails.configuration.hub_environments.keys
+
+      render :edit
     end
-    redirect_to sp_components_path
   end
 
 private
