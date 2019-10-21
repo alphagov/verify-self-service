@@ -18,12 +18,12 @@
       <%=error_message_on(f.object.errors, :component_type) %>
       <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item ">
-          <%= f.radio_button :component_type, COMPONENT_TYPE::VSP, class: 'govuk-radios__input' %>
-          <%= f.label :component_type, COMPONENT_TYPE::VSP_SHORT, class: 'govuk-label govuk-radios__label' %>
+          <%= f.radio_button :vsp, true, class: 'govuk-radios__input', checked: @component.vsp %>
+          <%= f.label :vsp, COMPONENT_TYPE::VSP_SHORT, class: 'govuk-label govuk-radios__label' %>
         </div>
         <div class="govuk-radios__item">
-          <%= f.radio_button :component_type, COMPONENT_TYPE::SP, class: 'govuk-radios__input'  %>
-          <%= f.label :component_type, COMPONENT_TYPE::SP_SHORT, class: 'govuk-label govuk-radios__label' %>
+          <%= f.radio_button :vsp, false, class: 'govuk-radios__input', checked: !@component.vsp %>
+          <%= f.label :vsp, COMPONENT_TYPE::SP_SHORT, class: 'govuk-label govuk-radios__label' %>
         </div>
       </div>
     </div>

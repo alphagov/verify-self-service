@@ -52,7 +52,7 @@ class SpComponentsController < ApplicationController
 private
 
   def component_params
-    params.require(:component).permit(:name, :component_type, :team_id, :environment)
+    params.require(:component).permit(:name, :component_type, :team_id, :environment, :vsp)
   end
 
   def find_teams
