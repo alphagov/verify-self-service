@@ -143,7 +143,8 @@ RSpec.describe 'Sign in', type: :system do
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content t('mfa_enrolment.heading')
-    expect(page).to have_selector(".mfa-qr-code svg")
+    expect(page).to have_content t('mfa_enrolment.description')
+    expect(page).to have_css("#qr-code svg")
 
     fill_in "user[totp_code]", with: "000000"
     click_button(t('login.login'))
@@ -164,7 +165,7 @@ RSpec.describe 'Sign in', type: :system do
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content t('mfa_enrolment.heading')
-    expect(page).to have_selector(".mfa-qr-code svg")
+    expect(page).to have_css("#qr-code svg")
 
     fill_in "user[totp_code]", with: "000000"
     click_button(t('login.login'))
