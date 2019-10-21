@@ -106,6 +106,8 @@ en:
     admin_team: admin team
     errors:
       invalid_user: User does not exist
+    remove_user:
+      title: Remove user
   certificates:
     title: Upload a new certificate
     caption: "%{heading}"

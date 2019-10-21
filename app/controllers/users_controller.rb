@@ -53,6 +53,17 @@ class UsersController < ApplicationController
     render :show, status: :internal_server_error
   end
 
+  def show_remove_user
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+  end
+
+  def remove_user
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+    UserDeletedEvent.create(data: { username: @user.email })
+    delete_user(username: @user.email)
+    redirect_to users_path
+  end
+
   def invite
     if current_user.permissions.admin_management
       @gds_team = Team.find_by_id(params[:team_id])&.name == TEAMS::GDS

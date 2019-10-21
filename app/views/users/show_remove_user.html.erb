@@ -1,0 +1,8 @@
+<%= page_title t('users.remove_user.title') %>
+<%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
+
+<h1 class="govuk-heading-xl">Remove user </h1>
+<p> Are you sure you want to remove <%= @user.full_name %>? <p>
+
+<%= link_to 'Remove', remove_user_path, method: :delete, class: 'govuk-button govuk-button--warning' %>
+
