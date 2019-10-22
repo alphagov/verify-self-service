@@ -1,3 +1,5 @@
+require 'auth/jwks_loader_stub'
+
 class CognitoStubClient
   # TODO Turn stub_user_hash into a JWT token which
   # can be returned by the stub client
@@ -23,15 +25,35 @@ class CognitoStubClient
     }
   end
 
+  def self.stub_user_info_hash(role:, email_domain: "test.com")
+    { username: "00000000-0000-0000-0000-000000000000",
+      user_attributes: [
+        { name: "sub", value: "00000000-0000-0000-0000-000000000000" },
+        { name: "custom:roles", value: role },
+        { name: "email_verified", value: "true" },
+        { name: "given_name", value: "Daenerys" },
+        { name: "family_name", value: "Targaryen" },
+        { name: "email", value: "daenerys.targaryen@#{email_domain}" },
+      ],
+      mfa_options: nil,
+      preferred_mfa_setting: "SOFTWARE_TOKEN_MFA",
+      user_mfa_setting_list: %W[SOFTWARE_TOKEN_MFA] }
+  end
+
   def self.stub_gds_user_hash
     self.stub_user_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN)
   end
 
-  def self.setup_user(user_hash)
+  def self.stub_gds_user_info
+    self.stub_user_info_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN)
+  end
+
+  def self.setup_user(user_hash, user_info)
     SelfService.service(:cognito_client).stub_responses(
       :respond_to_auth_challenge,
       challenge_name: nil, authentication_result: { access_token: 'valid-token', id_token: user_hash_to_jwt(user_hash) },
     )
+    SelfService.service(:cognito_client).stub_responses(:get_user, user_info)
     SelfService.service(:cognito_client).stub_responses(
       :initiate_auth,
       challenge_name: nil,
@@ -49,11 +71,13 @@ class CognitoStubClient
 
   def self.update_user(role:, email_domain: "test.com", groups: %w[test])
     user_hash = stub_user_hash(role: role, email_domain: email_domain, groups: groups)
-    setup_user(user_hash)
+    user_info = stub_user_info_hash(role: role, email_domain: email_domain)
+    setup_user(user_hash, user_info)
   end
 
   def self.setup_stubs
-    setup_user(stub_gds_user_hash)
+    setup_user(stub_gds_user_hash, stub_gds_user_info)
+    SelfService.service(:cognito_client).stub_responses(:associate_software_token, secret_code: "OC7YQ4VYEVRWQGIKSXV25B3MZUV355I5XUKKM4P7KGTO72OTXXUQ")
   end
 
   def self.stub_client

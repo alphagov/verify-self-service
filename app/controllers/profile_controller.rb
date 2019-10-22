@@ -68,18 +68,21 @@ class ProfileController < ApplicationController
   end
 
   def change_mfa
-    @form = MfaEnrolmentForm.new(params[:mfa_enrolment_form])
+    @form = MfaEnrolmentForm.new(params[:mfa_enrolment_form] || {})
     if @form.valid?
       verify_code_for_mfa(access_token: current_user.access_token, code: @form.totp_code)
       flash[:sucess] = t('profile.mfa_success')
       redirect_to profile_path
     else
-      flash[:retry] = true
-      @secret_code = flash.discard[:secret_code]
-      @secret_code_svg = generate_new_qr(secret_code: @secret_code, email: current_user.email)
-      render :show_change_mfa, status: :bad_request
+      mfa_page_erros
     end
   rescue InvalidConfirmationCodeException
+    mfa_page_erros
+  end
+
+private
+
+  def mfa_page_erros
     flash[:retry] = true
     @secret_code = flash.discard[:secret_code]
     @secret_code_svg = generate_new_qr(secret_code: @secret_code, email: current_user.email)

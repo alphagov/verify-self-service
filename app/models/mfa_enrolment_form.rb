@@ -5,7 +5,7 @@ class MfaEnrolmentForm
 
   validates_presence_of :totp_code
 
-  def initialize(hash)
+  def initialize(hash = {})
     @totp_code = hash[:totp_code]
   end
 end

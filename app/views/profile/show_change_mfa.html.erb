@@ -1,6 +1,8 @@
+<%= page_title t('profile.mfa_prefs_title') %>
+
 <%= form_for @form, url: update_mfa_post_path do |f| %>
   <%= render "shared/mfa_enrolment", f:f %>
-  <%= f.submit 'Confirm Code', class: "govuk-button govuk-!-margin-right-1", data: { module: "govuk-button" } %>
-  <% unless flash[:retry].nil? %><%= link_to 'Request new code', request_new_code_path, class: "govuk-button govuk-button--secondary" %><% end %>
+  <%= f.submit t('profile.confirm'), class: "govuk-button govuk-!-margin-right-1", data: { module: "govuk-button" } %>
+  <% unless flash[:retry].nil? %><%= link_to t('profile.new_code'), request_new_code_path, class: "govuk-button govuk-button--secondary" %><% end %>
   <%= link_to t('login.cancel'), profile_path , class: "govuk-button govuk-button--secondary", data: { module: "govuk-button" } %>
 <% end %>
