@@ -9,15 +9,18 @@ RSpec.shared_examples "change component event" do |component_types|
         expect(event.aggregate_type).to eq "#{component_type}_component".camelcase
       end
 
-      it 'has team id assigned to event metadata' do
+      it 'has changed attributes and record them in the data attribute' do
         setup(component_type)
 
-        old_team_id = @component.team_id
+        component = create(:sp_component)
+        old_team_id = component.team_id
         new_team = create(:team)
-        @component.team_id = new_team.id
+        component.assign_attributes({team_id: new_team.id})
+        event = ChangeComponentEvent.create(component: component)
 
         expect(new_team.id).not_to eq old_team_id
-        expect(@event.component.team_id).to eq new_team.id
+        expect(event.data).to eq({team_id: new_team.id}.stringify_keys)
+        expect(event.component.team_id).to eq new_team.id
       end
 
       it 'errors when name is not present' do
