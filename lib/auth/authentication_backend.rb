@@ -105,22 +105,6 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new("Error occurred associating device with error #{e.message}")
   end
 
-  def enrol_totp_device(access_token:, totp_code:)
-    client.verify_software_token(
-      access_token: access_token,
-      user_code: totp_code,
-    )
-    client.set_user_mfa_preference(
-      access_token: access_token,
-      software_token_mfa_settings: {
-        enabled: true,
-        preferred_mfa: true,
-      },
-    )
-  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
-  end
-
   def add_user(email:, given_name:, family_name:, roles:)
     client.admin_create_user(
       temporary_password: create_temporary_password,
@@ -287,7 +271,7 @@ module AuthenticationBackend
     TeamMember.new(user_id: user_id, given_name: given_name, family_name: family_name, email: email, roles: roles, status: status)
   end
 
-  def mfa_setup?(access_token:)
+  def set_mfa_preferences(access_token:)
     client.set_user_mfa_preference(
       software_token_mfa_settings: {
         enabled: true,
@@ -393,7 +377,7 @@ private
       if totp_resp.status == 'SUCCESS'
         challenge_responses.merge!('ANSWER': 'SOFTWARE_TOKEN_MFA')
         resp = send_challenge(session: totp_resp.session, challenge_name: challenge_name, challenge_responses: challenge_responses)
-        mfa_setup?(access_token: resp.authentication_result[:access_token]) unless resp.authentication_result[:access_token].nil?
+        set_mfa_preferences(access_token: resp.authentication_result[:access_token]) unless resp.authentication_result[:access_token].nil?
         resp
       else
         raise AuthenticationBackendException.new("Unknown status returned by cognito when verifying software token.  Status returned: #{totp_resp.status}")

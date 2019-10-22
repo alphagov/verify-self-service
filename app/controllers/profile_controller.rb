@@ -42,7 +42,7 @@ class ProfileController < ApplicationController
   end
 
   def setup_mfa
-    if mfa_setup?(access_token: current_user.access_token)
+    if set_mfa_preferences(access_token: current_user.access_token)
       flash[:notice] = t('profile.mfa_setup_correctly')
       redirect_to profile_path
     else
