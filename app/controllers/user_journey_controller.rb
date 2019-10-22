@@ -41,6 +41,16 @@ class UserJourneyController < ApplicationController
     )
   end
 
+  def disable_certificate
+    event = DisableSigningCertificateEvent.create(certificate: @certificate)
+    if event.errors.empty?
+      redirect_to root_path
+    else
+      flash[:error] = event.errors.full_messages
+      render :view_certificate
+    end
+  end
+
   def submit
     extractor = CertificateExtractor.new(params)
 

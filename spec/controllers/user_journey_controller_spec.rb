@@ -23,7 +23,6 @@ RSpec.describe UserJourneyController, type: :controller do
   end
 
   context 'GET #index' do
-
     it 'should redirect to sign-page when not logged in' do
       get :index
       expect(response).to have_http_status(:redirect)
@@ -87,6 +86,34 @@ RSpec.describe UserJourneyController, type: :controller do
       get :view_certificate, params: params
       expect(flash[:warn]).to match(t('shared.errors.authorisation'))
       expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context 'PATCH #disable_certificate' do
+    it 'should disable the cert and redirect to homepage' do
+      signing_cert_primary = create(:msa_signing_certificate, component: msa_component)
+      signing_cert_secondary = create(:msa_signing_certificate, component: msa_component)
+      certmgr_stub_auth(team)
+      patch :disable_certificate, params: {
+        component_type: msa_component.component_type,
+        component_id: msa_component.id,
+        certificate_id: signing_cert_secondary.id
+      }
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(root_path)
+    end
+
+    it 'should display error message if cannot disable cert' do
+      signing_cert_only_one = create(:msa_signing_certificate, component: msa_component)
+      certmgr_stub_auth(team)
+      patch :disable_certificate, params: {
+        component_type: msa_component.component_type,
+        component_id: msa_component.id,
+        certificate_id: signing_cert_only_one.id
+      }
+      expect(subject).to render_template(:view_certificate)
+      expect(subject).not_to redirect_to(root_path)
+      expect(flash[:error][0]).to include(t('certificates.errors.cannot_disable'))
     end
   end
 

@@ -26,6 +26,7 @@ class GroupPolicy < ApplicationPolicy
   alias_method :submit?, :team_authorized?
   alias_method :confirmation?, :team_authorized?
   alias_method :confirm?, :team_authorized?
+  alias_method :disable_certificate?, :team_authorized?
 
 private
 

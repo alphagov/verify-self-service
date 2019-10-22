@@ -92,22 +92,50 @@ RSpec.describe 'View certificate page', type: :system do
   end
 
   context 'show signing' do
-    it 'specific information when certificate is primary' do
+    it 'specific information when certificate is primary and deploying' do
       first_certificate = create(:msa_signing_certificate, component: create(:msa_component, team_id: user.team))
       create(:msa_signing_certificate, component: first_certificate.component)
       visit root_path
       click_link 'Signing certificate (primary)'
       expect(page).to have_content 'GOV.UK Verify is adding your certificate to its configuration'
       expect(page).to_not have_button('Add new certificate')
+      expect(page).to have_content(t('user_journey.adding_certificate_to_config'))
+      expect(page).to_not have_content(t('user_journey.certificate.stop_using_primary_warning'))
     end
 
-    it 'specific information when certificate is secondary' do
+    it 'specific information when certificate is secondary and deploying' do
       first_certificate = create(:msa_signing_certificate, component: create(:msa_component, team_id: user.team))
       create(:msa_signing_certificate, component: first_certificate.component)
       visit root_path
       click_link 'Signing certificate (secondary)'
       expect(page).to have_content 'Wait for an email from GOV.UK Verify confirming your new signing certificate is in use'
       expect(page).to_not have_button('Add new certificate')
+      expect(page).to have_content(t('user_journey.wait_for_an_email'))
+      expect(page).to_not have_content(t('user_journey.certificate.stop_using_secondary_warning'))
+    end
+
+    it 'specific information when certificate is primary and not deploying' do
+      first_certificate = create(:msa_signing_certificate, component: create(:msa_component, team_id: user.team))
+      create(:msa_signing_certificate, component: first_certificate.component)
+      travel_to Time.now + 11.minutes
+      visit root_path
+      click_link 'Signing certificate (primary)'
+      expect(page).to_not have_content 'GOV.UK Verify is adding your certificate to its configuration'
+      expect(page).to_not have_button('Add new certificate')
+      expect(page).to_not have_content(t('user_journey.adding_certificate_to_config'))
+      expect(page).to have_link(t('user_journey.certificate.stop_using_secondary_link'), href: view_certificate_path(first_certificate.component.component_type, first_certificate.component.id, first_certificate.component.enabled_signing_certificates.second))
+    end
+
+    it 'specific information when certificate is secondary and not deploying' do
+      first_certificate = create(:msa_signing_certificate, component: create(:msa_component, team_id: user.team))
+      create(:msa_signing_certificate, component: first_certificate.component)
+      travel_to Time.now + 11.minutes
+      visit root_path
+      click_link 'Signing certificate (secondary)'
+      expect(page).to_not have_content 'Wait for an email from GOV.UK Verify confirming your new signing certificate is in use'
+      expect(page).to_not have_button('Add new certificate')
+      expect(page).to_not have_content(t('user_journey.wait_for_an_email'))
+      expect(page).to have_content(t('user_journey.certificate.stop_using_secondary_warning'))
     end
   end
 end
