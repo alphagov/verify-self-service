@@ -1,9 +1,6 @@
-require 'rqrcode'
-require 'erb'
-
 class SessionsController < Devise::SessionsController
-  include ERB::Util
-  include AuthenticationBackend
+  include MfaQrHelper
+
   layout 'full_width_layout'
 
   before_action :load_secret_code, only: %i(create new)
@@ -44,17 +41,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def load_secret_code
-    generate_new_qr unless session[:secret_code].nil?
-  end
-
-private
-
-  def generate_new_qr
     @secret_code = session[:secret_code]
-    issuer = "GOV.UK Verify Admin Tool"
-    issuer += " (#{Rails.env})" unless Rails.env.production?
-    encoded_issuer = url_encode(issuer)
-    qrcode = RQRCode::QRCode.new("otpauth://totp/#{encoded_issuer}:#{url_encode(session[:email])}?secret=#{@secret_code}&issuer=#{encoded_issuer}")
-    @secret_code_svg = qrcode.as_svg(module_size: 3)
+    @secret_code_svg = generate_new_qr(secret_code: session[:secret_code], email: session[:email]) unless session[:secret_code].nil?
   end
 end

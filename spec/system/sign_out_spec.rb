@@ -19,7 +19,7 @@ RSpec.describe 'Sign out', type: :system do
   end
 
   scenario 'user signed out after inactiviy' do
-    Rails.configuration.session_expiry_in_minutes = 90.minutes
+    Rails.configuration.session_expiry_in_minutes = 60.minutes
     Rails.configuration.session_inactivity_in_minutes = 15.minutes
     cognito_stubs
 

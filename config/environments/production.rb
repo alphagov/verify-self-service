@@ -33,8 +33,8 @@ Rails.application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
-  # User will be timed out after 90 minutes regardless of activity
-  # config.session_expiry = 90.minutes
+  # User will be timed out after 60 minutes regardless of activity
+  # config.session_expiry = 60.minutes
 
   # User will be timed out after 15 minutes of inactivity
   # config.session_inactivity = 15.minutes
