@@ -22,7 +22,7 @@ RSpec.describe 'MFA Preferences page', type: :system do
       visit profile_update_mfa_get_code_path
       expect(current_path).to eql profile_update_mfa_get_code_path
       expect(page).to have_content secret_code
-      expect(page).to have_selector(".mfa-qr-code svg")
+      expect(page).to have_selector("#qr-code")
 
       fill_in "mfa_enrolment_form[totp_code]", with: "000000"
       click_button(t('profile.confirm'))
