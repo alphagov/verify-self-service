@@ -139,7 +139,11 @@ en:
     password: Password
     change: Change
     mfa: Multi-factor authentication
-    software_token: Multi-Factor Authentication Present
+    new_code: Request new code
+    confirm: Confirm Code
+    mfa_prefs_title: Multi-Factor Authentication Preferences
+    mfa_warning: Once you click continue your existing software token will no longer be valid.
+    software_token: Multi-factor authentication present
     update_token_heading: Update your multi-factor software token
     mfa_success: Your multi-factor authentication configuration have been updated.
     mfa_setup_correctly: Multi-factor authentication setup correctly

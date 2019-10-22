@@ -61,7 +61,7 @@ RSpec.describe ProfileController, type: :controller do
       expect(subject).to redirect_to(profile_path)
     end
 
-    it 'redirects to change mfa' do
+    it 'redirects to change mfa when cognito returns an error' do
       usermgr_stub_auth
       stub_cognito_response(
         method: :set_user_mfa_preference,
@@ -77,6 +77,13 @@ RSpec.describe ProfileController, type: :controller do
     it 'renders the page again if form is not valid' do
       usermgr_stub_auth
       post :change_mfa, params: { mfa_enrolment_form: { 'totp_code': nil } }
+      expect(response).to have_http_status(:bad_request)
+      expect(subject).to render_template(:show_change_mfa)
+    end
+
+    it 'renders the page again if params is missing' do
+      usermgr_stub_auth
+      post :change_mfa
       expect(response).to have_http_status(:bad_request)
       expect(subject).to render_template(:show_change_mfa)
     end
