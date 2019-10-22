@@ -108,6 +108,8 @@ en:
       invalid_user: User does not exist
     remove_user:
       title: Remove user
+      remove_link: Remove this team member
+      confirmation: Are you sure you want to remove %{user}?
   certificates:
     title: Upload a new certificate
     caption: "%{heading}"

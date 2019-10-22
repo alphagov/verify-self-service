@@ -194,6 +194,23 @@ RSpec.describe UsersController, type: :controller do
         expect(subject.instance_variable_get('@form').errors.full_messages_for(:base)).to include(t('users.update_email.errors.generic_error'))
       end
     end
+
+    describe '#show_remove_user' do
+      it 'renders the remove user page' do
+        get :show_remove_user, params: { user_id: user_id }
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show_remove_user)
+      end
+    end
+
+    describe '#remove_user' do
+      it 'removes the user' do
+        stub_cognito_response(method: :admin_delete_user, payload: {} )
+        delete :remove_user, params: { user_id: user_id }
+        expect(UserDeletedEvent.last.data["username"]).to eq('cherry.one@test.com')
+        expect(subject).to redirect_to(users_path)
+      end
+    end
   end
 
   context 'User Manager' do
