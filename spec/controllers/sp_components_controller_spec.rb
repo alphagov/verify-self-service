@@ -54,4 +54,22 @@ RSpec.describe SpComponentsController, type: :controller do
        expect(response).to render_template("edit")
      end
    end
+
+  describe "DELETE #destroy?" do
+    it 'returns http redirect' do
+      compmgr_stub_auth
+      expect(SpComponent.exists?(sp_component.id)).to be true
+      delete :destroy, params: { id: sp_component.id }
+      expect(SpComponent.exists?(sp_component.id)).to be false
+      expect(subject).to redirect_to(admin_path(anchor: 'SpComponent'))
+    end
+
+    it 'returns http redirect with missing component' do
+      compmgr_stub_auth
+      SpComponent.find_by_id(sp_component.id).delete
+      expect(SpComponent.exists?(sp_component.id)).to be false
+      delete :destroy, params: { id: sp_component.id }
+      expect(subject).to redirect_to(admin_path)
+    end
+  end
 end

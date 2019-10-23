@@ -54,4 +54,22 @@ RSpec.describe MsaComponentsController, type: :controller do
       expect(response).to render_template("edit")
     end
   end
+
+  describe "DELETE #destroy?" do
+    it 'returns http redirect' do
+      compmgr_stub_auth
+      expect(MsaComponent.exists?(msa_component.id)).to be true
+      delete :destroy, params: { id: msa_component.id }
+      expect(MsaComponent.exists?(msa_component.id)).to be false
+      expect(subject).to redirect_to(admin_path(anchor: 'MsaComponent'))
+    end
+
+    it 'returns http redirect with missing component' do
+      compmgr_stub_auth
+      MsaComponent.find_by_id(msa_component.id).delete
+      expect(MsaComponent.exists?(msa_component.id)).to be false
+      delete :destroy, params: { id: msa_component.id }
+      expect(subject).to redirect_to(admin_path)
+    end
+  end
 end

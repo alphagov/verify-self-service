@@ -49,6 +49,14 @@ class MsaComponentsController < ApplicationController
     end
   end
 
+  def destroy
+    component = MsaComponent.find_by_id(params[:id])
+    if component.present?
+      DeleteComponentEvent.create(component: component, data: { component_id: component.id, component_name: component.name, component_type: component.type })
+    end
+    redirect_to admin_path(anchor: component&.component_type)
+  end
+
 private
 
   def component_params
