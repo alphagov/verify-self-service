@@ -35,4 +35,8 @@ class ComponentPolicy < ApplicationPolicy
   def destroy?
     user.permissions.component_management
   end
+
+  def associate_service?
+    user.permissions.component_management
+  end
 end

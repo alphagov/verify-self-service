@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get '/admin', to: 'admin#index'
 
   resources :sp_components, path: 'admin/sp-components' do
+    patch 'associate_service'
     resources :services
     resources :certificates do
       member do

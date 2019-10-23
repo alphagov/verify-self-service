@@ -73,6 +73,18 @@
   <%= render "services/list/services_table" %>
 <% end %>
 
-<%= link_to t('components.add_service'),
-    polymorphic_url([:new, @component, :service], component: @component),
-    class: 'govuk-button', data: { module: "govuk-button" } %>
+<%= form_tag(sp_component_associate_service_url(sp_component_id: @component.id), method: "patch") do %>
+  <div class="govuk-form-group">
+    <h3 class="govuk-heading-m"><%= t 'components.service' %></h3>
+    <div class="govuk-form-group">
+      <%= select_tag(
+        :service_id,
+        options_from_collection_for_select(@available_services, "id", "name"),
+        include_blank: 'Select',
+        class: 'govuk-select'
+      ) %>
+    </div>
+
+    <%=submit_tag t('components.add_service', type: COMPONENT_TYPE::SP_SHORT ), class: "govuk-button", data: { module: "govuk-button" } %>
+  </div>
+<% end %>
