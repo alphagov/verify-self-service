@@ -245,6 +245,7 @@ en:
       errored: errored
       failed: Failed to create team
       failed_to_delete: Failed to delete group
+      failed_to_delete_gds: GDS team cannot be deleted
       not_empty: Cannot delete team with members
       blank_name: Enter a team name
       name_not_unique: This team name is already being used, enter a unique one
