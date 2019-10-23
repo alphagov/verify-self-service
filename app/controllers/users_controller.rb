@@ -58,9 +58,13 @@ class UsersController < ApplicationController
   end
 
   def remove_user
-    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
-    UserDeletedEvent.create(data: { username: @user.email })
-    delete_user(username: @user.email)
+    begin
+      @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+      delete_user(username: @user.email)
+      UserDeletedEvent.create(data: { username: @user.email, user_id: params[:user_id], name: @user.given_name })
+    rescue AuthenticationBackend::AuthenticationBackendException
+      flash[:errors] = t('users.remove_user.errors.generic_error')
+    end
     redirect_to users_path
   end
 

@@ -210,6 +210,14 @@ RSpec.describe UsersController, type: :controller do
         expect(UserDeletedEvent.last.data["username"]).to eq('cherry.one@test.com')
         expect(subject).to redirect_to(users_path)
       end
+
+      it 'fails with error when a cognito error is thrown' do
+        stub_cognito_response(method: :admin_delete_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        delete :remove_user, params: { user_id: user_id }
+        expect(response).to have_http_status(:redirect)
+        expect(flash[:errors]).to eq(t 'users.remove_user.errors.generic_error')
+        expect(subject).to redirect_to(users_path)
+      end
     end
   end
 

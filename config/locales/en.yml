@@ -110,6 +110,9 @@ en:
       title: Remove user
       remove_link: Remove this team member
       confirmation: Are you sure you want to remove %{user}?
+      remove_button: Remove
+      errors:
+        generic_error: Something went wrong when removing the user, please try again
   certificates:
     title: Upload a new certificate
     caption: "%{heading}"
