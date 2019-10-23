@@ -6,7 +6,7 @@ class DeleteTeamEvent < AggregatedEvent
   belongs_to_aggregate :team
   after_save :destroy
 
-  validate :delete_cognito_group
+  validate :delete_cognito_group, :not_gds_team
 
   def attributes_to_apply
     {}
@@ -31,5 +31,9 @@ private
 
   def cognito_group_empty?
     get_users_in_group(group_name: team.team_alias).empty?
+  end
+
+  def not_gds_team
+    errors.add(:team, I18n.t('team.errors.failed_to_delete_gds')) if team.team_alias == TEAMS::GDS
   end
 end
