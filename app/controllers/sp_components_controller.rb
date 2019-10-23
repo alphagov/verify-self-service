@@ -49,6 +49,13 @@ class SpComponentsController < ApplicationController
     end
   end
 
+  def destroy
+    component = SpComponent.find_by_id(params[:id])
+    change_event = DeleteComponentEvent.create(component: component, data: { component_id: component.id, component_name: component.name, component_type: component.type })
+    flash[:error] = change_event.errors.full_messages.join(', ') unless change_event.errors.empty?
+    redirect_to admin_path(anchor: 'SpComponent')
+  end
+
 private
 
   def component_params

@@ -31,4 +31,8 @@ class ComponentPolicy < ApplicationPolicy
   def update?
     user.permissions.component_management
   end
+
+  def destroy?
+    user.permissions.component_management
+  end
 end
