@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   get '/admin', to: 'admin#index'
 
   resources :sp_components, path: 'admin/sp-components' do
-    resources :services
+    member do
+      delete 'delete'
+    end
     resources :certificates do
       member do
         patch 'enable'
@@ -21,6 +23,9 @@ Rails.application.routes.draw do
   end
 
   resources :msa_components, path: 'admin/msa-components' do
+    member do
+      delete 'delete'
+    end
     resources :services
     resources :certificates do
       member do
@@ -70,7 +75,7 @@ Rails.application.routes.draw do
   post '/component/:component_type/:component_id/certificate/:certificate_id/check-your-certificate(/:dual_running)', to: 'user_journey#submit', as: 'submit'
   get '/component/:component_type/:component_id/certificate/:certificate_id/confirmation(/:dual_running)', to: 'user_journey#confirmation', as: 'confirmation'
   post '/component/:component_type/:component_id/certificate/:certificate_id/confirmation(/:dual_running)', to: 'user_journey#confirm', as: 'confirm'
-
+  
   get '/cookies', to: 'static#cookies'
   get '/privacy-notice', to: 'static#privacy'
 

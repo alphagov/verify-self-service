@@ -49,6 +49,13 @@ class MsaComponentsController < ApplicationController
     end
   end
 
+  def delete
+    component = MsaComponent.find_by_id(params[:id])
+    change_event = DeleteComponentEvent.create(component: component, data: { component_id: component.id, component_name: component.name })
+    flash[:error] = change_event.errors.full_messages.join(', ') unless change_event.errors.empty?
+    redirect_to admin_path(anchor: 'MsaComponent')
+  end
+
 private
 
   def component_params
