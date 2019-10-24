@@ -18,15 +18,6 @@
     <%= @team_member.email %><%= link_to t('users.show.change_email'), update_user_email_address_path, class: 'govuk-!-padding-left-1 govuk-link--no-visited-state' %>
   </p>
 
-  <ul class="govuk-list">
-    <li>
-      <a href="#" class="govuk-link--no-visited-state">Reset password</a>
-    </li>
-    <li>
-      <a href="#" class="govuk-link--no-visited-state">Reset multi-factor authentication</a>
-    </li>
-  </ul>
-
   <% unless @team_member.gds? %>
     <div class="govuk-form-group">
       <fieldset class="govuk-fieldset">
