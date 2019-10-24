@@ -10,6 +10,14 @@ class UsersControllerPolicy < ApplicationPolicy
     user.permissions.user_management
   end
 
+  def show_remove_user?
+    user.permissions.user_management
+  end
+
+  def remove_user?
+    user.permissions.user_management
+  end
+
   def invite?
     user.permissions.user_management
   end

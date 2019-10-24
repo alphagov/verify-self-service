@@ -97,6 +97,15 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e)
   end
 
+  def delete_user(username:)
+    client.admin_delete_user(
+      username: username,
+      user_pool_id: user_pool_id,
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
+  end
+
   # Returns a secret shared code to associate a TOTP app/device with
   def associate_device(access_token:)
     associate = client.associate_software_token(access_token: access_token)

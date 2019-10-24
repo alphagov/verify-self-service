@@ -2,7 +2,7 @@
 
 <%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
 
-<h1 class="govuk-heading-xl"><%= @team_member.full_name %></h1>
+<h1 class="govuk-heading-l"><%= @team_member.full_name %></h1>
 
 <%= form_for @form, url: update_user_post_path, class: 'govuk-form-group' do |f| %>
 
@@ -42,6 +42,7 @@
 
     <div class="actions">
       <%= f.submit t('users.update.button'), class: "govuk-button", data: { module: "govuk-button" } %>
+      <%= link_to t('users.remove_user.remove_link'), remove_user_path, class: "secondary-link remove-user-link" %></td>
     </div>
   <% end %>
 <% end %>

@@ -1,0 +1,2 @@
+class UserDeletedEvent < Event
+end
