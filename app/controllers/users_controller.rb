@@ -136,16 +136,12 @@ private
     begin
       team = Team.find(params[:team_id])
       invite = setup_user_in_cognito
-    rescue AuthenticationBackend::UsernameExistsException => e
-      flash.now[:errors] = t('users.invite.errors.already_exists')
-    rescue AuthenticationBackend::AuthenticationBackendException => e
-      flash.now[:errors] = t('users.invite.errors.generic_error')
-    end
-
-    begin
       add_user_to_team_in_cognito(invite.user, team) unless team.nil?
+    rescue AuthenticationBackend::UsernameExistsException => e
+      flash[:errors] = t('users.invite.errors.already_exists')
     rescue AuthenticationBackend::AuthenticationBackendException => e
-      flash.now[:errors] = t('users.invite.errors.generic_error')
+      Rails.logger.error = e
+      flash[:errors] = t('users.invite.errors.generic_error')
     end
 
     if e
@@ -158,7 +154,7 @@ private
           roles: @form.roles.join(','),
           team_id: team.id,
           team_name: team.name })
-      flash.now[:success] = t('users.invite.success')
+      flash[:success] = t('users.invite.success')
       redirect_to users_path
     end
   end

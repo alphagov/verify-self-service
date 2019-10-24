@@ -298,6 +298,26 @@ RSpec.describe UsersController, type: :controller do
         expect(flash.now[:success]).not_to be_nil
       end
 
+      it 'doesnt throw syntax error when a user fails to be invited' do
+        Rails.configuration.cognito_user_pool_id = "dummy"
+        stub_cognito_response(method: :admin_create_user, payload: 'AliasExistsException')
+
+        post :new, params: {
+          team_id: @user.team,
+          invite_user_form:
+            {
+              email: 'test@test.test',
+              given_name: 'First Name',
+              family_name: 'Surname',
+              roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
+            }
+        }
+        expect(response).to have_http_status(:bad_request)
+        expect(subject).to render_template(:invite)
+        expect(flash.now[:errors]).to eq(t('users.invite.errors.already_exists'))
+        expect(flash.now[:success]).to be_nil
+      end
+
       it 'fails to invite user when inviting to a foreign team' do
         foreign_team = FactoryBot.create(:team, id: SecureRandom.uuid)
         post :new, params: {
