@@ -6,7 +6,7 @@ class PublishServicesMetadataEvent < Event
   data_attributes :event_id, :services_metadata, :environment
   validates_presence_of :event_id
   before_create :populate_data_attributes
-  after_create :upload
+  before_create :upload
 
   def populate_data_attributes
     @metadata = services_metadata
@@ -22,6 +22,7 @@ class PublishServicesMetadataEvent < Event
     )
   rescue Aws::S3::Errors::ServiceError
     Rails.logger.error("Failed to publish config metadata for event #{event_id}")
+    raise ActiveRecord::Rollback
   end
 
 private

@@ -53,6 +53,7 @@ RSpec.shared_examples "show component page" do |component_type|
     it 'successfully disables a certificate' do
       upload_certs
       certs = component.enabled_signing_certificates
+
       visit polymorphic_url(component)
 
       expect(show_page).to have_enabled_signing_certificate(certs[0])
@@ -61,6 +62,21 @@ RSpec.shared_examples "show component page" do |component_type|
       expect(show_page).to have_selector('h1', text: component.name)
       expect(show_page).to have_disabled_signing_certificate(certs[0])
       expect(show_page).to have_enabled_signing_certificate(certs[1])
+    end
+
+    it 'unsuccessfully publishes disabled certificate' do
+      stub_storage_client_service_error
+
+      upload_certs
+      certs = component.enabled_signing_certificates
+      visit polymorphic_url(component)
+
+      expect(show_page).to have_enabled_signing_certificate(certs[0])
+      show_page.disable_signing_certificate(certs[0])
+
+      expect(show_page).to have_selector('h1', text: component.name)
+      expect(show_page).to have_disabled_signing_certificate(certs[0])
+      expect(page).to have_content(t('certificates.errors.cannot_publish'))
     end
 
     it 'shows list of disabled certificates' do
@@ -110,6 +126,25 @@ RSpec.shared_examples "show component page" do |component_type|
       expect(show_page).to have_encryption_certificate(new_cert)
     end
 
+    it 'unsuccessfully publishes enabled certificate' do
+      stub_storage_client_service_error
+
+      upload_encryption_cert
+
+      new_cert = UploadCertificateEvent.create(
+        usage: CERTIFICATE_USAGE::ENCRYPTION,
+        value: root.generate_encoded_cert(expires_in: 2.months),
+        component: component
+      ).certificate
+      visit polymorphic_url(component)
+      current_cert = component.encryption_certificate
+      expect(show_page).to have_encryption_certificate(current_cert)
+
+      show_page.replace_encryption_certificate(new_cert)
+      expect(show_page).to have_encryption_certificate(new_cert)
+      expect(page).to have_content(t('certificates.errors.cannot_publish'))
+    end
+
     it 'will not replace encryption certificate with an invalid certificate' do
       upload_encryption_cert
       invalid_cert = Certificate.create(
@@ -139,6 +174,26 @@ RSpec.shared_examples "show component page" do |component_type|
 
       expect(show_page).to have_selector('h1', text: component.name)
       expect(show_page).to have_enabled_signing_certificate(disabled_certs[0])
+    end
+
+    it 'unsuccessfully publishes enabled certificate' do
+      stub_storage_client_service_error
+      
+      upload_certs
+      certs = component.enabled_signing_certificates
+      visit polymorphic_url(component)
+
+      certs.each do |certificate|
+        show_page.disable_signing_certificate(certificate)
+      end
+
+      disabled_certs = component.disabled_signing_certificates
+      expect(show_page).to have_disabled_signing_certificate(disabled_certs[0])
+      show_page.enable_signing_certificate(disabled_certs[0])
+
+      expect(show_page).to have_selector('h1', text: component.name)
+      expect(show_page).to have_enabled_signing_certificate(disabled_certs[0])
+      expect(page).to have_content(t('certificates.errors.cannot_publish'))
     end
   end
 

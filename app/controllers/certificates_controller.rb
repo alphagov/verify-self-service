@@ -17,12 +17,14 @@ class CertificatesController < ApplicationController
       component = klass_component(@upload.component_type).find_by_id(@upload.component_id)
 
       if @upload.certificate.encryption?
-        ReplaceEncryptionCertificateEvent.create(
+        replace_event = ReplaceEncryptionCertificateEvent.create(
           component: component,
           encryption_certificate_id: @upload.certificate.id,
         )
+        check_metadata_published(replace_event.id)
       end
 
+      check_metadata_published(@upload.id)
       redirect_to polymorphic_url(component)
     else
       Rails.logger.info(@upload.errors.full_messages)
@@ -36,8 +38,11 @@ class CertificatesController < ApplicationController
     unless event.valid?
       error_message = event.errors.full_messages
       Rails.logger.error(error_message)
-      flash[:notice] = error_message
+      flash[:error] = error_message
     end
+
+    check_metadata_published(event.id)
+
     redirect_to polymorphic_url(
       klass_component(certificate.component_type).find_by_id(certificate.component_id),
     )
@@ -49,8 +54,11 @@ class CertificatesController < ApplicationController
     unless event.valid?
       error_message = event.errors.full_messages
       Rails.logger.error(error_message)
-      flash[:notice] = error_message
+      flash[:error] = error_message
     end
+
+    check_metadata_published(event.id)
+
     redirect_to polymorphic_url(
       klass_component(certificate.component_type).find_by_id(certificate.component_id),
     )
@@ -67,8 +75,11 @@ class CertificatesController < ApplicationController
     )
     unless event.valid?
       error_message = event.errors.full_messages
-      flash[:notice] = error_message
+      flash[:error] = error_message
     end
+
+    check_metadata_published(event.id)
+
     redirect_to polymorphic_url(component)
   end
 

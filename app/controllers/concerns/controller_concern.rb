@@ -9,4 +9,10 @@ module ControllerConcern
     key = component_key(params)
     key.gsub('_id', '').split('_').map(&:titleize).join
   end
+
+  def check_metadata_published(event_id)
+    if PublishServicesMetadataEvent.where("data->>'event_id' = ?", event_id).empty?
+      flash[:notice] = t('certificates.errors.cannot_publish')
+    end
+  end
 end
