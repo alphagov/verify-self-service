@@ -2,7 +2,7 @@
 
 <%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
 
-<h1 class="govuk-heading-xl"><%= @team_member.full_name %></h1>
+<h1 class="govuk-heading-l"><%= @team_member.full_name %></h1>
 
 <%= form_for @form, url: update_user_post_path, class: 'govuk-form-group' do |f| %>
 

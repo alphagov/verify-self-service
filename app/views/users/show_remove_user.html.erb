@@ -1,8 +1,7 @@
 <%= page_title t('users.remove_user.title') %>
 <%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
 
-<h1 class="govuk-heading-xl"><%= t 'users.remove_user.title' %></h1>
-<p><%= t('users.remove_user.confirmation', user: @user.full_name ) %><p>
+<h1 class="govuk-heading-l"><%= t('users.remove_user.confirmation', user: @user.full_name ) %></h1>
 
 <%= link_to t('users.remove_user.remove_button'), remove_user_path, method: :delete, class: 'govuk-button govuk-button--warning', data: { module: "govuk-button" } %>
 

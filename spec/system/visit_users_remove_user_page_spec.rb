@@ -37,7 +37,6 @@ RSpec.describe 'Remove user page', type: :system do
 
     it 'renders the page' do
       visit remove_user_path(user_id: member_user_id)
-      expect(page).to have_content t('users.remove_user.title')
       expect(page).to have_content t('users.remove_user.confirmation', user: member_first_name + ' ' + member_family_name)
       click_link 'Remove'
       expect(current_path).to eql users_path
@@ -53,7 +52,6 @@ RSpec.describe 'Remove user page', type: :system do
 
     it 'shows team member to remove' do
       visit remove_user_path(user_id: member_user_id)
-      expect(page).to have_content t('users.remove_user.title')
       expect(page).to have_content t('users.remove_user.confirmation', user: member_first_name + ' ' + member_family_name)
       click_link 'Remove'
       expect(current_path).to eql users_path
