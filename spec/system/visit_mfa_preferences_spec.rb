@@ -8,8 +8,10 @@ RSpec.describe 'MFA Preferences page', type: :system do
   context 'warning page' do
     it 'shows content' do
       visit profile_update_mfa_path
-
-      expect(page).to have_content t('profile.mfa_warning')
+      
+      expect(page).to have_content t('profile.mfa_warning.heading')
+      expect(page).to have_content t('profile.mfa_warning.body')
+      expect(page).to have_content t('profile.mfa_warning.warning')
       expect(current_path).to eql profile_update_mfa_path
     end
   end
