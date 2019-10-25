@@ -25,6 +25,10 @@ FactoryBot.define do
     component { create(:new_sp_component_event) }
   end
 
+  factory :delete_service_event do
+    service { create(:service) }
+  end
+
   factory :replace_encryption_certificate_event do
     component { create(:sp_component) }
     encryption_certificate_id { create(:sp_encryption_certificate).id }
