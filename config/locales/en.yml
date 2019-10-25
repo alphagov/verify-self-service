@@ -130,6 +130,7 @@ en:
       valid_too_long: expires too far in the future
       not_rsa: is not RSA
       small_key: key size is less than 2048 bits
+      bad_algorithm: is using an upsupported algorithm
       not_signing: signing certificate is needed
       invalid_file_type: is an invalid file type
       cannot_disable: Cannot disable the only signing certificate on a component
