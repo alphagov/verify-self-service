@@ -46,8 +46,20 @@ module X509Validator
   end
 
   def certificate_is_strong(record, x509)
-    return if x509.public_key.params['n'].num_bits >= 2048
+    if x509.public_key.params['n'].num_bits >= 2048
+      hash_algorithm_is_strong(record, x509)
+    else
+      record.errors.add(:certificate, I18n.t('certificates.errors.small_key'))
+    end
+  end
 
-    record.errors.add(:certificate, I18n.t('certificates.errors.small_key'))
+  def valid_algorithms
+    %w[sha256WithRSAEncryption sha512WithRSAEncryption]
+  end
+
+  def hash_algorithm_is_strong(record, x509)
+    return if valid_algorithms.include?(x509.signature_algorithm)
+
+    record.errors.add(:certificate, I18n.t('certificates.errors.bad_algorithm'))
   end
 end

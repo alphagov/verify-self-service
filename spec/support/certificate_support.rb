@@ -3,7 +3,7 @@ module CertificateSupport
     generate_rsa_cert_and_key(args)[0]
   end
 
-  def generate_rsa_cert_and_key(expires_in: 1.year, size: 2048, cn: "GENERATED TEST CERTIFICATE")
+  def generate_rsa_cert_and_key(expires_in: 1.year, size: 2048, cn: "GENERATED TEST CERTIFICATE", digest: nil)
     key = OpenSSL::PKey::RSA.new size
     generate_cert_using_key(key.public_key, expires_in, cn)
   end
