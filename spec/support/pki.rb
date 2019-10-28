@@ -37,7 +37,7 @@ class PKI
     @serial_count += 1
   end
 
-  def sign(cert)
+  def sign(cert, digest: 'SHA256')
     cert.issuer = @root_ca.subject # root CA is the issuer
     cert.serial = take_next_serial
     ef = OpenSSL::X509::ExtensionFactory.new
@@ -47,12 +47,16 @@ class PKI
     cert.add_extension(ef.create_extension("subjectKeyIdentifier", "hash", false))
     ocsp_extension = ef.create_extension("authorityInfoAccess", "OCSP;URI:#{@ocsp_host}")
     cert.add_extension(ocsp_extension)
-    cert.sign(@root_key, OpenSSL::Digest::SHA256.new)
+    cert.sign(@root_key, "OpenSSL::Digest::#{digest}".constantize.new)
     cert
   end
 
   def generate_signed_cert(**args)
-    sign(generate_cert(args))
+    if args[:digest].nil?
+      sign(generate_cert(args))
+    else
+      sign(generate_cert(args), digest: args[:digest])
+    end
   end
 
   def generate_encoded_cert(**args)
@@ -67,11 +71,6 @@ class PKI
   def generate_signed_rsa_cert_and_key(**args)
     cert, key = *generate_rsa_cert_and_key(args)
     [self.sign(cert), key]
-  end
-
-  def generate_signed_cert_and_private_key(**args)
-    cert, key = *generate_cert_and_key(args)
-    [sign(cert), key]
   end
 
   def revoke(certificate)

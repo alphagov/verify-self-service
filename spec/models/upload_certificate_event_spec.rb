@@ -84,6 +84,38 @@ RSpec.describe UploadCertificateEvent, type: :model do
       expect(event.errors[:certificate]).to eql [t('certificates.errors.not_rsa')]
     end
 
+    it 'must accept sha-256' do
+      cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA256")
+
+      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+      expect(event).to be_valid
+      expect(event.errors[:certificate]).to be_empty
+    end
+
+    it 'must accept sha-512' do
+      cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA512")
+
+      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+      expect(event).to be_valid
+      expect(event.errors[:certificate]).to be_empty
+    end
+
+    it 'must not be sha-1' do
+      cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA1")
+
+      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+      expect(event).to_not be_valid
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.bad_algorithm')]
+    end
+
+    it 'must not be sha-384' do
+      cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA384")
+
+      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+      expect(event).to_not be_valid
+      expect(event.errors[:certificate]).to eql [t('certificates.errors.bad_algorithm')]
+    end
+
     it 'must be at least 2048 bits' do
       cert = root.generate_signed_rsa_cert_and_key(size: 1024)[0]
 
