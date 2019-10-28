@@ -54,7 +54,7 @@ module X509Validator
   end
 
   def valid_algorithms
-    %w[sha256WithRSAEncryption sha384WithRSAEncryption sha512WithRSAEncryption]
+    %w[sha256WithRSAEncryption sha384WithRSAEncryption]
   end
 
   def certificate_digest_right(record, x509)
