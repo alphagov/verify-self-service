@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :teams, path: 'admin/teams'
+  resources :services, path: 'admin/services', only: %w(index destroy)
 
   devise_for :users, controllers: { sessions: 'sessions' }
 
@@ -76,7 +77,7 @@ Rails.application.routes.draw do
   get '/cookies', to: 'static#cookies'
   get '/privacy-notice', to: 'static#privacy'
 
-  devise_scope :user do 
+  devise_scope :user do
     get '/users/cancel' => "sessions#cancel", as: :cancel
   end
 end

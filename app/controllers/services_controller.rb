@@ -25,6 +25,15 @@ class ServicesController < ApplicationController
     end
   end
 
+  def destroy
+    service = Service.find_by_id(params[:id])
+    if service.present?
+      DeleteServiceEvent.create(service: service, data: { name: service.name, entity_id: service.entity_id })
+      flash[:success] = t('common.action_successful', name: service.name, action: :deleted)
+    end
+    redirect_to admin_path(anchor: :services)
+  end
+
 private
 
   def component_by_klass_name(params)
