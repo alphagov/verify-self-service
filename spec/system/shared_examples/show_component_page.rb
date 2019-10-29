@@ -64,21 +64,6 @@ RSpec.shared_examples "show component page" do |component_type|
       expect(show_page).to have_enabled_signing_certificate(certs[1])
     end
 
-    it 'unsuccessfully publishes disabled certificate' do
-      stub_storage_client_service_error
-
-      upload_certs
-      certs = component.enabled_signing_certificates
-      visit polymorphic_url(component)
-
-      expect(show_page).to have_enabled_signing_certificate(certs[0])
-      show_page.disable_signing_certificate(certs[0])
-
-      expect(show_page).to have_selector('h1', text: component.name)
-      expect(show_page).to have_disabled_signing_certificate(certs[0])
-      expect(page).to have_content(t('certificates.errors.cannot_publish'))
-    end
-
     it 'shows list of disabled certificates' do
       upload_certs
       certs = component.enabled_signing_certificates
@@ -126,7 +111,7 @@ RSpec.shared_examples "show component page" do |component_type|
       expect(show_page).to have_encryption_certificate(new_cert)
     end
 
-    it 'unsuccessfully publishes enabled certificate' do
+    it 'unsuccessfully publishes certificate' do
       stub_storage_client_service_error
 
       upload_encryption_cert
@@ -174,26 +159,6 @@ RSpec.shared_examples "show component page" do |component_type|
 
       expect(show_page).to have_selector('h1', text: component.name)
       expect(show_page).to have_enabled_signing_certificate(disabled_certs[0])
-    end
-
-    it 'unsuccessfully publishes enabled certificate' do
-      stub_storage_client_service_error
-      
-      upload_certs
-      certs = component.enabled_signing_certificates
-      visit polymorphic_url(component)
-
-      certs.each do |certificate|
-        show_page.disable_signing_certificate(certificate)
-      end
-
-      disabled_certs = component.disabled_signing_certificates
-      expect(show_page).to have_disabled_signing_certificate(disabled_certs[0])
-      show_page.enable_signing_certificate(disabled_certs[0])
-
-      expect(show_page).to have_selector('h1', text: component.name)
-      expect(show_page).to have_enabled_signing_certificate(disabled_certs[0])
-      expect(page).to have_content(t('certificates.errors.cannot_publish'))
     end
   end
 
