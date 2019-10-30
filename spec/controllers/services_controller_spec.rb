@@ -15,7 +15,12 @@ RSpec.describe ServicesController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
-
+  describe "GET #edit" do
+    it "returns http success" do
+      get :edit, params: { sp_component_id: sp_component, id: service.id }
+      expect(response).to have_http_status(:success)
+    end
+  end
   describe 'DELETED #destroy' do
     it 'expects DeleteServiceEvent to be called when deleting service' do
       expect(DeleteServiceEvent).to receive(:create).and_call_original

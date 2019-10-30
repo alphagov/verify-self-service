@@ -23,6 +23,8 @@ class ServicesController < ApplicationController
     end
   end
 
+  def edit; end
+
   def destroy
     service = Service.find_by_id(params[:id])
     if service.present?
