@@ -15,7 +15,7 @@ RSpec.describe 'UploadPage', type: :system do
     visit new_msa_component_certificate_path(component)
     choose 'certificate_usage_signing', allow_label_click: true
     fill_in 'certificate_value', with: test_certificate
-    click_button 'Upload'
+    click_button t('components.upload')
     expect(page).to have_selector "#edit_certificate_#{component.certificates.last.id}"
     expect(current_path).to eql msa_component_path(component)
   end
@@ -26,7 +26,7 @@ RSpec.describe 'UploadPage', type: :system do
     visit new_msa_component_certificate_path(component)
     choose 'certificate_usage_signing', allow_label_click: true
     fill_in 'certificate_value', with: test_certificate
-    click_button 'Upload'
+    click_button t('components.upload')
 
     expect(page).to have_content(t('certificates.errors.cannot_publish'))
     expect(current_path).to eql msa_component_path(component)
