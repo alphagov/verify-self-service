@@ -60,6 +60,21 @@ RSpec.describe 'Check your certificate page', type: :system do
       expect(current_path).to eql confirmation_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
     end
 
+    it 'unsuccessfully publishes certificate' do
+      stub_storage_client_service_error
+
+      sp_component = sp_encryption_certificate.component
+      visit upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+      fill_in 'certificate_value', with: sp_encryption_certificate.value
+      click_button 'Continue'
+      expect(current_path).to eql check_your_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+      expect(page).to have_content COMPONENT_TYPE::SP_LONG
+      expect(page).to have_content 'Encryption'
+      click_button 'Use this certificate'
+      expect(current_path).to eql confirmation_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+      expect(page).to have_content(t('certificates.errors.cannot_publish'))
+    end
+
     it 'sp encryption journey with dual running set to no displays unique content' do
       sp_component = sp_encryption_certificate.component
       visit upload_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id, true)
@@ -96,7 +111,7 @@ RSpec.describe 'Check your certificate page', type: :system do
       click_button 'Use this certificate'
       expect(current_path).to eql confirmation_path(vsp_component.component_type, vsp_component.id, vsp_component.signing_certificates[0])
     end
-  
+
     it 'expect sp component, signing certificate and successfully goes to next page' do
       sp_signing_certificate = create(:sp_signing_certificate, component: create(:sp_component, team_id: user.team))
       sp_component = sp_signing_certificate.component

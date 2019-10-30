@@ -37,7 +37,7 @@ class CognitoStubClient
       ],
       mfa_options: nil,
       preferred_mfa_setting: "SOFTWARE_TOKEN_MFA",
-      user_mfa_setting_list: %W[SOFTWARE_TOKEN_MFA] }
+      user_mfa_setting_list: %w[SOFTWARE_TOKEN_MFA] }
   end
 
   def self.stub_gds_user_hash

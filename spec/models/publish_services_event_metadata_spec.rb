@@ -2,6 +2,8 @@ require 'yaml'
 require 'rails_helper'
 
 RSpec.describe PublishServicesMetadataEvent, type: :model do
+  include StorageSupport
+
   let(:published_at) { Time.now }
   let(:event_id) { 0 }
   let(:component) { MsaComponent.create(name: 'lala', entity_id: 'https//test-entity') }
@@ -40,6 +42,13 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
       ).to receive(:put_object).with(hash_including(bucket: "production-bucket"))
 
       PublishServicesMetadataEvent.create(event_id: 0, environment: 'production')
+    end
+
+    it 'does not persist event if publishing to s3 fails' do
+      stub_storage_client_service_error
+
+      event = PublishServicesMetadataEvent.create(event_id: event_id, environment: 'staging')
+      expect(event).not_to be_persisted
     end
   end
 end

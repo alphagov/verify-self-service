@@ -142,6 +142,7 @@ en:
       not_signing: signing certificate is needed
       invalid_file_type: is an invalid file type
       cannot_disable: Cannot disable the only signing certificate on a component
+      cannot_publish: Certificate failed to publish to GOV.UK Verify
   profile:
     title: Your profile
     item: Item

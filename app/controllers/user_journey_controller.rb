@@ -44,6 +44,7 @@ class UserJourneyController < ApplicationController
   def disable_certificate
     event = DisableSigningCertificateEvent.create(certificate: @certificate)
     if event.errors.empty?
+      check_metadata_published(event.id)
       redirect_to root_path
     else
       flash[:error] = event.errors.full_messages
@@ -88,11 +89,15 @@ class UserJourneyController < ApplicationController
       component = klass_component(@upload.component_type).find_by_id(@upload.component_id)
 
       if @upload.certificate.encryption?
-        ReplaceEncryptionCertificateEvent.create(
+        replace_event = ReplaceEncryptionCertificateEvent.create(
           component: component,
           encryption_certificate_id: @upload.certificate.id,
         )
+
+        check_metadata_published(replace_event.id)
       end
+
+      check_metadata_published(@upload.id)
 
       render :confirmation
     else
