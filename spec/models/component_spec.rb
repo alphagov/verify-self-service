@@ -5,6 +5,8 @@ RSpec.describe Component, type: :model do
     before(:each) do
       SpComponent.destroy_all
       MsaComponent.destroy_all
+      msa_component.services << msa_service
+      sp_component.services << sp_service
     end
 
     let(:published_at) { Time.now }
@@ -14,21 +16,21 @@ RSpec.describe Component, type: :model do
     let!(:upload_signing_certificate_event_1) do
       UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::SIGNING,
-        value: root.generate_encoded_cert(expires_in: 2.months),
+        value: root.generate_encoded_cert(expires_in: 6.months),
         component: msa_component
       )
     end
     let!(:upload_signing_certificate_event_2) do
       UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::SIGNING,
-        value: root.generate_encoded_cert(expires_in: 2.months),
+        value: root.generate_encoded_cert(expires_in: 6.months),
         component: msa_component
       )
     end
     let!(:upload_signing_certificate_event_3) do
       UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::SIGNING,
-        value: root.generate_encoded_cert(expires_in: 2.months),
+        value: root.generate_encoded_cert(expires_in: 6.months),
         component: sp_component
       )
     end
@@ -42,7 +44,7 @@ RSpec.describe Component, type: :model do
     let!(:upload_encryption_event_1) do
       event = UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::ENCRYPTION,
-        value: root.generate_encoded_cert(expires_in: 2.months),
+        value: root.generate_encoded_cert(expires_in: 6.months),
         component: msa_component
       )
       ReplaceEncryptionCertificateEvent.create(
@@ -54,7 +56,7 @@ RSpec.describe Component, type: :model do
     let!(:upload_encryption_event_2) do
       event = UploadCertificateEvent.create(
         usage: CERTIFICATE_USAGE::ENCRYPTION,
-        value: root.generate_encoded_cert(expires_in: 2.months),
+        value: root.generate_encoded_cert(expires_in: 3.months),
         component: sp_component
       )
       ReplaceEncryptionCertificateEvent.create(
@@ -63,12 +65,12 @@ RSpec.describe Component, type: :model do
       )
       event
     end
+
+
     let!(:msa_service) { create(:service, entity_id: 'https://old-and-boring') }
     let!(:sp_service) { create(:service, entity_id: 'https://new-hotness') }
 
     it 'publishes all the components and services metadata correctly' do
-      msa_component.services << msa_service
-      sp_component.services << sp_service
       event_id = Event.first.id
 
       actual_config = Component.to_service_metadata(event_id, published_at)
@@ -126,6 +128,40 @@ RSpec.describe Component, type: :model do
           }
         ]
       }
+    end
+
+    it 'does not include expired signing certs' do
+      expired_signing_cert = {
+        name: upload_signing_certificate_event_4.certificate.x509.subject.to_s,
+        value: upload_signing_certificate_event_4.certificate.value
+      }
+
+      travel_to Time.now + 2.months + 2.days
+
+      event_id = Event.first.id
+      actual_config = Component.to_service_metadata(event_id, published_at)
+      expect(expected_config(event_id)).not_to eq(actual_config)
+      expect(actual_config[:service_providers][0][:signing_certificates].include?(expired_signing_cert)).to eq(false)
+    end
+
+    it 'does not include expired encryption certs' do
+      expired_signing_cert = {
+        name: upload_signing_certificate_event_4.certificate.x509.subject.to_s,
+        value: upload_signing_certificate_event_4.certificate.value
+      }
+
+      expired_encryption_cert = {
+        name: upload_encryption_event_2.certificate.x509.subject.to_s,
+        value: upload_encryption_event_2.certificate.value
+      }
+
+      travel_to Time.now + 4.months
+
+      event_id = Event.first.id
+      actual_config = Component.to_service_metadata(event_id, published_at)
+      expect(expected_config(event_id)).not_to eq(actual_config)
+      expect(actual_config[:service_providers][0][:signing_certificates].include?(expired_signing_cert)).to eq(false)
+      expect(actual_config[:service_providers][0][:encryption_certificate]).to be_nil
     end
   end
 end

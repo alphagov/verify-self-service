@@ -25,7 +25,6 @@ class Component < Aggregate
 
   def self.to_service_metadata(event_id, published_at = Time.now)
     service_providers = SpComponent.all_components_for_metadata
-
     {
       published_at: published_at,
       event_id: event_id,
@@ -57,8 +56,8 @@ class Component < Aggregate
   def to_metadata
     {
       name: name,
-      encryption_certificate: encryption_certificate&.to_metadata,
-      signing_certificates: enabled_signing_certificates.map(&:to_metadata),
+      encryption_certificate: unexpired_encryption_certificate&.to_metadata,
+      signing_certificates: unexpired_enabled_signing_certificates.map(&:to_metadata),
     }.merge(additional_metadata)
   end
 
@@ -74,5 +73,25 @@ class Component < Aggregate
 
   def display
     I18n.t("user_journey.component_name.#{type}")
+  end
+
+private
+
+  def unexpired_encryption_certificate
+    x509 = encryption_certificate&.x509
+    if x509.nil? || x509.not_after < Time.now
+      Rails.logger.error "When publishing the meta data the service '#{name}' has been identified as having an expired encryption certificate."
+      nil
+    else
+      encryption_certificate
+    end
+  end
+
+  def unexpired_enabled_signing_certificates
+    valid_certs = enabled_signing_certificates.reject { |cert| cert.x509.not_after < Time.now }
+    if valid_certs.size < enabled_signing_certificates.size
+      Rails.logger.error "When publishing the meta data the service '#{name}' has been identified as having expired signing certificate(s)."
+    end
+    valid_certs
   end
 end
