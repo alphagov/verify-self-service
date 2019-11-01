@@ -3,7 +3,7 @@
 <h1 class="govuk-heading-l"><%= t 'users.invite.title' %></h1>
 
 <%=error_summary_for(@form&.errors, :form) %>
-<%= form_for @form, url: invite_to_team_post_path, as: :form do |f| %>
+<%= form_for @form, url: invite_to_team_post_path do |f| %>
 
   <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:email) %>">
     <h3 class="govuk-heading-m"><%= f.label :email %></h3>

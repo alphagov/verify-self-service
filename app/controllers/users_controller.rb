@@ -154,7 +154,7 @@ private
     rescue AuthenticationBackend::UsernameExistsException => e
       flash[:errors] = t('users.invite.errors.already_exists')
     rescue AuthenticationBackend::AuthenticationBackendException => e
-      Rails.logger.error = e
+      Rails.logger.error e.message
       flash[:errors] = t('users.invite.errors.generic_error')
     end
 
