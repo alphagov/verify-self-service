@@ -127,7 +127,7 @@ RSpec.describe UsersController, type: :controller do
       it 'fails to invite user when form params missing' do
         post :new, :params => { :team_id => 0 }
         expect(response).to have_http_status(:bad_request)
-        expect(flash.now[:errors]).not_to be_nil
+        expect(assigns(:form).errors).not_to be_nil
       end
     end
 

@@ -64,7 +64,7 @@ en:
       success: An invitation has been sent to the new user's email address
       errors:
         already_exists: This email address is already being used, enter a unique one
-        invalid_email: Enter an email address in the correct format
+        invalid_email: address needs to be in the correct format
         invalid_gds_email: GDS team requires a GDS email address
         invalid_role: "%{role} is not a valid role"
         generic_error: Something went wrong when creating the user, try again
