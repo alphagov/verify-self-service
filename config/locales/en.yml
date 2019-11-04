@@ -35,6 +35,7 @@ en:
     action_successful: "%{name} has been %{action} sucessfully."
     error_blank_name: Name can't be blank
     error_name_not_unique: Name has already been taken
+    error_not_found: "{name} not found."
     gds_full: Government Digital Service
     gds: GDS
   login:
@@ -159,7 +160,7 @@ en:
       title: Reset your multi-factor authentication
       heading: You are about to reset your multi-factor authentication
       body: You will need to use an authentication app to set up a new multi-factor authentication account.
-      warning: Once you select ‘continue’, your existing authentication account will no longer be valid. 
+      warning: Once you select ‘continue’, your existing authentication account will no longer be valid.
     software_token: Multi-factor authentication present
     update_token_heading: Update your multi-factor software token
     mfa_success: Your multi-factor authentication configuration have been updated.

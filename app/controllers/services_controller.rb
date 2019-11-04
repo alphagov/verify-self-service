@@ -30,6 +30,8 @@ class ServicesController < ApplicationController
     if service.present?
       DeleteServiceEvent.create(service: service, data: { name: service.name, entity_id: service.entity_id })
       flash[:success] = t('common.action_successful', name: service.name, action: :deleted)
+    else
+      flash[:error] = t('common.error_not_found', name: Service.model_name.human)
     end
     redirect_to admin_path(anchor: :services)
   end
