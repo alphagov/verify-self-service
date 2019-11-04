@@ -7,23 +7,38 @@ class ServicesController < ApplicationController
   end
 
   def new
-    @service_event = NewServiceEvent.new
+    @service = NewServiceEvent.new
   end
 
   def create
-    @service_event = NewServiceEvent.create(service_params)
-
-    if @service_event.valid? && @service_event.service.valid?
-      flash[:success] = t('common.action_successful', name: @service_event.name, action: :created)
-      redirect_to admin_path(anchor: :services)
+    service_event = NewServiceEvent.create(service_params)
+    @service = service_event.service
+    if @service.valid? && service_event.errors.empty?
+      flash[:success] = t('common.action_successful', name: @service.name, action: :created)
+      redirect_to admin_path(anchor: 'services')
     else
-      @service_event.errors.merge!(@service_event.service.errors)
-      Rails.logger.info(@service_event.errors.full_messages)
+      @service.errors.merge!(service_event.errors)
+      Rails.logger.info(@service.errors.full_messages)
       render :new
     end
   end
 
-  def edit; end
+  def edit
+    @service = Service.find_by_id(params[:id])
+  end
+
+  def update
+    @service = Service.find_by_id(params[:id])
+    @service.assign_attributes(service_params)
+    service_event = ChangeServiceEvent.create(service: @service)
+    if @service.valid? && service_event.errors.empty?
+      redirect_to admin_path(anchor: :services)
+    else
+      @service.errors.merge!(service_event.errors)
+      Rails.logger.info(@service.errors.full_messages)
+      render :edit
+    end
+  end
 
   def destroy
     service = Service.find_by_id(params[:id])

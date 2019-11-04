@@ -1,0 +1,25 @@
+
+<%= page_title t('services.edit.title') %>
+
+<fieldset class="govuk-fieldset">
+  <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h1 class="govuk-fieldset__heading"><%= t 'services.edit.title' %></h1>
+  </legend>
+
+  <%= error_summary_for(@service.errors, :service) %>
+  <%= form_for @service, method: :patch, as: :service do |f| %>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service.errors.key?(:name) %>">
+      <h3 class="govuk-heading-m"><%= t 'services.service_name' %></h3>
+      <%=error_message_on(f.object.errors, :name) %>
+      <%= f.text_field :name, class: 'govuk-input' %>
+    </div>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service.errors.key?(:entity_id) %>">
+      <h3 class="govuk-heading-m"><%= t 'services.service_id' %></h3>
+      <%=error_message_on(f.object.errors, :entity_id) %>
+      <%= f.text_field :entity_id, class: 'govuk-input' %>
+    </div>
+    <div class="govuk-form-group">
+        <%=f.submit t('services.update_service'), class: "govuk-button", data: { module: "govuk-button" } %>
+    </div>
+  <% end %>
+</fieldset>

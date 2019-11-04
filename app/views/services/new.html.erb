@@ -5,14 +5,14 @@
     <h1 class="govuk-fieldset__heading"><%= t 'services.new.heading' %></h1>
   </legend>
 
-  <%= error_summary_for(@service_event&.errors, :service_event) %>
-  <%= form_for @service_event, url: services_path, as: :service do |f| %>
-    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service_event.errors.key?(:name) %>">
+  <%= error_summary_for(@service.errors, :service) %>
+  <%= form_for @service, url: services_path, as: :service do |f| %>
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service.errors.key?(:name) %>">
       <h3 class="govuk-heading-m"><%= t 'services.service_name' %></h3>
       <%=error_message_on(f.object.errors, :name) %>
       <%= f.text_field :name, class: 'govuk-input' %>
     </div>
-    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service_event.errors.key?(:entity_id) %>">
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @service.errors.key?(:entity_id) %>">
       <h3 class="govuk-heading-m"><%= t 'services.service_id' %></h3>
       <%=error_message_on(f.object.errors, :entity_id) %>
       <%= f.text_field :entity_id, class: 'govuk-input' %>
