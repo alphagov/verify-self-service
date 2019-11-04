@@ -341,7 +341,7 @@ en:
     continue: Continue
     'no': 'No'
     'yes': 'Yes'
-    restart_component: Restart the %{component} to apply the changes
+    restart_component: Apply the changes to your configuration
     urls:
       MSA:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
@@ -380,7 +380,8 @@ en:
       have_updated: I have updated my %{component} configuration
       not_support_dual_running: Because your service provider does not support dual running, there will be an outage when you rotate the encryption key.
       update_advice: We recommend you do the update during periods of low traffic for your service.
-      minimise_downtime: You could replace the old encryption key and certificate with the new ones in your service provider configuration now. This will help minimise downtime. Do not apply the changes until your connection is broken.
+      minimise_downtime: Replace the old encryption key and certificate with the new ones in your service provider configuration. This will help minimise downtime.
+      minimise_downtime_warn: Do not apply the changes until your connection is broken.
       must_create_key_and_certificate: You must create a new encryption key and certificate.
     certificate:
       title: Upload or paste your new certificate
