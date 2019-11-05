@@ -13,7 +13,7 @@ class SpComponentsController < ApplicationController
 
   def show
     @component = SpComponent.find(params[:id])
-    @available_services = Service.all.select { |s| s.sp_component_id.blank? }
+    @available_services = Service.where(sp_component_id: [nil, ''])
   end
 
   def edit
@@ -63,7 +63,7 @@ class SpComponentsController < ApplicationController
     service = Service.find_by_id(params[:service_id])
 
     if component_present && service.present?
-      @event = AssignSpComponentToServiceEvent.create(service: Service.find_by_id(params[:service_id]), sp_component_id: params[:sp_component_id])
+      @event = AssignSpComponentToServiceEvent.create(service: service, sp_component_id: params[:sp_component_id])
 
       if @event.valid?
         redirect_to sp_components_path

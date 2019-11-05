@@ -34,5 +34,6 @@ RSpec.describe AssignSpComponentToServiceEvent, type: :model do
     event = AssignSpComponentToServiceEvent.create(service: service, sp_component_id: msa_component.id)
     expect(event).not_to be_valid
     expect(event).not_to be_persisted
+    expect(event.errors.full_messages.first).to eq('Service Wrong component type')
   end
 end

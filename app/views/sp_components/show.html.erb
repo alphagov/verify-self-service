@@ -85,6 +85,8 @@
       ) %>
     </div>
 
-    <%=submit_tag t('components.add_service', type: COMPONENT_TYPE::SP_SHORT ), class: "govuk-button", data: { module: "govuk-button" } %>
+    <div class="govuk-form-group">
+      <%=submit_tag t('components.add_service', type: COMPONENT_TYPE::SP_SHORT ), class: "govuk-button", data: { module: "govuk-button" } %>
+    </div>
   </div>
 <% end %>

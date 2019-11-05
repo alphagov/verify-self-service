@@ -13,8 +13,9 @@ class ServicesController < ApplicationController
   def create
     @service_event = NewServiceEvent.create(service_params)
 
-    if @service_event.valid?
-      redirect_to admin_path
+    if @service_event.valid? && @service_event.service.valid?
+      flash[:success] = t('common.action_successful', name: @service_event.name, action: :created)
+      redirect_to admin_path(anchor: :services)
     else
       @service_event.errors.merge!(@service_event.service.errors)
       Rails.logger.info(@service_event.errors.full_messages)
