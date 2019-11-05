@@ -59,21 +59,21 @@ class SpComponentsController < ApplicationController
   end
 
   def associate_service
-    component_present = SpComponent.exists?(params[:sp_component_id])
+    is_component_present = SpComponent.exists?(params[:sp_component_id])
     service = Service.find_by_id(params[:service_id])
 
-    if component_present && service.present?
+    if is_component_present && service.present?
       @event = AssignSpComponentToServiceEvent.create(service: service, sp_component_id: params[:sp_component_id])
 
       if @event.valid?
-        redirect_to sp_components_path
+        redirect_to sp_component_path(params[:sp_component_id])
       else
         Rails.logger.info(@event.errors.full_messages)
 
         render :show
       end
     else
-      flash[:error] = I18n.t('service.errors.unknown_component') unless component_present
+      flash[:error] = I18n.t('service.errors.unknown_component') unless is_component_present
       flash[:error] = I18n.t('services.errors.unknown_service') unless service.present?
       redirect_to admin_path(anchor: 'SpComponent')
     end

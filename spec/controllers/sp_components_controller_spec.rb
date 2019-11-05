@@ -81,7 +81,7 @@ RSpec.describe SpComponentsController, type: :controller do
 
       patch :associate_service, params: { sp_component_id: sp_component.id, service_id: service.id }
 
-      expect(subject).to redirect_to(sp_components_path)
+      expect(subject).to redirect_to(sp_component_path(sp_component.id))
     end
 
     it "returns to admin page and flashes error when invalid" do
