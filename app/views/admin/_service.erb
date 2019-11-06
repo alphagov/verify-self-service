@@ -1,3 +1,5 @@
+<%= link_to t('services.add_new'), new_service_path, class: "govuk-button" %>
+
 <% services.reverse.each do |service| %>
   <table class="govuk-table">
     <caption class="govuk-table__caption" id="services/<%= service.id %>">Connected Service ID: <%= service.id %></caption>

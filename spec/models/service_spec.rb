@@ -17,4 +17,13 @@ RSpec.describe Service, type: :model do
       expect(service).to be_persisted
     end
   end
+
+  context 'creating a spec without an initial component' do
+    let(:service) { create(:service) }
+
+    it 'should create a new service correctly' do
+      expect(service).to be_valid
+      expect(service).to be_persisted
+    end
+  end
 end

@@ -4,6 +4,8 @@ RSpec.describe SpComponentsController, type: :controller do
   include AuthSupport
 
   let(:sp_component) { create(:sp_component) }
+  let(:msa_component) { create(:msa_component) }
+  let(:service) { create(:service) }
 
   describe "GET #index" do
     it "returns http success" do
@@ -70,6 +72,25 @@ RSpec.describe SpComponentsController, type: :controller do
       expect(SpComponent.exists?(sp_component.id)).to be false
       delete :destroy, params: { id: sp_component.id }
       expect(subject).to redirect_to(admin_path)
+    end
+  end
+
+  describe "PATCH #associate_service" do
+    it "returns http redirect" do
+      compmgr_stub_auth
+
+      patch :associate_service, params: { sp_component_id: sp_component.id, service_id: service.id }
+
+      expect(subject).to redirect_to(sp_component_path(sp_component.id))
+    end
+
+    it "returns to admin page and flashes error when invalid" do
+      compmgr_stub_auth
+
+      patch :associate_service, params: { sp_component_id: msa_component.id, service_id: service.id }
+
+      expect(flash[:error]).to eq(t('service.errors.unknown_component'))
+      expect(subject).to redirect_to(admin_path(anchor: 'SpComponent'))
     end
   end
 end

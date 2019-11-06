@@ -13,6 +13,7 @@ class SpComponentsController < ApplicationController
 
   def show
     @component = SpComponent.find(params[:id])
+    @available_services = Service.where(sp_component_id: [nil, ''])
   end
 
   def edit
@@ -55,6 +56,27 @@ class SpComponentsController < ApplicationController
       DeleteComponentEvent.create(component: component, data: { component_id: component.id, component_name: component.name, component_type: component.type })
     end
     redirect_to admin_path(anchor: component&.component_type)
+  end
+
+  def associate_service
+    is_component_present = SpComponent.exists?(params[:sp_component_id])
+    service = Service.find_by_id(params[:service_id])
+
+    if is_component_present && service.present?
+      @event = AssignSpComponentToServiceEvent.create(service: service, sp_component_id: params[:sp_component_id])
+
+      if @event.valid?
+        redirect_to sp_component_path(params[:sp_component_id])
+      else
+        Rails.logger.info(@event.errors.full_messages)
+
+        render :show
+      end
+    else
+      flash[:error] = I18n.t('service.errors.unknown_component') unless is_component_present
+      flash[:error] = I18n.t('services.errors.unknown_service') unless service.present?
+      redirect_to admin_path(anchor: 'SpComponent')
+    end
   end
 
 private

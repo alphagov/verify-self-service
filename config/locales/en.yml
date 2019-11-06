@@ -159,7 +159,7 @@ en:
       title: Reset your multi-factor authentication
       heading: You are about to reset your multi-factor authentication
       body: You will need to use an authentication app to set up a new multi-factor authentication account.
-      warning: Once you select ‘continue’, your existing authentication account will no longer be valid. 
+      warning: Once you select ‘continue’, your existing authentication account will no longer be valid.
     software_token: Multi-factor authentication present
     update_token_heading: Update your multi-factor software token
     mfa_success: Your multi-factor authentication configuration have been updated.
@@ -237,6 +237,11 @@ en:
     service_name: Service name
     service_id: Service Entity ID
     create_service: Create service
+    errors:
+      wrong_component_type: Wrong component type
+      unknown_component: Invalid component
+      unknown_service: Invalid service
+      missing_entity_id: ID is required for the Service
   shared:
     errors:
       error: Error
@@ -269,6 +274,7 @@ en:
     new_msa_title: Create a new MSA component
     edit_msa_title: Edit MSA Component
     name: Name
+    service: Service
     team: Team
     entity_id: Entity ID
     view_link: View component

@@ -29,6 +29,10 @@ FactoryBot.define do
     service { create(:service) }
   end
 
+  factory :change_service_event do
+    service { create(:service) }
+  end
+
   factory :replace_encryption_certificate_event do
     component { create(:sp_component) }
     encryption_certificate_id { create(:sp_encryption_certificate).id }
@@ -38,5 +42,10 @@ FactoryBot.define do
     usage { CERTIFICATE_USAGE::SIGNING }
     value { PKI.new.generate_encoded_cert(expires_in: 9.months) }
     component { create(:sp_component) }
+  end
+
+  factory :assign_sp_component_to_service_event do
+    service { create(:service) }
+    sp_component_id { create(:sp_component).id }
   end
 end
