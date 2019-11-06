@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :teams, path: 'admin/teams'
-  resources :services, path: 'admin/services', only: %w(index destroy)
+  resources :services, path: 'admin/services', only: %i[index new create destroy]
 
   devise_for :users, controllers: { sessions: 'sessions' }
 
@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get '/admin', to: 'admin#index'
 
   resources :sp_components, path: 'admin/sp-components' do
+    patch 'associate_service'
     resources :services
     resources :certificates do
       member do

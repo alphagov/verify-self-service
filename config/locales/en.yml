@@ -237,6 +237,10 @@ en:
     service_name: Service name
     service_id: Service Entity ID
     create_service: Create service
+    errors:
+      wrong_component_type: Wrong component type
+      unknown_component: Invalid component
+      unknown_service: Invalid service
   shared:
     errors:
       error: Error
@@ -269,6 +273,7 @@ en:
     new_msa_title: Create a new MSA component
     edit_msa_title: Edit MSA Component
     name: Name
+    service: Service
     team: Team
     entity_id: Entity ID
     view_link: View component
