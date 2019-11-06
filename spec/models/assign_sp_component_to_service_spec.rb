@@ -8,23 +8,23 @@ RSpec.describe AssignSpComponentToServiceEvent, type: :model do
   let(:msa_component) { create(:msa_component) }
 
   it 'must be persisted' do
-    event = AssignSpComponentToServiceEvent.create(service: service, sp_component_id: component_1.id)
+    event = create(:assign_sp_component_to_service_event, service: service, sp_component_id: component_1.id)
     expect(event).to be_valid
     expect(event).to be_persisted
   end
 
   it "updates the service's SP component assignment" do
-    AssignSpComponentToServiceEvent.create(service: service, sp_component_id: component_1.id)
+    create(:assign_sp_component_to_service_event, service: service, sp_component_id: component_1.id)
     expect(service.sp_component_id).to eq(component_1.id)
-    AssignSpComponentToServiceEvent.create(service: service, sp_component_id: component_2.id)
+    create(:assign_sp_component_to_service_event,service: service, sp_component_id: component_2.id)
     expect(service.sp_component_id).to eq(component_2.id)
   end
 
   it 'does not error if same component is assigned twice' do
-    AssignSpComponentToServiceEvent.create(service: service, sp_component_id: component_1.id)
+    create(:assign_sp_component_to_service_event, service: service, sp_component_id: component_1.id)
     expect(service.sp_component_id).to eq(component_1.id)
 
-    event = AssignSpComponentToServiceEvent.create(service: service, sp_component_id: component_1.id)
+    event = create(:assign_sp_component_to_service_event, service: service, sp_component_id: component_1.id)
     expect(event).to be_valid
     expect(event).to be_persisted
     expect(service.sp_component_id).to eq(component_1.id)

@@ -39,4 +39,9 @@ FactoryBot.define do
     value { PKI.new.generate_encoded_cert(expires_in: 9.months) }
     component { create(:sp_component) }
   end
+
+  factory :assign_sp_component_to_service_event do
+    service { create(:service) }
+    sp_component_id { create(:sp_component).id }
+  end
 end
