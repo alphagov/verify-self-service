@@ -13,6 +13,7 @@ module Healthcheck
               key: FILES::HEALTHCHECK,
               body: '',
               server_side_encryption: 'AES256',
+              acl: 'bucket-owner-full-control',
             )
           end
         rescue Aws::S3::Errors::ServiceError
