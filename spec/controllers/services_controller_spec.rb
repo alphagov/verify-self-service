@@ -15,7 +15,32 @@ RSpec.describe ServicesController, type: :controller do
       expect(response).to have_http_status(:success)
     end
   end
-
+  describe "GET #edit" do
+    it "returns http success" do
+      get :edit, params: { id: service.id }
+      expect(response).to have_http_status(:success)
+    end
+  end
+  describe "GET #update" do
+    let(:entity_id) { "http://#{SecureRandom.uuid}.com" }
+    it 'expects ChangeServiceEvent to be called changing service details'  do
+      expect(ChangeServiceEvent).to receive(:create).and_call_original
+      patch :update, params: {
+        id: service.id,
+        service: { name: SecureRandom.alphanumeric, entity_id: entity_id }
+      }
+      expect(subject).to redirect_to admin_path(anchor: :services)
+      changed_service = ChangeServiceEvent.last.service
+      expect(changed_service.entity_id).to eq entity_id
+    end
+    it 'errors when supplied with invalid input' do
+      patch :update, params: {
+        id: service.id, service: { name: '', entity_id: entity_id}
+      }
+      expect(response).to have_http_status(:success)
+      expect(response).to render_template(:edit)
+    end
+  end
   describe 'DELETED #destroy' do
     context 'when service is present' do
       it 'expects DeleteServiceEvent to be called when deleting service' do

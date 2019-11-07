@@ -31,6 +31,7 @@
       <tr class="govuk-table__row">
         <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2">
         <%= link_to 'Manage', '', class: 'govuk-button', data: { module: 'govuk-button' } %>
+        <%= link_to 'Edit', edit_service_path(service), class: 'govuk-button', data: { module: 'govuk-button' } %>
         <%= link_to 'Delete', service_path(service), method: :delete, data: { confirm: 'Are you sure?' }, class: 'govuk-button govuk-button--warning' %>
         </td>
       </tr>

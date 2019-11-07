@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :teams, path: 'admin/teams'
-  resources :services, path: 'admin/services', only: %i[index new create destroy]
+  resources :services, path: 'admin/services'
 
   devise_for :users, controllers: { sessions: 'sessions' }
 

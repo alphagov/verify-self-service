@@ -235,13 +235,17 @@ en:
     new:
       title: Create a new service
       heading: Add a service
+    edit:
+      title: Edit service
     service_name: Service name
     service_id: Service Entity ID
     create_service: Create service
+    update_service: Update service
     errors:
       wrong_component_type: Wrong component type
       unknown_component: Invalid component
       unknown_service: Invalid service
+      missing_entity_id: ID is required for the Service
   shared:
     errors:
       error: Error
