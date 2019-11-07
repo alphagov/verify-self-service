@@ -6,7 +6,8 @@
        <%= t("user_journey.component_long_name.#{component.type}") %>
         <span class="component-supporting-text">
           <%= t 'user_journey.used_by' %>
-        </span>
+            <span class="govuk-body"><%= component.services.map(&:name).join(', ') %></span>     
+        </span>     
       </caption>
       <thead class="govuk-table__head govuk-visually-hidden">
         <tr class="govuk-table__row">
