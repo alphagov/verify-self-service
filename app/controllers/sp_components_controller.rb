@@ -13,7 +13,7 @@ class SpComponentsController < ApplicationController
 
   def show
     @component = SpComponent.find(params[:id])
-    @available_services = Service.where(sp_component_id: [nil, ''])
+    @available_services = Service.sp_available
   end
 
   def edit
@@ -73,8 +73,7 @@ class SpComponentsController < ApplicationController
         render :show
       end
     else
-      flash[:error] = I18n.t('service.errors.unknown_component') unless is_component_present
-      flash[:error] = I18n.t('services.errors.unknown_service') unless service.present?
+      flash[:error] = I18n.t('service.errors.unknown_component_or_service') unless is_component_present && service.present?
       redirect_to admin_path(anchor: 'SpComponent')
     end
   end

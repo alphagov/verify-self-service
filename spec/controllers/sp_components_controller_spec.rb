@@ -89,7 +89,7 @@ RSpec.describe SpComponentsController, type: :controller do
 
       patch :associate_service, params: { sp_component_id: msa_component.id, service_id: service.id }
 
-      expect(flash[:error]).to eq(t('service.errors.unknown_component'))
+      expect(flash[:error]).to eq(t('service.errors.unknown_component_or_service'))
       expect(subject).to redirect_to(admin_path(anchor: 'SpComponent'))
     end
   end
