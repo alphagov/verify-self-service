@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   end
 
   resources :msa_components, path: 'admin/msa-components' do
+    patch 'associate_service'
     resources :services
     resources :certificates do
       member do
