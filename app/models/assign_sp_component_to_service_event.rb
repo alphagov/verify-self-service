@@ -1,7 +1,8 @@
 class AssignSpComponentToServiceEvent < AggregatedEvent
   belongs_to_aggregate :service
-  data_attributes :sp_component_id
+  data_attributes :sp_component_id, :name
   validate :component_is_correct_type?
+  after_save TriggerMetadataEventCallback.publish
 
   def attributes_to_apply
     {

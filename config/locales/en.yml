@@ -243,8 +243,7 @@ en:
     update_service: Update service
     errors:
       wrong_component_type: Wrong component type
-      unknown_component: Invalid component
-      unknown_service: Invalid service
+      unknown_component_or_service: Invalid component or service
       missing_entity_id: ID is required for the Service
   shared:
     errors:

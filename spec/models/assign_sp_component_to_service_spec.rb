@@ -36,4 +36,16 @@ RSpec.describe AssignSpComponentToServiceEvent, type: :model do
     expect(event).not_to be_persisted
     expect(event.errors.full_messages.first).to eq('Service Wrong component type')
   end
+
+  context '#trigger_publish_event' do
+    it 'when component is assigned to service is enabled' do
+      event = create(:assign_sp_component_to_service_event, service: service, sp_component_id: component_1.id)
+
+      resulting_event = PublishServicesMetadataEvent.all.select do |evt|
+        evt.event_id == event.id
+      end.first
+
+      expect(resulting_event).to be_present
+    end
+  end
 end
