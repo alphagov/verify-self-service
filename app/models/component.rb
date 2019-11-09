@@ -23,19 +23,20 @@ class Component < Aggregate
 
   belongs_to :team
 
-  def self.to_service_metadata(event_id, published_at = Time.now)
-    service_providers = SpComponent.all_components_for_metadata
+  def self.to_service_metadata(event_id, environment, published_at = Time.now)
+    service_providers = SpComponent.all_components_for_metadata(environment)
     {
       published_at: published_at,
       event_id: event_id,
       connected_services: service_providers.map(&:services_to_metadata).flatten,
-      matching_service_adapters: MsaComponent.all_components_for_metadata.map(&:to_metadata),
+      matching_service_adapters: MsaComponent.all_components_for_metadata(environment).map(&:to_metadata),
       service_providers: service_providers.map(&:to_metadata),
     }
   end
 
-  def self.all_components_for_metadata
-    self.includes(:services)
+  def self.all_components_for_metadata(environment)
+    self.where(environment: environment)
+        .includes(:services)
         .includes(:enabled_signing_certificates)
         .includes(:encryption_certificate)
   end

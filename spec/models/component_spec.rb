@@ -70,11 +70,18 @@ RSpec.describe Component, type: :model do
     let!(:msa_service) { create(:service, entity_id: 'https://old-and-boring') }
     let!(:sp_service) { create(:service, entity_id: 'https://new-hotness') }
 
-    it 'publishes all the components and services metadata correctly' do
+    it 'publishes all the components and services metadata correctly for environment' do
       event_id = Event.first.id
 
-      actual_config = Component.to_service_metadata(event_id, published_at)
+      actual_config = Component.to_service_metadata(event_id, 'staging', published_at)
       expect(expected_config(event_id)).to eq(actual_config)
+    end
+
+    it 'publishes no components if no components with a given environment' do
+      event_id = Event.first.id
+
+      actual_config = Component.to_service_metadata(event_id, 'integration', published_at)
+      expect(empty_config(event_id)).to eq(actual_config)
     end
 
     def expected_config(event_id)
@@ -130,6 +137,16 @@ RSpec.describe Component, type: :model do
       }
     end
 
+    def empty_config(event_id)
+      {
+        published_at: published_at,
+        event_id: event_id,
+        connected_services: [],
+        matching_service_adapters: [],
+        service_providers: []
+      }
+    end
+
     it 'does not include expired signing certs' do
       expired_signing_cert = {
         name: upload_signing_certificate_event_4.certificate.x509.subject.to_s,
@@ -139,7 +156,7 @@ RSpec.describe Component, type: :model do
       travel_to Time.now + 2.months + 2.days
 
       event_id = Event.first.id
-      actual_config = Component.to_service_metadata(event_id, published_at)
+      actual_config = Component.to_service_metadata(event_id, 'staging', published_at)
       expect(expected_config(event_id)).not_to eq(actual_config)
       expect(actual_config[:service_providers][0][:signing_certificates].include?(expired_signing_cert)).to eq(false)
     end
@@ -158,7 +175,7 @@ RSpec.describe Component, type: :model do
       travel_to Time.now + 4.months
 
       event_id = Event.first.id
-      actual_config = Component.to_service_metadata(event_id, published_at)
+      actual_config = Component.to_service_metadata(event_id, 'staging', published_at)
       expect(expected_config(event_id)).not_to eq(actual_config)
       expect(actual_config[:service_providers][0][:signing_certificates].include?(expired_signing_cert)).to eq(false)
       expect(actual_config[:service_providers][0][:encryption_certificate]).to be_nil
