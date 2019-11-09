@@ -37,7 +37,13 @@
         Events
       </a>
     </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#publish">
+        Publish
+      </a>
+    </li>
   </ul>
+
   <section class="govuk-tabs__panel" id="SpComponent">
     <h2 class="govuk-heading-l">SP components</h2>
     <%= render "admin/sp_component", components: @sp_components %>
@@ -66,5 +72,10 @@
   <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="events">
     <h2 class="govuk-heading-l">Events</h2>
     <%= link_to t('layout.application.events'), admin_events_path %>
+  </section>
+
+  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="publish">
+    <h2 class="govuk-heading-l">Publish metadata</h2>
+    <%= render "admin/publish" %>
   </section>
 </div>
