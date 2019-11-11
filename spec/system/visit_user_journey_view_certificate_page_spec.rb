@@ -23,7 +23,7 @@ RSpec.describe 'View certificate page', type: :system do
     )
   end
 
-  it 'displays which services the certicificate is used by' do
+  it 'displays which services the certificate is used by' do
     sp_component = sp_encryption_certificate.component
     service = create(:service, sp_component: sp_component, name: 'test-service')
     visit view_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
