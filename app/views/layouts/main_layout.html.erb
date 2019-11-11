@@ -6,9 +6,11 @@
         <li class="<%= 'active' if 'user_journey'.include?(params[:controller])  %>">
           <%= link_to t('components.title'), root_path, class: "govuk-link--no-visited-state" %>
         </li>
-        <li class="<%= 'active' if 'users'.include?(params[:controller]) %>">
-          <%= link_to t('layout.main_layout.team_members'), users_path, class: "govuk-link--no-visited-state" %>
-        </li>
+        <% if current_user.roles.include?(ROLE::USER_MANAGER) %>
+          <li class="<%= 'active' if 'users'.include?(params[:controller]) %>">
+            <%= link_to t('layout.main_layout.team_members'), users_path, class: "govuk-link--no-visited-state" %>
+          </li>
+        <% end %>
       </ul>
     </div>
     </div>
