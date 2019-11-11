@@ -317,7 +317,7 @@ en:
       MSA: MSA
       VSP: VSP
       SP: service provider
-    used_by: used by
+    used_by: "used by %{services}"
     certificate: Certificate
     status: Status
     missing: MISSING

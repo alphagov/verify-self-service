@@ -1,12 +1,11 @@
 <% if components.present? %>
   <% components.reverse.each do |component| %>
-    <table class="govuk-table">
+    <table class="govuk-table" id="<%= component.id %>">
       <h2 class="govuk-heading-m"><%= component.environment.capitalize %></h2>
       <caption class="govuk-table__caption govuk-!-margin-bottom-1">
        <%= t("user_journey.component_long_name.#{component.type}") %>
-        <span class="component-supporting-text">
-          <%= t 'user_journey.used_by' %>
-            <span class="govuk-body"><%= component.services.map(&:name).join(', ') %></span>     
+        <span class="govuk-body">
+          <%= t 'user_journey.used_by', services: component.services.map(&:name).join(', ') %>     
         </span>     
       </caption>
       <thead class="govuk-table__head govuk-visually-hidden">
