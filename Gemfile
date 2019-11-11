@@ -63,6 +63,7 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'rspec-rails', '>= 4.0.0.beta2'
   gem 'selenium-webdriver'
+  gem 'rotp'
 end
 
 group :development do

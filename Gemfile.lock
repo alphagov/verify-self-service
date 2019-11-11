@@ -227,6 +227,8 @@ GEM
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    rotp (5.1.0)
+      addressable (~> 2.5)
     rqrcode (1.1.1)
       chunky_png (~> 1.0)
       rqrcode_core (~> 0.1.0)
@@ -337,6 +339,7 @@ DEPENDENCIES
   rails (~> 6.0.0)
   rails-controller-testing
   request_store
+  rotp
   rqrcode
   rspec-rails (>= 4.0.0.beta2)
   rubocop
