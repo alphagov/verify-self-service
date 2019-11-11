@@ -31,7 +31,9 @@ RSpec.describe 'IndexPage', type: :system do
     msa_component = msa_encryption_certificate.component
     visit root_path
     expect(page).to have_content 'Manage certificates'
-    click_link('Encryption certificate', match: :first)
+    within("##{msa_component.id}") do 
+      click_link('Encryption certificate')
+    end
     expect(current_path).to eql view_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
   end
 
