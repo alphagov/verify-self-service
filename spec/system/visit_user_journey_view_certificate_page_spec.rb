@@ -27,7 +27,7 @@ RSpec.describe 'View certificate page', type: :system do
     sp_component = sp_encryption_certificate.component
     service = create(:service, sp_component: sp_component, name: 'test-service')
     visit view_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
-    component_table = page.find("##{service.sp_component.id}")
+    component_table = page.find("#list-of-services")
     expect(component_table).to have_content 'test-service'
   end
 
