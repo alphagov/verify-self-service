@@ -35,7 +35,7 @@ class CertificatesController < ApplicationController
   def enable
     certificate = Certificate.find_by_id(params[:id])
     event = EnableSigningCertificateEvent.create(certificate: certificate)
-    unless event.valid?
+    unless event.errors.empty?
       error_message = event.errors.full_messages
       Rails.logger.error(error_message)
       flash[:error] = error_message
@@ -51,7 +51,7 @@ class CertificatesController < ApplicationController
   def disable
     certificate = Certificate.find_by_id(params[:id])
     event = DisableSigningCertificateEvent.create(certificate: certificate)
-    unless event.valid?
+    unless event.errors.empty?
       error_message = event.errors.full_messages
       Rails.logger.error(error_message)
       flash[:error] = error_message
