@@ -112,4 +112,11 @@ RSpec.describe 'IndexPage', type: :system do
     visit root_path
     expect(page).to have_content '2 certificates are expiring soon.'
   end
+
+  it 'does not show the Team Members link if user does not have permissions' do
+    login_certificate_manager_user
+    visit root_path
+    expect(page).not_to have_link t('layout.main_layout.team_members')
+    expect(page).to have_link t('components.title')
+  end
 end
