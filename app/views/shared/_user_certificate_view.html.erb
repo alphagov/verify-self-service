@@ -2,7 +2,7 @@
   <% if full_details %>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key"><%= t 'user_journey.certificate.used_by' %></dt>
-      <dd class="govuk-summary-list__value"><%= certificate.component.services.map(&:name).join(', ') %></dd>
+      <dd class="govuk-summary-list__value" id="<%= certificate.component.id %>"><%= certificate.component.services.map(&:name).join(', ') %></dd>
     </div>
     <div class="govuk-summary-list__row">
       <dt class="govuk-summary-list__key"><%= t 'components.environment' %></dt>
