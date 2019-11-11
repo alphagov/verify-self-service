@@ -23,6 +23,14 @@ RSpec.describe 'View certificate page', type: :system do
     )
   end
 
+  it 'displays which services the certificate is used by' do
+    sp_component = sp_encryption_certificate.component
+    service = create(:service, sp_component: sp_component, name: 'test-service')
+    visit view_certificate_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+    component_table = page.find("#list-of-services")
+    expect(component_table).to have_content 'test-service'
+  end
+
   context 'shows existing msa' do
     it 'encryption certificate information and navigates to next page if not being deployed' do
       msa_component = msa_encryption_certificate.component

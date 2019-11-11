@@ -35,6 +35,13 @@ RSpec.describe 'IndexPage', type: :system do
     expect(current_path).to eql view_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
   end
 
+  it 'displays which services a component is used by' do
+    service = create(:service, sp_component: create(:sp_component), name: 'test-service')
+    visit root_path
+    component_table = page.find("##{service.sp_component.id}")
+    expect(component_table).to have_content 'test-service'
+  end
+  
   it 'shows the primary signing certificate is deploying and secondary in use when deploying' do
     old_signing_certificate = create(:msa_signing_certificate, updated_at: 15.minutes.ago)
     new_signing_certificate = create(:msa_signing_certificate, component: old_signing_certificate.component)
