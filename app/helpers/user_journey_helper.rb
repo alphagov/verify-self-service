@@ -19,7 +19,7 @@ module UserJourneyHelper
     if certificate.nil?
       "MISSING"
     elsif certificate.expires_soon?
-      "EXPIRES IN #{(certificate.x509.not_after.to_date - Time.now.to_date).to_i} DAYS"
+      "EXPIRES IN #{certificate.days_left} DAYS"
     elsif certificate.deploying?
       "DEPLOYING"
     else
@@ -27,7 +27,7 @@ module UserJourneyHelper
     end
   end
 
-  def certificate_expiry_count(msa_components, sp_components)
-    (msa_components + sp_components).map(&:certificates).flatten.select(&:expires_soon?).count
+  def certificate_expiry_count(components)
+    components.map(&:current_certificates).flatten.select(&:expires_soon?).count
   end
 end

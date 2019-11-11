@@ -13,12 +13,11 @@ class UserJourneyController < ApplicationController
 
   def index
     if current_user.permissions.component_management
-      @sp_components = SpComponent.all
-      @msa_components = MsaComponent.all
+      @components = SpComponent.all + MsaComponent.all
     else
-      @sp_components = SpComponent.where(team_id: current_user.team)
-      @msa_components = MsaComponent.where(team_id: current_user.team)
+      @components = SpComponent.for_user(current_user) + MsaComponent.for_user(current_user)
     end
+    @total_certificates_expiring_soon = helpers.certificate_expiry_count(@components)
   end
 
   def is_dual_running
