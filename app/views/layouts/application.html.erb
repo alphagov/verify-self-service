@@ -42,12 +42,12 @@
                 <%= t 'layout.application.logo_text' %>
               </span>
             </span>
+            <span class="govuk-header__product-name">
+              <%= t 'layout.application.verify' %>
+            </span>
           </a>
         </div>
         <div class="govuk-header__content">
-
-          <%= link_to t('layout.application.service_name'), root_path, class: "govuk-header__link govuk-header__link--service-name" %>
-
           <button type="button" role="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation" data-module="govuk-button"><%= t 'layout.application.menu' %></button>
           <% if user_signed_in? %>
             <nav>
@@ -57,6 +57,12 @@
                     <%= link_to t('layout.application.admin') , admin_path, class: "govuk-header__link" %>
                   </li>
                 <% end %>
+                <li class="govuk-header__navigation-item">
+                  <%= link_to t('layout.application.documentation'), t('user_journey.urls.rotation_documentation'), class: "govuk-header__link" %>
+                </li>
+                <li class="govuk-header__navigation-item">
+                  <%= link_to t('layout.application.support'), t('user_journey.urls.support'), class: "govuk-header__link" %>
+                </li>
                 <li class="govuk-header__navigation-item">
                   <%= link_to t('layout.application.profile'), profile_path, class: "govuk-header__link" %>
                 </li>
