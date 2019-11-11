@@ -48,4 +48,9 @@ FactoryBot.define do
     service { create(:service) }
     sp_component_id { create(:sp_component).id }
   end
+
+  factory :assign_msa_component_to_service_event do
+    service { create(:service) }
+    msa_component_id { create(:msa_component).id }
+  end
 end

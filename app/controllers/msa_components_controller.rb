@@ -19,6 +19,7 @@ class MsaComponentsController < ApplicationController
 
   def show
     @component = MsaComponent.find_by_id(params[:id])
+    @available_services = Service.msa_available
   end
 
   def create
@@ -55,6 +56,26 @@ class MsaComponentsController < ApplicationController
       DeleteComponentEvent.create(component: component, data: { component_id: component.id, component_name: component.name, component_type: component.type })
     end
     redirect_to admin_path(anchor: component&.component_type)
+  end
+
+  def associate_service
+    is_component_present = MsaComponent.exists?(params[:msa_component_id])
+    service = Service.find_by_id(params[:service_id])
+
+    if is_component_present && service.present?
+      @event = AssignMsaComponentToServiceEvent.create(service: service, msa_component_id: params[:msa_component_id])
+
+      if @event.valid?
+        redirect_to msa_component_path(params[:msa_component_id])
+      else
+        Rails.logger.info(@event.errors.full_messages)
+
+        render :show
+      end
+    else
+      flash[:error] = I18n.t('service.errors.unknown_component_or_service') unless is_component_present && service.present?
+      redirect_to admin_path(anchor: 'MsaComponent')
+    end
   end
 
 private
