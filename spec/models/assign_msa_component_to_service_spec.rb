@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AssignSpComponentToServiceEvent, type: :model do
+RSpec.describe AssignMsaComponentToServiceEvent, type: :model do
 
   let(:service) { create(:service) }
   let(:component_1) { create(:msa_component) }
