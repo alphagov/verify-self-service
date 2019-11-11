@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get '/healthcheck', to: 'healthcheck#index'
 
   get '/admin', to: 'admin#index'
+  get '/admin/publish-metadata/:environment', to: 'admin#publish_metadata', as: :publish_metadata
 
   resources :sp_components, path: 'admin/sp-components' do
     patch 'associate_service'
