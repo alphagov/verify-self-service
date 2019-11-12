@@ -119,7 +119,7 @@ RSpec.describe 'Check your certificate page', type: :system do
       fill_in 'certificate_value', with: sp_signing_certificate.value
       click_button 'Continue'
       expect(current_path).to eql check_your_certificate_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
-      expect(page).to have_content COMPONENT_TYPE::SP_LONG
+      expect(page).to have_content t('user_journey.certificate.signed_mesages_from_your_service')
       expect(page).to have_content 'Signing'
       click_button 'Use this certificate'
       expect(current_path).to eql confirmation_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
