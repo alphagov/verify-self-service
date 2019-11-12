@@ -9,5 +9,4 @@
 <p><%= t('user_journey.maintain_connection') %></p>
 <p><%= t('user_journey.connection_broken_or_compromised_guidance') %> <%= link_to t('user_journey.connection_broken_or_compromised_link'), t('user_journey.urls.connection_broken_or_compromised') %>.</p>
 
-<%= render "shared/user_component_certificates", components: @msa_components, name: COMPONENT_TYPE::MSA %>
-<%= render "shared/user_component_certificates", components: @sp_components, name: COMPONENT_TYPE::SP %> 
+<%= render "shared/user_component_certificates", components: @msa_components + @sp_components %>
