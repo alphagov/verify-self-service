@@ -1,4 +1,5 @@
 class ProfileController < ApplicationController
+  layout "two_thirds_layout", except: :show
   include AuthenticationBackend
   include MfaQrHelper
 

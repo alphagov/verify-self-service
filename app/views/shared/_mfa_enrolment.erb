@@ -14,12 +14,12 @@
         </summary>
         <div class="govuk-details__text">
           <%= t('mfa_enrolment.no_qr_instructions') %>
-          <pre><%= @secret_code %></pre>
+          <p><%= @secret_code %></p>
         </div>
       </details>
     </p>
     <div class="govuk-form-group">
-      <h4 class="govuk-heading-s"><%= t('mfa_enrolment.heading_code_entry') %></h4>
+      <h4 class="govuk-heading-m"><%= t('mfa_enrolment.heading_code_entry') %></h4>
       <%= f.label :totp_code, t('mfa_enrolment.code_entry'), class: "govuk-label" %>
       <%= f.text_field :totp_code, autofocus: true, autocomplete: 'off', class: "govuk-input govuk-input--width-10" %>
       <%= f.hidden_field :email, value: { email: false } %>
