@@ -424,7 +424,9 @@ en:
       upload_certificate_file_header: Upload a certificate file
       paste_certificate: Paste certificate text into a text box
       certificate_will_be_replaced: Once you confirm you wish to use this certificate, your old %{component} %{certificate} certificate will be replaced with the new one in the GOV.UK Verify Hub configuration.
+      certificate_will_be_added: Once you confirm you wish to use this certificate, it will be added to the GOV.UK Verify Hub configuration alongside your old signing certificate.
       encrypt_messages_for_your_service: The GOV.UK Verify Hub will then be using your new certificate to encrypt messages for your service.
+      signed_mesages_from_your_service: The GOV.UK Verify Hub will then trust your old and new certificates to verify signatures on messages from your service. 
       how_long_it_takes: This takes around 10 minutes. Your connection will not break.
       will_replace_old_certificate: Using this certificate will replace your old encryption certificate in GOV.UK Verify's configuration within 10 minutes.
       sp_doesnt_support_dual_running: Because your service provider does not support dual running, your connection will break when the GOV.UK Verify Hub starts using your new certificate.
