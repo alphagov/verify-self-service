@@ -8,6 +8,8 @@ class UserJourneyController < ApplicationController
   before_action :find_certificate, except: :index
   helper_method :error_class, :checked, :text_box_value
   before_action :dual_running, except: :index
+  before_action :find_team_name
+
 
   def index
     if current_user.permissions.component_management
@@ -114,6 +116,10 @@ private
 
   def dual_running
     @not_dual_running = params[:dual_running].blank? ? nil : true
+  end
+
+  def find_team_name
+    @team_name = Team.find_by_id(current_user.team).name unless current_user.team.nil?
   end
 
   def merge_errors(primary, *objects)

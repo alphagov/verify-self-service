@@ -1,18 +1,25 @@
+<% content_for :banner do %>
+  <div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+      <span class="govuk-phase-banner__text govuk-heading-s"><%= @team_name %></span>
+    </p>
+  </div>
+<% end %>
 <% content_for :main do %>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-quarter">
-    <div class="side-navigation">
-      <ul class="govuk-list">
-        <li class="<%= 'active' if 'user_journey'.include?(params[:controller])  %>">
-          <%= link_to t('components.title'), root_path, class: "govuk-link--no-visited-state" %>
-        </li>
-        <% if policy(UsersController).index? %>
-          <li class="<%= 'active' if 'users'.include?(params[:controller]) %>">
-            <%= link_to t('layout.main_layout.team_members'), users_path, class: "govuk-link--no-visited-state" %>
+      <div class="side-navigation">
+        <ul class="govuk-list">
+          <li class="<%= 'active' if 'user_journey'.include?(params[:controller])  %>">
+            <%= link_to t('components.title'), root_path, class: "govuk-link--no-visited-state" %>
           </li>
-        <% end %>
-      </ul>
-    </div>
+          <% if policy(UsersController).index? %>
+            <li class="<%= 'active' if 'users'.include?(params[:controller]) %>">
+              <%= link_to t('layout.main_layout.team_members'), users_path, class: "govuk-link--no-visited-state" %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     </div>
     <div class="govuk-grid-column-three-quarters">
       <%= yield %>
