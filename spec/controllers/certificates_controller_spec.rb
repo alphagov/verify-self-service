@@ -31,7 +31,7 @@ RSpec.describe CertificatesController, type: :controller do
       post :create, params: { certificate: { value: '', usage: CERTIFICATE_USAGE::SIGNING }, sp_component_id: sp_component }
 
       expect(response).to have_http_status(:success)
-      expect(response).to render_template("new")
+      expect(response).to render_template(:new)
     end
   end
 
