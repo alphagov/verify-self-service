@@ -7,7 +7,7 @@
       <ul class="govuk-list govuk-error-summary__list">
       <% errors.keys.each do |key| %>
         <% errors.full_messages_for(key).each do |error| %>
-          <li data-turbolinks="false">
+          <li>
             <%= link_to error, "##{name}_#{key}" %>
           </li>
         <% end %>
