@@ -62,7 +62,7 @@ RSpec.describe 'Before you start page', type: :system do
       msa_component = certificate.component
       visit before_you_start_path(msa_component.component_type, msa_component.id, msa_component.signing_certificates[0])
       expect(page).to have_content 'Matching Service Adapter (MSA) signing certificate'
-      click_link 'Continue'
+      click_link t('user_journey.before_you_start.have_updated', component: certificate.component.display)
       expect(current_path).to eql upload_certificate_path(msa_component.component_type, msa_component.id, msa_component.signing_certificates[0])
     end
 

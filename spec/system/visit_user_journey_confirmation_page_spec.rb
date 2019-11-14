@@ -38,7 +38,7 @@ RSpec.describe 'Confirmation page', type: :system do
       msa_component = certificate.component
       visit confirmation_path(msa_component.component_type, msa_component.id, msa_component.signing_certificates[0])
       expect(page).to have_content COMPONENT_TYPE::MSA_SHORT
-      expect(page).to have_content 'delete the old signing key and certificate from your MSA configuration'
+      expect(page).to have_content t('user_journey.confirmation.received_email_to_promote', usage: certificate.usage, component: certificate.component.display)
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
