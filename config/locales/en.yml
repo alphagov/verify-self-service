@@ -57,7 +57,8 @@ en:
   users:
     title: Team members
     title_for_team: Team members for
-    change_link: Change details
+    change_details: Change details
+    user_details: User details
     invite:
       title: Invite a new user
       button: Invite user

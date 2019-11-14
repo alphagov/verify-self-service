@@ -21,46 +21,45 @@
     <%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
   <% end %>
   <h1 class="govuk-heading-l"><%= t 'users.title_for_team' %> <%= @team.name == TEAMS::GDS ? TEAMS::GDS.upcase : @team.name %></h1>
-
-  <div class="user-list">
-    <% @team_members.each do |member| %>
-      <div class="user-list-item" id="<%= member.user_id %>">
-      <h3 class="govuk-heading-s">
-        <%= member.full_name %>
-    <span class="hint govuk-body govuk-!-padding-left-1"><%= @user.email == member.email ? t('users.you') : member.email %></span>
-    </h3>
-      <ul class="govuk-list tick-cross-list">
-        <% unless member.gds? %>
-          <div class="tick-cross-list-permissions">
-            <li>
+  <table class="govuk-table">
+    <thead class="govuk-table__head govuk-visually-hidden">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col"><%= t 'users.user_details' %></th>
+        <th class="govuk-table__header" scope="col"><%= t 'users.change_details' %></th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body app-table__body--noheading">
+      <% @team_members.each do |member| %>
+        <tr class="govuk-table__row" id="<%= member.user_id %>">
+          <td class="govuk-table__cell">
+            <h3 class="govuk-heading-s">
+              <%= member.full_name %>
+              <span class="govuk-hint email-wrapper"><%= @user.email == member.email ? t('users.you') : member.email %></span>
+            </h3>
+            <% unless member.gds? %>
               <span class="tick-cross-<%= member.cert_manager? ? 'tick' : 'cross' %>">
                 <span class="govuk-visually-hidden"><%= member.cert_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
                 <%= t 'users.roles.certmgr' %>
-              </span>
-            </li>
-            <li>
+              </span><br>
               <span class="tick-cross-<%= member.user_manager? ? 'tick' : 'cross' %>">
                 <span class="govuk-visually-hidden"><%= member.user_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
                 <%= t 'users.roles.usermgr' %>
               </span>
-            </li>
-          </div>
-        <% end %>
-        <% if @user.email != member.email %>
-          <li class="tick-cross-list-edit-link">
-            <%= link_to t('users.change_link'), update_user_path(member.user_id) %>
-          </li>
-          <% if @gds || (member.user_status?('FORCE_CHANGE_PASSWORD') || member.user_status?('RESET_REQUIRED')) %>
-            <li class="tick-cross-list-status">
-              <span class="govuk-body">
-                <%= t("users.status.#{member.status}") %>
-              </span>
-            </li>
-          <% end %>
-        <% end %>
-      </ul>
-    </div>
-    <% end %>
-  </div>
+            <%end%>
+          </td>
+          <td class="govuk-table__cell">
+            <div class="align-member-status-right">
+              <% if @user.email != member.email %>
+                  <%= link_to t('users.change_details'), update_user_path(member.user_id) %>
+                <% if @gds || (member.user_status?('FORCE_CHANGE_PASSWORD') || member.user_status?('RESET_REQUIRED')) %>
+                  <p><%= t("users.status.#{member.status}") unless member.status == "CONFIRMED" %></p>
+                <% end %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
   <%= link_to "#{t('users.invite.button')}", invite_to_team_path(@team.id), class: 'govuk-button'%>
 <% end %>

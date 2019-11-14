@@ -1,24 +1,26 @@
 <%= page_title t('users.invite.title') %>
 
+<%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
+
 <h1 class="govuk-heading-l"><%= t 'users.invite.title' %></h1>
 
 <%=error_summary_for(@form&.errors, :form) %>
 <%= form_for @form, url: invite_to_team_post_path do |f| %>
 
   <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:email) %>">
-    <h3 class="govuk-heading-m"><%= f.label :email %></h3>
+    <%= f.label :email, class: "govuk-label" %>
     <%= error_message_on(f.object.errors, :email) %>
     <%= f.email_field :email, autofocus: true, class: "govuk-input" %>
   </div>
 
   <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:given_name) %>">
-    <h3 class="govuk-heading-m"><%= f.label :given_name %></h3>
+    <%= f.label :given_name, class: "govuk-label" %>
     <%= error_message_on(f.object.errors, :given_name) %>
     <%= f.text_field :given_name, class: "govuk-input" %>
   </div>
 
   <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:family_name) %>">
-    <h3 class="govuk-heading-m"><%= f.label :family_name %></h3>
+    <%= f.label :family_name, class: "govuk-label" %>
     <%= error_message_on(f.object.errors, :family_name) %>
     <%= f.text_field :family_name, class: "govuk-input" %>
   </div>
