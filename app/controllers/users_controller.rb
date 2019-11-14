@@ -3,6 +3,7 @@ require 'auth/authentication_backend'
 class UsersController < ApplicationController
   include AuthenticationBackend
   layout 'main_layout'
+  before_action :find_team_name
 
   def index
     @user = current_user
@@ -131,6 +132,10 @@ private
       @form.errors.add(:base, t('invite.error.team.missing'))
       false
     end
+  end
+
+  def find_team_name
+    @team_name = Team.find_by_id(current_user.team).name unless current_user.team.nil?
   end
 
   def setup_user_in_cognito
