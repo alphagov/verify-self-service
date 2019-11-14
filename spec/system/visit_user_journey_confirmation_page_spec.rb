@@ -59,7 +59,7 @@ RSpec.describe 'Confirmation page', type: :system do
       vsp_component = certificate.component
       visit confirmation_path(vsp_component.component_type, vsp_component.id, vsp_component.signing_certificates[0])
       expect(page).to have_content COMPONENT_TYPE::VSP_SHORT
-      expect(page).to have_content 'delete the old signing key and certificate from your VSP configuration'
+      expect(page).to have_content t('user_journey.confirmation.received_email_to_replace', usage: certificate.usage, component: COMPONENT_TYPE::VSP_SHORT)
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
@@ -80,7 +80,7 @@ RSpec.describe 'Confirmation page', type: :system do
       sp_component = certificate.component
       visit confirmation_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
       expect(page).to have_content COMPONENT_TYPE::SP_LONG
-      expect(page).to have_content 'delete the old signing key and certificate from your service provider configuration'
+      expect(page).to have_content t('user_journey.confirmation.received_email_to_replace', usage: certificate.usage, component: COMPONENT_TYPE::SP_LONG)
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
