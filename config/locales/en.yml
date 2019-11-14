@@ -186,11 +186,10 @@ en:
     change_password_heading: Change your password
     reset_password_heading: Set your new password
     password_changed: Password changed successfully
-    change_password_legend: You can change your password by entering your current password followed by a new password in the space provide and the same new password again in the confirmation space.
     reset_password_legend: You can reset your password by entering the code you have received via email.
-    current_password_lbl: "Current password:"
-    new_password_lbl: "New password:"
-    confirm_password_lbl: "Confirm new password:"
+    current_password_lbl: Current password
+    new_password_lbl: New password
+    confirm_password_lbl: Confirm new password
     change_password_btn: Change password
     password_recovered: Your password has now been changed. Please login with your new password
     errors:

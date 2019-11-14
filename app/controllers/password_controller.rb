@@ -6,7 +6,7 @@ class PasswordController < ApplicationController
   skip_before_action :authenticate_user!, except: %w[password_form update_password]
   skip_before_action :set_user, except: %w[password_form update_password]
 
-  layout 'main_layout', only: :password_form
+  layout 'two_thirds_layout', only: :password_form
 
   def password_form
     @password_form = ChangePasswordForm.new
