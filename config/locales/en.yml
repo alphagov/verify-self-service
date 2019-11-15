@@ -212,7 +212,6 @@ en:
       missing_name: "Enter a name"
   layout:
     application:
-      title: Verify Self-Service
       verify: Verify
       admin: Admin
       documentation: Documentation
@@ -356,7 +355,7 @@ en:
     continue: Continue
     'no': 'No'
     'yes': 'Yes'
-    restart_component: Apply the changes to your configuration
+    restart_component: Apply the changes to your configuration.
     urls:
       MSA:
         encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
@@ -391,9 +390,9 @@ en:
         SP: 'Before you upload your service provider encryption certificate:'
       you_must: "you must:"
       create_signing_key_and_certificate: "you must create a new signing key and certificate."
-      create_key_and_certificate: "Create a new %{type} key and certificate"
-      create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration
-      add_signing_key_and_certificate_as_secondary: Add your new signing key and certificate to your %{component} configuration as secondary
+      create_key_and_certificate: Create a new %{type} key and certificate.
+      create_encryption_key_and_certificate: Add your new encryption key and certificate to your %{component} configuration.
+      add_signing_key_and_certificate_as_secondary: Add your new signing key and certificate to your %{component} configuration  in the 'secondary' position.
       must_update: You must update your %{component} configuration before going to the next step, or your service's connection to GOV.UK Verify will break.
       have_updated: I have updated my %{component} configuration
       not_support_dual_running: Because your service provider does not support dual running, there will be an outage when you rotate the encryption key.
@@ -447,12 +446,12 @@ en:
       rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.
       received_email: Once you've received the email, delete the old %{usage} key and certificate from your %{component} configuration.
       received_email_to_replace: Once you've received the email, replace the old %{usage} key with the new one in your %{component} configuration.
-      received_email_to_promote: Once you've received the email, promote your secondary %{usage} key and certificate to the primary position and delete the old one in your %{component} configuration.
+      received_email_to_promote: Once you've received the email, go to your %{component} configuration. Move your 'secondary' %{usage} key and certificate to the 'primary' position, and delete the old key and certificate.
       rotate_more: Rotate more certificates
       msa_add_new_key_and_certificate: Add the new signing key and certificate to your Matching Service Adapter (MSA) configuration.
-      tell_us_to_stop_using_old_certificate: Tell GOV.UK Verify to stop using your old certificate using this tool.
       configuration_warning: You must update your %{component} configuration by %{date}, or your service’s connection to GOV.UK Verify will break.
       certificate_rotations_are_independent: You can rotate other certificates while you wait for the email - certificate rotations are independent of each other.
-      tell_verify: Tell GOV.UK Verify to stop using your old (or 'secondary') certificate using this tool.
-      tell_verify_old: Tell GOV.UK Verify to stop using your old certificate using this tool.
+      tell_verify: Tell GOV.UK Verify to stop using your old certificate
+      stop_using_secondary_html: "%{href} (or 'secondary') through the dashboard."
+      stop_using_old_html: "%{href} through the dashboard."
       apply_changes: Apply the changes.
