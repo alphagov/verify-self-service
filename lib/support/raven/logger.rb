@@ -41,7 +41,7 @@ module Support
             (
               message.is_a?(String) &&
                 (
-                   message.start_with?('ActionController::RoutingError') ||
+                   message.include?('ActionController::RoutingError') ||
                    message == UNLABELED_EVENT
                 )
             )
