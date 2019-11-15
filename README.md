@@ -1,4 +1,4 @@
-# Verify Self-service platform
+# Verify Self Service Platform
 
 [![Build Status](https://travis-ci.org/alphagov/verify-self-service.svg?branch=master)](https://travis-ci.org/alphagov/verify-self-service)
 
