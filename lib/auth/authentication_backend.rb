@@ -273,11 +273,11 @@ module AuthenticationBackend
     status = user[:user_status]
     attributes_key = user.key?(:user_attributes) ? :user_attributes : :attributes
     attributes = user[attributes_key].to_h { |attr| [attr[:name], attr[:value]] }
-    given_name = attributes['given_name']
-    family_name = attributes['family_name']
+    first_name = attributes['given_name']
+    last_name = attributes['family_name']
     email = attributes['email']
     roles = attributes['custom:roles'].split(%r{,\s*})
-    TeamMember.new(user_id: user_id, given_name: given_name, family_name: family_name, email: email, roles: roles, status: status)
+    TeamMember.new(user_id: user_id, first_name: first_name, last_name: last_name, email: email, roles: roles, status: status)
   end
 
   def set_mfa_preferences(access_token:)

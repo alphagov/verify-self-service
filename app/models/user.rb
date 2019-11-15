@@ -9,8 +9,8 @@ class User
 
   # create getter and setter methods internally for the fields below
   attr_accessor :email, :access_token, :challenge_name, :cognito_session_id,
-                :mfa, :challenge_parameters, :roles, :full_name, :family_name,
-                :given_name, :phone_number, :user_id, :login_id, :password, :new_password,
+                :mfa, :challenge_parameters, :roles, :full_name, :last_name,
+                :first_name, :phone_number, :user_id, :login_id, :password, :new_password,
                 :totp_code, :permissions, :session_start_time, :team, :cognito_groups, :secret_code
 
   #required by Devise

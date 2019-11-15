@@ -141,8 +141,8 @@ private
   def setup_user_in_cognito
     add_user(
       email: @form.email,
-      given_name: @form.given_name,
-      family_name: @form.family_name,
+      given_name: @form.first_name,
+      family_name: @form.last_name,
       roles: @form.roles,
     )
   end
