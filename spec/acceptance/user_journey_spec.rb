@@ -34,7 +34,7 @@ RSpec.describe 'User journey', type: :feature, acceptance: true do
   end
 
   def rotate_msa_encryption_certificate
-    click_link t('user_journey.encryption_certificate')
+    find('.govuk-table__row', text: "#{t('user_journey.encryption_certificate')}\n#{t('user_journey.in_use')}", match: :first).click_link
 
     expect(page).to have_content 'Matching Service Adapter: encryption certificate'
 
