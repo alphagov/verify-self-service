@@ -109,6 +109,7 @@ private
 
   def find_certificate
     @certificate = Certificate.find_by_id(params[:certificate_id])
+    redirect_to root_path if @certificate.nil?
   end
 
   def dual_running
