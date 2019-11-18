@@ -1,4 +1,5 @@
 class Component < Aggregate
+  NON_SORTING_SEED = 999
   self.abstract_class = true
 
   has_many :signing_certificates,
@@ -7,11 +8,11 @@ class Component < Aggregate
            }, class_name: 'Certificate', as: :component
   has_many :encryption_certificates,
            -> {
-             where(usage: CERTIFICATE_USAGE::ENCRYPTION).order(created_at: 'desc')
+             where(usage: CERTIFICATE_USAGE::ENCRYPTION).order(created_at: :desc)
            }, class_name: 'Certificate', as: :component
   has_many :enabled_signing_certificates,
            -> {
-             where(usage: CERTIFICATE_USAGE::SIGNING, enabled: true).order(created_at: 'desc')
+             where(usage: CERTIFICATE_USAGE::SIGNING, enabled: true).order(created_at: :desc)
            }, class_name: 'Certificate', as: :component
   has_many :disabled_signing_certificates,
            -> {
@@ -22,6 +23,8 @@ class Component < Aggregate
              -> { where(usage: CERTIFICATE_USAGE::ENCRYPTION) }, class_name: 'Certificate', optional: true
 
   belongs_to :team
+
+  scope :for_user, ->(user) { where(team_id: user.team) }
 
   def self.to_service_metadata(event_id, environment, published_at = Time.now)
     service_providers = SpComponent.all_components_for_metadata(environment)
@@ -47,6 +50,22 @@ class Component < Aggregate
         entity_id: service.entity_id,
         service_provider_id: service.sp_component_id,
       }
+    end
+  end
+
+  def current_certificates
+    certs ||= enabled_signing_certificates.map(&:clone)
+    certs << encryption_certificate unless encryption_certificate.nil?
+    certs
+  end
+
+  def days_left
+    sorted_certificates&.first&.days_left || NON_SORTING_SEED
+  end
+
+  def sorted_certificates
+    current_certificates.sort_by do |c|
+      c.expires_soon? ? c.days_left : NON_SORTING_SEED
     end
   end
 

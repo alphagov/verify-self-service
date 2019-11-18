@@ -4,17 +4,23 @@ RSpec.describe 'IndexPage', type: :system do
   let(:msa_signing_certificate) { create(:msa_signing_certificate) }
   let(:msa_encryption_certificate) { create(:msa_encryption_certificate) }
   let(:sp_encryption_certificate) { create(:sp_encryption_certificate) }
-
+  let(:sp_signing_certificate) { create(:sp_signing_certificate) }
   before(:each) do
+    SpComponent.destroy_all
+    MsaComponent.destroy_all
     login_gds_user
-    ReplaceEncryptionCertificateEvent.create(
+    create(:replace_encryption_certificate_event,
       component: sp_encryption_certificate.component,
       encryption_certificate_id: sp_encryption_certificate.id
     )
-    ReplaceEncryptionCertificateEvent.create(
+    create(:replace_encryption_certificate_event,
       component: msa_encryption_certificate.component,
       encryption_certificate_id: msa_encryption_certificate.id
     )
+  end
+
+  def get_row_status(node)
+    node.respond_to?(:text) ? node.text.split("\n").last : node
   end
 
   it 'shows greeting without JS' do
@@ -27,14 +33,15 @@ RSpec.describe 'IndexPage', type: :system do
     expect(page).to have_content 'Manage certificates'
   end
 
-  it 'shows index page and successfully goes to next page' do   
+  it 'shows index page and successfully goes to next page' do
     msa_component = msa_encryption_certificate.component
     visit root_path
     expect(page).to have_content 'Manage certificates'
-    within("##{msa_component.id}") do 
+    within("##{msa_component.id}") do
       click_link('Encryption certificate')
     end
     expect(current_path).to eql view_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
+    expect(page).to have_title t('user_journey.certificate.title_current')
   end
 
   it 'displays which services a component is used by' do
@@ -43,13 +50,13 @@ RSpec.describe 'IndexPage', type: :system do
     component_table = page.find("##{service.sp_component.id}")
     expect(component_table).to have_content 'test-service'
   end
-  
+
   it 'shows the primary signing certificate is deploying and secondary in use when deploying' do
     old_signing_certificate = create(:msa_signing_certificate, updated_at: 15.minutes.ago)
     new_signing_certificate = create(:msa_signing_certificate, component: old_signing_certificate.component)
     visit root_path
     table_row_content_primary = page.find("##{new_signing_certificate.id}")
-    table_row_content_secondary = page.find("##{old_signing_certificate.id}")    
+    table_row_content_secondary = page.find("##{old_signing_certificate.id}")
     expect(table_row_content_primary).to have_content 'Signing certificate (primary)'
     expect(table_row_content_primary).to have_content 'DEPLOYING'
     expect(table_row_content_secondary).to have_content 'Signing certificate (secondary)'
@@ -88,7 +95,7 @@ RSpec.describe 'IndexPage', type: :system do
 
   it 'shows deploying tag if certificate is being deployed' do
     cert_id = msa_signing_certificate.id
-    visit root_path 
+    visit root_path
     table_row_content = page.find("##{cert_id}")
     expect(table_row_content).to have_content 'DEPLOYING'
   end
@@ -96,7 +103,7 @@ RSpec.describe 'IndexPage', type: :system do
   it 'shows in use tag if certificate is ok after deployment' do
     cert_id = msa_signing_certificate.id
     travel_to Time.now + 11.minutes
-    visit root_path 
+    visit root_path
     table_row_content = page.find("##{cert_id}")
     expect(table_row_content).to have_content 'IN USE'
   end
@@ -115,17 +122,28 @@ RSpec.describe 'IndexPage', type: :system do
     expect(page).to have_content 'MISSING'
   end
 
-  it 'shows the number of expiriing certificates at the top of the page' do
+  it 'shows the number of expiring certificates at the top of the page' do
     first_expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 29.days))
     second_expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 29.days))
     visit root_path
     expect(page).to have_content '2 certificates are expiring soon.'
   end
 
-  it 'does not show the Team Members link if user does not have permissions' do
-    login_certificate_manager_user
+  it 'orders by environment and shows least expiring certificate first' do
+    sp_production = create(:sp_component, environment: 'production')
+    msa_integration = create(:msa_component, environment: 'integration')
+    sp_integration = create(:sp_component, environment: 'integration')
+
+    first_expiring_certificate = create(:sp_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 19.days), component: sp_integration)
+    second_expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 9.days), component: msa_integration)
+
     visit root_path
-    expect(page).not_to have_link t('layout.main_layout.team_members')
-    expect(page).to have_link t('components.title')
+    first_expiring_certificate_row = page.find("##{first_expiring_certificate.id}")
+    second_expiring_certificate_row = page.find("##{second_expiring_certificate.id}")
+
+    expect(first_expiring_certificate_row).to have_content('EXPIRES IN 19 DAYS')
+    expect(second_expiring_certificate_row).to have_content('EXPIRES IN 9 DAYS')
+    expect(sp_production.environment.capitalize).to appear_before msa_integration.environment.capitalize
+    expect(get_row_status(second_expiring_certificate_row)).to appear_before get_row_status(first_expiring_certificate_row)
   end
 end

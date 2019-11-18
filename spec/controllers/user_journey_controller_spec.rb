@@ -49,8 +49,8 @@ RSpec.describe UserJourneyController, type: :controller do
       sp_component = create(:sp_component, team_id: @user.team)
       get :index
       expect(response).to have_http_status(:success)
-      expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
-      expect(@controller.instance_variable_get(:@sp_components)[0].team_id).to eq(sp_component.team_id)
+      expect(@controller.instance_variable_get(:@components).length).to eq(1)
+      expect(@controller.instance_variable_get(:@components)[0].team_id).to eq(sp_component.team_id)
     end
 
     it 'should not show user components with different id' do
@@ -58,8 +58,8 @@ RSpec.describe UserJourneyController, type: :controller do
       create(:sp_component)
       get :index
       expect(response).to have_http_status(:success)
-      expect(@controller.instance_variable_get(:@sp_components).length).to eq(0)
-      expect(@controller.instance_variable_get(:@sp_components)[0]).to eq(nil)
+      expect(@controller.instance_variable_get(:@components).length).to eq(0)
+      expect(@controller.instance_variable_get(:@components)[0]).to eq(nil)
     end
 
     it 'should only show the user their team components with the same id' do
@@ -68,8 +68,8 @@ RSpec.describe UserJourneyController, type: :controller do
       create(:sp_component)
       get :index
       expect(response).to have_http_status(:success)
-      expect(@controller.instance_variable_get(:@sp_components).length).to eq(1)
-      expect(@controller.instance_variable_get(:@sp_components)[0].team_id).to eq(sp_component.team_id)
+      expect(@controller.instance_variable_get(:@components).length).to eq(1)
+      expect(@controller.instance_variable_get(:@components)[0].team_id).to eq(sp_component.team_id)
     end
   end
 

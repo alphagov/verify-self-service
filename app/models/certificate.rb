@@ -28,6 +28,10 @@ class Certificate < Aggregate
     x509.not_after - Time.now < 30.day
   end
 
+  def days_left
+    (x509.not_after.to_date - Time.now.to_date).to_i
+  end
+
   def expired?
     x509.not_after < Time.now
   end
