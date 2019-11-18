@@ -31,17 +31,15 @@
   </ul>
 <% elsif @certificate.component_type == COMPONENT_TYPE::MSA %>
   <ul class="govuk-list govuk-list--number">
-    <li><%= t 'user_journey.confirmation.msa_add_new_key_and_certificate' %></li>
-    <li><%= t('user_journey.restart_component', component: @certificate.component.display) %></li>
-    <li><%= t('user_journey.confirmation.received_email', usage: @certificate.usage, component: @certificate.component.display) %></li>
-    <li><%= t('user_journey.restart_component', component: @certificate.component.display) %></li>
-    <li><%= t 'user_journey.confirmation.tell_verify' %></li>
+    <li><%= t('user_journey.confirmation.received_email_to_promote', usage: @certificate.usage, component: @certificate.component.display) %></li>
+    <li><%= @certificate.component.display == COMPONENT_TYPE::SP_LONG ? t('user_journey.confirmation.apply_changes') : t('user_journey.restart_component', component: @certificate.component.display) %></li>
+    <li><%= t('user_journey.confirmation.stop_using_old_html', href: link_to(t('user_journey.confirmation.tell_verify'), root_path)) %></li>
   </ul>
-<% elsif @certificate.component_type == COMPONENT_TYPE::SP %>
+<% else @certificate.component_type == COMPONENT_TYPE::SP %>
   <ul class="govuk-list govuk-list--number">
     <li><%= t('user_journey.confirmation.received_email_to_replace', usage: @certificate.usage, component: @certificate.component.display) %></li>
     <li><%= @certificate.component.display == COMPONENT_TYPE::SP_LONG ? t('user_journey.confirmation.apply_changes') : t('user_journey.restart_component', component: @certificate.component.display) %></li>
-    <li><%= t 'user_journey.confirmation.tell_verify' %></li>
+    <li><%= t('user_journey.confirmation.stop_using_secondary_html', href: link_to(t('user_journey.confirmation.tell_verify'), root_path)) %></li>
   </ul>
 <% end %>
 

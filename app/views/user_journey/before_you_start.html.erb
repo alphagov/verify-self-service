@@ -27,12 +27,19 @@
 <% else %>
   <p><%= t 'user_journey.before_you_start.rotate_certificate_read_steps' %></p>
   <p><%= t "user_journey.before_you_start.#{@certificate.component.type}", type: @certificate.usage %>
-  <% if @certificate.signing? %>
+  <% if @certificate.signing? && @certificate.component.type == COMPONENT_TYPE::MSA_SHORT %>
+    <%= t 'user_journey.before_you_start.you_must' %>
+    <ul class="govuk-list govuk-list--number">
+      <li><%= t('user_journey.before_you_start.create_key_and_certificate', type: @certificate.usage) %></li>
+      <li><%= t('user_journey.before_you_start.add_signing_key_and_certificate_as_secondary', component: @certificate.component.display) %></li>
+      <li><%= t('user_journey.restart_component', component: @certificate.component.display) %></li>
+    </ul>
+  <% elsif @certificate.signing? %>
     <%= t 'user_journey.before_you_start.create_signing_key_and_certificate' %>
   <% else %>
     <%= t 'user_journey.before_you_start.you_must' %>
     <ul class="govuk-list govuk-list--number">
-      <li><%= t 'user_journey.before_you_start.create_key_and_certificate' %></li>
+      <li><%= t('user_journey.before_you_start.create_key_and_certificate', type: @certificate.usage) %></li>
       <li><%= t('user_journey.before_you_start.create_encryption_key_and_certificate', component: @certificate.component.display) %></li>
       <li><%= t('user_journey.restart_component', component: @certificate.component.display) %></li>
     </ul>
@@ -55,5 +62,9 @@
 <% if @not_dual_running %>
   <%= link_to t('user_journey.continue'), upload_certificate_path(dual_running: @not_dual_running), class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
 <% else %>
-  <%= link_to @certificate.encryption? ? t('user_journey.before_you_start.have_updated', component: @certificate.component.display) : t('user_journey.continue'), upload_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+  <% if @certificate.encryption? || (@certificate.signing? && @certificate.component.type == COMPONENT_TYPE::MSA_SHORT) %>
+    <%= link_to t('user_journey.before_you_start.have_updated', component: @certificate.component.display), upload_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+  <% else %>
+    <%= link_to t('user_journey.continue'), upload_certificate_path, class: "govuk-button", data: { module: "govuk-button" }, role:"button" %> 
+  <% end %>
 <% end %>
