@@ -34,11 +34,9 @@ class UserJourneyController < ApplicationController
   end
 
   def upload_certificate
-    component_id = params[component_key(params)]
-    component_type = component_name_from_params(params)
     @upload = UploadCertificateEvent.new(
-      component_id: component_id,
-      component_type: component_type,
+      component_id: @certificate.component_id,
+      component_type: @certificate.component_type,
     )
   end
 
@@ -82,8 +80,8 @@ class UserJourneyController < ApplicationController
     @upload = UploadCertificateEvent.create(
       usage: @certificate.usage,
       value: new_certificate_value,
-      component_id: params[:component_id],
-      component_type: params[:component_type],
+      component_id: @certificate.component_id,
+      component_type: @certificate.component_type,
     )
 
     if @upload.valid?
@@ -111,6 +109,7 @@ private
 
   def find_certificate
     @certificate = Certificate.find_by_id(params[:certificate_id])
+    redirect_to root_path if @certificate.nil?
   end
 
   def dual_running

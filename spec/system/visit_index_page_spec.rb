@@ -33,14 +33,13 @@ RSpec.describe 'IndexPage', type: :system do
     expect(page).to have_content 'Manage certificates'
   end
 
-  it 'shows index page and successfully goes to next page' do
-    msa_component = msa_encryption_certificate.component
+  it 'shows index page and successfully goes to next page' do   
     visit root_path
     expect(page).to have_content 'Manage certificates'
-    within("##{msa_component.id}") do
+    within("##{msa_encryption_certificate.component_id}") do 
       click_link('Encryption certificate')
     end
-    expect(current_path).to eql view_certificate_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
+    expect(current_path).to eql view_certificate_path(msa_encryption_certificate.id)
     expect(page).to have_title t('user_journey.certificate.title_current')
   end
 

@@ -7,6 +7,9 @@ RSpec.describe 'Confirmation page', type: :system do
   let(:msa_encryption_certificate) { create(:msa_encryption_certificate, component: create(:msa_component, team_id: user.team)) }
   let(:sp_encryption_certificate) { create(:sp_encryption_certificate, component: create(:sp_component, team_id: user.team)) }
   let(:vsp_encryption_certificate) { create(:vsp_encryption_certificate, component: create(:sp_component, vsp: true, team_id: user.team)) }
+  let(:msa_signing_certificate) { create(:msa_signing_certificate, component: create(:msa_component, team_id: user.team)) }
+  let(:sp_signing_certificate) { create(:sp_signing_certificate, component: create(:sp_component, team_id: user.team)) }
+  let(:vsp_signing_certificate) { create(:vsp_signing_certificate, component: create(:sp_component, vsp: true, team_id: user.team)) }
 
   before(:each) do
     ReplaceEncryptionCertificateEvent.create(
@@ -25,8 +28,7 @@ RSpec.describe 'Confirmation page', type: :system do
 
   context 'shows confirmation page for msa' do
     it 'encryption and successfully goes to next page' do
-      msa_component = msa_encryption_certificate.component
-      visit confirmation_path(msa_component.component_type, msa_component.id, msa_component.encryption_certificate_id)
+      visit confirmation_path(msa_encryption_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::MSA_SHORT
       expect(page).to have_content 'delete the old encryption key and certificate from your MSA configuration'
       click_link 'Rotate more certificates'
@@ -34,11 +36,9 @@ RSpec.describe 'Confirmation page', type: :system do
     end
 
     it 'signing and successfully goes to next page' do
-      certificate = create(:msa_signing_certificate, component: create(:msa_component, team_id: user.team))
-      msa_component = certificate.component
-      visit confirmation_path(msa_component.component_type, msa_component.id, msa_component.signing_certificates[0])
+      visit confirmation_path(msa_signing_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::MSA_SHORT
-      expect(page).to have_content t('user_journey.confirmation.received_email_to_promote', usage: certificate.usage, component: certificate.component.display)
+      expect(page).to have_content t('user_journey.confirmation.received_email_to_promote', usage: msa_signing_certificate.usage, component: msa_signing_certificate.component.display)
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
@@ -46,8 +46,7 @@ RSpec.describe 'Confirmation page', type: :system do
 
   context 'shows confirmation page for vsp' do
     it 'encryption and successfully goes to next page' do
-      vsp_component = vsp_encryption_certificate.component
-      visit confirmation_path(vsp_component.component_type, vsp_component.id, vsp_component.encryption_certificate_id)
+      visit confirmation_path(vsp_encryption_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::VSP_SHORT
       expect(page).to have_content 'delete the old encryption key and certificate from your VSP configuration'
       click_link 'Rotate more certificates'
@@ -55,11 +54,9 @@ RSpec.describe 'Confirmation page', type: :system do
     end
 
     it 'signing and successfully goes to next page' do
-      certificate = create(:vsp_signing_certificate, component: create(:sp_component, vsp: true, team_id: user.team))
-      vsp_component = certificate.component
-      visit confirmation_path(vsp_component.component_type, vsp_component.id, vsp_component.signing_certificates[0])
+      visit confirmation_path(vsp_signing_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::VSP_SHORT
-      expect(page).to have_content t('user_journey.confirmation.received_email_to_replace', usage: certificate.usage, component: COMPONENT_TYPE::VSP_SHORT)
+      expect(page).to have_content t('user_journey.confirmation.received_email_to_replace', usage: vsp_signing_certificate.usage, component: COMPONENT_TYPE::VSP_SHORT)
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
@@ -67,8 +64,7 @@ RSpec.describe 'Confirmation page', type: :system do
 
   context 'shows confirmation page for sp' do
     it 'encryption and successfully goes to next page' do
-      sp_component = sp_encryption_certificate.component
-      visit confirmation_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id)
+      visit confirmation_path(sp_encryption_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::SP_LONG
       expect(page).to have_content 'delete the old encryption key and certificate from your service provider configuration'
       click_link 'Rotate more certificates'
@@ -76,18 +72,15 @@ RSpec.describe 'Confirmation page', type: :system do
     end
 
     it 'signing and successfully goes to next page' do
-      certificate = create(:sp_signing_certificate, component: create(:sp_component, team_id: user.team))
-      sp_component = certificate.component
-      visit confirmation_path(sp_component.component_type, sp_component.id, sp_component.signing_certificates[0])
+      visit confirmation_path(sp_signing_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::SP_LONG
-      expect(page).to have_content t('user_journey.confirmation.received_email_to_replace', usage: certificate.usage, component: COMPONENT_TYPE::SP_LONG)
+      expect(page).to have_content t('user_journey.confirmation.received_email_to_replace', usage: sp_signing_certificate.usage, component: COMPONENT_TYPE::SP_LONG)
       click_link 'Rotate more certificates'
       expect(current_path).to eql root_path
     end
 
     it 'signing with dual running set to no displays unique content' do
-      sp_component = sp_encryption_certificate.component
-      visit confirmation_path(sp_component.component_type, sp_component.id, sp_component.encryption_certificate_id, true)
+      visit confirmation_path(sp_encryption_certificate.id, true)
       expect(page).to have_content 'Because your service provider does not support dual running'
     end
   end

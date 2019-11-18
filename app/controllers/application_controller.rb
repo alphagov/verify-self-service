@@ -56,9 +56,10 @@ protected
     redirect_to root_path, status: :forbidden
   end
 
-  def check_component_authorization(component_id: params['component_id'], component_type: params['component_type'])
-    if component_id.present?
-      component = klass_component(component_type)&.find_by_id(component_id)
+  def check_component_authorization(certificate_id: params['certificate_id'])
+    if certificate_id.present? && Certificate.exists?(certificate_id)
+      certificate = Certificate.find_by_id(certificate_id)
+      component = klass_component(certificate.component_type)&.find_by_id(certificate.component_id)
       if component.present?
         team = component.team
         authorize team unless team.nil?

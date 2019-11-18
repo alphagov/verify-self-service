@@ -6,13 +6,11 @@ RSpec.describe UserJourneyController, type: :controller do
   include TempFileHelpers
 
   let(:team) { create(:team) }
-  let(:msa_component) { create(:msa_component, team_id: team.id) }
-  let(:msa_encryption_cert) { create(:msa_encryption_certificate) }
+  let(:msa_component) { create(:msa_component, team_id: team.id ) }
+  let(:msa_encryption_cert) { create(:msa_encryption_certificate, component: msa_component) }
   let(:params) do
     {
-      component_type: msa_component.component_type,
-      component_id: msa_component.id,
-      certificate_id: msa_encryption_cert.id
+      certificate_id: msa_component.encryption_certificate_id
     }
   end
 
@@ -95,8 +93,6 @@ RSpec.describe UserJourneyController, type: :controller do
       signing_cert_secondary = create(:msa_signing_certificate, component: msa_component)
       certmgr_stub_auth(team)
       patch :disable_certificate, params: {
-        component_type: msa_component.component_type,
-        component_id: msa_component.id,
         certificate_id: signing_cert_secondary.id
       }
       expect(response).to have_http_status(:redirect)
@@ -107,8 +103,6 @@ RSpec.describe UserJourneyController, type: :controller do
       signing_cert_only_one = create(:msa_signing_certificate, component: msa_component)
       certmgr_stub_auth(team)
       patch :disable_certificate, params: {
-        component_type: msa_component.component_type,
-        component_id: msa_component.id,
         certificate_id: signing_cert_only_one.id
       }
       expect(subject).to render_template(:view_certificate)
@@ -342,7 +336,7 @@ RSpec.describe UserJourneyController, type: :controller do
       post :confirm,
            params: params.merge({
              'upload-certificate': 'string',
-             certificate: { new_certificate: 'Snowman wakes before dawn', component: msa_component }
+             certificate: { new_certificate: 'Snowman wakes before dawn'}
            })
 
       expect(subject).to render_template(:upload_certificate)
@@ -359,8 +353,6 @@ RSpec.describe UserJourneyController, type: :controller do
       foreign_component = create(:sp_component, team_id: foreign_team.id)
       get :upload_certificate,
           params: {
-            component_type: foreign_component.component_type,
-            component_id: foreign_component.id,
             certificate_id: msa_encryption_cert.id
           }
       expect(response).to_not have_http_status(:success)
@@ -369,15 +361,13 @@ RSpec.describe UserJourneyController, type: :controller do
       expect(flash[:warn]).to eq t('shared.errors.authorisation')
     end
 
-    it 'behaves gracefully if a non-existent component is accessed' do
+    it 'redirects to root path if a non-existent component is accessed' do
       certmgr_stub_auth
       get :upload_certificate,
           params: {
-            component_type: :sp_component,
-            component_id: 'bad id',
-            certificate_id: msa_encryption_cert.id
+            certificate_id: 'bad cert id'
           }
-      expect(subject).to render_template(:upload_certificate)
+      expect(subject).to redirect_to(root_path)
     end
   end
 end
