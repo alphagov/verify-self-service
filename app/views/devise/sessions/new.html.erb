@@ -1,4 +1,4 @@
- <%= page_title t('login.title') %>
+ <%= page_title t('sign_in.title') %>
 
  <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -13,9 +13,9 @@
             <%= render "sign_in_form", f:f, sign_in_form: @sign_in_form %>
         <% end %>
             <div class="actions">
-                <%= f.submit t('login.login'), class: "govuk-button govuk-!-margin-right-1", data: { module: "govuk-button" } %>
+                <%= f.submit t('sign_in.sign_in'), class: "govuk-button govuk-!-margin-right-1", data: { module: "govuk-button" } %>
                 <% unless session[:challenge_name].nil? %>
-                    <%= link_to t('login.cancel'), cancel_path , class: "govuk-button govuk-button--secondary", data: { module: "govuk-button" } %>
+                    <%= link_to t('sign_in.cancel'), cancel_path , class: "govuk-button govuk-button--secondary", data: { module: "govuk-button" } %>
                 <% end %>
             </div>
         <% end %>

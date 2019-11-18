@@ -8,12 +8,12 @@ module System
       visit new_user_session_path
       fill_in 'Email', with: email
       fill_in 'Password', with: password
-      click_button 'Log in'
+      click_button 'Sign in'
     end
 
     def totp_sign_in(totp_code)
       fill_in 'user[totp_code]', with: totp_code
-      click_button 'Log in'
+      click_button 'Sign in'
     end
 
     def login_user

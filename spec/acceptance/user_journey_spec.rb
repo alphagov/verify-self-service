@@ -20,13 +20,13 @@ RSpec.describe 'User journey', type: :feature, acceptance: true do
   def sign_in_with_mfa
    visit ENV['TEST_DOMAIN']
 
-   expect(page).to have_content t('login.title')
+   expect(page).to have_content t('sign_in.title')
 
    fill_in 'Email', with: email
    fill_in 'Password', with: password
-   click_button t('login.login')
+   click_button t('sign_in.sign_in')
 
-   expect(page).to have_content t('login.mfa_heading')
+   expect(page).to have_content t('sign_in.mfa_heading')
 
    totp_sign_in(totp.now)
 
@@ -67,6 +67,6 @@ RSpec.describe 'User journey', type: :feature, acceptance: true do
   def sign_out
     click_link t('layout.application.sign_out_link')
 
-    expect(page).to have_content t('login.title')
+    expect(page).to have_content t('sign_in.title')
   end
 end

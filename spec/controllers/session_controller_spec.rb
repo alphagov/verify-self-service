@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SessionsController, type: :controller do
   include AuthSupport, CognitoSupport
   
-  it 'Get to signin page' do
+  it 'Get to sign_in page' do
     @request.env['devise.mapping'] = Devise.mappings[:user]
     get :new
     expect(response).to have_http_status(:success)
