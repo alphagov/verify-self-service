@@ -21,9 +21,9 @@
                 <tr class="govuk-table__row" id="<%= cert.id %>">
                   <td class="govuk-table__cell">
                     <% if component.enabled_signing_certificates.length == 2 %>
-                      <%= link_to t('user_journey.two_signing_certificate', type: t("user_journey.#{position(cert)}")) , view_certificate_path(cert.component_type, component.id, cert.id) %>
+                      <%= link_to t('user_journey.two_signing_certificate', type: t("user_journey.#{position(cert)}")) , view_certificate_path(cert.id) %>
                     <% else %>
-                      <%= link_to t('user_journey.signing_certificate'), view_certificate_path(cert.component_type, component.id, cert.id) %>
+                      <%= link_to t('user_journey.signing_certificate'), view_certificate_path(cert.id) %>
                     <% end %>
                   </td>
                   <td class="govuk-table__cell">
@@ -35,7 +35,7 @@
               <%end%>
             <% if cert.encryption? %>
               <tr class="govuk-table__row" id="<%= cert.id %>">
-                <td class="govuk-table__cell"><%= link_to t('user_journey.encryption_certificate'), view_certificate_path(component.component_type, component.id, cert.id) %></td>
+                <td class="govuk-table__cell"><%= link_to t('user_journey.encryption_certificate'), view_certificate_path(cert.id) %></td>
                 <td class="govuk-table__cell">
                   <div class="app-certificate-tag <%= 'app-certificate-tag-expiring' if cert.expires_soon? %> <%= 'app-certificate-tag-deploying' if cert.deploying? %>">
                     <strong class="govuk-tag"><%= certificate_status(cert) %></strong>
