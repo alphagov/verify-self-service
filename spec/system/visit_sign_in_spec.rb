@@ -39,10 +39,10 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content t('login.mfa_heading')
+    expect(page).to have_content t('sign_in.mfa_heading')
 
     fill_in "user[totp_code]", with: "000000"
-    click_button(t('login.login'))
+    click_button(t('sign_in.sign_in'))
     expect(current_path).to eql root_path
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
@@ -56,13 +56,13 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content t('login.mfa_heading')
+    expect(page).to have_content t('sign_in.mfa_heading')
     old_session_id = page.get_rack_session_key('session_id')
     visit root_path
-    click_link(t('login.cancel'))
+    click_link(t('sign_in.cancel'))
 
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content t('login.heading')
+    expect(page).to have_content t('sign_in.heading')
     expect(page.get_rack_session.length).to eql 1
     expect(page.get_rack_session_key('session_id')).not_to eql old_session_id
   end
@@ -74,10 +74,10 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content t('login.mfa_heading')
+    expect(page).to have_content t('sign_in.mfa_heading')
 
     fill_in "user[totp_code]", with: "999999"
-    click_button(t('login.login'))
+    click_button(t('sign_in.sign_in'))
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content t('devise.failure.user.invalid_login')
   end
@@ -123,10 +123,10 @@ RSpec.describe 'Sign in', type: :system do
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
     expect(current_path).to eql new_user_session_path
-    expect(page).to have_content t('login.new_password_heading')
+    expect(page).to have_content t('sign_in.new_password_heading')
 
     fill_in "user[new_password]", with: "000000"
-    click_button(t('login.login'))
+    click_button(t('sign_in.sign_in'))
     expect(current_path).to eql root_path
     # Ensure session is cleaned up from flow
     expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
@@ -147,7 +147,7 @@ RSpec.describe 'Sign in', type: :system do
     expect(page).to have_css("#qr-code svg")
 
     fill_in "user[totp_code]", with: "000000"
-    click_button(t('login.login'))
+    click_button(t('sign_in.sign_in'))
 
     expect(current_path).to eql root_path
     # Ensure session is cleaned up from flow
@@ -168,7 +168,7 @@ RSpec.describe 'Sign in', type: :system do
     expect(page).to have_css("#qr-code svg")
 
     fill_in "user[totp_code]", with: "000000"
-    click_button(t('login.login'))
+    click_button(t('sign_in.sign_in'))
 
     expect(current_path).to eql new_user_session_path
     expect(page).to have_content t('devise.sessions.EnableSoftwareTokenMFAException')
