@@ -373,8 +373,7 @@ en:
       title_support_dual_running: Does your service provider support dual running?
       support_dual_running: If your service provider supports dual running, it can try to decrypt messages from the GOV.UK Verify Hub using both your old and new encryption keys. Your connection will not break.
       not_support_dual_running: Because your service provider does not support dual running, your connection to GOV.UK Verify will break when the GOV.UK Verify Hub starts using your new encryption certificate.
-      how_long_it_takes: This usually takes around 10 minutes
-      if_you_already_added: 'If you have already added the new key and certificate to your service provider configuration:'
+      how_long_it_takes: This usually takes around 10 minutes.
       connection_break: Wait for your connection to GOV.UK Verify to break.
       apply_changes: You should have added your new encryption key and certificate to your service provider configuration earlier. Apply the changes to fix the connection.
     before_you_start:
