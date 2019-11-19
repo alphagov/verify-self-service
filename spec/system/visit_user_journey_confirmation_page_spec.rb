@@ -84,4 +84,54 @@ RSpec.describe 'Confirmation page', type: :system do
       expect(page).to have_content 'Because your service provider does not support dual running'
     end
   end
+
+  context 'fails to publish' do
+    before(:each) do
+      stub_storage_client_service_error
+    end
+
+    it 'displays failed to publish content for MSA encryption certificate' do
+      visit upload_certificate_path(msa_encryption_certificate.id)
+      fill_in 'certificate_value', with: msa_encryption_certificate.value
+      click_button t('user_journey.continue')
+      click_button t('user_journey.certificate.use_certificate')
+
+      expect(current_path).to eql confirmation_path(msa_encryption_certificate.id)
+      expect(page).to have_content t('user_journey.confirmation.failed_to_publish_heading')
+      expect(page).to have_content 'The team will help publish your MSA encryption certificate.'
+    end
+
+    it 'displays failed to publish content for VSP encryption certificate' do
+      visit upload_certificate_path(vsp_encryption_certificate.id)
+      fill_in 'certificate_value', with: vsp_encryption_certificate.value
+      click_button t('user_journey.continue')
+      click_button t('user_journey.certificate.use_certificate')
+
+      expect(current_path).to eql confirmation_path(vsp_encryption_certificate.id)
+      expect(page).to have_content t('user_journey.confirmation.failed_to_publish_heading')
+      expect(page).to have_content 'The team will help publish your VSP encryption certificate.'
+    end
+
+    it 'displays failed to publish content for MSA signing certificate' do
+      visit upload_certificate_path(msa_signing_certificate.id)
+      fill_in 'certificate_value', with: msa_signing_certificate.value
+      click_button t('user_journey.continue')
+      click_button t('user_journey.certificate.use_certificate')
+      expect(current_path).to eql confirmation_path(msa_signing_certificate.id)
+
+      expect(page).to have_content t('user_journey.confirmation.failed_to_publish_heading')
+      expect(page).to have_content 'The team will help publish your MSA signing certificate.'
+    end
+
+    it 'displays failed to publish content for SP signing certificate' do
+      visit upload_certificate_path(sp_signing_certificate.id)
+      fill_in 'certificate_value', with: sp_signing_certificate.value
+      click_button t('user_journey.continue')
+      click_button t('user_journey.certificate.use_certificate')
+
+      expect(current_path).to eql confirmation_path(sp_signing_certificate.id)
+      expect(page).to have_content t('user_journey.confirmation.failed_to_publish_heading')
+      expect(page).to have_content 'The team will help publish your service provider signing certificate.'
+    end
+  end
 end

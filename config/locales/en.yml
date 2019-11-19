@@ -346,7 +346,7 @@ en:
     how_long_it_takes: This usually takes around 10 minutes from the time you uploaded the new signing certificate.
     delete_old_signing_key_and_cert: Then you can delete the old signing key and certificate from your %{component} configuration.
     maintain_connection: You need to manage your certificates to make sure your service stays connected to GOV.UK Verify.
-    connection_broken_or_compromised_guidance: If your connection has been broken or compromised, read 
+    connection_broken_or_compromised_guidance: If your connection has been broken or compromised, read
     connection_broken_or_compromised_link: this guidance
     certificates_expiring: "%{number} certificates are expiring soon."
     find_out_more: Find out more about %{link} in the documentation.
@@ -423,7 +423,7 @@ en:
       certificate_will_be_replaced: Once you confirm you wish to use this certificate, your old %{component} %{certificate} certificate will be replaced with the new one in the GOV.UK Verify Hub configuration.
       certificate_will_be_added: Once you confirm you wish to use this certificate, it will be added to the GOV.UK Verify Hub configuration alongside your old signing certificate.
       encrypt_messages_for_your_service: The GOV.UK Verify Hub will then be using your new certificate to encrypt messages for your service.
-      signed_mesages_from_your_service: The GOV.UK Verify Hub will then trust your old and new certificates to verify signatures on messages from your service. 
+      signed_mesages_from_your_service: The GOV.UK Verify Hub will then trust your old and new certificates to verify signatures on messages from your service.
       how_long_it_takes: This takes around 10 minutes. Your connection will not break.
       will_replace_old_certificate: Using this certificate will replace your old encryption certificate in GOV.UK Verify's configuration within 10 minutes.
       sp_doesnt_support_dual_running: Because your service provider does not support dual running, your connection will break when the GOV.UK Verify Hub starts using your new certificate.
@@ -437,6 +437,7 @@ en:
       stop_using: Stop using this certificate
     confirmation:
       title: Confirmation
+      publish_failed_title: Publish failed
       what_to_expect: This usually takes around 10 minutes. We'll email you when your new %{type} certificate is in use.
       next_steps: Next steps
       rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.
@@ -451,3 +452,9 @@ en:
       stop_using_secondary_html: "%{href} (or 'secondary') through the dashboard."
       stop_using_old_html: "%{href} through the dashboard."
       apply_changes: Apply the changes.
+      support_email: idasupport@digital.cabinet-office.gov.uk
+      failed_to_publish_heading: Your certificate has failed to publish
+      please_contact: Please contact the GOV.UK Verify team at
+      team_help_publish: The team will help publish your %{component} %{usage} certificate.
+      publish_time: It will take up to 24 hours for your new certificate to be published by the team.
+      will_not_break: Your connection to GOV.UK Verify will not break because of this error.

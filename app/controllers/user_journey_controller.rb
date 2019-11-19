@@ -88,17 +88,20 @@ class UserJourneyController < ApplicationController
       component = klass_component(@upload.component_type).find_by_id(@upload.component_id)
 
       if @upload.certificate.encryption?
-        replace_event = ReplaceEncryptionCertificateEvent.create(
+        replace = ReplaceEncryptionCertificateEvent.create(
           component: component,
           encryption_certificate_id: @upload.certificate.id,
         )
-
-        check_metadata_published(replace_event.id)
+        replaced_certicate_published = check_metadata_published_user_journey(replace.id)
       end
 
-      check_metadata_published(@upload.id)
+      certicate_published = check_metadata_published_user_journey(@upload.id)
 
-      render :confirmation
+      if certicate_published && replaced_certicate_published
+        render :confirmation
+      else
+        render :publish_failed
+      end
     else
       Rails.logger.info(@upload.errors.full_messages.join(', '))
       render :upload_certificate
