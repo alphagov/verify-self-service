@@ -8,8 +8,11 @@ class ProfileController < ApplicationController
       @using_stub = SelfService.service(:cognito_stub)
       @cognito_available = SelfService.service_present?(:real_client)
     end
+    updated_user = get_user_info(access_token: current_user.access_token)
+    refresh_user(updated_user)
     @user = current_user
-    @mfa_status = get_user_info(access_token: current_user.access_token).preferred_mfa_setting
+    @name = current_user.given_name + " " + current_user.family_name
+    @mfa_status = updated_user.preferred_mfa_setting
   end
 
   def switch_client
@@ -81,6 +84,33 @@ class ProfileController < ApplicationController
     mfa_page_erros
   end
 
+  def show_update_name
+    updated_user = get_user_info(access_token: current_user.access_token)
+    refresh_user(updated_user)
+    @user = current_user
+    @form = UpdateUserNameForm.new(given_name: @user.given_name, family_name: @user.family_name)
+  end
+
+  def update_name
+    @form = UpdateUserNameForm.new(params[:update_user_name_form] || {})
+    if @form.valid?
+      update_user_name(access_token: current_user.access_token, given_name: @form.given_name, family_name: @form.family_name)
+      UpdateUserNameEvent.create(data: { given_name: @form.given_name, family_name: @form.family_name })
+      redirect_to profile_path
+    else
+      updated_user = get_user_info(access_token: current_user.access_token)
+      refresh_user(updated_user)
+      @user = current_user
+      render :show_update_name, status: :bad_request
+    end
+  rescue AuthenticationBackend::AuthenticationBackendException
+    updated_user = get_user_info(access_token: current_user.access_token)
+    refresh_user(updated_user)
+    @user = current_user
+    @form.errors.add(:base, t('users.update_name.errors.generic_error'))
+    render :show_update_name, status: :bad_request
+  end
+
 private
 
   def mfa_page_erros
@@ -88,5 +118,11 @@ private
     @secret_code = flash.discard[:secret_code]
     @secret_code_svg = generate_new_qr(secret_code: @secret_code, email: current_user.email)
     render :show_change_mfa, status: :bad_request
+  end
+
+  def refresh_user(updated_user)
+    current_user.given_name = updated_user.user_attributes.find { |attr| attr.name == 'given_name' }.value
+    current_user.family_name = updated_user.user_attributes.find { |attr| attr.name == 'family_name' }.value
+    current_user.email = updated_user.user_attributes.find { |attr| attr.name == 'email' }.value
   end
 end
