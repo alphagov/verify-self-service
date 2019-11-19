@@ -376,9 +376,7 @@ en:
       how_long_it_takes: This usually takes around 10 minutes
       if_you_already_added: 'If you have already added the new key and certificate to your service provider configuration:'
       connection_break: Wait for your connection to GOV.UK Verify to break.
-      apply_changes: Apply the changes to fix the connection.
-      if_you_have_not_already_added: 'If you have not already added the new key and certificate to your service provider configuration:'
-      add_new_signing_key_and_certificate: the new signing key and certificate to your service provider.
+      apply_changes: You should have added your new encryption key and certificate to your service provider configuration earlier. Apply the changes to fix the connection.
     before_you_start:
       title: Before you start
       rotate_certificate_read_steps: The process for rotating each certificate is slightly different. Read the steps on each page carefully, even if you’ve rotated certificates before.

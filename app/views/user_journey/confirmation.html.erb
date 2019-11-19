@@ -18,12 +18,6 @@
     <li><%= t 'user_journey.dual_running.connection_break' %></li>
     <li><%= t 'user_journey.dual_running.apply_changes' %></li>
   </ul>
-  <h3 class="govuk-heading-s"><%= t 'user_journey.dual_running.if_you_have_not_already_added' %></h3>
-  <ul class="govuk-list govuk-list--number">
-    <li><%= t 'user_journey.dual_running.add_new_signing_key_and_certificate' %></li>
-    <li><%= t 'user_journey.dual_running.connection_break' %></li>
-    <li><%= t 'user_journey.dual_running.apply_changes' %></li>
-  </ul>
 <% elsif @certificate.encryption? %>
   <ul class="govuk-list govuk-list--number">
     <li><%= t('user_journey.confirmation.received_email', usage: @certificate.usage, component: @certificate.component.display) %></li>
