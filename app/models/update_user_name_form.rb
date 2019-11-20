@@ -1,11 +1,11 @@
 class UpdateUserNameForm
   include ActiveModel::Model
 
-  attr_reader :family_name, :given_name
-  validates_presence_of :family_name, :given_name
+  attr_reader :first_name, :last_name
+  validates_presence_of :first_name, :last_name
 
   def initialize(params = {})
-    @family_name = params[:family_name]
-    @given_name = params[:given_name]
+    @first_name = params[:first_name]
+    @last_name = params[:last_name]
   end
 end

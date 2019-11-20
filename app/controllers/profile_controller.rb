@@ -11,7 +11,7 @@ class ProfileController < ApplicationController
     updated_user = get_user_info(access_token: current_user.access_token)
     refresh_user(updated_user)
     @user = current_user
-    @name = current_user.given_name + " " + current_user.family_name
+    @name = current_user.first_name + " " + current_user.last_name
     @mfa_status = updated_user.preferred_mfa_setting
   end
 
@@ -88,24 +88,20 @@ class ProfileController < ApplicationController
     updated_user = get_user_info(access_token: current_user.access_token)
     refresh_user(updated_user)
     @user = current_user
-    @form = UpdateUserNameForm.new(given_name: @user.given_name, family_name: @user.family_name)
+    @form = UpdateUserNameForm.new(first_name: @user.first_name, last_name: @user.last_name)
   end
 
   def update_name
     @form = UpdateUserNameForm.new(params[:update_user_name_form] || {})
     if @form.valid?
-      update_user_name(access_token: current_user.access_token, given_name: @form.given_name, family_name: @form.family_name)
-      UpdateUserNameEvent.create(data: { given_name: @form.given_name, family_name: @form.family_name })
+      update_user_name(access_token: current_user.access_token, given_name: @form.first_name, family_name: @form.last_name)
+      UpdateUserNameEvent.create(data: { first_name: @form.first_name, last_name: @form.last_name })
       redirect_to profile_path
     else
-      updated_user = get_user_info(access_token: current_user.access_token)
-      refresh_user(updated_user)
       @user = current_user
       render :show_update_name, status: :bad_request
     end
   rescue AuthenticationBackend::AuthenticationBackendException
-    updated_user = get_user_info(access_token: current_user.access_token)
-    refresh_user(updated_user)
     @user = current_user
     @form.errors.add(:base, t('users.update_name.errors.generic_error'))
     render :show_update_name, status: :bad_request
@@ -121,8 +117,8 @@ private
   end
 
   def refresh_user(updated_user)
-    current_user.given_name = updated_user.user_attributes.find { |attr| attr.name == 'given_name' }.value
-    current_user.family_name = updated_user.user_attributes.find { |attr| attr.name == 'family_name' }.value
+    current_user.first_name = updated_user.user_attributes.find { |attr| attr.name == 'given_name' }.value
+    current_user.last_name = updated_user.user_attributes.find { |attr| attr.name == 'family_name' }.value
     current_user.email = updated_user.user_attributes.find { |attr| attr.name == 'email' }.value
   end
 end

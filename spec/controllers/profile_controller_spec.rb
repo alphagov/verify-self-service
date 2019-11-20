@@ -106,4 +106,39 @@ RSpec.describe ProfileController, type: :controller do
       expect(subject).to render_template(:show_change_mfa)
     end
   end
+
+  context '#update_user_name' do
+    it 'renders the show user name page' do
+      usermgr_stub_auth
+      get :show_update_name
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:show_update_name)
+    end
+    
+    it 'updates the user name' do
+      usermgr_stub_auth
+      stub_cognito_response(method: :update_user_attributes, payload: {} )
+      post :update_name, params: { update_user_name_form: { first_name: 'Joe', last_name: 'Bloggs' } }
+      expect(UpdateUserNameEvent.last.data['first_name']).to eq('Joe')
+      expect(UpdateUserNameEvent.last.data['last_name']).to eq('Bloggs')
+      expect(subject).to redirect_to(profile_path)
+    end
+
+    it 'fails with error when form not valid' do
+      usermgr_stub_auth
+      stub_cognito_response(method: :update_user_attributes, payload: {})
+      post :update_name, params: { update_user_name_form: { given_name: ''} }
+      expect(response).to have_http_status(:bad_request)
+      expect(subject).to render_template(:show_update_name)
+    end
+
+    it 'fails with error when a cognito error is thrown' do
+      usermgr_stub_auth
+      stub_cognito_response(method: :update_user_attributes, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+      post :update_name, params: { update_user_name_form: { first_name: 'Joe', last_name: 'Bloggs' } }
+      expect(response).to have_http_status(:bad_request)
+      expect(subject).to render_template(:show_update_name)
+      expect(subject.instance_variable_get('@form').errors.full_messages_for(:base)).to include(t('users.update_name.errors.generic_error'))
+    end
+  end
 end
