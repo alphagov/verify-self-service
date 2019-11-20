@@ -14,8 +14,8 @@ RSpec.describe 'InviteToTeam', type: :system do
     stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
     visit invite_to_team_path(Team.first.id)
     fill_in 'invite_user_form_email', with: 'test@test.com'
-    fill_in 'invite_user_form_given_name', with: "test"
-    fill_in 'invite_user_form_family_name', with: "User"
+    fill_in 'invite_user_form_first_name', with: "test"
+    fill_in 'invite_user_form_last_name', with: "User"
     check 'invite_user_form_roles_certmgr'
     check 'invite_user_form_roles_usermgr'
     click_button 'Invite user'
@@ -27,7 +27,7 @@ RSpec.describe 'InviteToTeam', type: :system do
     visit invite_to_team_path(Team.first.id)
     click_button 'Invite user'
     expect(page).to have_content "Email can't be blank"
-    expect(page).to have_content "Given name can't be blank"
-    expect(page).to have_content "Family name can't be blank"
+    expect(page).to have_content "First name can't be blank"
+    expect(page).to have_content "Last name can't be blank"
   end
 end

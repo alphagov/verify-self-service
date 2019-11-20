@@ -1,16 +1,16 @@
 class InviteUserForm
   include ActiveModel::Model
 
-  attr_reader :email, :given_name, :family_name, :roles
+  attr_reader :email, :first_name, :last_name, :roles
 
-  validates_presence_of :email, :given_name, :family_name, :roles
+  validates_presence_of :email, :first_name, :last_name, :roles
 
   validate :email_is_valid, :validate_roles
 
   def initialize(hash)
     @email = hash[:email]
-    @given_name = hash[:given_name]
-    @family_name = hash[:family_name]
+    @first_name = hash[:first_name]
+    @last_name = hash[:last_name]
     @roles = hash[:roles]
   end
 

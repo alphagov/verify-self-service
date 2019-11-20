@@ -113,8 +113,8 @@ RSpec.describe UsersController, type: :controller do
           invite_user_form:
             {
               email: 'test@test.test',
-              given_name: 'First Name',
-              family_name: 'Surname',
+              first_name: 'First Name',
+              last_name: 'Surname',
               roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
             }
         }
@@ -312,8 +312,8 @@ RSpec.describe UsersController, type: :controller do
           invite_user_form:
             {
               email: 'test@test.test',
-              given_name: 'First Name',
-              family_name: 'Surname',
+              first_name: 'First Name',
+              last_name: 'Surname',
               roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
             }
         }
@@ -332,8 +332,8 @@ RSpec.describe UsersController, type: :controller do
           invite_user_form:
             {
               email: 'test@test.test',
-              given_name: 'First Name',
-              family_name: 'Surname',
+              first_name: 'First Name',
+              last_name: 'Surname',
               roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
             }
         }
@@ -350,8 +350,8 @@ RSpec.describe UsersController, type: :controller do
           invite_user_form:
             {
               email: 'test@test.test',
-              given_name: 'First Name',
-              family_name: 'Surname',
+              first_name: 'First Name',
+              last_name: 'Surname',
               roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
             }
         }
@@ -365,7 +365,7 @@ RSpec.describe UsersController, type: :controller do
         stub_cognito_response(method: :admin_get_user, payload: cognito_user)
         stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         expect_any_instance_of(AuthenticationBackend).to receive(:resend_invite)
-        get :resend_invitation, params: { user_id: user_id} 
+        get :resend_invitation, params: { user_id: user_id}
         expect(subject).to redirect_to(update_user_path(user_id: user_id))
         expect(flash[:error]).to be_nil
         expect(flash[:success]).to eq(t('users.update.resend_invitation.success'))
@@ -375,7 +375,7 @@ RSpec.describe UsersController, type: :controller do
         stub_cognito_response(method: :admin_get_user, payload: cognito_user)
         stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         stub_cognito_response(method: :admin_create_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
-        get :resend_invitation, params: { user_id: user_id} 
+        get :resend_invitation, params: { user_id: user_id}
         expect(subject).to redirect_to(update_user_path(user_id: user_id))
         expect(flash[:error]).to eq(t('users.update.resend_invitation.error'))
         expect(flash[:success]).to be_nil
