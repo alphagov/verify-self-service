@@ -51,6 +51,5 @@ module VerifySelfService
     # workaround until https://github.com/sass/libsass/milestone/35 is shipped
     config.assets.css_compressor = nil
 
-    config.hub_config_host = ENV.fetch('HUB_CONFIG_HOST')
   end
 end
