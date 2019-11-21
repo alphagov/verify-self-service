@@ -24,7 +24,10 @@ class AdminController < ApplicationController
   def test_connection
     url = URI.parse(params[:address])
     req = Net::HTTP::Get.new(url.to_s)
-    res = Net::HTTP.start(url.host, url.port) { |http|
+    res = Net::HTTP.start(url.host, url.port,
+                          use_ssl: url.scheme == 'https',
+                          open_timeout: 3,
+                          read_timeout: 3) { |http|
       http.request(req)
     }
     render plain: res.body
