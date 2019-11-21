@@ -11,24 +11,11 @@ RSpec.describe 'Confirmation page', type: :system do
   let(:sp_signing_certificate) { create(:sp_signing_certificate, component: create(:sp_component, team_id: user.team)) }
   let(:vsp_signing_certificate) { create(:vsp_signing_certificate, component: create(:sp_component, vsp: true, team_id: user.team)) }
 
-  before(:each) do
-    ReplaceEncryptionCertificateEvent.create(
-      component: sp_encryption_certificate.component,
-      encryption_certificate_id: sp_encryption_certificate.id
-    )
-    ReplaceEncryptionCertificateEvent.create(
-      component: msa_encryption_certificate.component,
-      encryption_certificate_id: msa_encryption_certificate.id
-    )
-    ReplaceEncryptionCertificateEvent.create(
-      component: vsp_encryption_certificate.component,
-      encryption_certificate_id: vsp_encryption_certificate.id
-    )
-  end
-
   context 'shows confirmation page for msa' do
     it 'encryption and successfully goes to next page' do
-      visit confirmation_path(msa_encryption_certificate.id)
+      event = create(:replace_encryption_certificate_event, component: msa_encryption_certificate.component, encryption_certificate_id: msa_encryption_certificate.id)
+
+      visit confirmation_path(event.component.encryption_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::MSA_SHORT
       expect(page).to have_content 'delete the old encryption key and certificate from your MSA configuration'
       click_link 'Rotate more certificates'
@@ -36,7 +23,9 @@ RSpec.describe 'Confirmation page', type: :system do
     end
 
     it 'signing and successfully goes to next page' do
-      visit confirmation_path(msa_signing_certificate.id)
+      event = create(:upload_certificate_event, component: msa_signing_certificate.component)
+
+      visit confirmation_path(event.component.signing_certificates.first.id)
       expect(page).to have_content COMPONENT_TYPE::MSA_SHORT
       expect(page).to have_content t('user_journey.confirmation.received_email_to_promote', usage: msa_signing_certificate.usage, component: msa_signing_certificate.component.display)
       click_link 'Rotate more certificates'
@@ -46,7 +35,9 @@ RSpec.describe 'Confirmation page', type: :system do
 
   context 'shows confirmation page for vsp' do
     it 'encryption and successfully goes to next page' do
-      visit confirmation_path(vsp_encryption_certificate.id)
+      event = create(:replace_encryption_certificate_event, component: vsp_encryption_certificate.component, encryption_certificate_id: vsp_encryption_certificate.id)
+
+      visit confirmation_path(event.component.encryption_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::VSP_SHORT
       expect(page).to have_content 'delete the old encryption key and certificate from your VSP configuration'
       click_link 'Rotate more certificates'
@@ -54,7 +45,9 @@ RSpec.describe 'Confirmation page', type: :system do
     end
 
     it 'signing and successfully goes to next page' do
-      visit confirmation_path(vsp_signing_certificate.id)
+      event = create(:upload_certificate_event, component: vsp_signing_certificate.component)
+
+      visit confirmation_path(event.component.signing_certificates.first.id)
       expect(page).to have_content COMPONENT_TYPE::VSP_SHORT
       expect(page).to have_content t('user_journey.confirmation.received_email_to_replace', usage: vsp_signing_certificate.usage, component: COMPONENT_TYPE::VSP_SHORT)
       click_link 'Rotate more certificates'
@@ -64,7 +57,9 @@ RSpec.describe 'Confirmation page', type: :system do
 
   context 'shows confirmation page for sp' do
     it 'encryption and successfully goes to next page' do
-      visit confirmation_path(sp_encryption_certificate.id)
+      event = create(:replace_encryption_certificate_event, component: sp_encryption_certificate.component, encryption_certificate_id: sp_encryption_certificate.id)
+
+      visit confirmation_path(event.component.encryption_certificate.id)
       expect(page).to have_content COMPONENT_TYPE::SP_LONG
       expect(page).to have_content 'delete the old encryption key and certificate from your service provider configuration'
       click_link 'Rotate more certificates'
@@ -72,7 +67,9 @@ RSpec.describe 'Confirmation page', type: :system do
     end
 
     it 'signing and successfully goes to next page' do
-      visit confirmation_path(sp_signing_certificate.id)
+      event = create(:upload_certificate_event, component: sp_signing_certificate.component)
+
+      visit confirmation_path(event.component.signing_certificates.first.id)
       expect(page).to have_content COMPONENT_TYPE::SP_LONG
       expect(page).to have_content t('user_journey.confirmation.received_email_to_replace', usage: sp_signing_certificate.usage, component: COMPONENT_TYPE::SP_LONG)
       click_link 'Rotate more certificates'
@@ -80,7 +77,9 @@ RSpec.describe 'Confirmation page', type: :system do
     end
 
     it 'signing with dual running set to no displays unique content' do
-      visit confirmation_path(sp_encryption_certificate.id, true)
+      event = create(:replace_encryption_certificate_event, component: sp_encryption_certificate.component, encryption_certificate_id: sp_encryption_certificate.id)
+
+      visit confirmation_path(event.component.encryption_certificate.id, true)
       expect(page).to have_content 'Because your service provider does not support dual running'
     end
   end
