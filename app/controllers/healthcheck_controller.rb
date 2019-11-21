@@ -8,6 +8,7 @@ class HealthcheckController < ApplicationController
       Healthcheck::CognitoCheck,
       Healthcheck::DbCheck,
       Healthcheck::StorageCheck,
+      Healthcheck::HubCheck,
     ]
     result = Healthcheck::Checker.new(checks).run
 
