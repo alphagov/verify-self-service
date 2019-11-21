@@ -70,7 +70,7 @@ RSpec.describe 'Check your certificate page', type: :system do
       expect(page).to have_content 'Encryption'
       click_button 'Use this certificate'
       expect(current_path).to eql confirmation_path(sp_encryption_certificate.id)
-      expect(page).to have_content(t('certificates.errors.cannot_publish'))
+      expect(page).to have_content t('user_journey.confirmation.failed_to_publish_heading')
     end
 
     it 'sp encryption journey with dual running set to no displays unique content' do
