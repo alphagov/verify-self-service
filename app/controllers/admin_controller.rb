@@ -1,4 +1,5 @@
 class AdminController < ApplicationController
+  require 'net/http'
   include ControllerConcern
 
   def index
@@ -17,5 +18,17 @@ class AdminController < ApplicationController
     )
     check_metadata_published(event_id)
     redirect_to admin_path(anchor: :publish)
+  end
+
+  # Temporary for testing purposes
+  def test_connection
+    url = URI.parse(params[:address])
+    req = Net::HTTP::Get.new(url.to_s)
+    res = Net::HTTP.start(url.host, url.port) { |http|
+      http.request(req)
+    }
+    render plain: res.body
+  rescue StandardError => e
+    render plain: e
   end
 end

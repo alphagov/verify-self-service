@@ -6,4 +6,8 @@ class AdminControllerPolicy < ApplicationPolicy
   def publish_metadata?
     user.permissions.admin_management
   end
+
+  def test_connection?
+    user.permissions.admin_management
+  end
 end

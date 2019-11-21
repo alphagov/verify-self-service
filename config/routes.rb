@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   get '/admin', to: 'admin#index'
   get '/admin/publish-metadata/:environment', to: 'admin#publish_metadata', as: :publish_metadata
 
+  # Temporary for testing only
+  get '/admin/test-connection/:address', to: 'admin#test_connection'
+
   resources :sp_components, path: 'admin/sp-components' do
     patch 'associate_service'
     resources :services
