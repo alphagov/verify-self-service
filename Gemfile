@@ -46,6 +46,7 @@ gem 'pundit'
 gem 'request_store'
 gem 'rqrcode'
 
+gem 'notifications-ruby-client'
 gem 'email_validator'
 
 gem 'sentry-raven'
