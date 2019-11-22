@@ -50,5 +50,6 @@ module VerifySelfService
     # Set a css_compressor so sassc-rails does not overwrite the compressor when running 
     # workaround until https://github.com/sass/libsass/milestone/35 is shipped
     config.assets.css_compressor = nil
+
   end
 end

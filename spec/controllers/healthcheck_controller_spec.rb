@@ -6,6 +6,7 @@ RSpec.describe HealthcheckController, type: :controller do
       allow_any_instance_of(Healthcheck::CognitoCheck).to receive(:status).and_return(:ok)
       allow_any_instance_of(Healthcheck::DbCheck).to receive(:status).and_return(:ok)
       allow_any_instance_of(Healthcheck::StorageCheck).to receive(:status).and_return(:ok)
+      allow_any_instance_of(Healthcheck::HubCheck).to receive(:status).and_return(:ok)
 
       get :index
       json_response = JSON.parse(response.body)
@@ -27,6 +28,9 @@ RSpec.describe HealthcheckController, type: :controller do
       allow_any_instance_of(
         Healthcheck::StorageCheck
       ).to receive(:status).and_raise(Aws::S3::Errors::ServiceError)
+      allow_any_instance_of(
+        Healthcheck::HubCheck
+      ).to receive(:status).and_raise(StandardError)
 
       get :index
       json_response = JSON.parse(response.body)

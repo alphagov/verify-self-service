@@ -79,4 +79,6 @@ Rails.application.configure do
      require 'data/integrity_checker'
      IntegrityChecker.new
    end
+
+  config.hub_config_host = ENV.fetch('HUB_CONFIG_HOST', 'http://localhost:50240')
 end
