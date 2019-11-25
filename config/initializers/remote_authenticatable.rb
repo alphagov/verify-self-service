@@ -33,6 +33,10 @@ module Devise
             clean_up_session
             Rails.logger.warn error
             return fail!(:temporary_password_expired)
+          rescue AuthenticationBackend::PasswordResetRequiredException => error
+            Rails.logger.error error
+            clean_up_session
+            return redirect!(Rails.application.routes.url_helpers.reset_user_password_send_code_path(email: params[:user][:email]))
           rescue StandardError => error
             Rails.logger.error error
             clean_up_session

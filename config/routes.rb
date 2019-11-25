@@ -65,6 +65,7 @@ Rails.application.routes.draw do
   post 'forgot-password', to: 'password#send_code'
   get 'reset-password', to: 'password#user_code'
   post 'reset-password', to: 'password#process_code'
+  get 'reset-user-password/:email', constraints: { email: /[^\/]+/}, to: 'password#reset_user_password_send_code', as: :reset_user_password_send_code
 
   get 'profile', to: 'profile#show'
   post 'profile/switch-client', to: 'profile#switch_client'

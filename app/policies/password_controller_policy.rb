@@ -33,4 +33,8 @@ class PasswordControllerPolicy < ApplicationPolicy
   def reset?
     true
   end
+
+  def reset_user_password_send_code?
+    true
+  end
 end
