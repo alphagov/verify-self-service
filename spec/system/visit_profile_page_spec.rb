@@ -14,7 +14,13 @@ RSpec.describe 'Profile page', type: :system do
 
     it 'should show profile page with mfa setup' do
       user_info = { username: "00000000-0000-0000-0000-000000000000",
-                    user_attributes: [],
+                    user_attributes: [
+                      { name: 'email', value: 'joebloggs@test.com' },
+                      { name: 'email_verified', value: 'True' },
+                      { name: 'given_name', value: 'Joe'},
+                      { name: 'family_name', value: 'Bloggs'},
+                      { name: 'custom:roles', value: 'certmgr' },
+                    ],
                     mfa_options: nil,
                     preferred_mfa_setting: nil,
                     user_mfa_setting_list: nil,
@@ -28,7 +34,13 @@ RSpec.describe 'Profile page', type: :system do
 
     it 'should show profile page with change mfa' do
       user_info = { username: "00000000-0000-0000-0000-000000000000",
-                    user_attributes: [],
+                    user_attributes: [
+                      { name: 'email', value: 'joebloggs@test.com' },
+                      { name: 'email_verified', value: 'True' },
+                      { name: 'given_name', value: 'Joe'},
+                      { name: 'family_name', value: 'Bloggs'},
+                      { name: 'custom:roles', value: 'certmgr' },
+                    ],
                     mfa_options: nil,
                     preferred_mfa_setting: "SOFTWARE_TOKEN_MFA",
                     user_mfa_setting_list: [ "SOFTWARE_TOKEN_MFA" ],

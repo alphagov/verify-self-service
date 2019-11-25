@@ -21,6 +21,8 @@ class MemberPolicy < ApplicationPolicy
   alias_method :update_email?, :member_authorized?
   alias_method :show_remove_user?, :member_authorized?
   alias_method :remove_user?, :member_authorized?
+  alias_method :show_update_name?, :member_authorized?
+  alias_method :update_name?, :member_authorized?
 
 private
 

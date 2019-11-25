@@ -202,6 +202,18 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e)
   end
 
+  def update_user_name(access_token:, given_name:, family_name:)
+    client.update_user_attributes(
+      access_token: access_token,
+      user_attributes: [
+        { name: 'given_name', value: given_name },
+        { name: 'family_name', value: family_name },
+      ],
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
+  end
+
   def list_groups(limit: 60)
     client.list_groups(
       user_pool_id: user_pool_id,

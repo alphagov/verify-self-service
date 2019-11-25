@@ -1,0 +1,23 @@
+<%= page_title t('users.update_name.title') %>
+
+<%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>
+
+<%= error_summary_for(@form.errors, :update_user_name_form) %>
+
+<h1 class="govuk-heading-l"><%= t('users.update_name.title') %></h1>
+
+<%= form_for @form, url: update_user_name_post_path, class: 'govuk-form-group' do |f| %>
+  <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:first_name) %>">
+    <%= error_message_on(f.object.errors, :first_name) if @form.errors.key?(:first_name) %>
+    <%= f.label :first_name, class: "govuk-label" %>
+    <%= f.text_field :first_name, class: "govuk-input govuk-input--width-30" %>
+  </div>
+  <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:last_name) %>">
+    <%= error_message_on(f.object.errors, :last_name) if @form.errors.key?(:last_name) %>
+    <%= f.label :last_name, class: "govuk-label" %>
+    <%= f.text_field :last_name, class: "govuk-input govuk-input--width-30" %>
+  </div>
+  <div class="actions">
+    <%= f.submit t('users.update_name.save'), class: "govuk-button", data: { module: "govuk-button" } %>
+  </div>
+<% end %>

@@ -40,7 +40,6 @@ module Devise
         self.access_token = resp.access_token
         self.roles = claims['custom:roles']
         self.permissions = UserRolePermissions.new(claims['custom:roles'], claims['email'])
-        self.full_name = "#{claims['given_name']} #{claims['family_name']}"
         self.first_name = claims['given_name']
         self.last_name = claims['family_name']
         self.team = Team.find_by_team_alias(claims['cognito:groups'][0])&.id unless claims['cognito:groups'].nil?
@@ -76,7 +75,6 @@ module Devise
           resource.access_token = data['access_token']
           resource.roles = data['roles']
           resource.permissions = UserRolePermissions.new(data['roles'], data['email'])
-          resource.full_name = "#{data['given_name']} #{data['family_name']}"
           resource.last_name = data['given_name']
           resource.last_name = data['family_name']
           resource.session_start_time = data['session_start_time']

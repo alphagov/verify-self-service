@@ -79,6 +79,11 @@ en:
       errors:
         already_exists: "%{email} is already used by a different user."
         generic_error: Error occurred while updating the user's email. Please try again.
+    update_name:
+      title: Change name
+      save: Save
+      errors:
+        generic_error: Error occurred while updating name. Please try again.
     permissions:
       can: Can
       cannot: Cannot
