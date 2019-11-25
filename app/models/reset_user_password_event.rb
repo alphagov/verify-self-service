@@ -1,0 +1,2 @@
+class ResetUserPasswordEvent < Event
+end

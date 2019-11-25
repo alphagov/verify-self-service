@@ -71,6 +71,15 @@ module AuthenticationBackend
     raise UserNotFoundException.new(e)
   end
 
+  def admin_reset_user_password(username:)
+    client.admin_reset_user_password(
+      username: username,
+      user_pool_id: user_pool_id,
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
+  end
+
   def create_group(name:, description:)
     client.create_group(
       group_name: name,

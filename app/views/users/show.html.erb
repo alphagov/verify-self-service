@@ -6,6 +6,8 @@
 
 <%= form_for @form, url: update_user_post_path, class: 'govuk-form-group' do |f| %>
 
+<%= link_to 'reset users password', reset_user_password_path, class: 'govuk-link' %>
+
   <% if @gds || (@team_member.user_status?('FORCE_CHANGE_PASSWORD') || @team_member.user_status?('RESET_REQUIRED')) %>
     <p class="govuk-body">
       <%= t('users.status_label') %> <%= t("users.status.#{@team_member.status}") %> <% if @team_member.user_status?('FORCE_CHANGE_PASSWORD') %>

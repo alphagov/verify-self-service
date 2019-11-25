@@ -49,6 +49,8 @@ Rails.application.routes.draw do
   post '/users/:user_id/update-email', to: 'users#update_email', as: :update_user_email_address_post
   get '/users/:user_id/remove-user', to: 'users#show_remove_user', as: :remove_user
   delete '/users/:user_id/remove-user', to: 'users#remove_user', as: :remove_user_post
+  get '/users/:user_id/reset-user-password', to: 'users#show_reset_user_password', as: :reset_user_password
+  post '/users/:user_id/reset-user-password', to: 'users#reset_user_password', as: :reset_user_password_post
 
   get '/profile/change-password', to: 'password#password_form'
   post '/profile/change-password', to: 'password#update_password'

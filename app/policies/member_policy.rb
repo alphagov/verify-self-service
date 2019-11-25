@@ -23,6 +23,8 @@ class MemberPolicy < ApplicationPolicy
   alias_method :remove_user?, :member_authorized?
   alias_method :show_update_name?, :member_authorized?
   alias_method :update_name?, :member_authorized?
+  alias_method :show_reset_user_password?, :member_authorized?
+  alias_method :reset_user_password?, :member_authorized?
 
 private
 
