@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_31_100615) do
+ActiveRecord::Schema.define(version: 2019_11_22_125659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(version: 2019_08_31_100615) do
     t.uuid "component_id"
     t.boolean "enabled", default: true
     t.string "component_type"
+    t.datetime "in_use_at"
+    t.boolean "notification_sent", default: false, null: false
     t.index ["component_id"], name: "index_certificates_on_component_id"
   end
 
