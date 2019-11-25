@@ -59,4 +59,8 @@ Rails.application.configure do
 
   config.hub_config_host = 'http://config-service.test'
 
+  config.after_initialize do
+    require 'api/hub_config_api'
+    HUB_CONFIG_API = HubConfigApi.new
+  end
 end
