@@ -11,7 +11,6 @@ class ProfileController < ApplicationController
     updated_user = get_user_info(access_token: current_user.access_token)
     refresh_user(updated_user)
     @user = current_user
-    @name = current_user.first_name + " " + current_user.last_name
     @mfa_status = updated_user.preferred_mfa_setting
   end
 
