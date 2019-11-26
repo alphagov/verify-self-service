@@ -5,12 +5,10 @@
 <h1 class="govuk-heading-l"><%= @team_member.full_name %></h1>
 
 <%= form_for @form, url: update_user_post_path, class: 'govuk-form-group' do |f| %>
-
-<%= link_to 'reset users password', reset_user_password_path, class: 'govuk-link' %>
-
   <% if @gds || (@team_member.user_status?('FORCE_CHANGE_PASSWORD') || @team_member.user_status?('RESET_REQUIRED')) %>
     <p class="govuk-body">
-      <%= t('users.status_label') %> <%= t("users.status.#{@team_member.status}") %> <% if @team_member.user_status?('FORCE_CHANGE_PASSWORD') %>
+      <%= t('users.status_label') %> <%= t("users.status.#{@team_member.status}") %> 
+      <% if @team_member.user_status?('FORCE_CHANGE_PASSWORD') %>
          - <%= link_to t('users.update.resend_invitation.link'), resend_invitation_path, class: 'govuk-link'%>
       <% end %>
     </p>
@@ -19,6 +17,12 @@
   <p class="govuk-body">
     <%= @team_member.email %><%= link_to t('users.show.change_email'), update_user_email_address_path, class: 'govuk-!-padding-left-1 govuk-link--no-visited-state' %>
   </p>
+
+  <% if @team_member.user_status?('CONFIRMED') %>
+    <p class="govuk-body">
+      <%= link_to t('users.update.reset_user_password'), reset_user_password_path, class: 'govuk-link' %>
+    </p>
+  <% end %>
 
   <% unless @team_member.gds? %>
     <div class="govuk-form-group">

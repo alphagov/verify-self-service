@@ -84,6 +84,9 @@ en:
       save: Save
       errors:
         generic_error: Error occurred while updating name. Please try again.
+    reset_user_password:
+      title: Reset user password
+      heading: Are you sure you want to reset the password for %{name}?
     permissions:
       can: Can
       cannot: Cannot
@@ -98,6 +101,7 @@ en:
         link: Resend
         success: The invitation has been successfully resent
         error: There was an error resending the invitation
+      reset_user_password: Reset user password
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members
