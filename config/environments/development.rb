@@ -81,4 +81,8 @@ Rails.application.configure do
    end
 
   config.hub_config_host = ENV.fetch('HUB_CONFIG_HOST', 'http://localhost:50240')
+  config.after_initialize do
+    require 'api/hub_config_api'
+    HUB_CONFIG_API = HubConfigApi.new
+  end
 end
