@@ -12,6 +12,7 @@ RSpec.describe 'User journey', type: :feature, acceptance: true do
   let(:totp) { ROTP::TOTP.new(ENV['TOTP_SECRET_CODE']) }
 
   it 'signs in, rotates MSA encryption certificate and signs out', js: true do
+     WebMock.allow_net_connect!
      sign_in_with_mfa
      rotate_msa_encryption_certificate
      sign_out
