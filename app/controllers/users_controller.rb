@@ -152,7 +152,7 @@ private
     send_invitation_email(
       email_address: user.email,
       first_name: user.first_name,
-      temporary_password: @temporary_password
+      temporary_password: @temporary_password,
      )
   end
 
@@ -175,7 +175,7 @@ private
       given_name: @form.first_name,
       family_name: @form.last_name,
       roles: @form.roles,
-      temporary_password: @temporary_password
+      temporary_password: @temporary_password,
     )
   end
 

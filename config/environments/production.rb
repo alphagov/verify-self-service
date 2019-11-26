@@ -128,6 +128,10 @@ Rails.application.configure do
   config.cognito_client_id = ENV.fetch('AWS_COGNITO_CLIENT_ID')
   config.cognito_user_pool_id = ENV.fetch('AWS_COGNITO_USER_POOL_ID')
 
+  config.notify_key = ENV.fetch('NOTIFY_KEY')
+
+  config.app_url = ENV.fetch('APP_URL')
+
   # To seed Cognito
   # 1. Creates a GDS user if one doesn't exist
   # 2. Creates a GDS team and/or group if one doesn't exist

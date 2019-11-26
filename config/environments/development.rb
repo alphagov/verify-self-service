@@ -85,4 +85,8 @@ Rails.application.configure do
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
   end
+
+  config.notify_key = ENV['TEST_NOTIFY_KEY']
+
+  config.app_url = ENV.fetch('APP_URL', 'localhost:3000')
 end
