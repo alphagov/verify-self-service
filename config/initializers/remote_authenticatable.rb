@@ -36,7 +36,7 @@ module Devise
           rescue AuthenticationBackend::PasswordResetRequiredException => error
             Rails.logger.error error
             clean_up_session
-            return redirect!(Rails.application.routes.url_helpers.reset_user_password_send_code_path(email: params[:user][:email]))
+            return redirect!(Rails.application.routes.url_helpers.force_user_reset_password_path(email: params[:user][:email]))
           rescue StandardError => error
             Rails.logger.error error
             clean_up_session

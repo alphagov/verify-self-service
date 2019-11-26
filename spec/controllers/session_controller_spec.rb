@@ -80,7 +80,7 @@ RSpec.describe SessionsController, type: :controller do
     @request.env['devise.mapping'] = Devise.mappings[:user]
     post :create, params: { user: { email: username, password: 'validpass' } }
     expect(response).to have_http_status(:redirect)
-    expect(subject).to redirect_to(reset_user_password_send_code_path(username))
+    expect(subject).to redirect_to(force_user_reset_password_path(username))
   end
 
   def setup_stub

@@ -41,7 +41,7 @@ class PasswordController < ApplicationController
     @form = ForgottenPasswordForm.new
   end
 
-  def reset_user_password_send_code
+  def force_user_reset_password
     session[:email] = params[:email]
     request_password_reset(params)
     redirect_to reset_password_path

@@ -38,7 +38,7 @@ RSpec.describe 'Reset user password page', type: :system do
     it 'renders the page and resets the members password' do
       visit reset_user_password_path(user_id: member_user_id)
       expect(page).to have_content t('users.reset_user_password.heading', name: member_first_name + ' ' + member_family_name)
-      click_link 'Confirm'
+      click_link t('users.reset_user_password.confirm')
       expect(current_path).to eql users_path
     end
   end
@@ -53,7 +53,7 @@ RSpec.describe 'Reset user password page', type: :system do
     it 'renders the page and rests the members password' do
       visit reset_user_password_path(user_id: member_user_id)
       expect(page).to have_content t('users.reset_user_password.heading', name: member_first_name + ' ' + member_family_name)
-      click_link 'Confirm'
+      click_link t('users.reset_user_password.confirm')
       expect(current_path).to eql users_path
     end
   end
