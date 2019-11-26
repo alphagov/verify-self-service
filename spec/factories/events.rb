@@ -53,4 +53,12 @@ FactoryBot.define do
     service { create(:service) }
     msa_component_id { create(:msa_component).id }
   end
+
+  factory :certificate_in_use_event do
+    certificate { create(:sp_signing_certificate) }
+  end
+
+  factory :certificate_notification_sent_event do
+    certificate { create(:sp_signing_certificate) }
+  end
 end

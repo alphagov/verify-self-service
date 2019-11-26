@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Certificate, type: :model do
+
   it 'is valid with valid attributes' do
     expect(build(:msa_signing_certificate)).to be_valid
     expect(build(:msa_encryption_certificate)).to be_valid
