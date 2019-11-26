@@ -3,7 +3,7 @@ class UploadCertificateEvent < AggregatedEvent
   include CertificateConcern
 
   belongs_to_aggregate :certificate
-  data_attributes :value, :usage, :component_id, :component_type
+  data_attributes :value, :usage, :component_id, :component_type, :admin_upload
   belongs_to :component, polymorphic: true
   before_save { |event| event.value = convert_to_inline_der(value) }
   after_save TriggerMetadataEventCallback.publish

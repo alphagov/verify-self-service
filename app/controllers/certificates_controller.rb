@@ -94,6 +94,7 @@ private
           .merge(
             component_id: component_id,
             component_type: component_type,
+            admin_upload: true,
           )
   end
 end

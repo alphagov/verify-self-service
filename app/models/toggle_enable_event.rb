@@ -21,7 +21,7 @@ private
   def not_only_certificate?
     return if certificate.encryption?
     return if enabled
-    return if certificate.component.enabled_signing_certificates.length == 2
+    return if certificate.component.enabled_signing_certificates.length >= 2
 
     errors.add(:certificate, I18n.t('certificates.errors.cannot_disable'))
   end
