@@ -20,6 +20,8 @@ module X509Validator
   end
 
   def certificate_has_appropriate_not_after(record, x509)
+    return if record.respond_to?(:admin_upload) && record.admin_upload == true
+
     if x509.not_after < Time.now
       record.errors.add(:certificate, I18n.t('certificates.errors.expired'))
     elsif x509.not_after < Time.now + 30.days
