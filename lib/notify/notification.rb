@@ -9,7 +9,7 @@ module Notification
     client.send_email(
       email_address: email_address,
       template_id: "a0578c4a-3373-48c0-b041-c61fcdf4f843",
-      personalisation: { team: "test"}
+      personalisation: { team: "test" },
      )
   end
 end

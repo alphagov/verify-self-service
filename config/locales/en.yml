@@ -87,6 +87,8 @@ en:
     reset_user_password:
       title: Reset user password
       heading: Are you sure you want to reset the password for %{name}?
+      errors:
+        generic_error: Something went wrong when removing the user, please try again
     permissions:
       can: Can
       cannot: Cannot
@@ -101,7 +103,6 @@ en:
         link: Resend
         success: The invitation has been successfully resent
         error: There was an error resending the invitation
-      reset_user_password: Reset user password
     roles:
       certmgr: Manage certificates
       usermgr: Add, edit and remove team members

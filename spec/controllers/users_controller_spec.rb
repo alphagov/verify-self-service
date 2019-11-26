@@ -219,6 +219,31 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to redirect_to(users_path)
       end
     end
+
+    describe '#show_reset_user_password' do
+      it 'renders the reset user password page' do
+        get :show_reset_user_password, params: { user_id: user_id }
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show_reset_user_password)
+      end
+    end
+
+    describe '#reset_user_password' do
+      it 'resets the users password' do
+        stub_cognito_response(method: :admin_reset_user_password, payload: {} )
+        post :reset_user_password, params: { user_id: user_id }
+        expect(ResetUserPasswordEvent.last.data["username"]).to eq('cherry.one@test.com')
+        expect(subject).to redirect_to(users_path)
+      end
+
+      it 'fails with error when a cognito error is thrown' do
+        stub_cognito_response(method: :admin_reset_user_password, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        delete :reset_user_password, params: { user_id: user_id }
+        expect(response).to have_http_status(:redirect)
+        expect(flash[:errors]).to eq(t 'users.reset_user_password.errors.generic_error')
+        expect(subject).to redirect_to(users_path)
+      end
+    end
   end
 
   context 'User Manager' do

@@ -7,8 +7,7 @@
 <%= form_for @form, url: update_user_post_path, class: 'govuk-form-group' do |f| %>
   <% if @gds || (@team_member.user_status?('FORCE_CHANGE_PASSWORD') || @team_member.user_status?('RESET_REQUIRED')) %>
     <p class="govuk-body">
-      <%= t('users.status_label') %> <%= t("users.status.#{@team_member.status}") %> 
-      <% if @team_member.user_status?('FORCE_CHANGE_PASSWORD') %>
+      <%= t('users.status_label') %> <%= t("users.status.#{@team_member.status}") %> <% if @team_member.user_status?('FORCE_CHANGE_PASSWORD') %>
          - <%= link_to t('users.update.resend_invitation.link'), resend_invitation_path, class: 'govuk-link'%>
       <% end %>
     </p>
@@ -20,7 +19,7 @@
 
   <% if @team_member.user_status?('CONFIRMED') %>
     <p class="govuk-body">
-      <%= link_to t('users.update.reset_user_password'), reset_user_password_path, class: 'govuk-link' %>
+      <%= link_to t('users.reset_user_password.title'), reset_user_password_path, class: 'govuk-link' %>
     </p>
   <% end %>
 

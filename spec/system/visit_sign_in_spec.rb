@@ -177,4 +177,12 @@ RSpec.describe 'Sign in', type: :system do
     expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
     expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
   end
+
+  scenario 'user redirected when PasswordResetRequiredException is raised' do
+    stub_cognito_response(method: :initiate_auth, payload: 'PasswordResetRequiredException')
+    user = FactoryBot.create(:user_manager_user)
+    sign_in(user.email, user.password)
+    expect(current_path).to eql reset_password_path
+    expect(page).to have_content t('password.reset_password_heading')
+  end
 end

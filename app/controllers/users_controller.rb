@@ -133,7 +133,7 @@ class UsersController < ApplicationController
       admin_reset_user_password(username: @user.email)
       ResetUserPasswordEvent.create(data: { username: @user.email, user_id: params[:user_id], name: @user.full_name })
     rescue AuthenticationBackend::AuthenticationBackendException
-      flash[:errors] = t('users.remove_user.errors.generic_error')
+      flash[:errors] = t('users.reset_user_password.errors.generic_error')
     end
     redirect_to users_path
   end
