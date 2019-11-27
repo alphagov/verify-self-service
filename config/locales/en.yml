@@ -353,7 +353,7 @@ en:
     maintain_connection: You need to manage your certificates to make sure your service stays connected to GOV.UK Verify.
     connection_broken_or_compromised_guidance: If your connection has been broken or compromised, read
     connection_broken_or_compromised_link: this guidance
-    certificates_expiring: "%{number} certificates are expiring soon."
+    certificates_expiring: "%{number} expiring soon."
     find_out_more: Find out more about %{link} in the documentation.
     rotate_key_and_certificate: rotating your %{component} %{certificate} key and certificate
     continue: Continue
