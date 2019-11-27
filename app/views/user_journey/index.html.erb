@@ -2,8 +2,8 @@
 
 <h1 class="govuk-heading-l"><%= t 'components.title' %></h1>
 
-<% if @total_certificates_expiring_soon  > 0 %>
-  <p><%= t('user_journey.certificates_expiring', number: @total_certificates_expiring_soon) %></p>
+<% if @total_certificates_expiring_soon > 0 %>
+  <p><%= t('user_journey.certificates_expiring', number: pluralize(@total_certificates_expiring_soon, 'certificate')) %></p>
 <% end %>
 
 <p><%= t('user_journey.maintain_connection') %></p>

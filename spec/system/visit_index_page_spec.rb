@@ -126,7 +126,13 @@ RSpec.describe 'IndexPage', type: :system do
     first_expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 29.days))
     second_expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 29.days))
     visit root_path
-    expect(page).to have_content '2 certificates are expiring soon.'
+    expect(page).to have_content '2 certificates expiring soon.'
+  end
+
+  it 'shows the number of expiring certificatesat the top of the page correctley pluralized' do
+    one_expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 29.days))
+    visit root_path
+    expect(page).to have_content '1 certificate expiring soon.'
   end
 
   it 'orders by environment and shows least expiring certificate first' do
