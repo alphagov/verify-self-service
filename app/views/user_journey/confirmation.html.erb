@@ -36,8 +36,6 @@
   </ul>
 <% end %>
 
-<%= render 'shared/component_certificate_doc_links', certificate: @certificate  %>
-
 <% if @not_dual_running.nil? && @certificate.signing? %>
   <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
