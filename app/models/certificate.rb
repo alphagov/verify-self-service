@@ -37,6 +37,6 @@ class Certificate < Aggregate
   end
 
   def deploying?
-    updated_at >= 1.minutes.ago
+    updated_at >= 10.minutes.ago
   end
 end
