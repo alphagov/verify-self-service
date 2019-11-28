@@ -41,6 +41,12 @@ class PasswordController < ApplicationController
     @form = ForgottenPasswordForm.new
   end
 
+  def force_user_reset_password
+    session[:email] = params[:email]
+    request_password_reset(params)
+    redirect_to reset_password_path
+  end
+
   def send_code
     @form = ForgottenPasswordForm.new(params[:forgotten_password_form] || {})
     if @form.valid?

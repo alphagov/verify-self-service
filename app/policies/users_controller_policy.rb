@@ -45,4 +45,12 @@ class UsersControllerPolicy < ApplicationPolicy
   def update_email?
     user.permissions.user_management
   end
+
+  def show_reset_user_password?
+    user.permissions.user_management
+  end
+
+  def reset_user_password?
+    user.permissions.user_management
+  end
 end

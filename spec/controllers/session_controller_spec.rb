@@ -73,6 +73,16 @@ RSpec.describe SessionsController, type: :controller do
     expect(session[:challenge_parameters]).to be_nil
   end
 
+  it 'Redirect user straight to reset password page if user password has been reset' do
+    allow(request).to receive(:headers).and_return(user: 'name')
+    stub_cognito_response(method: :initiate_auth, payload: 'PasswordResetRequiredException')
+    username = 'test@test.com'
+    @request.env['devise.mapping'] = Devise.mappings[:user]
+    post :create, params: { user: { email: username, password: 'validpass' } }
+    expect(response).to have_http_status(:redirect)
+    expect(subject).to redirect_to(force_user_reset_password_path(username))
+  end
+
   def setup_stub
     user_hash = CognitoStubClient.stub_user_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN, groups: %w[gds])
     token = CognitoStubClient.user_hash_to_jwt(user_hash)

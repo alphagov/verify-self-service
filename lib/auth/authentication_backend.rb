@@ -15,6 +15,7 @@ module AuthenticationBackend
   class ExpiredConfirmationCodeException < StandardError; end
   class UserNotFoundException < StandardError; end
   class UserNotConfirmedException < StandardError; end
+  class PasswordResetRequiredException < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
@@ -69,6 +70,18 @@ module AuthenticationBackend
   rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
     Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
     raise UserNotFoundException.new(e)
+  end
+
+  def admin_reset_user_password(username:)
+    client.admin_reset_user_password(
+      username: username,
+      user_pool_id: user_pool_id,
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
+    Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
+    raise UserNotFoundException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
   end
 
   def create_group(name:, description:)
@@ -379,6 +392,8 @@ private
     end
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
     raise AuthenticationBackendException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::PasswordResetRequiredException
+    raise PasswordResetRequiredException.new
   end
 
   # Returns an authentication response normally with JWT
