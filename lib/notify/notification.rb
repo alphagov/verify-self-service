@@ -5,9 +5,22 @@ module Notification
 
   def mail_client
     check_for_key
-
     Notifications::Client.new(Rails.configuration.notify_key)
   end
+
+  def send_invitation_email(opts)
+    mail_client.send_email(
+      email_address: opts[:email_address],
+      template_id: INVITE_TEMPLATE,
+      personalisation: {
+        first_name: opts[:first_name],
+        url: url,
+        temporary_password: opts[:temporary_password],
+      },
+     )
+  end
+
+private
 
   def check_for_key
     if Rails.configuration.notify_key.nil?
@@ -22,17 +35,5 @@ module Notification
     else
       "https://#{Rails.configuration.app_url}"
     end
-  end
-
-  def send_invitation_email(opts)
-    mail_client.send_email(
-      email_address: opts[:email_address],
-      template_id: INVITE_TEMPLATE,
-      personalisation: {
-        first_name: opts[:first_name],
-        url: url,
-        temporary_password: opts[:temporary_password],
-      },
-     )
   end
 end
