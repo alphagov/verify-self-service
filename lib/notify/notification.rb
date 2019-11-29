@@ -30,10 +30,10 @@ private
   end
 
   def url
-    if Rails.env.test? || Rails.env.development?
-      "http://#{Rails.configuration.app_url}"
-    else
+    if Rails.env.production?
       "https://#{Rails.configuration.app_url}"
+    else
+      "http://#{Rails.configuration.app_url}"
     end
   end
 end
