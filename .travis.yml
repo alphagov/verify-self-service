@@ -2,9 +2,12 @@ language: ruby
 addons:
   firefox: latest
 services:
-  - postgresql
+- postgresql
 before_script:
-  - psql -c 'create database vss_test;' -U postgres
+- psql -c 'create database vss_test;' -U postgres
 test:
   adapter: postgresql
   database: vss_test
+env:
+  global:
+    secure: xCDWjsH2EmSzrv0nNpHtEc42KlQ74Ykd9zdhfJsHRgKFqBqjpA6EgtsyBeERqOtu4Dx9qbLfN7+oDQa+zQD7Qrzvl7tSTY96lMNHBaBPe53p7OBZ0x5PvmGCyZx7EO/Bo/Y4BPa8z/08YamAgxKtRKbTfPd1xtG8fR4aLlneYd/waZRmGZklCwP7U8rrOEQ6YuJ5ISYJmG+9BlhqRibD3ykRGd0frGoGceKib8mGDlyXAOrI8Y7SpcW62dRbjZIlP5WjmkHLZNvwh3hlt1MH8TPOJsrVFdWtjXGsQiWV5r0bspwXjiC8GhsZwXnqGoIR4mxwBTeIl9jloNGTQidp242cKgWuMS1YFUDEdQz3omPTB63Zx7cOD1NAFiGlFVlMK7UiKORmaw5iKCbizaPwjBUVkIg6PuCZ8B2c302CaVDR7l6/cUXm3Kb4up7/Sv3T8E+vEr3Q+K18Yn5ZwpMe6uXNxWCFmcFdrZBwBCOnF5tLd59enwEHqxQi7zvLPbGQ2/dp885xM1gvkR6b9xODERmt8r2eTexcIHBuRWDV/oHnQxidy7hy5WpfMfVKxMGSGbRgg9Y9l6ekt1rN+z0gFuNECoC5pGCkomKdinJLI1K+osbOpi9AJvO0j3VONTuAtdo2Z37kWpV691nhcf/iCeKS4W8SyHFRSJkZPdNrtDg=
