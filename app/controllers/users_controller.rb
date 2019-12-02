@@ -93,11 +93,11 @@ class UsersController < ApplicationController
   def resend_invitation
     begin
       user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
-      @temporary_password = create_temporary_password
+      temporary_password = create_temporary_password
 
-      resend_invite(username: user.email, temporary_password: @temporary_password)
+      resend_invite(username: user.email, temporary_password: temporary_password)
 
-      send_invite_email(user)
+      send_invite_email(user, temporary_password)
       flash[:success] = t('users.update.resend_invitation.success')
     rescue AuthenticationBackendException => e
       flash[:error] = t('users.update.resend_invitation.error')
@@ -148,11 +148,11 @@ class UsersController < ApplicationController
 
 private
 
-  def send_invite_email(user)
+  def send_invite_email(user, temporary_password)
     send_invitation_email(
       email_address: user.email,
       first_name: user.first_name,
-      temporary_password: @temporary_password,
+      temporary_password: temporary_password,
      )
   end
 
@@ -169,13 +169,13 @@ private
     @team_name = Team.find_by_id(current_user.team).name unless current_user.team.nil?
   end
 
-  def setup_user_in_cognito
+  def setup_user_in_cognito(temporary_password)
     add_user(
       email: @form.email,
       given_name: @form.first_name,
       family_name: @form.last_name,
       roles: @form.roles,
-      temporary_password: @temporary_password,
+      temporary_password: temporary_password,
     )
   end
 
@@ -186,10 +186,10 @@ private
   def invite_user
     begin
       team = Team.find(params[:team_id])
-      @temporary_password = create_temporary_password
-      invite = setup_user_in_cognito
+      temporary_password = create_temporary_password
+      invite = setup_user_in_cognito(temporary_password)
       add_user_to_team_in_cognito(invite.user, team) unless team.nil?
-      send_invite_email(@form)
+      send_invite_email(@form, temporary_password)
     rescue AuthenticationBackend::UsernameExistsException => e
       flash[:errors] = t('users.invite.errors.already_exists')
     rescue AuthenticationBackend::AuthenticationBackendException => e
