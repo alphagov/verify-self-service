@@ -63,9 +63,9 @@ Rails.application.routes.draw do
   post '/profile/update-mfa', to: 'profile#change_mfa', as: :update_mfa_post
   get 'forgot-password', to: 'password#forgot_form'
   post 'forgot-password', to: 'password#send_code'
-  get 'reset-password', to: 'password#user_code'
-  post 'reset-password', to: 'password#process_code'
-  get 'reset-user-password/:email', constraints: { email: /[^\/]+/}, to: 'password#force_user_reset_password', as: :force_user_reset_password
+  get 'reset-password(/:reset_by_admin)', to: 'password#user_code', as: :reset_password
+  post 'reset-password(/:reset_by_admin)', to: 'password#process_code'
+  get 'reset-user-password/:email(/:reset_by_admin)', constraints: { email: /[^\/]+/}, to: 'password#force_user_reset_password', as: :force_user_reset_password
 
   get 'profile', to: 'profile#show'
   post 'profile/switch-client', to: 'profile#switch_client'

@@ -80,7 +80,8 @@
     <div class="govuk-width-container">
       <%= yield(:banner) %>
       <main class="govuk-main-wrapper app-decrease-wrapper-padding" id="main-content" role="main">
-        <% if flash.present? && (flash.keys & %w[error errors notice success warn alert]).size > 0 %>
+
+        <% if flash.present? && (flash.keys & %w[error errors notice success warn alert]).size > 0 && !flash.select{|k,v| !v.blank?}.empty? %>
           <div class="govuk-warning-text">
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">

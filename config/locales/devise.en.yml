@@ -14,7 +14,7 @@ en:
       last_attempt: "You have one more attempt before your account is locked."
       not_found_in_database: "Invalid %{authentication_keys} or password."
       timeout: "Your session expired. Sign in to continue."
-      unauthenticated: "Sign in to continue"
+      unauthenticated: ""
       unconfirmed: "Confirm your email address to continue"
       unknown_cognito_error: "Something went wrong in our backend. Try again later."
       unknown_cognito_response: "Something went wrong in our backend. Try again later."
