@@ -1,6 +1,6 @@
 class ReplaceEncryptionCertificateEvent < AggregatedEvent
   belongs_to_aggregate :component
-  data_attributes :encryption_certificate_id
+  data_attributes :encryption_certificate_id, :admin_upload
   validates :value, presence: true, certificate: true
   after_save TriggerMetadataEventCallback.publish
 

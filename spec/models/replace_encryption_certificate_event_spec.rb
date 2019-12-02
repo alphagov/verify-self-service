@@ -73,6 +73,16 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
     expect(event.errors[:certificate]).to eq [t('certificates.errors.invalid')]
   end
 
+  it 'must error with invalid x509 certificate even when uploaded as an admin' do
+    invalid = certificate_created_with(
+      value: 'not valid'
+    )
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component, encryption_certificate_id: invalid.id, admin_upload: true
+    )
+    expect(event.errors[:certificate]).to eq [t('certificates.errors.invalid')]
+  end
+
   it 'must not be expired' do
     expired = certificate_created_with(
       value: root.generate_encoded_cert(expires_in: -1.months)
@@ -91,6 +101,19 @@ RSpec.describe ReplaceEncryptionCertificateEvent, type: :model do
       component: component, encryption_certificate_id: less_than_one_month.id
     )
     expect(event.errors[:certificate]).to eq [t('certificates.errors.expires_soon')]
+  end
+
+  it 'must not validate expiry when uploaded by an admin' do
+    less_than_one_month = certificate_created_with(
+      value: root.generate_encoded_cert(expires_in: 15.days)
+    )
+    event = ReplaceEncryptionCertificateEvent.create(
+      component: component, encryption_certificate_id: less_than_one_month.id, admin_upload: true
+    )
+
+    expect(event).to be_valid
+    expect(event).to be_persisted
+    expect(event.errors[:certificate]).to be_empty
   end
 
   it 'must expire within 1 year' do
