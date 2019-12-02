@@ -1,8 +1,7 @@
 require 'rails_helper'
-require 'notify/notification'
 
 RSpec.describe UsersController, type: :controller do
-  include AuthSupport, CognitoSupport, Notification
+  include AuthSupport, CognitoSupport
 
   let(:user_id) { SecureRandom::uuid }
 
@@ -109,6 +108,13 @@ RSpec.describe UsersController, type: :controller do
         Rails.configuration.cognito_user_pool_id = 'dummy'
         stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
         team = FactoryBot.create(:team)
+        allow_any_instance_of(TemporaryPassword).to receive(:create_temporary_password).and_return("uyy-QN6ZUqy4MXnvd")
+
+        stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/email").
+        with(
+          body: "{\"email_address\":\"test@test.test\",\"template_id\":\"afdb4827-0f71-4588-b35d-80bd514f5bdb\",\"personalisation\":{\"first_name\":\"First Name\",\"url\":\"http://www.test.com\",\"temporary_password\":\"uyy-QN6ZUqy4MXnvd\"}}",
+        ).to_return(status: 200, body: "{}", headers: {})
+
         post :new, params: {
           team_id: team.id,
           invite_user_form:
@@ -333,6 +339,12 @@ RSpec.describe UsersController, type: :controller do
       it 'invites the user when all valid' do
         Rails.configuration.cognito_user_pool_id = "dummy"
         stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
+        allow_any_instance_of(TemporaryPassword).to receive(:create_temporary_password).and_return("uyy-QN6ZUqy4MXnvd")
+
+        stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/email").
+        with(
+          body: "{\"email_address\":\"test@test.test\",\"template_id\":\"afdb4827-0f71-4588-b35d-80bd514f5bdb\",\"personalisation\":{\"first_name\":\"First Name\",\"url\":\"http://www.test.com\",\"temporary_password\":\"uyy-QN6ZUqy4MXnvd\"}}"
+        ).to_return(status: 200, body: "{}")
 
         post :new, params: {
           team_id: @user.team,
@@ -392,6 +404,12 @@ RSpec.describe UsersController, type: :controller do
         stub_cognito_response(method: :admin_get_user, payload: cognito_user)
         stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         expect_any_instance_of(AuthenticationBackend).to receive(:resend_invite)
+        allow_any_instance_of(TemporaryPassword).to receive(:create_temporary_password).and_return("uyy-QN6ZUqy4MXnvd")
+        stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/email").
+        with(
+          body: "{\"email_address\":\"cherry.one@test.com\",\"template_id\":\"afdb4827-0f71-4588-b35d-80bd514f5bdb\",\"personalisation\":{\"first_name\":\"Cherry\",\"url\":\"http://www.test.com\",\"temporary_password\":\"uyy-QN6ZUqy4MXnvd\"}}"
+        ).to_return(status: 200, body: "{}")
+
         get :resend_invitation, params: { user_id: user_id }
         expect(subject).to redirect_to(update_user_path(user_id: user_id))
         expect(flash[:error]).to be_nil
