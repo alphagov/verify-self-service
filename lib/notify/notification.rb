@@ -4,7 +4,6 @@ module Notification
   INVITE_TEMPLATE = "afdb4827-0f71-4588-b35d-80bd514f5bdb".freeze
 
   def mail_client
-    check_for_key
     Notifications::Client.new(Rails.configuration.notify_key)
   end
 
@@ -21,13 +20,6 @@ module Notification
   end
 
 private
-
-  def check_for_key
-    if Rails.configuration.notify_key.nil?
-      Rails.logger.warn "Notify API key not configured"
-      puts "Notify API key not configured"
-    end
-  end
 
   def url
     if Rails.env.production?
