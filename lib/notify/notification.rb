@@ -7,16 +7,18 @@ module Notification
     Notifications::Client.new(Rails.configuration.notify_key)
   end
 
-  def send_invitation_email(opts)
+  def send_invitation_email(email_address:, first_name:, temporary_password:)
     mail_client.send_email(
-      email_address: opts[:email_address],
+      email_address: email_address,
       template_id: INVITE_TEMPLATE,
       personalisation: {
-        first_name: opts[:first_name],
+        first_name: first_name,
         url: url,
-        temporary_password: opts[:temporary_password],
+        temporary_password: temporary_password,
       },
      )
+  rescue Notifications::Client::RequestError => e
+    Rails.logger.error(e.to_s)
   end
 
 private
