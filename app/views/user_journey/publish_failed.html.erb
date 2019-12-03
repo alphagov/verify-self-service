@@ -1,0 +1,11 @@
+<%= page_title t('user_journey.confirmation.publish_failed_title') %>
+
+<%= render 'shared/certificate_details', certificate: @certificate %>
+
+<h1 class="govuk-heading-l"><%= t('user_journey.confirmation.failed_to_publish_heading') %></h1>
+<p><%= t('user_journey.confirmation.please_contact') %> <a href="mailto:<%=t('user_journey.confirmation.support_email') %> class="govuk-link"><%= t('user_journey.confirmation.support_email')%></a>.</p>
+<p><%= t('user_journey.confirmation.team_help_publish', component: @certificate.component.display, usage: @certificate.usage) %></p>
+<p><%= t('user_journey.confirmation.publish_time') %></p>
+<p><%= t('user_journey.confirmation.will_not_break') %></p>
+
+<%= link_to t('user_journey.confirmation.rotate_more'), root_path, class: "secondary-link secondary-link__confirmation" %>

@@ -142,4 +142,10 @@ Rails.application.configure do
     require 'data/integrity_checker'
     IntegrityChecker.new unless ENV['DISABLE_INTEGRITY_CHECKER'].present?
   end
+
+  config.hub_config_host = ENV.fetch('HUB_CONFIG_HOST')
+  config.after_initialize do
+    require 'api/hub_config_api'
+    HUB_CONFIG_API = HubConfigApi.new
+  end
 end

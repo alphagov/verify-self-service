@@ -56,4 +56,11 @@ Rails.application.configure do
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']
   config.cognito_client_id = ENV['AWS_COGNITO_CLIENT_ID']
   config.cognito_user_pool_id = ENV['AWS_COGNITO_USER_POOL_ID']
+
+  config.hub_config_host = 'http://config-service.test'
+
+  config.after_initialize do
+    require 'api/hub_config_api'
+    HUB_CONFIG_API = HubConfigApi.new
+  end
 end

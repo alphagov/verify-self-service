@@ -6,7 +6,7 @@ class PasswordController < ApplicationController
   skip_before_action :authenticate_user!, except: %w[password_form update_password]
   skip_before_action :set_user, except: %w[password_form update_password]
 
-  layout 'two_thirds_layout', only: :password_form
+  layout 'two_thirds_layout'
 
   def password_form
     @password_form = ChangePasswordForm.new
@@ -38,6 +38,12 @@ class PasswordController < ApplicationController
 
   def forgot_form
     @form = ForgottenPasswordForm.new
+  end
+
+  def force_user_reset_password
+    session[:email] = params[:email]
+    request_password_reset(params)
+    redirect_to reset_password_path(reset_by_admin: params[:reset_by_admin])
   end
 
   def send_code

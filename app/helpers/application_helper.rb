@@ -6,7 +6,7 @@ module ApplicationHelper
   end
 
   def date_to_readable_long_format(cert_date_time)
-    cert_date_time.strftime("%d %B %Y, %H:%M%P")
+    cert_date_time.strftime("%d %B %Y, %I:%M%P")
   end
 
   def page_title(title)

@@ -46,9 +46,12 @@ gem 'pundit'
 gem 'request_store'
 gem 'rqrcode'
 
+gem 'notifications-ruby-client'
 gem 'email_validator'
 
 gem 'sentry-raven'
+
+gem 'faraday'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -64,6 +67,7 @@ group :development, :test do
   gem 'rspec-rails', '>= 4.0.0.beta2'
   gem 'selenium-webdriver'
   gem 'rotp'
+  gem 'webmock'
 end
 
 group :development do

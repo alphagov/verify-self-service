@@ -1,0 +1,2 @@
+class UpdateUserNameEvent < Event
+end

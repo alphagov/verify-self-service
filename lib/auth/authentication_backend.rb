@@ -15,6 +15,7 @@ module AuthenticationBackend
   class ExpiredConfirmationCodeException < StandardError; end
   class UserNotFoundException < StandardError; end
   class UserNotConfirmedException < StandardError; end
+  class PasswordResetRequiredException < StandardError; end
 
   MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
@@ -69,6 +70,18 @@ module AuthenticationBackend
   rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
     Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
     raise UserNotFoundException.new(e)
+  end
+
+  def admin_reset_user_password(username:)
+    client.admin_reset_user_password(
+      username: username,
+      user_pool_id: user_pool_id,
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
+    Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
+    raise UserNotFoundException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
   end
 
   def create_group(name:, description:)
@@ -202,6 +215,18 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e)
   end
 
+  def update_user_name(access_token:, given_name:, family_name:)
+    client.update_user_attributes(
+      access_token: access_token,
+      user_attributes: [
+        { name: 'given_name', value: given_name },
+        { name: 'family_name', value: family_name },
+      ],
+    )
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
+    raise AuthenticationBackendException.new(e)
+  end
+
   def list_groups(limit: 60)
     client.list_groups(
       user_pool_id: user_pool_id,
@@ -273,11 +298,11 @@ module AuthenticationBackend
     status = user[:user_status]
     attributes_key = user.key?(:user_attributes) ? :user_attributes : :attributes
     attributes = user[attributes_key].to_h { |attr| [attr[:name], attr[:value]] }
-    given_name = attributes['given_name']
-    family_name = attributes['family_name']
+    first_name = attributes['given_name']
+    last_name = attributes['family_name']
     email = attributes['email']
     roles = attributes['custom:roles'].split(%r{,\s*})
-    TeamMember.new(user_id: user_id, given_name: given_name, family_name: family_name, email: email, roles: roles, status: status)
+    TeamMember.new(user_id: user_id, first_name: first_name, last_name: last_name, email: email, roles: roles, status: status)
   end
 
   def set_mfa_preferences(access_token:)
@@ -367,6 +392,8 @@ private
     end
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
     raise AuthenticationBackendException.new(e)
+  rescue Aws::CognitoIdentityProvider::Errors::PasswordResetRequiredException
+    raise PasswordResetRequiredException.new
   end
 
   # Returns an authentication response normally with JWT

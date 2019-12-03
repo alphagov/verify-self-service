@@ -49,9 +49,13 @@ Rails.application.routes.draw do
   post '/users/:user_id/update-email', to: 'users#update_email', as: :update_user_email_address_post
   get '/users/:user_id/remove-user', to: 'users#show_remove_user', as: :remove_user
   delete '/users/:user_id/remove-user', to: 'users#remove_user', as: :remove_user_post
+  get '/users/:user_id/reset-user-password', to: 'users#show_reset_user_password', as: :reset_user_password
+  post '/users/:user_id/reset-user-password', to: 'users#reset_user_password', as: :reset_user_password_post
 
   get '/profile/change-password', to: 'password#password_form'
   post '/profile/change-password', to: 'password#update_password'
+  get '/profile/update-name', to: 'profile#show_update_name', as: :update_user_name
+  post '/profile/update-name', to: 'profile#update_name', as: :update_user_name_post
   get '/profile/setup-mfa', to: 'profile#setup_mfa', as: :setup_mfa
   get '/profile/update-mfa/new-code', to: 'profile#request_new_code', as: :request_new_code
   get '/profile/update-mfa', to: 'profile#warn_mfa'
@@ -59,8 +63,9 @@ Rails.application.routes.draw do
   post '/profile/update-mfa', to: 'profile#change_mfa', as: :update_mfa_post
   get 'forgot-password', to: 'password#forgot_form'
   post 'forgot-password', to: 'password#send_code'
-  get 'reset-password', to: 'password#user_code'
-  post 'reset-password', to: 'password#process_code'
+  get 'reset-password(/:reset_by_admin)', to: 'password#user_code', as: :reset_password
+  post 'reset-password(/:reset_by_admin)', to: 'password#process_code'
+  get 'reset-user-password/:email(/:reset_by_admin)', constraints: { email: /[^\/]+/}, to: 'password#force_user_reset_password', as: :force_user_reset_password
 
   get 'profile', to: 'profile#show'
   post 'profile/switch-client', to: 'profile#switch_client'

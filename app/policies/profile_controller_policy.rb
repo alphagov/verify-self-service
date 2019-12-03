@@ -42,4 +42,12 @@ class ProfileControllerPolicy < ApplicationPolicy
   def warn_mfa?
     true
   end
+
+  def show_update_name?
+    true
+  end
+
+  def update_name?
+    true
+  end
 end

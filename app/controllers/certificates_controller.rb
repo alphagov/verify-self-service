@@ -20,6 +20,7 @@ class CertificatesController < ApplicationController
         replace_event = ReplaceEncryptionCertificateEvent.create(
           component: component,
           encryption_certificate_id: @upload.certificate.id,
+          admin_upload: true,
         )
         check_metadata_published(replace_event.id)
       end
@@ -72,6 +73,7 @@ class CertificatesController < ApplicationController
     event = ReplaceEncryptionCertificateEvent.create(
       component: component,
       encryption_certificate_id: certificate.id,
+      admin_upload: true,
     )
     unless event.valid?
       error_message = event.errors.full_messages
@@ -94,6 +96,7 @@ private
           .merge(
             component_id: component_id,
             component_type: component_type,
+            admin_upload: true,
           )
   end
 end

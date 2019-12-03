@@ -28,100 +28,200 @@ RSpec.describe UploadCertificateEvent, type: :model do
   context '#certificate' do
     let(:root) { PKI.new }
 
-    it 'must error with invalid x509 certificate' do
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: 'Not a valid certificate', component: msa_component)
-      expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql [t('certificates.errors.invalid')]
+    context 'uploaded as a user' do
+      it 'must error with invalid x509 certificate' do
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: 'Not a valid certificate', component: msa_component)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.invalid')]
+      end
+  
+      it 'must allow base64 encoded DER format x509 certificate' do
+        cert = root.generate_encoded_cert(expires_in: 2.months)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
+        expect(event.certificate.value).to eql(cert)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must allow PEM format x509 certificate and be stored as base64 encoded DER' do
+        cert = root.generate_signed_cert(expires_in: 2.months)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+        expect(event.certificate.value).to eql(Base64.strict_encode64(cert.to_der))
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must not be expired' do
+        cert = root.generate_encoded_cert(expires_in: -1.months)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.expired')]
+      end
+  
+      it 'must not expire within 1 month' do
+        cert = root.generate_encoded_cert(expires_in: 15.days)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.expires_soon')]
+      end
+  
+      it 'must expire within 1 year' do
+        cert = root.generate_encoded_cert(expires_in: 2.years)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.valid_too_long')]
+      end
+  
+      it 'must be RSA' do
+        cert = root.generate_signed_ec_cert(6.months)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.not_rsa')]
+      end
+  
+      it 'must accept sha-256' do
+        cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA256")
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must accept sha-512' do
+        cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA512")
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must not be sha-1' do
+        cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA1")
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.bad_algorithm')]
+      end
+  
+      it 'must not be sha-384' do
+        cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA384")
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.bad_algorithm')]
+      end
+  
+      it 'must be at least 2048 bits' do
+        cert = root.generate_signed_rsa_cert_and_key(size: 1024)[0]
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.small_key')]
+      end
     end
 
-    it 'must allow base64 encoded DER format x509 certificate' do
-      cert = root.generate_encoded_cert(expires_in: 2.months)
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
-      expect(event.certificate.value).to eql(cert)
-      expect(event).to be_valid
-      expect(event.errors[:certificate]).to be_empty
-    end
-
-    it 'must allow PEM format x509 certificate and be stored as base64 encoded DER' do
-      cert = root.generate_signed_cert(expires_in: 2.months)
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
-      expect(event.certificate.value).to eql(Base64.strict_encode64(cert.to_der))
-      expect(event).to be_valid
-      expect(event.errors[:certificate]).to be_empty
-    end
-
-    it 'must not be expired' do
-      cert = root.generate_encoded_cert(expires_in: -1.months)
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
-      expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql [t('certificates.errors.expired')]
-    end
-
-    it 'must not expire within 1 month' do
-      cert = root.generate_encoded_cert(expires_in: 15.days)
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
-      expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql [t('certificates.errors.expires_soon')]
-    end
-
-    it 'must expire within 1 year' do
-      cert = root.generate_encoded_cert(expires_in: 2.years)
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component)
-      expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql [t('certificates.errors.valid_too_long')]
-    end
-
-    it 'must be RSA' do
-      cert = root.generate_signed_ec_cert(6.months)
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
-      expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql [t('certificates.errors.not_rsa')]
-    end
-
-    it 'must accept sha-256' do
-      cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA256")
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
-      expect(event).to be_valid
-      expect(event.errors[:certificate]).to be_empty
-    end
-
-    it 'must accept sha-512' do
-      cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA512")
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
-      expect(event).to be_valid
-      expect(event.errors[:certificate]).to be_empty
-    end
-
-    it 'must not be sha-1' do
-      cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA1")
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
-      expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql [t('certificates.errors.bad_algorithm')]
-    end
-
-    it 'must not be sha-384' do
-      cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA384")
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
-      expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql [t('certificates.errors.bad_algorithm')]
-    end
-
-    it 'must be at least 2048 bits' do
-      cert = root.generate_signed_rsa_cert_and_key(size: 1024)[0]
-
-      event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
-      expect(event).to_not be_valid
-      expect(event.errors[:certificate]).to eql [t('certificates.errors.small_key')]
+    context 'uploaded as a GDS admin' do
+      it 'must error with invalid x509 certificate' do
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: 'Not a valid certificate', component: msa_component, admin_upload: true)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.invalid')]
+      end
+  
+      it 'must allow base64 encoded DER format x509 certificate' do
+        cert = root.generate_encoded_cert(expires_in: 2.months)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component, admin_upload: true)
+        expect(event.certificate.value).to eql(cert)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must allow PEM format x509 certificate and be stored as base64 encoded DER' do
+        cert = root.generate_signed_cert(expires_in: 2.months)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component, admin_upload: true)
+        expect(event.certificate.value).to eql(Base64.strict_encode64(cert.to_der))
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must allow expired' do
+        cert = root.generate_encoded_cert(expires_in: -1.months)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component, admin_upload: true)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must allow expiring within in less than 30 days' do
+        cert = root.generate_encoded_cert(expires_in: 15.days)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component, admin_upload: true)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must allow expiring in more than 1 year' do
+        cert = root.generate_encoded_cert(expires_in: 2.years)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert, component: msa_component, admin_upload: true)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must be RSA' do
+        cert = root.generate_signed_ec_cert(6.months)
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component, admin_upload: true)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.not_rsa')]
+      end
+  
+      it 'must accept sha-256' do
+        cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA256")
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component, admin_upload: true)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must accept sha-512' do
+        cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA512")
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component, admin_upload: true)
+        expect(event).to be_valid
+        expect(event.errors[:certificate]).to be_empty
+      end
+  
+      it 'must not be sha-1' do
+        cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA1")
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component, admin_upload: true)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.bad_algorithm')]
+      end
+  
+      it 'must not be sha-384' do
+        cert = root.generate_signed_cert(expires_in: 6.months, digest: "SHA384")
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component, admin_upload: true)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.bad_algorithm')]
+      end
+  
+      it 'must be at least 2048 bits' do
+        cert = root.generate_signed_rsa_cert_and_key(size: 1024)[0]
+  
+        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component, admin_upload: true)
+        expect(event).to_not be_valid
+        expect(event.errors[:certificate]).to eql [t('certificates.errors.small_key')]
+      end
     end
   end
 

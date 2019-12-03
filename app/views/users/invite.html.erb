@@ -4,25 +4,25 @@
 
 <h1 class="govuk-heading-l"><%= t 'users.invite.title' %></h1>
 
-<%=error_summary_for(@form&.errors, :form) %>
+<%=error_summary_for(@form&.errors, :invite_user_form) %>
 <%= form_for @form, url: invite_to_team_post_path do |f| %>
 
   <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:email) %>">
     <%= f.label :email, class: "govuk-label" %>
-    <%= error_message_on(f.object.errors, :email) %>
+    <%= error_message_on(f.object.errors, :email) if @form.errors.key?(:email)  %>
     <%= f.email_field :email, autofocus: true, class: "govuk-input" %>
   </div>
 
-  <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:given_name) %>">
-    <%= f.label :given_name, class: "govuk-label" %>
-    <%= error_message_on(f.object.errors, :given_name) %>
-    <%= f.text_field :given_name, class: "govuk-input" %>
+  <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:first_name) %>">
+    <%= f.label :first_name, class: "govuk-label" %>
+    <%= error_message_on(f.object.errors, :first_name) if @form.errors.key?(:first_name) %>
+    <%= f.text_field :first_name, class: "govuk-input"%>
   </div>
 
-  <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:family_name) %>">
-    <%= f.label :family_name, class: "govuk-label" %>
-    <%= error_message_on(f.object.errors, :family_name) %>
-    <%= f.text_field :family_name, class: "govuk-input" %>
+  <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:last_name) %>">
+    <%= f.label :last_name, class: "govuk-label" %>
+    <%= error_message_on(f.object.errors, :last_name) if @form.errors.key?(:last_name)  %>
+    <%= f.text_field :last_name, class: "govuk-input" %>
   </div>
 
   <% if @gds_team %>
@@ -44,9 +44,10 @@
       </strong>
     </div>
   <% else %>
-    <div class="govuk-form-group">
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @form.errors.key?(:roles) %>">
+      <%= error_message_on(f.object.errors, :roles) if @form.errors.key?(:roles) %>
       <fieldset class="govuk-fieldset">
-        <div class="govuk-checkboxes">
+        <div class="govuk-checkboxes" id="invite_user_form_roles">
           <div class="govuk-checkboxes__item">
             <%= f.check_box(:roles, { class: 'govuk-checkboxes__input', multiple: true }, ROLE::CERTIFICATE_MANAGER, nil) %>
             <%= f.label :roles, t("users.roles.#{ROLE::CERTIFICATE_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>
@@ -59,8 +60,6 @@
       </fieldset>
     </div>
   <% end %>
-  
-
 
   <div class="actions">
     <%= f.submit t('users.invite.button'), class: "govuk-button", data: { module: "govuk-button" } %>

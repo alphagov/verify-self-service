@@ -113,8 +113,8 @@ RSpec.describe UsersController, type: :controller do
           invite_user_form:
             {
               email: 'test@test.test',
-              given_name: 'First Name',
-              family_name: 'Surname',
+              first_name: 'First Name',
+              last_name: 'Surname',
               roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
             }
         }
@@ -219,6 +219,31 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to redirect_to(users_path)
       end
     end
+
+    describe '#show_reset_user_password' do
+      it 'renders the reset user password page' do
+        get :show_reset_user_password, params: { user_id: user_id }
+        expect(response).to have_http_status(:success)
+        expect(subject).to render_template(:show_reset_user_password)
+      end
+    end
+
+    describe '#reset_user_password' do
+      it 'resets the users password' do
+        stub_cognito_response(method: :admin_reset_user_password, payload: {} )
+        post :reset_user_password, params: { user_id: user_id }
+        expect(ResetUserPasswordEvent.last.data["username"]).to eq('cherry.one@test.com')
+        expect(subject).to redirect_to(users_path)
+      end
+
+      it 'fails with error when a cognito error is thrown' do
+        stub_cognito_response(method: :admin_reset_user_password, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
+        delete :reset_user_password, params: { user_id: user_id }
+        expect(response).to have_http_status(:redirect)
+        expect(flash[:errors]).to eq(t 'users.reset_user_password.errors.generic_error')
+        expect(subject).to redirect_to(users_path)
+      end
+    end
   end
 
   context 'User Manager' do
@@ -312,8 +337,8 @@ RSpec.describe UsersController, type: :controller do
           invite_user_form:
             {
               email: 'test@test.test',
-              given_name: 'First Name',
-              family_name: 'Surname',
+              first_name: 'First Name',
+              last_name: 'Surname',
               roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
             }
         }
@@ -332,8 +357,8 @@ RSpec.describe UsersController, type: :controller do
           invite_user_form:
             {
               email: 'test@test.test',
-              given_name: 'First Name',
-              family_name: 'Surname',
+              first_name: 'First Name',
+              last_name: 'Surname',
               roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
             }
         }
@@ -350,8 +375,8 @@ RSpec.describe UsersController, type: :controller do
           invite_user_form:
             {
               email: 'test@test.test',
-              given_name: 'First Name',
-              family_name: 'Surname',
+              first_name: 'First Name',
+              last_name: 'Surname',
               roles: [ROLE::USER_MANAGER, ROLE::CERTIFICATE_MANAGER]
             }
         }
@@ -365,7 +390,7 @@ RSpec.describe UsersController, type: :controller do
         stub_cognito_response(method: :admin_get_user, payload: cognito_user)
         stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         expect_any_instance_of(AuthenticationBackend).to receive(:resend_invite)
-        get :resend_invitation, params: { user_id: user_id} 
+        get :resend_invitation, params: { user_id: user_id}
         expect(subject).to redirect_to(update_user_path(user_id: user_id))
         expect(flash[:error]).to be_nil
         expect(flash[:success]).to eq(t('users.update.resend_invitation.success'))
@@ -375,7 +400,7 @@ RSpec.describe UsersController, type: :controller do
         stub_cognito_response(method: :admin_get_user, payload: cognito_user)
         stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
         stub_cognito_response(method: :admin_create_user, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
-        get :resend_invitation, params: { user_id: user_id} 
+        get :resend_invitation, params: { user_id: user_id}
         expect(subject).to redirect_to(update_user_path(user_id: user_id))
         expect(flash[:error]).to eq(t('users.update.resend_invitation.error'))
         expect(flash[:success]).to be_nil

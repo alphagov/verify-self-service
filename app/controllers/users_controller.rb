@@ -123,6 +123,21 @@ class UsersController < ApplicationController
     render :show_update_email, status: :bad_request
   end
 
+  def show_reset_user_password
+    @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+  end
+
+  def reset_user_password
+    begin
+      @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
+      admin_reset_user_password(username: @user.email)
+      ResetUserPasswordEvent.create(data: { username: @user.email, user_id: params[:user_id], name: @user.full_name })
+    rescue AuthenticationBackend::AuthenticationBackendException
+      flash[:errors] = t('users.reset_user_password.errors.generic_error')
+    end
+    redirect_to users_path
+  end
+
 private
 
   def team_valid?
@@ -141,8 +156,8 @@ private
   def setup_user_in_cognito
     add_user(
       email: @form.email,
-      given_name: @form.given_name,
-      family_name: @form.family_name,
+      given_name: @form.first_name,
+      family_name: @form.last_name,
       roles: @form.roles,
     )
   end
