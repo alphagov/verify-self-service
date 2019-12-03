@@ -342,7 +342,7 @@ en:
       VSP: VSP
       SP: service provider
     used_by: "used by %{services}"
-    certificate: Certificate
+    certificate_heading: Certificate
     status: Status
     missing: MISSING
     in_use: IN USE
