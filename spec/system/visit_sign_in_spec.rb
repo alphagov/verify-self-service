@@ -182,7 +182,7 @@ RSpec.describe 'Sign in', type: :system do
     stub_cognito_response(method: :initiate_auth, payload: 'PasswordResetRequiredException')
     user = FactoryBot.create(:user_manager_user)
     sign_in(user.email, user.password)
-    expect(current_path).to eql reset_password_path
+    expect(current_path).to eql reset_password_path(reset_by_admin: true)
     expect(page).to have_content t('password.reset_password_heading')
   end
 end

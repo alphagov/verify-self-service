@@ -86,7 +86,6 @@ class UserJourneyController < ApplicationController
 
     if @upload.valid?
       component = klass_component(@upload.component_type).find_by_id(@upload.component_id)
-
       if @upload.certificate.encryption?
         replace = ReplaceEncryptionCertificateEvent.create(
           component: component,
