@@ -99,6 +99,8 @@ class UserJourneyController < ApplicationController
 
       if certicate_published && replaced_certicate_published
         render :confirmation
+      elsif @upload.certificate.signing? && certicate_published
+        render :confirmation
       else
         render :publish_failed
       end
