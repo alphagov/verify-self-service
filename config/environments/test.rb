@@ -64,8 +64,7 @@ Rails.application.configure do
     HUB_CONFIG_API = HubConfigApi.new
   end
 
-  config.notify_key = ENV.fetch('TEST_NOTIFY_KEY')
+  config.notify_key = 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111'
 
   config.app_url = 'www.test.com'
-
 end
