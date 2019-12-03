@@ -130,20 +130,6 @@ RSpec.shared_examples "show component page" do |component_type|
       expect(page).to have_content(t('certificates.errors.cannot_publish'))
     end
 
-    it 'will not replace encryption certificate with an invalid certificate' do
-      upload_encryption_cert
-      invalid_cert = Certificate.create(
-        usage: CERTIFICATE_USAGE::ENCRYPTION, value: "invalid", component: component
-      )
-      visit polymorphic_url(component)
-
-      expect(show_page).to have_previous_encryption_certificate(invalid_cert)
-
-      show_page.replace_encryption_certificate(invalid_cert)
-      expect(show_page).not_to have_encryption_certificate(invalid_cert)
-      expect(show_page).to have_content t('certificates.errors.invalid')
-    end
-
     it 'successfully enables a certificate' do
       upload_certs
       certs = component.enabled_signing_certificates

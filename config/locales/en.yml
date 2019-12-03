@@ -131,11 +131,14 @@ en:
   certificates:
     title: Upload a new certificate
     caption: "%{heading}"
-    header_id: ID
-    header_name: Name
-    header_usage: Usage
-    header_enabled: Enabled
-    header_last_updated: Last updated
+    header:
+      id: ID
+      name: Name
+      usage: Usage
+      enabled: Enabled
+      last_updated: Last updated
+      action: Action
+      details: Details
     replace_button: Replace
     upload_certificate:
       usage: Certificate usage
@@ -312,7 +315,8 @@ en:
     sign_cert_enabled: Signing Certificates (Enabled)
     sign_cert_disabled: Signing Certificates (Disabled)
     assigned_encryption_cert: Encryption Certificate assigned to component
-    previous_encryption_cert: Previous encryption Certificates
+    previous_encryption_cert: Previous encryption certificates
+    previous_signing_cert: Previous signing certificates
     previous_assigned_encryption_cert: Previous Encryption Certificates for this component
     all_certs: All certificates
     all_certs_for_componenet: All certificates for this component

@@ -2,36 +2,55 @@
   <caption class="govuk-table__caption govuk-heading-m"><%= t('certificates.caption', heading: heading) %></caption>
   <thead class="govuk-table__head">
   <tr class="govuk-table__row">
-    <th class="govuk-table__header"><%= t 'certificates.header_last_updated' %></th>
-    <th class="govuk-table__header"><%= t 'certificates.header_id' %></th>
-    <th class="govuk-table__header"><%= t 'certificates.header_usage' %></th>
-    <th class="govuk-table__header"><%= t 'certificates.header_enabled' %></th>
-    <th class="govuk-table__header" scope="col"></th>
+    
+    <th class="govuk-table__header"><%= t 'certificates.header.details' %></th>
+    <th class="govuk-table__header"><%= t 'certificates.header.usage' %></th>
+    <th class="govuk-table__header"><%= t 'certificates.header.enabled' %></th>
+    <th class="govuk-table__header"><%= t 'certificates.header.last_updated' %></th>
+    <th class="govuk-table__header"><%= t 'certificates.header.action' %></th>
   </tr>
   </thead>
   <tbody class="govuk-table__body">
    <% certificates.each do |certificate| %>
       <tr class="govuk-table__row" id="certificate_table_<%= certificate.id %>">
-        <th class="govuk-table__header" scope="row"><%= format_date_time(certificate.updated_at) %></th>
-        <td class="govuk-table__cell"><%= certificate.id %></td>
+        <td class="govuk-table__cell">
+          ID: <%= certificate.id %> <br>
+          Subject: <strong><%= certificate.x509.subject %></strong> <br>
+          Expires: <%= certificate.x509.not_after %> <br>
+          Value:
+          <div class="govuk-details__text govuk-details__code admin-pre-text">
+            <pre><%= certificate.value %></pre>
+          </div>
+        </td>
         <td class="govuk-table__cell"><%= certificate.usage %></td>
         <td class="govuk-table__cell"><%= certificate.enabled %></td>
+        <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
         <td class="govuk-table__cell">
-        <% unless certificate.encryption? %>
-            <%= form_for [@component, certificate],
-              url: certificate.enabled ?
-                polymorphic_url(
-                  [:disable, @component, certificate],
-                  component: @component,
-                  certificate: certificate
-                ) :
-                polymorphic_url(
-                  [:enable, @component, certificate],
-                  component: @component,
-                  certificate: certificate
+        <% if certificate.signing? %>
+          <%= form_for [@component, certificate],
+            url: certificate.enabled ?
+              polymorphic_url(
+                [:disable, @component, certificate],
+                component: @component,
+                certificate: certificate
+              ) :
+              polymorphic_url(
+                [:enable, @component, certificate],
+                component: @component,
+                certificate: certificate
+              ) do |f| %>
+                <%= f.submit certificate.enabled ? t('certificates.disable') : t('certificates.enable'), class: 'govuk-button', data: { module: "govuk-button" } %>
+              <% end %>
+        <% elsif certificate.encryption? && heading.start_with?( t('certificates.previous') ) %>
+          <%= form_for [@component, certificate],
+            url: 
+              polymorphic_url(
+                [:replace, @component, certificate],
+                 component: @component,
+                 certificate: certificate
                 ) do |f| %>
-                  <%= f.submit certificate.enabled ? t('certificates.disable') : t('certificates.enable'), class: 'govuk-button', data: { module: "govuk-button" } %>
-            <% end %>
+                  <%= f.submit t('certificates.replace_button'), class: 'govuk-button', data: { module: "govuk-button" } %>
+              <% end %>
         <% end %>
         </td>
       </tr>
