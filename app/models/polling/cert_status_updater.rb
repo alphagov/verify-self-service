@@ -6,7 +6,7 @@ class CertStatusUpdater
   def update_hub_usage_status_for_cert(certificate_to_check)
     outcomes = entity_ids_for(certificate_to_check).map { |entity_id| cert_is_in_use_for_entity_id?(entity_id, certificate_to_check) }
 
-    if outcomes.all?
+    if outcomes.present? && outcomes.all?
       update_cert_status_for(certificate_to_check)
     end
   end
