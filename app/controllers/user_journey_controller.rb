@@ -68,7 +68,6 @@ class UserJourneyController < ApplicationController
         return
       end
     end
-
     # For the purposes of the form :(
     @upload = extractor
     Rails.logger.info(merge_errors(@upload, @new_certificate))
@@ -76,36 +75,41 @@ class UserJourneyController < ApplicationController
   end
 
   def confirm
-    new_certificate_value = params[:certificate][:new_certificate]
-    @upload = UploadCertificateEvent.create(
-      usage: @certificate.usage,
-      value: new_certificate_value,
-      component_id: @certificate.component_id,
-      component_type: @certificate.component_type,
-    )
-
-    if @upload.valid?
-      component = klass_component(@upload.component_type).find_by_id(@upload.component_id)
-      if @upload.certificate.encryption?
-        replace = ReplaceEncryptionCertificateEvent.create(
-          component: component,
-          encryption_certificate_id: @upload.certificate.id,
-        )
-        replaced_certicate_published = check_metadata_published_user_journey(replace.id)
-      end
-
-      certicate_published = check_metadata_published_user_journey(@upload.id)
-
-      if certicate_published && replaced_certicate_published
-        render :confirmation
-      elsif @upload.certificate.signing? && certicate_published
-        render :confirmation
-      else
-        render :publish_failed
-      end
+    if @certificate.component.enabled_signing_certificates.length >= 2
+      flash[:error] = 'You have already uploaded two signing certificates'
+      redirect_to root_path
     else
-      Rails.logger.info(@upload.errors.full_messages.join(', '))
-      render :upload_certificate
+      new_certificate_value = params[:certificate][:new_certificate]
+      @upload = UploadCertificateEvent.create(
+        usage: @certificate.usage,
+        value: new_certificate_value,
+        component_id: @certificate.component_id,
+        component_type: @certificate.component_type,
+      )
+
+      if @upload.valid?
+        component = klass_component(@upload.component_type).find_by_id(@upload.component_id)
+        if @upload.certificate.encryption?
+          replace = ReplaceEncryptionCertificateEvent.create(
+            component: component,
+            encryption_certificate_id: @upload.certificate.id,
+          )
+          replaced_certicate_published = check_metadata_published_user_journey(replace.id)
+        end
+
+        certicate_published = check_metadata_published_user_journey(@upload.id)
+
+        if certicate_published && replaced_certicate_published
+          render :confirmation
+        elsif @upload.certificate.signing? && certicate_published
+          render :confirmation
+        else
+          render :publish_failed
+        end
+      else
+        Rails.logger.info(@upload.errors.full_messages.join(', '))
+        render :upload_certificate
+      end
     end
   end
 

@@ -175,6 +175,19 @@ RSpec.describe UserJourneyController, type: :controller do
       expect(subject).to render_template(:check_your_certificate)
     end
 
+    it 'renders index page when more than 2 signing certificates are trying to be submitted' do
+      signing_cert_primary = create(:msa_signing_certificate, component: msa_component)
+      signing_cert_secondary = create(:msa_signing_certificate, component: msa_component)
+      certmgr_stub_auth(team)
+      post :submit,
+          params: params.merge({
+            'upload-certificate': 'string',
+            certificate: { value: signing_cert_secondary.value, component: msa_component }
+          })
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(root_path)
+    end
+
     it 'renders upload certificate page when cert file uploaded' do
       certmgr_stub_auth(team)
       post :submit,
