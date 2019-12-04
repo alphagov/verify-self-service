@@ -17,7 +17,6 @@ module AuthenticationBackend
   class UserNotConfirmedException < StandardError; end
   class PasswordResetRequiredException < StandardError; end
 
-  MINIMUM_PASSWORD_LENGTH = 12
   AUTHENTICATED = 'authenticated'.freeze
   CHALLENGE = 'challenge'.freeze
   RETRY = 'retry'.freeze
@@ -127,9 +126,10 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new("Error occurred associating device with error #{e.message}")
   end
 
-  def add_user(email:, given_name:, family_name:, roles:)
+  def add_user(email:, given_name:, family_name:, roles:, temporary_password:)
     client.admin_create_user(
-      temporary_password: create_temporary_password,
+      temporary_password: temporary_password,
+      message_action: 'SUPPRESS',
       user_attributes: [
         {
           name: 'email',
@@ -162,10 +162,10 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e)
   end
 
-  def resend_invite(username:)
-    client.admin_create_user(
-      temporary_password: create_temporary_password,
-      message_action: 'RESEND',
+  def resend_invite(username:, temporary_password:)
+    client.admin_set_user_password(
+      password: temporary_password,
+      permanent: false,
       username: username,
       user_pool_id: user_pool_id,
   )
@@ -457,26 +457,5 @@ private
 
   def user_pool_id
     Rails.configuration.cognito_user_pool_id
-  end
-
-  def create_temporary_password
-    temporary_password = ''
-    until password_meets_criteria?(temporary_password) do
-      temporary_password = generate_password
-    end
-    temporary_password
-  end
-
-  def generate_password
-    SecureRandom.urlsafe_base64(12).insert(SecureRandom.random_number(11), SecureRandom.random_number(9).to_s)
-  end
-
-  def password_meets_criteria?(password)
-    is_long_enough = password.length >= MINIMUM_PASSWORD_LENGTH
-    has_uppercase = password =~ /[A-Z]/
-    has_lowercase = password =~ /[a-z]/
-    has_numbers = password =~ /[0-9]/
-
-    is_long_enough && has_uppercase && has_lowercase && has_numbers
   end
 end
