@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :cert do
     value { PKI.new.generate_encoded_cert(expires_in: 9.months) }
+    in_use_at { nil }
+    notification_sent { false }
 
     factory :msa_encryption_certificate, class: Certificate do
       usage { CERTIFICATE_USAGE::ENCRYPTION }

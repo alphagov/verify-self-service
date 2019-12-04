@@ -47,6 +47,11 @@ module VerifySelfService
     # The cache reload time for the JWKS file from amazon
     config.jwks_cache_expiry = 1.hour
 
+    # The maximum amount of time it could take for Hub's various cert caches to clear
+    # This should be set to the length of the cert cache on the config service, plus the
+    # longest cache on any of: saml-proxy, saml-soap-proxy, saml-engine
+    config.hub_certs_cache_expiry = 90.seconds
+
     # Set a css_compressor so sassc-rails does not overwrite the compressor when running 
     # workaround until https://github.com/sass/libsass/milestone/35 is shipped
     config.assets.css_compressor = nil
