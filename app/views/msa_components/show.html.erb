@@ -9,14 +9,20 @@
 
 
 <%= render partial: "certificates/status/certificate_table",
-  locals: { certificates: @component.enabled_signing_certificates,
-  heading: t('components.sign_cert_enabled') }
+  locals: { 
+    certificates: @component.enabled_signing_certificates,
+    extra_details: false,
+    heading: t('components.sign_cert_enabled')
+  }
 %>
 
 <% if @component.encryption_certificate.present? %>
   <%= render partial: "certificates/status/certificate_table",
-    locals: { certificates: [@component.encryption_certificate],
-    heading: t('components.assigned_encryption_cert') }
+    locals: { 
+      certificates: [@component.encryption_certificate],
+      extra_details: false,
+      heading: t('components.assigned_encryption_cert')
+    }
   %>
 <% end %>
 
@@ -33,8 +39,11 @@
       </div>
       <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
         <%= render partial: "certificates/status/certificate_table",
-          locals: { certificates: @component.disabled_signing_certificates,
-          heading: t('components.sign_cert_disabled') }
+          locals: { 
+            certificates: @component.disabled_signing_certificates, 
+            extra_details: false,
+            heading: t('components.sign_cert_disabled') 
+          }
         %>
       </div>
     </div>
@@ -51,8 +60,10 @@
           <% if @component.encryption_certificates.present? %>
             <%= render partial: "certificates/status/certificate_table",
             locals: {
-              certificates: @component.previous_encryption_certificates,
-              heading: t('components.previous_assigned_encryption_cert') }
+              certificates: @component.previous_encryption_certificates, 
+              extra_details: false,
+              heading: t('components.previous_assigned_encryption_cert') 
+            }
           %>
           <% end %>
 
@@ -70,8 +81,11 @@
 
         <% if @component.certificates.present? %>
           <%= render partial: "certificates/status/certificate_table",
-          locals: { certificates: @component.certificates,
-          heading: t('components.all_certs_for_componenet') }
+          locals: { 
+            certificates: @component.certificates,
+            extra_details: true,
+            heading: t('components.all_certs_for_componenet') 
+          }
           %>
         <% end %>
       </div>

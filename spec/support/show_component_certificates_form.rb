@@ -6,7 +6,7 @@ class ShowComponentCertificatesForm
     return false if certificate.nil?
 
     within_table('Signing Certificates (Disabled)') do
-      has_selector?("tr#certificate_table_#{certificate.id}", text: 'false')
+      has_selector?("tr#certificate_table_#{certificate.id}", text: certificate.x509.subject)
     end
   end
 
@@ -14,7 +14,7 @@ class ShowComponentCertificatesForm
     return false if certificate.nil?
 
     within_table('Signing Certificates (Enabled)') do
-      has_selector?("tr#certificate_table_#{certificate.id}", text: 'true')
+      has_selector?("tr#certificate_table_#{certificate.id}", text: certificate.x509.subject)
     end
   end
 

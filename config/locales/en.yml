@@ -139,6 +139,9 @@ en:
       last_updated: Last updated
       action: Action
       details: Details
+      subject: Subject
+      expires: Expires
+      value: Value
     replace_button: Replace
     upload_certificate:
       usage: Certificate usage

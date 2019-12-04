@@ -4,8 +4,10 @@
   <tr class="govuk-table__row">
     
     <th class="govuk-table__header"><%= t 'certificates.header.details' %></th>
-    <th class="govuk-table__header"><%= t 'certificates.header.usage' %></th>
-    <th class="govuk-table__header"><%= t 'certificates.header.enabled' %></th>
+    <% if extra_details %>
+      <th class="govuk-table__header"><%= t 'certificates.header.usage' %></th>
+      <th class="govuk-table__header"><%= t 'certificates.header.enabled' %></th>
+    <% end %>
     <th class="govuk-table__header"><%= t 'certificates.header.last_updated' %></th>
     <th class="govuk-table__header"><%= t 'certificates.header.action' %></th>
   </tr>
@@ -14,16 +16,18 @@
    <% certificates.each do |certificate| %>
       <tr class="govuk-table__row" id="certificate_table_<%= certificate.id %>">
         <td class="govuk-table__cell">
-          ID: <%= certificate.id %> <br>
-          Subject: <strong><%= certificate.x509.subject %></strong> <br>
-          Expires: <%= certificate.x509.not_after %> <br>
-          Value:
+          <%= t 'certificates.header.id' %>: <%= certificate.id %> <br>
+          <%= t 'certificates.header.subject' %>: <strong><%= certificate.x509.subject %></strong> <br>
+          <%= t 'certificates.header.expires' %>: <%= certificate.x509.not_after %> <br>
+          <%= t 'certificates.header.value' %>:
           <div class="govuk-details__text govuk-details__code admin-pre-text">
             <pre><%= certificate.value %></pre>
           </div>
         </td>
-        <td class="govuk-table__cell"><%= certificate.usage %></td>
-        <td class="govuk-table__cell"><%= certificate.enabled %></td>
+        <% if extra_details %>
+          <td class="govuk-table__cell"><%= certificate.usage %></td>
+          <td class="govuk-table__cell"><%= certificate.enabled %></td>
+        <% end %>
         <td class="govuk-table__cell"><%= format_date_time(certificate.updated_at) %></td>
         <td class="govuk-table__cell">
         <% if certificate.signing? %>
