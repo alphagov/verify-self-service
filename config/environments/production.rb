@@ -148,8 +148,11 @@ Rails.application.configure do
   end
 
   config.hub_config_host = ENV.fetch('HUB_CONFIG_HOST')
+
   config.after_initialize do
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
   end
+
+  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
 end

@@ -45,6 +45,7 @@ gem 'jwt'
 gem 'pundit'
 gem 'request_store'
 gem 'rqrcode'
+gem 'rufus-scheduler'
 
 gem 'notifications-ruby-client'
 gem 'email_validator'

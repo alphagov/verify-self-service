@@ -51,13 +51,13 @@ Rails.application.configure do
     'staging': 'staging-bucket',
     'test': 'test-bucket'
   }
-
   config.cognito_aws_access_key_id = ENV['COGNITO_AWS_ACCESS_KEY_ID']
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']
   config.cognito_client_id = ENV['AWS_COGNITO_CLIENT_ID']
   config.cognito_user_pool_id = ENV['AWS_COGNITO_USER_POOL_ID']
 
   config.hub_config_host = 'http://config-service.test'
+  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
 
   config.after_initialize do
     require 'api/hub_config_api'
