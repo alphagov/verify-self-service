@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CertificateExpiryReminder, type: :model do
-  include CognitoSupport
+  include CognitoSupport, NotifySupport
 
   let(:certificate_expiry_reminder) { subject::Check.new() }
   let(:email) { 'test@test.com' }
@@ -37,12 +37,11 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         ]}
     ]}
   }
-  let(:notify_endpoint) { 'https://api.notifications.service.gov.uk/v2/notifications/email' }
 
   context 'when scheduled' do
     it 'sends email if certificate is expiring in 30 days' do
       stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 30
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
@@ -63,14 +62,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        to have_been_made.once
+      expect(stub_notify_request(expected_call)).to have_been_made.once
     end
 
     it 'sends email if certificate is expiring in 7 days' do
       stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 7
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
@@ -91,14 +88,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        to have_been_made.once
+      expect(stub_notify_request(expected_call)).to have_been_made.once
     end
 
     it 'sends emails if certificate is expiring in 7 days and team have many members' do
       stub_cognito_response(method: :list_users_in_group, payload: many_cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 7
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
@@ -119,14 +114,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        to have_been_made.times(3)
+      expect(stub_notify_request(expected_call)).to have_been_made.times(3)
     end
 
     it 'sends emails if certificate is expiring in 7 days and team have many members and many certs' do
       stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 7
       
@@ -161,14 +154,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        to have_been_made.once
+      expect(stub_notify_request(expected_call)).to have_been_made.once
     end
 
     it 'sends email if certificate is expiring in 3 days' do
       stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 3
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
@@ -189,14 +180,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        to have_been_made.once
+      expect(stub_notify_request(expected_call)).to have_been_made.once
     end
 
     it 'does not send email if no certificate is expiring' do
       stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 180
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
@@ -217,14 +206,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        not_to have_been_made
+      expect(stub_notify_request(expected_call)).not_to have_been_made.once
     end
 
     it 'does not send email if a certificate is expiring in 22 days' do
       stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 22
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
@@ -245,16 +232,14 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        not_to have_been_made
+      expect(stub_notify_request(expected_call)).not_to have_been_made.once
     end
   end
 
   context 'when forced/manually ran' do
     it 'sends email if a certificate is expiring in 29 days but reminder is ran for yesterday' do
       stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 29
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
@@ -275,14 +260,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        to have_been_made.once
+      expect(stub_notify_request(expected_call)).to have_been_made.once
     end
 
     it 'does not send email if a certificate is expiring in 25 days and reminder is ran for yesterday' do
       stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
-      stub_request(:post, notify_endpoint).to_return(body: '{}')
+      stub_notify_response
 
       expires_in_days = 25
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
@@ -303,9 +286,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         }
       }
 
-      expect(a_request(:post, notify_endpoint).
-        with(body: expected_call.to_json)).
-        not_to have_been_made
+      expect(stub_notify_request(expected_call)).not_to have_been_made.once
     end
   end
 end

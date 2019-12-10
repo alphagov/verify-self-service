@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
-  include AuthSupport, CognitoSupport
+  include AuthSupport, CognitoSupport, NotifySupport
 
   let(:user_id) { SecureRandom::uuid }
 
@@ -104,16 +104,21 @@ RSpec.describe UsersController, type: :controller do
     end
 
     describe '#new' do
-      it 'invites the user when all valid' do
+      it 'invites the user when all valid and sends email' do
         Rails.configuration.cognito_user_pool_id = 'dummy'
         stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
+        stub_notify_response
         team = FactoryBot.create(:team)
         allow_any_instance_of(TemporaryPassword).to receive(:create_temporary_password).and_return("uyy-QN6ZUqy4MXnvd")
-        expect_any_instance_of(Notification).to receive(:send_invitation_email)
-        stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/email").
-        with(
-          body: "{\"email_address\":\"test@test.test\",\"template_id\":\"afdb4827-0f71-4588-b35d-80bd514f5bdb\",\"personalisation\":{\"first_name\":\"First Name\",\"url\":\"http://www.test.com\",\"temporary_password\":\"uyy-QN6ZUqy4MXnvd\"}}",
-        ).to_return(status: 200, body: "{}", headers: {})
+        expected_body = {
+          email_address: "test@test.test",
+          template_id: "afdb4827-0f71-4588-b35d-80bd514f5bdb",
+          personalisation: { 
+            first_name: "First Name",
+            url: "http://www.test.com",
+            temporary_password: "uyy-QN6ZUqy4MXnvd",
+          }
+        }
 
         post :new, params: {
           team_id: team.id,
@@ -130,6 +135,7 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to redirect_to(users_path)
         expect(flash.now[:errors]).to be_nil
         expect(flash.now[:success]).not_to be_nil
+        expect(stub_notify_request(expected_body)).to have_been_made.once
       end
 
       it 'fails to invite user when form params missing' do
@@ -339,13 +345,18 @@ RSpec.describe UsersController, type: :controller do
       it 'invites the user when all valid' do
         Rails.configuration.cognito_user_pool_id = "dummy"
         stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
+        stub_notify_response
         allow_any_instance_of(TemporaryPassword).to receive(:create_temporary_password).and_return("uyy-QN6ZUqy4MXnvd")
-        expect_any_instance_of(Notification).to receive(:send_invitation_email)
-
-        stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/email").
-        with(
-          body: "{\"email_address\":\"test@test.test\",\"template_id\":\"afdb4827-0f71-4588-b35d-80bd514f5bdb\",\"personalisation\":{\"first_name\":\"First Name\",\"url\":\"http://www.test.com\",\"temporary_password\":\"uyy-QN6ZUqy4MXnvd\"}}"
-        ).to_return(status: 200, body: "{}")
+        
+        expected_body = {
+          email_address: "test@test.test",
+          template_id: "afdb4827-0f71-4588-b35d-80bd514f5bdb",
+          personalisation: { 
+            first_name: "First Name",
+            url: "http://www.test.com",
+            temporary_password: "uyy-QN6ZUqy4MXnvd",
+          }
+        }
 
         post :new, params: {
           team_id: @user.team,
@@ -361,6 +372,7 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to redirect_to(users_path)
         expect(flash.now[:errors]).to be_nil
         expect(flash.now[:success]).not_to be_nil
+        expect(stub_notify_request(expected_body)).to have_been_made.once
       end
 
       it 'doesnt throw syntax error when a user fails to be invited' do
@@ -404,18 +416,25 @@ RSpec.describe UsersController, type: :controller do
       it 'resends the invitation successfully' do
         stub_cognito_response(method: :admin_get_user, payload: cognito_user)
         stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+        stub_notify_response
         expect_any_instance_of(AuthenticationBackend).to receive(:resend_invite)
-        expect_any_instance_of(Notification).to receive(:send_invitation_email)
         allow_any_instance_of(TemporaryPassword).to receive(:create_temporary_password).and_return("uyy-QN6ZUqy4MXnvd")
-        stub_request(:post, "https://api.notifications.service.gov.uk/v2/notifications/email").
-        with(
-          body: "{\"email_address\":\"cherry.one@test.com\",\"template_id\":\"afdb4827-0f71-4588-b35d-80bd514f5bdb\",\"personalisation\":{\"first_name\":\"Cherry\",\"url\":\"http://www.test.com\",\"temporary_password\":\"uyy-QN6ZUqy4MXnvd\"}}"
-        ).to_return(status: 200, body: "{}")
+
+        expected_body = {
+          email_address: "cherry.one@test.com",
+          template_id: "afdb4827-0f71-4588-b35d-80bd514f5bdb",
+          personalisation: { 
+            first_name: "Cherry",
+            url: "http://www.test.com",
+            temporary_password: "uyy-QN6ZUqy4MXnvd",
+          }
+        }
 
         get :resend_invitation, params: { user_id: user_id }
         expect(subject).to redirect_to(update_user_path(user_id: user_id))
         expect(flash[:error]).to be_nil
         expect(flash[:success]).to eq(t('users.update.resend_invitation.success'))
+        expect(stub_notify_request(expected_body)).to have_been_made.once
       end
 
       it 'displays an error when it fails' do
