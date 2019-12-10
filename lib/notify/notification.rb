@@ -4,8 +4,7 @@ module Notification
   INVITE_TEMPLATE = "afdb4827-0f71-4588-b35d-80bd514f5bdb".freeze
   REMINDER_TEMPLATE = "bbc34127-7fca-4d78-a95b-703da58e15ce".freeze
 
-  REMINDER_TEMPLATE_STANDARD_SUBJECT = "Your GOV.UK Verify certificates will expire on %s".freeze
-  REMINDER_TEMPLATE_URGENT_SUBJECT = "Urgent: your GOV.UK Verify certificates will expire in %d days".freeze
+  REMINDER_TEMPLATE_SUBJECT = "your GOV.UK Verify certificates will expire on %s".freeze
 
   def mail_client
     Notifications::Client.new(Rails.configuration.notify_key)
@@ -27,7 +26,7 @@ module Notification
 
   def send_reminder_email(email_address:, team_name:, days_left:, certificates:)
     expiry_date = (Time.now + days_left.days).strftime("%d %B %Y")
-    subject = days_left == 3 ? REMINDER_TEMPLATE_URGENT_SUBJECT % days_left : REMINDER_TEMPLATE_STANDARD_SUBJECT % expiry_date
+    subject = days_left == 3 ? "Urgent: #{REMINDER_TEMPLATE_SUBJECT}" % expiry_date : (REMINDER_TEMPLATE_SUBJECT % expiry_date).sub(/^./, &:upcase)
     mail_client.send_email(
       email_address: email_address,
       template_id: REMINDER_TEMPLATE,
@@ -35,6 +34,7 @@ module Notification
         subject: subject,
         team: team_name,
         no_of_certs: certificates.count,
+        multiple: certificates.count > 1 ? 'yes' : 'no',
         expire_on: expiry_date,
         certificates: certificates,
         url: url,

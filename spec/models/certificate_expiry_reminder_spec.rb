@@ -56,6 +56,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           subject: "Your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: cert.component.team.name,
           no_of_certs: 1,
+          multiple: 'no',
           expire_on: expected_expiry_date,
           certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
           url: "http://www.test.com"
@@ -83,6 +84,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           subject: "Your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: cert.component.team.name,
           no_of_certs: 1,
+          multiple: 'no',
           expire_on: expected_expiry_date,
           certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
           url: "http://www.test.com"
@@ -110,6 +112,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           subject: "Your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: cert.component.team.name,
           no_of_certs: 1,
+          multiple: 'no',
           expire_on: expected_expiry_date,
           certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
           url: "http://www.test.com"
@@ -146,6 +149,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           subject: "Your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: component_vsp.team.name,
           no_of_certs: 4,
+          multiple: 'yes',
           expire_on: expected_expiry_date,
           certificates: [
             "Verify Service Provider (production): signing certificate - expires on #{vsp_cert_two.x509.not_after}",
@@ -175,9 +179,10 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         email_address: email,
         template_id: "bbc34127-7fca-4d78-a95b-703da58e15ce",
         personalisation: {
-          subject: "Urgent: your GOV.UK Verify certificates will expire in #{expires_in_days} days",
+          subject: "Urgent: your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: cert.component.team.name,
           no_of_certs: 1,
+          multiple: 'no',
           expire_on: expected_expiry_date,
           certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
           url: "http://www.test.com"
@@ -205,6 +210,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           subject: "Your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: cert.component.team.name,
           no_of_certs: 1,
+          multiple: 'no',
           expire_on: expected_expiry_date,
           certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
           url: "http://www.test.com"
@@ -232,6 +238,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           subject: "Your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: cert.component.team.name,
           no_of_certs: 1,
+          multiple: 'no',
           expire_on: expected_expiry_date,
           certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
           url: "http://www.test.com"
@@ -261,6 +268,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           subject: "Your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: cert.component.team.name,
           no_of_certs: 1,
+          multiple: 'no',
           expire_on: expected_expiry_date,
           certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
           url: "http://www.test.com"
@@ -288,6 +296,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           subject: "Your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
           team: cert.component.team.name,
           no_of_certs: 1,
+          multiple: 'no',
           expire_on: expected_expiry_date,
           certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
           url: "http://www.test.com"
