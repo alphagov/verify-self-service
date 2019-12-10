@@ -17,10 +17,25 @@ module CertificateExpiryReminder
       end
     end
 
+    def force_run(date)
+      Rails.logger.info("[FORCE for #{date}] Looking for expiring certs which are enabled...")
+      certificates = expiring_certs_for_date(date)
+      Rails.logger.info("[FORCE for #{date}] Found #{certificates.count} expiring certs.")
+      if certificates.any?
+        send_notifications(group_by_team(certificates))
+      end
+    end
+
   private
 
     def expiring_certs
-      Certificate.where('enabled = ?', true).select { |c| REMIND_DAYS_LEFT.include?(c.days_left) && !c.component.nil? }
+      Certificate.where('enabled = ?', true).select { |c| REMIND_DAYS_LEFT.include?(c.days_left) && c.component.present? }
+    end
+
+    def expiring_certs_for_date(date)
+      day_diff = (Time.now.to_date - date.to_date).to_i
+      adjusted_remind_days_left = REMIND_DAYS_LEFT.map { |day| day - day_diff }
+      Certificate.where('enabled = ?', true).select { |c| adjusted_remind_days_left.include?(c.days_left) && c.component.present? }
     end
 
     def group_by_team(certificates)
