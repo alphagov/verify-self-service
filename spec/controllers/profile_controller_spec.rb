@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ProfileController, type: :controller do
-  include AuthSupport, CognitoSupport
+  include AuthSupport, CognitoSupport, NotifySupport
 
   describe "Profile Controller" do
     context 'logging in' do
@@ -115,13 +115,23 @@ RSpec.describe ProfileController, type: :controller do
       expect(subject).to render_template(:show_update_name)
     end
     
-    it 'updates the user name' do
+    it 'updates the user name and sends email' do
       usermgr_stub_auth
       stub_cognito_response(method: :update_user_attributes, payload: {} )
+      stub_notify_response
       post :update_name, params: { update_user_name_form: { first_name: 'Joe', last_name: 'Bloggs' } }
+      expected_email_body = {
+        email_address: @user.email,
+        template_id: "c6880583-6f8e-4820-bb2e-98125e355f72",
+        personalisation: {
+          new_name: "Joe Bloggs",
+        }
+      }
+
       expect(UpdateUserNameEvent.last.data['first_name']).to eq('Joe')
       expect(UpdateUserNameEvent.last.data['last_name']).to eq('Bloggs')
       expect(subject).to redirect_to(profile_path)
+      expect(stub_notify_request(expected_email_body)).to have_been_made.once
     end
 
     it 'fails with error when form not valid' do

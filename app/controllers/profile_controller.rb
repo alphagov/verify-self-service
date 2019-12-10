@@ -1,7 +1,10 @@
+require 'notify/notification'
+
 class ProfileController < ApplicationController
   layout "two_thirds_layout", except: :show
   include AuthenticationBackend
   include MfaQrHelper
+  include Notification
 
   def show
     if Rails.env.development?
@@ -95,6 +98,7 @@ class ProfileController < ApplicationController
     if @form.valid?
       update_user_name(access_token: current_user.access_token, given_name: @form.first_name, family_name: @form.last_name)
       UpdateUserNameEvent.create(data: { first_name: @form.first_name, last_name: @form.last_name })
+      send_changed_name_email(email_address: current_user.email, new_name: @form.first_name + ' ' + @form.last_name)
       redirect_to profile_path
     else
       @user = current_user
