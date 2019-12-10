@@ -60,7 +60,7 @@ Rails.application.configure do
 
   config.aws_region = ENV['AWS_REGION']
 
-  config.hub_environments = { 'development': 'development-bucket' }
+  config.hub_environments_legacy = { 'development': 'development-bucket' }
 
   config.cognito_aws_access_key_id = ENV['COGNITO_AWS_ACCESS_KEY_ID']
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']

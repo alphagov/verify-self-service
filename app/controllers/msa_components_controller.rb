@@ -7,13 +7,13 @@ class MsaComponentsController < ApplicationController
 
   def new
     @component = NewMsaComponentEvent.new
-    @hub_environments = Rails.configuration.hub_environments.keys
+    @hub_environments_legacy = Rails.configuration.hub_environments_legacy.keys
     @teams = Team.all
   end
 
   def edit
     @component = MsaComponent.find(params[:id])
-    @hub_environments = Rails.configuration.hub_environments.keys
+    @hub_environments_legacy = Rails.configuration.hub_environments_legacy.keys
     @teams = Team.all
   end
 
@@ -24,7 +24,7 @@ class MsaComponentsController < ApplicationController
 
   def create
     @component = NewMsaComponentEvent.create(component_params)
-    @hub_environments = Rails.configuration.hub_environments.keys
+    @hub_environments_legacy = Rails.configuration.hub_environments_legacy.keys
     if @component.valid?
       redirect_to admin_path
     else
@@ -44,7 +44,7 @@ class MsaComponentsController < ApplicationController
     else
       Rails.logger.info(@event.errors.full_messages)
       @teams = Team.all
-      @hub_environments = Rails.configuration.hub_environments.keys
+      @hub_environments_legacy = Rails.configuration.hub_environments_legacy.keys
 
       render :edit
     end
