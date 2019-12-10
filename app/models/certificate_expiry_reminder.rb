@@ -56,7 +56,7 @@ module CertificateExpiryReminder
       recipients = team_recipients(team.team_alias)
       certificates = certs.sort_by { |cert| [cert.component.environment, cert.component_type] }.reverse
       certificates_list = certificates.map do |cert|
-        "#{component_name(cert)} (#{cert.component.environment}): #{cert.usage} certificate - expires on #{cert.x509.not_after}"
+        "#{cert.component.display_long_name} (#{cert.component.environment}): #{cert.usage} certificate - expires on #{cert.x509.not_after}"
       end
       Rails.logger.info("Sending a #{days}-day reminder email to #{team.name} team (#{recipients.count} recipients, #{certificates_list.count} certificates)")
       Rails.logger.error("No recipients found for #{team.name}!") if recipients.empty?
@@ -73,16 +73,6 @@ module CertificateExpiryReminder
     def team_recipients(team_alias)
       users = get_users_in_group(group_name: team_alias)
       users.map { |user| user.attributes.find { |att| att.name == 'email' }.value }
-    end
-
-    def component_name(cert)
-      if cert.component_type == COMPONENT_TYPE::MSA
-        "Matching Service Adapter"
-      elsif cert.component.vsp
-        "Verify Service Provider"
-      else
-        "Service Provider"
-      end
     end
   end
 end
