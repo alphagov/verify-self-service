@@ -95,6 +95,10 @@ class Component < Aggregate
     I18n.t("user_journey.component_name.#{type}")
   end
 
+  def display_long_name
+    I18n.t("user_journey.component_long_name.#{type}")
+  end
+
 private
 
   def unexpired_encryption_certificate
