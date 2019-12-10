@@ -88,11 +88,20 @@ RSpec.describe ProfileController, type: :controller do
       expect(subject).to render_template(:show_change_mfa)
     end
 
-    it 'redirects to the profile page on success' do
+    it 'redirects to the profile page on success and sends email' do
       usermgr_stub_auth
+      stub_notify_response
+      expected_email_body = {
+        email_address: @user.email,
+        template_id: "029b2f45-72f2-4386-8149-71bf57ba86d1",
+        personalisation: {
+          first_name: @user.first_name,
+        }
+      }
       post :change_mfa, params: { mfa_enrolment_form: { 'totp_code': '123456' } }
       expect(response).to have_http_status(:redirect)
       expect(subject).to redirect_to(profile_path)
+      expect(stub_notify_request(expected_email_body)).to have_been_made.once
     end
 
     it 'renders the page again on code mismatch' do

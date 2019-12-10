@@ -77,6 +77,7 @@ class ProfileController < ApplicationController
     @form = MfaEnrolmentForm.new(params[:mfa_enrolment_form] || {})
     if @form.valid?
       verify_code_for_mfa(access_token: current_user.access_token, code: @form.totp_code)
+      send_changed_mfa_email(email_address: current_user.email, first_name: current_user.first_name)
       flash[:sucess] = t('profile.mfa_success')
       redirect_to profile_path
     else
