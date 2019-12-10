@@ -1,7 +1,9 @@
 require 'auth/authentication_backend'
+require 'notify/notification'
 
 class PasswordController < ApplicationController
   include AuthenticationBackend
+  include Notification
 
   skip_before_action :authenticate_user!, except: %w[password_form update_password]
   skip_before_action :set_user, except: %w[password_form update_password]
@@ -20,6 +22,7 @@ class PasswordController < ApplicationController
         new_password: @password_form.password,
         access_token: current_user.access_token,
       )
+      send_changed_password_email(email_address: current_user.email, first_name: current_user.first_name)
       flash[:notice] = t('password.password_changed')
       redirect_to profile_path
     else
@@ -72,6 +75,7 @@ class PasswordController < ApplicationController
       @form.email = session[:email] if @form.email.nil?
       if @form.valid?
         reset_password(@form.to_h)
+        send_changed_password_email(email_address: @form.email, first_name: get_user_by_email(email: @form.email).first_name)
         session.delete(:email)
         flash[:notice] = t('password.password_recovered')
         redirect_to new_user_session_path
