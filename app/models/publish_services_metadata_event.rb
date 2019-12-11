@@ -33,7 +33,7 @@ private
   end
 
   def hub_environment_bucket
-    Rails.configuration.hub_environments.fetch(environment)
+    Rails.configuration.hub_environments.fetch(environment)[:bucket]
   rescue KeyError
     Rails.logger.error("Failed to find bucket for #{environment}")
     "#{environment}-bucket"

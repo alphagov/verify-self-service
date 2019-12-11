@@ -9,7 +9,7 @@ describe HubConfigApi do
   let(:encryption_certificate) { 'base64-x509-encryption-cert' }
   let(:signing_certificate_one) { 'base64-x509-signing-cert-one' }
   let(:signing_certificate_two) { 'base64-x509-encryption-cert-two' }
-  let(:hub_response_for_encryption) { 
+  let(:hub_response_for_encryption) {
     {
       issuerId: entity_id,
       certificate: encryption_certificate,
@@ -18,7 +18,7 @@ describe HubConfigApi do
     }
   }
 
-  let(:hub_response_for_signing) { 
+  let(:hub_response_for_signing) {
     [
       {
         issuerId: entity_id,
@@ -29,7 +29,7 @@ describe HubConfigApi do
     ]
   }
 
-  let(:hub_response_for_signing_when_dual_running) { 
+  let(:hub_response_for_signing_when_dual_running) {
     [
       {
         issuerId: entity_id,
@@ -79,7 +79,7 @@ describe HubConfigApi do
     it 'should return nil and log error if certificate not found' do
       stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(wrong_entity_id)}/certs/encryption")
         .to_return(status: 404, body: "{\"code\":404,\"message\":\"'#{wrong_entity_id}' - No data is configured for this entity.\"}")
-      
+
       expect(Rails.logger).to receive(:error).with("Error getting encryption certificate for entity_id: #{wrong_entity_id}! (Code: 404)")
 
       response = hub_config_api.encryption_certificate(wrong_entity_id)
@@ -116,6 +116,48 @@ describe HubConfigApi do
       response = hub_config_api.signing_certificates(wrong_entity_id)
 
       expect(response).to eq([])
+    end
+  end
+
+  describe 'authentication headers required' do
+    let(:authentication_header) { 'a-very-secure-header required here'}
+    before(:each) do
+      Rails.configuration.hub_environments.merge!({'test': {'bucket': 'test-bucket', 'url': 'http://config-service.test', 'secure_header': 'true'}})
+      ENV['SELF_SERVICE_AUTHENTICATION_HEADER'] = authentication_header
+    end
+    it 'should return service-status from healtheck' do
+      stub_request(:get, 'http://config-service.test:80/service-status')
+        .with(headers: {'X-Self-Service-Authentication': authentication_header })
+        .to_return(status: 200)
+
+      response = hub_config_api.healthcheck
+
+      expect(response.status).to eq(200)
+    end
+    it 'should return service-status from healtheck' do
+      stub_request(:get, 'http://config-service.test:80/service-status')
+        .to_return(status: 200)
+
+      response = hub_config_api.healthcheck
+      expect(response.status).to eq(200)
+    end
+    it 'should return the encryption certificate' do
+      stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(entity_id)}/certs/encryption")
+      .with(headers: {'X-Self-Service-Authentication': authentication_header })
+        .to_return(body: hub_response_for_encryption.to_json)
+
+      response = hub_config_api.encryption_certificate(entity_id)
+
+      expect(response).to eq(encryption_certificate)
+    end
+    it 'should return an array of signing certs with two certs when dual-running' do
+      stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(entity_id)}/certs/signing")
+      .with(headers: {'X-Self-Service-Authentication': authentication_header })
+        .to_return(body: hub_response_for_signing_when_dual_running.to_json)
+
+      response = hub_config_api.signing_certificates(entity_id)
+
+      expect(response).to eq([signing_certificate_one, signing_certificate_two])
     end
   end
 end

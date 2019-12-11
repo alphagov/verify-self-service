@@ -1,20 +1,23 @@
 class HubConfigApi
   require 'cgi'
-
-  HUB_HOST = Rails.configuration.hub_config_host
   HEALTHCHECK_ENDPOINT = 'service-status'.freeze
   CERTIFICATES_ROUTE = '/config/certificates/'.freeze
   CERTIFICATE_ENCRYPTION_ENDPOINT = "%{entity_id}/certs/encryption".freeze
   CERTIFICATES_SIGNING_ENDPOINT = "%{entity_id}/certs/signing".freeze
 
-  def initialize; end
+  def initialize(environment: :test)
+    @environment = environment
+    @header = hub_environment(:secure_header) == 'true'
+    @hub_host = hub_environment(:url)
+    @service_authentication_header = ENV['SELF_SERVICE_AUTHENTICATION_HEADER']
+  end
 
   def healthcheck
-    Faraday.get healthcheck_path
+    build_request(healthcheck_path)
   end
 
   def encryption_certificate(entity_id)
-    response = Faraday.get encryption_cert_path(entity_id)
+    response = build_request(encryption_cert_path(entity_id))
     if response.status == 200
       JSON.parse(response.body)['certificate']
     else
@@ -24,7 +27,7 @@ class HubConfigApi
   end
 
   def signing_certificates(entity_id)
-    response = Faraday.get signing_certs_path(entity_id)
+    response = build_request(signing_certs_path(entity_id))
     if response.status == 200
       JSON.parse(response.body).map { |c| c['certificate'] }
     else
@@ -35,15 +38,28 @@ class HubConfigApi
 
 private
 
+  def build_request(url)
+    return Faraday.get(url) unless @header
+
+    Faraday.get(url) { |req| req.headers['X-Self-Service-Authentication'] = @service_authentication_header }
+  end
+
   def encryption_cert_path(entity_id)
-    URI.join(HUB_HOST, CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s
+    URI.join(@hub_host, CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s
   end
 
   def signing_certs_path(entity_id)
-    URI.join(HUB_HOST, CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s
+    URI.join(@hub_host, CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s
   end
 
   def healthcheck_path
-    URI.join(HUB_HOST, HEALTHCHECK_ENDPOINT).to_s
+    URI.join(@hub_host, HEALTHCHECK_ENDPOINT).to_s
+  end
+
+  def hub_environment(value)
+    Rails.configuration.hub_environments.fetch(@environment)[value]
+  rescue KeyError
+    Rails.logger.error("Failed to find #{value} for #{@environment}")
+    "#{environment}-#{value}"
   end
 end
