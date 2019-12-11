@@ -25,7 +25,7 @@ RSpec.describe 'the events page', type: :system do
 
   it 'is paginated' do
     55.times.each do
-      UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: root.generate_encoded_cert(expires_in: 2.months), component: component)
+      UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::ENCRYPTION, value: root.generate_encoded_cert(expires_in: 2.months), component: component)
     end
 
     visit admin_events_path

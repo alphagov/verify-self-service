@@ -10,6 +10,9 @@ RSpec.describe UploadCertificateEvent, type: :model do
   component = NewMsaComponentEvent.create(
     name: 'fake_name', entity_id: entity_id, team_id: team.id, environment: 'staging'
   ).msa_component
+  bad_component = NewMsaComponentEvent.create(
+    name: '', entity_id: '', team_id: '', environment: ''
+  ).msa_component
 
   let(:msa_component) { create(:msa_component) }
 
@@ -19,7 +22,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
   context '#value' do
     it 'must be present' do
-      event = UploadCertificateEvent.create
+      event = UploadCertificateEvent.create(component: msa_component)
       expect(event).to_not be_valid
       expect(event.errors[:certificate]).to eql [t('certificates.errors.invalid')]
     end
@@ -30,7 +33,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
     context 'uploaded as a user' do
       it 'must error with invalid x509 certificate' do
-        event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: 'Not a valid certificate', component: msa_component)
+        event = UploadCertificateEvent.create(value: 'Not a valid certificate', component: msa_component)
         expect(event).to_not be_valid
         expect(event.errors[:certificate]).to eql [t('certificates.errors.invalid')]
       end
@@ -123,6 +126,16 @@ RSpec.describe UploadCertificateEvent, type: :model do
         event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: cert.to_pem, component: msa_component)
         expect(event).to_not be_valid
         expect(event.errors[:certificate]).to eql [t('certificates.errors.small_key')]
+      end
+
+      it 'component ends up with 2 certs if an UploadCertificatesEvents is invalid' do
+        valid_event1 = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: msa_component)
+        valid_event2 = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: msa_component)
+        invalid_event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: "", component: msa_component)
+        expect(valid_event1).to be_valid
+        expect(valid_event2).to be_valid
+        expect(invalid_event).to_not be_valid
+        expect(msa_component.certificates.count).to eql 2
       end
     end
 
@@ -227,7 +240,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
 
   context '#usage' do
     it 'must be present' do
-      event = UploadCertificateEvent.create
+      event = UploadCertificateEvent.create(component: msa_component)
       expect(event).to_not be_valid
       expect(event.errors[:usage]).to eql ['is not included in the list']
     end
@@ -293,8 +306,8 @@ RSpec.describe UploadCertificateEvent, type: :model do
     end
 
     it 'must reference an object' do
-      event = UploadCertificateEvent.create
-      expect(event.errors[:component]).to eql [t('components.errors.must_exist'), t('components.errors.must_exist')]
+      event = UploadCertificateEvent.create(component: bad_component)
+      expect(event.errors[:component]).to eql [t('components.errors.must_exist')]
     end
   end
 

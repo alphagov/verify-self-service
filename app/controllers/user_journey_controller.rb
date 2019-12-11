@@ -75,8 +75,8 @@ class UserJourneyController < ApplicationController
   end
 
   def confirm
-    if @certificate.component.enabled_signing_certificates.length >= 2
-      flash[:error] = 'You have already uploaded two signing certificates'
+    if @certificate.component.enabled_signing_certificates.count >= 2
+      flash[:error] = I18n.t('user_journey.errors.multi_submission')
       redirect_to root_path
     else
       new_certificate_value = params[:certificate][:new_certificate]

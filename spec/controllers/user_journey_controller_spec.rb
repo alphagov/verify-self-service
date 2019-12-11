@@ -178,6 +178,7 @@ RSpec.describe UserJourneyController, type: :controller do
     it 'renders index page when more than 2 signing certificates are trying to be submitted' do
       signing_cert_primary = create(:msa_signing_certificate, component: msa_component)
       signing_cert_secondary = create(:msa_signing_certificate, component: msa_component)
+      expect(msa_component.enabled_signing_certificates.count).to eq(2)
       certmgr_stub_auth(team)
       post :submit,
           params: params.merge({
@@ -185,6 +186,7 @@ RSpec.describe UserJourneyController, type: :controller do
             certificate: { value: signing_cert_secondary.value, component: msa_component }
           })
       expect(response).to have_http_status(:success)
+      expect(msa_component.enabled_signing_certificates.count).to eq(2)
       expect(subject).to render_template(root_path)
     end
 
