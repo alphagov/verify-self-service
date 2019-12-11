@@ -199,12 +199,9 @@ en:
     reset_password_heading: Set your new password
     password_changed: Password changed successfully
     reset_password_legend: You can reset your password by entering the code you have received via email.
-    old_password_lbl: Old password
-    new_password_lbl: Password
-<<<<<<< HEAD
+    current_password_lbl: Current password
+    new_password_lbl: New password
     admin_reset_password_legend: An admin user has reset your password. You can change your password by entering the code you have received via email.
-=======
->>>>>>> Added error styling, and associated test, to change password page
     confirm_password_lbl: Confirm new password
     change_password_btn: Change password
     password_recovered: Your password has now been changed. Please login with your new password
