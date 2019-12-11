@@ -46,10 +46,10 @@ Rails.application.configure do
   config.aws_region = ENV['AWS_REGION']
 
   config.hub_environments = {
-    'production': 'production-bucket',
-    'integration': 'integration-bucket',
-    'staging': 'staging-bucket',
-    'test': 'test-bucket'
+    'production': {'bucket': 'production-bucket', 'url': 'http://config-service.production', 'secure_header': 'false'},
+    'integration': {'bucket': 'integration-bucket', 'url': 'http://config-service.integration', 'secure_header': 'true'},
+    'staging': {'bucket': 'staging-bucket', 'url': 'http://config-service.staging', 'secure_header': 'false'},
+    'test': {'bucket': 'test-bucket', 'url': 'http://config-service.test', 'secure_header': 'false'}
   }
   config.cognito_aws_access_key_id = ENV['COGNITO_AWS_ACCESS_KEY_ID']
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']
@@ -61,7 +61,7 @@ Rails.application.configure do
 
   config.after_initialize do
     require 'api/hub_config_api'
-    HUB_CONFIG_API = HubConfigApi.new
+    HUB_CONFIG_API = HubConfigApi.new(environment: :test)
   end
 
   config.notify_key = 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111'
