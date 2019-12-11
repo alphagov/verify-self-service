@@ -75,8 +75,8 @@ module Devise
           resource.access_token = data['access_token']
           resource.roles = data['roles']
           resource.permissions = UserRolePermissions.new(data['roles'], data['email'])
-          resource.last_name = data['given_name']
-          resource.last_name = data['family_name']
+          resource.first_name = data['first_name']
+          resource.last_name = data['last_name']
           resource.session_start_time = data['session_start_time']
           resource.team = data['team']
           resource.cognito_groups = data['cognito_groups']&.split(',')
