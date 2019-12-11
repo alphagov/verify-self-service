@@ -60,13 +60,11 @@ Rails.application.configure do
 
   config.aws_region = ENV['AWS_REGION']
 
-  config.hub_environments_legacy = { 'development': 'development-bucket' }
-
   config.hub_environments = {
     'development': {
       'bucket': 'development-bucket',
-      'hub-config-host': 'http://config-service.dev',
-      'secure-header': 'false'
+      'url': 'http://config-service.dev',
+      'secure_header': 'false'
     }
   }
 

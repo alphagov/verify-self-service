@@ -69,7 +69,7 @@ Rails.application.configure do
 
   config.after_initialize do
     require 'api/hub_config_api'
-    HUB_CONFIG_API = HubConfigApi.new
+    HUB_CONFIG_API = HubConfigApi.new(environment: :test)
   end
 
   config.notify_key = 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111'
