@@ -52,6 +52,13 @@ Rails.application.configure do
     'test': 'test-bucket'
   }
 
+  config.hub_environments = {
+    'production': {'bucket': 'production-bucket', 'hub-config-host': 'http://config-service.production', 'secure-header': 'false'},
+    'integration': {'bucket': 'integration-bucket', 'hub-config-host': 'http://config-service.integration', 'secure-header': 'true'},
+    'staging': {'bucket': 'staging-bucket', 'hub-config-host': 'http://config-service.staging', 'secure-header': 'false'},
+    'test': {'bucket': 'test-bucket', 'hub-config-host': 'http://config-service.test', 'secure-header': 'false'}
+  }
+
   config.cognito_aws_access_key_id = ENV['COGNITO_AWS_ACCESS_KEY_ID']
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']
   config.cognito_client_id = ENV['AWS_COGNITO_CLIENT_ID']
