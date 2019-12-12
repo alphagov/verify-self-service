@@ -6,7 +6,7 @@ class ForgottenPasswordForm
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   def initialize(params = {})
-    @email = params[:email]
+    @email = params[:email]&.downcase
   end
 
   def to_h

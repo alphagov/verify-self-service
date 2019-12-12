@@ -7,7 +7,7 @@ class SignInForm
   validates :password, length: { minimum: 8 }
 
   def initialize(params)
-    @email = params[:email]
+    @email = params[:email]&.downcase
     @password = params[:password]
   end
 end
