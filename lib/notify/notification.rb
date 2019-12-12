@@ -24,7 +24,7 @@ module Notification
       },
      )
   rescue Notifications::Client::RequestError => e
-    Rails.logger.error(e.to_s)
+    Rails.logger.error(e.message)
   end
 
   def send_reminder_email(email_address:, team_name:, days_left:, certificates:)
@@ -44,7 +44,7 @@ module Notification
       },
      )
   rescue Notifications::Client::RequestError => e
-    Rails.logger.error(e.to_s)
+    Rails.logger.error(e.message)
   end
 
   def send_changed_name_email(email_address:, new_name:)
@@ -56,9 +56,8 @@ module Notification
       },
      )
   rescue Notifications::Client::RequestError => e
-    Rails.logger.error(e.to_s)
+    Rails.logger.error(e.message)
   end
-
 
   def send_changed_mfa_email(email_address:, first_name:)
     mail_client.send_email(
@@ -69,9 +68,9 @@ module Notification
       },
      )
   rescue Notifications::Client::RequestError => e
-    Rails.logger.error(e.to_s)
+    Rails.logger.error(e.message)
   end
-  
+
   def send_changed_password_email(email_address:, first_name:)
     mail_client.send_email(
       email_address: email_address,
@@ -81,7 +80,7 @@ module Notification
       },
      )
   rescue Notifications::Client::RequestError => e
-    Rails.logger.error(e.to_s)
+    Rails.logger.error(e.message)
   end
 
 private
