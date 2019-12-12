@@ -192,6 +192,18 @@ module AuthenticationBackend
     raise AuthenticationBackendException.new(e)
   end
 
+  def get_user_by_email(email:)
+    response = client.list_users(
+      filter: "email = \"#{email}\"",
+      user_pool_id: user_pool_id,
+      limit: 1,
+    )
+    as_team_member(cognito_user: response.users[0])
+  rescue Aws::CognitoIdentityProvider::Errors::ServiceError
+    unknown_user = Struct.new(:first_name)
+    unknown_user.new('user')
+  end
+
   def get_users_in_group(group_name:, limit: 60)
     client.list_users_in_group(user_pool_id: user_pool_id,
         group_name: group_name,
@@ -301,7 +313,7 @@ module AuthenticationBackend
     first_name = attributes['given_name']
     last_name = attributes['family_name']
     email = attributes['email']
-    roles = attributes['custom:roles'].split(%r{,\s*})
+    roles = attributes['custom:roles']&.split(%r{,\s*})
     TeamMember.new(user_id: user_id, first_name: first_name, last_name: last_name, email: email, roles: roles, status: status)
   end
 

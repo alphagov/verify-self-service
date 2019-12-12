@@ -5,6 +5,7 @@ module Notification
   REMINDER_TEMPLATE = "bbc34127-7fca-4d78-a95b-703da58e15ce".freeze
   CHANGED_NAME_TEMPLATE = "c6880583-6f8e-4820-bb2e-98125e355f72".freeze
   CHANGED_MFA_TEMPLATE = "029b2f45-72f2-4386-8149-71bf57ba86d1".freeze
+  CHANGED_PASSWORD_TEMPLATE = "16557e1a-767f-42d9-a8d6-7f35ca57f0dd".freeze
 
   REMINDER_TEMPLATE_SUBJECT = "your GOV.UK Verify certificates will expire on %s".freeze
 
@@ -58,10 +59,23 @@ module Notification
     Rails.logger.error(e.to_s)
   end
 
+
   def send_changed_mfa_email(email_address:, first_name:)
     mail_client.send_email(
       email_address: email_address,
       template_id: CHANGED_MFA_TEMPLATE,
+      personalisation: {
+        first_name: first_name,
+      },
+     )
+  rescue Notifications::Client::RequestError => e
+    Rails.logger.error(e.to_s)
+  end
+  
+  def send_changed_password_email(email_address:, first_name:)
+    mail_client.send_email(
+      email_address: email_address,
+      template_id: CHANGED_PASSWORD_TEMPLATE,
       personalisation: {
         first_name: first_name,
       },
