@@ -6,6 +6,6 @@ class UpdateUserEmailForm
   validates :email, email: true
 
   def initialize(params = {})
-    @email = params[:email]
+    @email = params[:email]&.downcase
   end
 end

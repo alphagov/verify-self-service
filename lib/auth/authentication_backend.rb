@@ -127,6 +127,7 @@ module AuthenticationBackend
   end
 
   def add_user(email:, given_name:, family_name:, roles:, temporary_password:)
+    email&.downcase!
     client.admin_create_user(
       temporary_password: temporary_password,
       message_action: 'SUPPRESS',
@@ -213,6 +214,7 @@ module AuthenticationBackend
   end
 
   def update_user_email(user_id:, email:)
+    email&.downcase!
     client.admin_update_user_attributes(
       user_pool_id: user_pool_id,
       username: user_id,
