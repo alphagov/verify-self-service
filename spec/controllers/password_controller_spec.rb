@@ -1,15 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe PasswordController, type: :controller do
-  include AuthSupport, CognitoSupport
+  include AuthSupport, CognitoSupport, NotifySupport
 
   context 'changing passwords' do
-    it 'advises password changed when successful' do
+    it 'advises password changed when successful and sends email' do
       usermgr_stub_auth
+      stub_notify_response
       post :update_password, params: { change_password_form: { 'old_password': 'oldPassword1', 'password': 'newPassword1', 'password_confirmation': 'newPassword1' } }
+      
+      expected_body = {
+        email_address: "test@test.test",
+        template_id: "16557e1a-767f-42d9-a8d6-7f35ca57f0dd",
+        personalisation: {
+          first_name: "John",
+        }
+      }
+
       expect(subject).to redirect_to(profile_path)
       expect(flash.now[:error]).to be_nil
       expect(flash.now[:notice]).to eq(t('password.password_changed'))
+      expect(stub_notify_request(expected_body)).to have_been_made.once
     end
 
     it 'errors when password does not meet acceptence criteria' do
@@ -104,12 +115,56 @@ RSpec.describe PasswordController, type: :controller do
   end
 
   context 'resetting password' do
-    it 'user redirected to new session with success message' do
+    it 'user redirected to new session with success message and email sent' do
+      stub_cognito_response(
+        method: :list_users,
+        payload: {
+          users: [
+            { 
+              username: '0000',
+              attributes: [{name: "given_name", value: "Cherry"},
+                           {name: "family_name", value: "One"},
+                           {name: "email", value: "test@test.com"},
+                           {name: "custom:roles", value: "certmgr"}]
+            }
+          ]
+        }
+      )
+      stub_notify_response
       expect_any_instance_of(AuthenticationBackend).to receive(:reset_password)
+      expected_body = {
+        email_address: "test@test.com",
+        template_id: "16557e1a-767f-42d9-a8d6-7f35ca57f0dd",
+        personalisation: {
+          first_name: "Cherry"
+        }
+      }
       post :process_code, params: { password_recovery_form: { 'email': 'test@test.com', 'code': '123456', 'password': 'password', 'password_confirmation': 'password' } }
       expect(response).to have_http_status(:redirect)
       expect(subject).to redirect_to(new_user_session_path)
       expect(flash[:notice]).to eq(t('password.password_recovered'))
+      expect(stub_notify_request(expected_body)).to have_been_made.once
+    end
+
+    it 'user redirected to new session with success message and email sent even if user lookup fails' do
+      stub_cognito_response(
+        method: :list_users,
+        payload: 'ServiceError'
+      )
+      stub_notify_response
+      expect_any_instance_of(AuthenticationBackend).to receive(:reset_password)
+      expected_body = {
+        email_address: "test@test.com",
+        template_id: "16557e1a-767f-42d9-a8d6-7f35ca57f0dd",
+        personalisation: {
+          first_name: "user"
+        }
+      }
+      post :process_code, params: { password_recovery_form: { 'email': 'test@test.com', 'code': '123456', 'password': 'password', 'password_confirmation': 'password' } }
+      expect(response).to have_http_status(:redirect)
+      expect(subject).to redirect_to(new_user_session_path)
+      expect(flash[:notice]).to eq(t('password.password_recovered'))
+      expect(stub_notify_request(expected_body)).to have_been_made.once
     end
 
     it 'user can retry when a wrong code is entered' do
