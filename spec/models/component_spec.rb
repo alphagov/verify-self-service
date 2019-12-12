@@ -379,4 +379,3 @@ RSpec.describe Component, type: :model do
   end
 end
 
-
