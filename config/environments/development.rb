@@ -62,6 +62,14 @@ Rails.application.configure do
 
   config.hub_environments_legacy = { 'development': 'development-bucket' }
 
+  config.hub_environments = {
+    'development': {
+      'bucket': 'development-bucket',
+      'hub-config-host': 'http://config-service.dev',
+      'secure-header': 'false'
+    }
+  }
+
   config.cognito_aws_access_key_id = ENV['COGNITO_AWS_ACCESS_KEY_ID']
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']
   config.cognito_client_id = ENV['AWS_COGNITO_CLIENT_ID']
