@@ -47,6 +47,6 @@ private
   end
 
   def environment_present_and_valid?(environment)
-    Rails.configuration.hub_environments.keys.include?(environment)
+    Rails.configuration.hub_environments_legacy.keys.include?(environment)
   end
 end

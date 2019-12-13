@@ -5,7 +5,7 @@ module Healthcheck
     end
 
     def status
-      Rails.configuration.hub_environments.values.each do |bucket|
+      Rails.configuration.hub_environments_legacy.values.each do |bucket|
         begin
           unless healthcheck_file_exists?(bucket)
             SelfService.service(:storage_client).put_object(

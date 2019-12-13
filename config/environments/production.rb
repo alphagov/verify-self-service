@@ -123,7 +123,7 @@ Rails.application.configure do
 
   config.aws_region = ENV.fetch('AWS_REGION')
 
-  config.hub_environments = JSON.parse(ENV.fetch('HUB_ENVIRONMENTS'))
+  config.hub_environments_legacy = JSON.parse(ENV.fetch('HUB_ENVIRONMENTS_LEGACY'))
 
   config.cognito_client_id = ENV.fetch('AWS_COGNITO_CLIENT_ID')
   config.cognito_user_pool_id = ENV.fetch('AWS_COGNITO_USER_POOL_ID')
