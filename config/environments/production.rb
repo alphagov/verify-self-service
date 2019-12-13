@@ -123,7 +123,7 @@ Rails.application.configure do
 
   config.aws_region = ENV.fetch('AWS_REGION')
 
-  config.hub_environments_legacy = JSON.parse(ENV.fetch('HUB_ENVIRONMENTS_LEGACY'))
+  config.hub_environments = JSON.parse(ENV.fetch('HUB_ENVIRONMENTS'))
 
   config.cognito_client_id = ENV.fetch('AWS_COGNITO_CLIENT_ID')
   config.cognito_user_pool_id = ENV.fetch('AWS_COGNITO_USER_POOL_ID')
@@ -145,14 +145,11 @@ Rails.application.configure do
 
     require 'data/integrity_checker'
     IntegrityChecker.new unless ENV['DISABLE_INTEGRITY_CHECKER'].present?
-  end
 
-  config.hub_config_host = ENV.fetch('HUB_CONFIG_HOST')
-
-  config.after_initialize do
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
   end
 
   config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
+  config.authentication_header = ENV.fetch('SELF_SERVICE_AUTHENTICATION_HEADER', nil)
 end

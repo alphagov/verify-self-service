@@ -1,4 +1,4 @@
-<% Rails.configuration.hub_environments_legacy.keys.each do |environment| %>
+<% Rails.configuration.hub_environments.keys.each do |environment| %>
   <%= link_to "Publish to #{environment}", publish_metadata_path(environment), class: 'govuk-button' %>
 <% end %>
 

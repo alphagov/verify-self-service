@@ -4,20 +4,16 @@ class HubConfigApi
   CERTIFICATES_ROUTE = '/config/certificates/'.freeze
   CERTIFICATE_ENCRYPTION_ENDPOINT = "%{entity_id}/certs/encryption".freeze
   CERTIFICATES_SIGNING_ENDPOINT = "%{entity_id}/certs/signing".freeze
+  attr_reader :hub_host, :authentication_header
 
-  def initialize(environment: :test)
-    @environment = environment
-    @header = hub_environment(:'secure-header') == 'true'
-    @hub_host = hub_environment(:'hub-config-host')
-    @service_authentication_header = ENV['SELF_SERVICE_AUTHENTICATION_HEADER']
+  def initialize; end
+
+  def healthcheck(environment)
+    build_request(**healthcheck_path(environment))
   end
 
-  def healthcheck
-    build_request(healthcheck_path)
-  end
-
-  def encryption_certificate(entity_id)
-    response = build_request(encryption_cert_path(entity_id))
+  def encryption_certificate(environment, entity_id)
+    response = build_request(**encryption_cert_path(environment, entity_id))
     if response.status == 200
       JSON.parse(response.body)['certificate']
     else
@@ -26,8 +22,8 @@ class HubConfigApi
     end
   end
 
-  def signing_certificates(entity_id)
-    response = build_request(signing_certs_path(entity_id))
+  def signing_certificates(environment, entity_id)
+    response = build_request(**signing_certs_path(environment, entity_id))
     if response.status == 200
       JSON.parse(response.body).map { |c| c['certificate'] }
     else
@@ -38,28 +34,32 @@ class HubConfigApi
 
 private
 
-  def build_request(url)
-    return Faraday.get(url) unless @header
-
-    Faraday.get(url) { |req| req.headers['X-Self-Service-Authentication'] = @service_authentication_header }
+  def use_secure_header(environment)
+    hub_environment(environment, :'secure-header') == 'true' && environment == :integration
   end
 
-  def encryption_cert_path(entity_id)
-    URI.join(@hub_host, CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s
+  def build_request(environment:, url:)
+    return Faraday.get(url) unless use_secure_header(environment.to_sym)
+
+    Faraday.get(url) { |req| req.headers['X-Self-Service-Authentication'] = Rails.configuration.authentication_header }
   end
 
-  def signing_certs_path(entity_id)
-    URI.join(@hub_host, CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s
+  def encryption_cert_path(environment, entity_id)
+    { environment: environment, url: URI.join(hub_environment(environment, :'hub-config-host'), CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s }
   end
 
-  def healthcheck_path
-    URI.join(@hub_host, HEALTHCHECK_ENDPOINT).to_s
+  def signing_certs_path(environment, entity_id)
+    { environment: environment, url: URI.join(hub_environment(environment, :'hub-config-host'), CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s }
   end
 
-  def hub_environment(value)
-    Rails.configuration.hub_environments.fetch(@environment)[value]
+  def healthcheck_path(environment)
+    { environment: environment, url: URI.join(hub_environment(environment, :'hub-config-host'), HEALTHCHECK_ENDPOINT).to_s }
+  end
+
+  def hub_environment(environment, value)
+    Rails.configuration.hub_environments.fetch(environment.to_sym)[value]
   rescue KeyError
-    Rails.logger.error("Failed to find #{value} for #{@environment}")
+    Rails.logger.error("Failed to find #{value} for #{environment}")
     "#{environment}-#{value}"
   end
 end

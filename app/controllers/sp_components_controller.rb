@@ -7,7 +7,7 @@ class SpComponentsController < ApplicationController
 
   def new
     @component = NewSpComponentEvent.new
-    @hub_environments_legacy = Rails.configuration.hub_environments_legacy.keys
+    @hub_environments = Rails.configuration.hub_environments.keys
     @teams = Team.all
   end
 
@@ -18,13 +18,13 @@ class SpComponentsController < ApplicationController
 
   def edit
     @component = SpComponent.find(params[:id])
-    @hub_environments_legacy = Rails.configuration.hub_environments_legacy.keys
+    @hub_environments = Rails.configuration.hub_environments.keys
     @teams = Team.all
   end
 
   def create
     @component = NewSpComponentEvent.create(component_params)
-    @hub_environments_legacy = Rails.configuration.hub_environments_legacy.keys
+    @hub_environments = Rails.configuration.hub_environments.keys
     if @component.valid?
       redirect_to admin_path
     else
@@ -44,7 +44,7 @@ class SpComponentsController < ApplicationController
     else
       Rails.logger.info(@event.errors.full_messages)
       @teams = Team.all
-      @hub_environments_legacy = Rails.configuration.hub_environments_legacy.keys
+      @hub_environments = Rails.configuration.hub_environments.keys
 
       render :edit
     end
