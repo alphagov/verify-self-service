@@ -9,12 +9,7 @@ RSpec.describe NewTeamEvent, type: :model do
       team_event = create(:new_team_event, name: 'The O Father')
       expect(team_event).to be_valid
       expect(team_event).to be_persisted
-    end
-
-    it 'has team event' do
-      stub_cognito_response(method: :create_group)
-      team_event = create(:new_team_event, name: 'J Snoop')
-      expect(team_event).to eq NewTeamEvent.last
+      expect(team_event).to eq NewTeamEvent.find_by_id(team_event.id)
     end
   end
 
