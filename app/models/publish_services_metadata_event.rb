@@ -2,6 +2,7 @@ require 'yaml'
 require 'digest/md5'
 
 class PublishServicesMetadataEvent < Event
+  include HubEnvironmentConcern
   attr_reader :metadata
   data_attributes :event_id, :services_metadata, :environment
   validates_presence_of :event_id
@@ -15,7 +16,7 @@ class PublishServicesMetadataEvent < Event
 
   def upload
     SelfService.service(:storage_client).put_object(
-      bucket: hub_environment_bucket,
+      bucket: hub_environment(environment, :bucket),
       key: FILES::CONFIG_METADATA,
       body: StringIO.new(metadata.to_json),
       server_side_encryption: 'AES256',
@@ -30,12 +31,5 @@ private
 
   def services_metadata
     Component.to_service_metadata(event_id, environment)
-  end
-
-  def hub_environment_bucket
-    Rails.configuration.hub_environments.fetch(environment)[:bucket]
-  rescue KeyError
-    Rails.logger.error("Failed to find bucket for #{environment}")
-    "#{environment}-bucket"
   end
 end
