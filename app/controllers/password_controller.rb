@@ -15,7 +15,7 @@ class PasswordController < ApplicationController
   end
 
   def update_password
-    @password_form = ChangePasswordForm.new(params[:change_password_form])
+    @password_form = ChangePasswordForm.new(params[:change_password_form] || {})
     if @password_form.valid?
       change_password(
         current_password: @password_form.old_password,
@@ -26,7 +26,6 @@ class PasswordController < ApplicationController
       flash[:notice] = t('password.password_changed')
       redirect_to profile_path
     else
-      flash.now[:errors] = @password_form.errors.full_messages.join(', ')
       render :password_form, status: :bad_request
     end
   rescue InvalidOldPasswordError
