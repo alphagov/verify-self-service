@@ -140,6 +140,7 @@ class UsersController < ApplicationController
       @user = as_team_member(cognito_user: get_user(user_id: params[:user_id]))
       admin_reset_user_password(username: @user.email)
       ResetUserPasswordEvent.create(data: { username: @user.email, user_id: params[:user_id], name: @user.full_name })
+      send_admin_changed_user_password_email(email_address: @user.email, first_name: @user.first_name, reset_url: force_user_reset_password_path(email: @user.email, reset_by_admin: true))
     rescue AuthenticationBackend::AuthenticationBackendException
       flash[:errors] = t('users.reset_user_password.errors.generic_error')
     end
