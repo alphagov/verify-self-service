@@ -1,10 +1,6 @@
 class CertStatusUpdater
-  def initialize(hub_config_api)
-    @hub_config_api = hub_config_api
-  end
-
-  def update_hub_usage_status_for_cert(certificate_to_check)
-    outcomes = entity_ids_for(certificate_to_check).map { |entity_id| cert_is_in_use_for_entity_id?(entity_id, certificate_to_check) }
+  def update_hub_usage_status_for_cert(hub_config_api, certificate_to_check)
+    outcomes = entity_ids_for(certificate_to_check).map { |entity_id| cert_is_in_use_for_entity_id?(hub_config_api, entity_id, certificate_to_check) }
 
     if outcomes.present? && outcomes.all?
       update_cert_status_for(certificate_to_check)
@@ -21,16 +17,16 @@ private
     end
   end
 
-  def cert_is_in_use_for_entity_id?(entity_id, certificate_to_check)
-    certs_in_use = get_certs_from_hub(entity_id, certificate_to_check.encryption?)
+  def cert_is_in_use_for_entity_id?(hub_config_api, entity_id, certificate_to_check)
+    certs_in_use = get_certs_from_hub(hub_config_api, entity_id, certificate_to_check)
     certs_in_use.include?(certificate_to_check.value)
   end
 
-  def get_certs_from_hub(entity_id, is_for_encryption)
-    if is_for_encryption
-      Array.wrap(@hub_config_api.encryption_certificate(entity_id))
+  def get_certs_from_hub(hub_config_api, entity_id, certificate)
+    if certificate.encryption?
+      Array.wrap(hub_config_api.encryption_certificate(certificate.component.environment, entity_id))
     else
-      Array.wrap(@hub_config_api.signing_certificates(entity_id))
+      Array.wrap(hub_config_api.signing_certificates(certificate.component.environment, entity_id))
     end
   end
 
