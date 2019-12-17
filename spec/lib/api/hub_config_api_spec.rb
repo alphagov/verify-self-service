@@ -122,7 +122,7 @@ describe HubConfigApi do
   end
 
   describe 'authentication headers used when configured' do
-    let(:authentication_header) { 'a-very-secure-header required here'}
+    let(:authentication_header) { 'a-very-secure_header required here'}
     let(:hub_config_api) { HubConfigApi.new }
     let(:environment) {'integration'}
     before(:each) do

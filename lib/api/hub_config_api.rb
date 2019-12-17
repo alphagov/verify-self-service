@@ -33,7 +33,7 @@ class HubConfigApi
 private
 
   def use_secure_header(environment)
-    hub_environment(environment, :'secure-header') == 'true'
+    hub_environment(environment, :secure_header) == 'true'
   end
 
   def build_request(environment:, url:)
@@ -43,14 +43,14 @@ private
   end
 
   def encryption_cert_path(environment, entity_id)
-    { environment: environment, url: URI.join(hub_environment(environment, :'hub-config-host'), CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s }
+    { environment: environment, url: URI.join(hub_environment(environment, :hub_config_host), CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s }
   end
 
   def signing_certs_path(environment, entity_id)
-    { environment: environment, url: URI.join(hub_environment(environment, :'hub-config-host'), CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s }
+    { environment: environment, url: URI.join(hub_environment(environment, :hub_config_host), CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s }
   end
 
   def healthcheck_path(environment)
-    { environment: environment, url: URI.join(hub_environment(environment, :'hub-config-host'), HEALTHCHECK_ENDPOINT).to_s }
+    { environment: environment, url: URI.join(hub_environment(environment, :hub_config_host), HEALTHCHECK_ENDPOINT).to_s }
   end
 end

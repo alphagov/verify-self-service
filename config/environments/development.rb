@@ -63,8 +63,8 @@ Rails.application.configure do
   config.hub_environments = {
     'development': {
       'bucket': 'development-bucket',
-      'hub-config-host': 'http://localhost:50240',
-      'secure-header': 'false'
+      'hub_config_host': 'http://localhost:50240',
+      'secure_header': 'false'
     }
   }
 

@@ -46,10 +46,10 @@ Rails.application.configure do
   config.aws_region = ENV['AWS_REGION']
 
   config.hub_environments = {
-    'production': {'bucket': 'production-bucket', 'hub-config-host': 'http://config-service.test', 'secure-header': 'false'},
-    'integration': {'bucket': 'integration-bucket', 'hub-config-host': 'http://config-service.test', 'secure-header': 'true'},
-    'staging': {'bucket': 'staging-bucket', 'hub-config-host': 'http://config-service.test', 'secure-header': 'false'},
-    'test': {'bucket': 'test-bucket', 'hub-config-host': 'http://config-service.test', 'secure-header': 'false'}
+    'production': {'bucket': 'production-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'},
+    'integration': {'bucket': 'integration-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'true'},
+    'staging': {'bucket': 'staging-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'},
+    'test': {'bucket': 'test-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'}
   }
 
   config.cognito_aws_access_key_id = ENV['COGNITO_AWS_ACCESS_KEY_ID']
