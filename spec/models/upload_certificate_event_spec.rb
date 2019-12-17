@@ -131,7 +131,7 @@ RSpec.describe UploadCertificateEvent, type: :model do
       it 'component ends up with 2 certs if an UploadCertificatesEvents is invalid' do
         valid_event1 = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: msa_component)
         valid_event2 = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: msa_component)
-        invalid_event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: "", component: msa_component)
+        invalid_event = UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_value, component: msa_component)
         expect(valid_event1).to be_valid
         expect(valid_event2).to be_valid
         expect(invalid_event).to_not be_valid

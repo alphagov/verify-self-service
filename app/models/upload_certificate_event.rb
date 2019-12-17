@@ -11,7 +11,7 @@ class UploadCertificateEvent < AggregatedEvent
   validates :value, presence: true, certificate: true
   validate :certificate_is_new, on: :create
   validate :component_is_persisted
-  validate :upload_max_2_signing_certificates
+  validate :upload_max_2_signing_certificates, on: :create
 
   validates_inclusion_of :usage, in: [CERTIFICATE_USAGE::SIGNING, CERTIFICATE_USAGE::ENCRYPTION]
 
@@ -59,7 +59,7 @@ private
 
   def upload_max_2_signing_certificates
     return if self.usage == CERTIFICATE_USAGE::ENCRYPTION
-    return if component.enabled_signing_certificates.count <= 2
+    return if component.enabled_signing_certificates.count < 2
 
     errors.add(:certificate, I18n.t('certificates.errors.cannot_publish'))
   end
