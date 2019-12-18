@@ -1,20 +1,17 @@
 class HubConfigApi
+  include HubEnvironmentConcern
   require 'cgi'
-
-  HUB_HOST = Rails.configuration.hub_config_host
   HEALTHCHECK_ENDPOINT = 'service-status'.freeze
   CERTIFICATES_ROUTE = '/config/certificates/'.freeze
   CERTIFICATE_ENCRYPTION_ENDPOINT = "%{entity_id}/certs/encryption".freeze
   CERTIFICATES_SIGNING_ENDPOINT = "%{entity_id}/certs/signing".freeze
 
-  def initialize; end
-
-  def healthcheck
-    Faraday.get healthcheck_path
+  def healthcheck(environment)
+    build_request(**healthcheck_path(environment))
   end
 
-  def encryption_certificate(entity_id)
-    response = Faraday.get encryption_cert_path(entity_id)
+  def encryption_certificate(environment, entity_id)
+    response = build_request(**encryption_cert_path(environment, entity_id))
     if response.status == 200
       JSON.parse(response.body)['certificate']
     else
@@ -23,8 +20,8 @@ class HubConfigApi
     end
   end
 
-  def signing_certificates(entity_id)
-    response = Faraday.get signing_certs_path(entity_id)
+  def signing_certificates(environment, entity_id)
+    response = build_request(**signing_certs_path(environment, entity_id))
     if response.status == 200
       JSON.parse(response.body).map { |c| c['certificate'] }
     else
@@ -35,15 +32,25 @@ class HubConfigApi
 
 private
 
-  def encryption_cert_path(entity_id)
-    URI.join(HUB_HOST, CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s
+  def use_secure_header(environment)
+    hub_environment(environment, :secure_header) == 'true'
   end
 
-  def signing_certs_path(entity_id)
-    URI.join(HUB_HOST, CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s
+  def build_request(environment:, url:)
+    return Faraday.get(url) unless use_secure_header(environment)
+
+    Faraday.get(url) { |req| req.headers['X-Self-Service-Authentication'] = Rails.configuration.authentication_header }
   end
 
-  def healthcheck_path
-    URI.join(HUB_HOST, HEALTHCHECK_ENDPOINT).to_s
+  def encryption_cert_path(environment, entity_id)
+    { environment: environment, url: URI.join(hub_environment(environment, :hub_config_host), CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s }
+  end
+
+  def signing_certs_path(environment, entity_id)
+    { environment: environment, url: URI.join(hub_environment(environment, :hub_config_host), CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }).to_s }
+  end
+
+  def healthcheck_path(environment)
+    { environment: environment, url: URI.join(hub_environment(environment, :hub_config_host), HEALTHCHECK_ENDPOINT).to_s }
   end
 end

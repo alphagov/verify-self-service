@@ -45,34 +45,23 @@ Rails.application.configure do
 
   config.aws_region = ENV['AWS_REGION']
 
-  config.hub_environments_legacy = {
-    'production': 'production-bucket',
-    'integration': 'integration-bucket',
-    'staging': 'staging-bucket',
-    'test': 'test-bucket'
-  }
-
   config.hub_environments = {
-    'production': {'bucket': 'production-bucket', 'hub-config-host': 'http://config-service.production', 'secure-header': 'false'},
-    'integration': {'bucket': 'integration-bucket', 'hub-config-host': 'http://config-service.integration', 'secure-header': 'true'},
-    'staging': {'bucket': 'staging-bucket', 'hub-config-host': 'http://config-service.staging', 'secure-header': 'false'},
-    'test': {'bucket': 'test-bucket', 'hub-config-host': 'http://config-service.test', 'secure-header': 'false'}
+    'production': {'bucket': 'production-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'},
+    'integration': {'bucket': 'integration-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'true'},
+    'staging': {'bucket': 'staging-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'},
+    'test': {'bucket': 'test-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'}
   }
 
   config.cognito_aws_access_key_id = ENV['COGNITO_AWS_ACCESS_KEY_ID']
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']
   config.cognito_client_id = ENV['AWS_COGNITO_CLIENT_ID']
   config.cognito_user_pool_id = ENV['AWS_COGNITO_USER_POOL_ID']
-
-  config.hub_config_host = 'http://config-service.test'
   config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
+  config.notify_key = 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111'
+  config.app_url = 'www.test.com'
 
   config.after_initialize do
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
   end
-
-  config.notify_key = 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111'
-
-  config.app_url = 'www.test.com'
 end

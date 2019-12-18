@@ -6,7 +6,7 @@ class NewMsaComponentEvent < AggregatedEvent
   validates_presence_of :name, message: I18n.t('events.errors.missing_name')
   validates_presence_of :team_id, message: I18n.t('components.errors.invalid_team')
   validates_presence_of :environment,
-                        in: Rails.configuration.hub_environments_legacy.keys,
+                        in: Rails.configuration.hub_environments.keys,
                         message: I18n.t('components.errors.invalid_environment')
 
   def build_msa_component

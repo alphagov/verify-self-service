@@ -7,9 +7,12 @@ module Healthcheck
     end
 
     def status
-      response = HUB_CONFIG_API.healthcheck
+      Rails.configuration.hub_environments.keys.each do |environment|
+        response = HUB_CONFIG_API.healthcheck(environment)
 
-      return OK if response.status == 200
+        return UNAVAILABLE unless response.status == 200
+      end
+      OK
     end
   end
 end

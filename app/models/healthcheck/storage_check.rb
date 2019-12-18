@@ -5,11 +5,11 @@ module Healthcheck
     end
 
     def status
-      Rails.configuration.hub_environments_legacy.values.each do |bucket|
+      Rails.configuration.hub_environments.values.each do |hub_environment|
         begin
-          unless healthcheck_file_exists?(bucket)
+          unless healthcheck_file_exists?(hub_environment[:bucket])
             SelfService.service(:storage_client).put_object(
-              bucket: bucket,
+              bucket: hub_environment[:bucket],
               key: FILES::HEALTHCHECK,
               body: '',
               server_side_encryption: 'AES256',
@@ -17,7 +17,7 @@ module Healthcheck
             )
           end
         rescue Aws::S3::Errors::ServiceError
-          raise StandardError.new("Error connecting to #{bucket} bucket")
+          raise StandardError.new("Error connecting to #{hub_environment[:bucket]} bucket")
         end
       end
 

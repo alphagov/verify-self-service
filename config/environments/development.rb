@@ -60,13 +60,11 @@ Rails.application.configure do
 
   config.aws_region = ENV['AWS_REGION']
 
-  config.hub_environments_legacy = { 'development': 'development-bucket' }
-
   config.hub_environments = {
     'development': {
       'bucket': 'development-bucket',
-      'hub-config-host': 'http://config-service.dev',
-      'secure-header': 'false'
+      'hub_config_host': 'http://localhost:50240',
+      'secure_header': 'false'
     }
   }
 
@@ -88,15 +86,12 @@ Rails.application.configure do
      IntegrityChecker.new
    end
 
-  config.hub_config_host = ENV.fetch('HUB_CONFIG_HOST', 'http://localhost:50240')
-  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
-
   config.after_initialize do
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
   end
 
+  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
   config.notify_key = ENV.fetch('NOTIFY_KEY', 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111')
-
   config.app_url = ENV.fetch('APP_URL', 'localhost:3000')
 end

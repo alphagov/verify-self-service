@@ -1,15 +1,17 @@
 require 'spec_helper'
 require 'rails_helper'
 require 'cgi'
+require 'api/hub_config_api'
 
 describe HubConfigApi do
   let(:hub_config_api) { HubConfigApi.new }
+  let(:environment) {'test'}
   let(:entity_id) { 'http://www.test-rp.gov.uk/SAML2/MD' }
   let(:wrong_entity_id) { 'wrong-entity-id' }
   let(:encryption_certificate) { 'base64-x509-encryption-cert' }
   let(:signing_certificate_one) { 'base64-x509-signing-cert-one' }
   let(:signing_certificate_two) { 'base64-x509-encryption-cert-two' }
-  let(:hub_response_for_encryption) { 
+  let(:hub_response_for_encryption) {
     {
       issuerId: entity_id,
       certificate: encryption_certificate,
@@ -18,7 +20,7 @@ describe HubConfigApi do
     }
   }
 
-  let(:hub_response_for_signing) { 
+  let(:hub_response_for_signing) {
     [
       {
         issuerId: entity_id,
@@ -29,7 +31,7 @@ describe HubConfigApi do
     ]
   }
 
-  let(:hub_response_for_signing_when_dual_running) { 
+  let(:hub_response_for_signing_when_dual_running) {
     [
       {
         issuerId: entity_id,
@@ -51,7 +53,7 @@ describe HubConfigApi do
       stub_request(:get, 'http://config-service.test:80/service-status')
         .to_return(status: 200)
 
-      response = hub_config_api.healthcheck
+      response = hub_config_api.healthcheck(environment)
 
       expect(response.status).to eq(200)
     end
@@ -60,7 +62,7 @@ describe HubConfigApi do
       stub_request(:get, 'http://config-service.test:80/service-status')
         .to_return(status: 502)
 
-      response = hub_config_api.healthcheck
+      response = hub_config_api.healthcheck(environment)
 
       expect(response.status).to eq(502)
     end
@@ -71,7 +73,7 @@ describe HubConfigApi do
       stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(entity_id)}/certs/encryption")
         .to_return(body: hub_response_for_encryption.to_json)
 
-      response = hub_config_api.encryption_certificate(entity_id)
+      response = hub_config_api.encryption_certificate(environment, entity_id)
 
       expect(response).to eq(encryption_certificate)
     end
@@ -79,10 +81,10 @@ describe HubConfigApi do
     it 'should return nil and log error if certificate not found' do
       stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(wrong_entity_id)}/certs/encryption")
         .to_return(status: 404, body: "{\"code\":404,\"message\":\"'#{wrong_entity_id}' - No data is configured for this entity.\"}")
-      
+
       expect(Rails.logger).to receive(:error).with("Error getting encryption certificate for entity_id: #{wrong_entity_id}! (Code: 404)")
 
-      response = hub_config_api.encryption_certificate(wrong_entity_id)
+      response = hub_config_api.encryption_certificate(environment, wrong_entity_id)
 
       expect(response).to be nil
     end
@@ -93,7 +95,7 @@ describe HubConfigApi do
       stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(entity_id)}/certs/signing")
         .to_return(body: hub_response_for_signing.to_json)
 
-      response = hub_config_api.signing_certificates(entity_id)
+      response = hub_config_api.signing_certificates(environment, entity_id)
 
       expect(response).to eq([signing_certificate_one])
     end
@@ -102,7 +104,7 @@ describe HubConfigApi do
       stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(entity_id)}/certs/signing")
         .to_return(body: hub_response_for_signing_when_dual_running.to_json)
 
-      response = hub_config_api.signing_certificates(entity_id)
+      response = hub_config_api.signing_certificates(environment, entity_id)
 
       expect(response).to eq([signing_certificate_one, signing_certificate_two])
     end
@@ -113,9 +115,45 @@ describe HubConfigApi do
 
       expect(Rails.logger).to receive(:error).with("Error getting signing certificates for entity_id: #{wrong_entity_id}! (Code: 404)")
 
-      response = hub_config_api.signing_certificates(wrong_entity_id)
+      response = hub_config_api.signing_certificates(environment, wrong_entity_id)
 
       expect(response).to eq([])
+    end
+  end
+
+  describe 'authentication headers used when configured' do
+    let(:authentication_header) { 'a-very-secure_header required here'}
+    let(:hub_config_api) { HubConfigApi.new }
+    let(:environment) {'integration'}
+    before(:each) do
+      Rails.configuration.authentication_header = authentication_header
+    end
+    it 'should return service-status from healtheck' do
+      stub_request(:get, 'http://config-service.test:80/service-status')
+        .with(headers: {'X-Self-Service-Authentication': authentication_header })
+        .to_return(status: 200)
+
+      response = hub_config_api.healthcheck(environment)
+
+      expect(response.status).to eq(200)
+    end
+    it 'should return the encryption certificate' do
+      stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(entity_id)}/certs/encryption")
+        .with(headers: {'X-Self-Service-Authentication': authentication_header })
+        .to_return(body: hub_response_for_encryption.to_json)
+
+      response = hub_config_api.encryption_certificate(environment, entity_id)
+
+      expect(response).to eq(encryption_certificate)
+    end
+    it 'should return an array of signing certs with two certs when dual-running' do
+      stub_request(:get, "http://config-service.test:80/config/certificates/#{CGI.escape(entity_id)}/certs/signing")
+        .with(headers: {'X-Self-Service-Authentication': authentication_header })
+        .to_return(body: hub_response_for_signing_when_dual_running.to_json)
+
+      response = hub_config_api.signing_certificates(environment, entity_id)
+
+      expect(response).to eq([signing_certificate_one, signing_certificate_two])
     end
   end
 end
