@@ -45,12 +45,14 @@ Rails.application.configure do
 
   config.aws_region = ENV['AWS_REGION']
 
-  config.hub_environments = {
-    'production': {'bucket': 'production-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'},
-    'integration': {'bucket': 'integration-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'true'},
-    'staging': {'bucket': 'staging-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'},
-    'test': {'bucket': 'test-bucket', 'hub_config_host': 'http://config-service.test', 'secure_header': 'false'}
-  }
+  config.hub_environments = JSON.parse("{
+    \"production\": {\"bucket\": \"production-bucket\", \"hub_config_host\": \"http://config-service.test\", \"secure_header\": \"false\"},
+    \"integration\": {\"bucket\": \"integration-bucket\", \"hub_config_host\": \"http://config-service.test\", \"secure_header\": \"true\"},
+    \"staging\": {\"bucket\": \"staging-bucket\", \"hub_config_host\": \"http://config-service.test\", \"secure_header\": \"false\"},
+    \"test\": {\"bucket\": \"test-bucket\", \"hub_config_host\": \"http://config-service.test\", \"secure_header\": \"false\"}
+  }")
+
+  config.authentication_header = 'secure-header-value'
 
   config.cognito_aws_access_key_id = ENV['COGNITO_AWS_ACCESS_KEY_ID']
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']
