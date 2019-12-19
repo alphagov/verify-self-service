@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'InviteToTeam', type: :system do
+  include NotifySupport
   before(:each) do
     login_gds_user
   end
@@ -12,6 +13,7 @@ RSpec.describe 'InviteToTeam', type: :system do
 
   it 'submits the form correctly without error' do
     stub_cognito_response(method: :admin_create_user, payload: { user: { username:'test@test.test' } })
+    stub_notify_response
     visit invite_to_team_path(Team.first.id)
     fill_in 'invite_user_form_email', with: 'test@test.com'
     fill_in 'invite_user_form_first_name', with: "test"

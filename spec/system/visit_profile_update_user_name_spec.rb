@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Update user name page', type: :system do
+  include NotifySupport
   before(:each) do
     login_user
     stub_cognito_response(method: :update_user_attributes, payload: {})  
@@ -14,6 +15,7 @@ RSpec.describe 'Update user name page', type: :system do
     end
 
     it 'successfully changes user name' do
+      stub_notify_response
       visit update_user_name_path
       fill_in 'update_user_name_form[first_name]', with: 'Joe'
       fill_in 'update_user_name_form[last_name]', with: 'Bloggs' 
