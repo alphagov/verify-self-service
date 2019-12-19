@@ -6,6 +6,7 @@ module Notification
   CHANGED_NAME_TEMPLATE = "c6880583-6f8e-4820-bb2e-98125e355f72".freeze
   CHANGED_MFA_TEMPLATE = "029b2f45-72f2-4386-8149-71bf57ba86d1".freeze
   CHANGED_PASSWORD_TEMPLATE = "16557e1a-767f-42d9-a8d6-7f35ca57f0dd".freeze
+  ADMIN_RESET_USER_PASSWORD_TEMPLATE = "335cc196-0260-493a-9fc7-7440a7110e7e".freeze
 
   REMINDER_TEMPLATE_SUBJECT = "your GOV.UK Verify certificates will expire on %s".freeze
 
@@ -77,6 +78,19 @@ module Notification
       template_id: CHANGED_PASSWORD_TEMPLATE,
       personalisation: {
         first_name: first_name,
+      },
+     )
+  rescue Notifications::Client::RequestError => e
+    Rails.logger.error(e.message)
+  end
+
+  def send_admin_changed_user_password_email(email_address:, first_name:, reset_url:)
+    mail_client.send_email(
+      email_address: email_address,
+      template_id: ADMIN_RESET_USER_PASSWORD_TEMPLATE,
+      personalisation: {
+        first_name: first_name,
+        reset_url: "[#{url}#{reset_password_path}](#{reset_url})",
       },
      )
   rescue Notifications::Client::RequestError => e

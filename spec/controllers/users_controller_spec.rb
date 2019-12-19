@@ -243,16 +243,27 @@ RSpec.describe UsersController, type: :controller do
     end
 
     describe '#reset_user_password' do
-      it 'resets the users password' do
+      it 'resets the users password and sends email' do
         stub_cognito_response(method: :admin_reset_user_password, payload: {} )
+        stub_notify_response
+        expected_body = {
+          email_address: "cherry.one@test.com",
+          template_id: "335cc196-0260-493a-9fc7-7440a7110e7e",
+          personalisation: {
+            first_name: "Cherry",
+            reset_url: "[http://www.test.com/reset-password](#{force_user_reset_password_path(email: 'cherry.one@test.com', reset_by_admin: true)})",
+          }
+        }
         post :reset_user_password, params: { user_id: user_id }
         expect(ResetUserPasswordEvent.last.data["username"]).to eq('cherry.one@test.com')
+        expect(response).to have_http_status(:redirect)
         expect(subject).to redirect_to(users_path)
+        expect(stub_notify_request(expected_body)).to have_been_made.once
       end
 
       it 'fails with error when a cognito error is thrown' do
         stub_cognito_response(method: :admin_reset_user_password, payload: 'Aws::CognitoIdentityProvider::Errors::ServiceError')
-        delete :reset_user_password, params: { user_id: user_id }
+        post :reset_user_password, params: { user_id: user_id }
         expect(response).to have_http_status(:redirect)
         expect(flash[:errors]).to eq(t 'users.reset_user_password.errors.generic_error')
         expect(subject).to redirect_to(users_path)
