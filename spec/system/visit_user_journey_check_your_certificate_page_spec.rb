@@ -127,5 +127,16 @@ RSpec.describe 'Check your certificate page', type: :system do
       click_button 'Use this certificate'
       expect(current_path).to eql confirmation_path(sp_signing_certificate.id)
     end
+
+    it 'renders index page when user tries to submit more than 2 signing certificates' do
+      second_sp_signing_certificate = create(:sp_signing_certificate, component: sp_signing_certificate.component)
+      visit upload_certificate_path(sp_signing_certificate.id)
+      fill_in 'certificate_value', with: sp_signing_certificate.value
+      click_button 'Continue'
+      expect(current_path).to eql check_your_certificate_path(sp_signing_certificate.id)
+      click_button 'Use this certificate'
+      expect(current_path).to eql root_path
+      expect(page).to have_content 'You have already uploaded two signing certificates'
+    end
   end
 end

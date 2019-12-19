@@ -339,6 +339,7 @@ en:
   user_journey:
     errors:
       select_option: Must select an option
+      multi_submission: You have already uploaded two signing certificates
     title: Dashboard
     component_long_name:
       MSA: Matching Service Adapter
