@@ -10,7 +10,10 @@ module Healthcheck
       Rails.configuration.hub_environments.keys.each do |environment|
         response = HUB_CONFIG_API.healthcheck(environment)
 
-        return UNAVAILABLE unless response.status == 200
+        unless response.success?
+          Rails.logger.error("Error connecting to #{environment} (#{response.env.url}) - status: #{response.status}, body: #{response.body}")
+          return UNAVAILABLE
+        end
       end
       OK
     end
