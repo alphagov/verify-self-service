@@ -93,6 +93,27 @@ RSpec.describe 'IndexPage', type: :system do
     expect(table_row_content).to have_content 'EXPIRES IN 29 DAYS'
   end
 
+  it 'shows certificate expiry tag in hours if certificate expires under 1 day' do
+    expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 22.hours))
+    visit root_path
+    table_row_content = page.find("##{expiring_certificate.id}")
+    expect(table_row_content).to have_content 'EXPIRES IN 21 HOURS'
+  end
+
+  it 'shows certificate expiry tag in minutes if certificate expires under 1 hour' do
+    expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: 55.minutes))
+    visit root_path
+    table_row_content = page.find("##{expiring_certificate.id}")
+    expect(table_row_content).to have_content 'EXPIRES IN 54 MINUTES'
+  end
+
+  it 'shows certificate expiry tag as expired if certificate expired' do
+    expiring_certificate = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: -30.minutes))
+    visit root_path
+    table_row_content = page.find("##{expiring_certificate.id}")
+    expect(table_row_content).to have_content 'EXPIRED'
+  end
+
   it 'shows deploying tag if certificate is being deployed' do
     cert_id = msa_signing_certificate.id
     visit root_path

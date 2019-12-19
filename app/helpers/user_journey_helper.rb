@@ -18,12 +18,32 @@ module UserJourneyHelper
   def certificate_status(certificate)
     if certificate.nil?
       "MISSING"
+    elsif certificate.expired?
+      "EXPIRED"
     elsif certificate.expires_soon?
-      "EXPIRES IN #{certificate.days_left} DAYS"
+      expiry_label(certificate)
     elsif certificate.deploying?
       "DEPLOYING"
     else
       "IN USE"
+    end
+  end
+
+  def certificate_status_tag_class(certificate)
+    return 'app-certificate-tag-deploying' if certificate.deploying?
+    return 'app-certificate-tag-expired' if certificate.expired?
+    return 'app-certificate-tag-expiring' if certificate.expires_soon?
+  end
+
+  def expiry_label(certificate)
+    if certificate.days_left > 1
+      "EXPIRES IN #{certificate.days_left.to_i} DAYS"
+    elsif certificate.days_left == 1 && certificate.hours_left > 23
+      "EXPIRES IN #{certificate.days_left.to_i} DAY"
+    elsif certificate.hours_left > 1 && certificate.minutes_left > 59
+      "EXPIRES IN #{certificate.hours_left} HOURS"
+    else
+      "EXPIRES IN #{certificate.minutes_left} MINUTES"
     end
   end
 
