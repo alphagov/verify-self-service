@@ -99,6 +99,10 @@ class Component < Aggregate
     I18n.t("user_journey.component_long_name.#{type}")
   end
 
+  def active_cert?(certificate)
+    current_certificates.include?(certificate)
+  end
+
 private
 
   def unexpired_encryption_certificate

@@ -45,6 +45,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
 
       expires_in_days = 30
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
+      create(:replace_encryption_certificate_event,
+        component: cert.component,
+        encryption_certificate_id: cert.id,
+        admin_upload: true,
+      )
+
       certificate_expiry_reminder.run
 
       expected_expiry_date = (Time.now + expires_in_days.days).strftime("%d %B %Y")
@@ -71,6 +77,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
 
       expires_in_days = 7
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
+      create(:replace_encryption_certificate_event,
+        component: cert.component,
+        encryption_certificate_id: cert.id,
+        admin_upload: true,
+      )
+
       certificate_expiry_reminder.run
 
       expected_expiry_date = (Time.now + expires_in_days.days).strftime("%d %B %Y")
@@ -97,6 +109,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
 
       expires_in_days = 7
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
+      create(:replace_encryption_certificate_event,
+        component: cert.component,
+        encryption_certificate_id: cert.id,
+        admin_upload: true,
+      )
+      
       certificate_expiry_reminder.run
 
       expected_expiry_date = (Time.now + expires_in_days.days).strftime("%d %B %Y")
@@ -127,10 +145,20 @@ RSpec.describe CertificateExpiryReminder, type: :model do
 
       component_vsp = create(:sp_component, vsp: true, environment: 'production', team_id: team.id)
       vsp_cert_one = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days), component: component_vsp)
+      create(:replace_encryption_certificate_event,
+        component: vsp_cert_one.component,
+        encryption_certificate_id: vsp_cert_one.id,
+        admin_upload: true,
+      )
       vsp_cert_two = create(:vsp_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days), component: component_vsp)
 
       component_msa = create(:msa_component, environment: 'integration', team_id: team.id)
       msa_cert_one = create(:msa_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days), component: component_msa)
+      create(:replace_encryption_certificate_event,
+        component: msa_cert_one.component,
+        encryption_certificate_id: msa_cert_one.id,
+        admin_upload: true,
+      )
       msa_cert_two = create(:msa_signing_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days), component: component_msa)
       certificate_expiry_reminder.run
 
@@ -163,6 +191,11 @@ RSpec.describe CertificateExpiryReminder, type: :model do
 
       expires_in_days = 3
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
+      create(:replace_encryption_certificate_event,
+        component: cert.component,
+        encryption_certificate_id: cert.id,
+        admin_upload: true,
+      )
       certificate_expiry_reminder.run
 
       expected_expiry_date = (Time.now + expires_in_days.days).strftime("%d %B %Y")
@@ -181,6 +214,33 @@ RSpec.describe CertificateExpiryReminder, type: :model do
       }
 
       expect(stub_notify_request(expected_call)).to have_been_made.once
+    end
+
+    it 'does not send email if an encryption certificate is expiring in 3 days but is not active on a component' do
+      stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+      stub_notify_response
+
+      expires_in_days = 3
+      cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
+
+      certificate_expiry_reminder.run
+
+      expected_expiry_date = (Time.now + expires_in_days.days).strftime("%d %B %Y")
+      expected_call = {
+        email_address: email,
+        template_id: "bbc34127-7fca-4d78-a95b-703da58e15ce",
+        personalisation: {
+          subject: "Urgent: your GOV.UK Verify certificates will expire on #{expected_expiry_date}",
+          team: cert.component.team.name,
+          no_of_certs: 1,
+          multiple: 'no',
+          expire_on: expected_expiry_date,
+          certificates: ["Verify Service Provider (staging): encryption certificate - expires on #{cert.x509.not_after}"],
+          url: "http://www.test.com"
+        }
+      }
+
+      expect(stub_notify_request(expected_call)).not_to have_been_made
     end
 
     it 'does not send email if no certificate is expiring' do
@@ -243,6 +303,12 @@ RSpec.describe CertificateExpiryReminder, type: :model do
 
       expires_in_days = 29
       cert = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days))
+      create(:replace_encryption_certificate_event,
+        component: cert.component,
+        encryption_certificate_id: cert.id,
+        admin_upload: true,
+      )
+
       certificate_expiry_reminder.force_run(Time.now - 1.day)
 
       expected_expiry_date = (Time.now + expires_in_days.days).strftime("%d %B %Y")
