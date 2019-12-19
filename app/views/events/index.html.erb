@@ -25,7 +25,17 @@
         <td class="govuk-table__cell" scope="row"><%= event.created_at.strftime('%Y-%m-%d %H:%M:%S.%N') %></td>
         <td class="govuk-table__cell" scope="row"><%= event.aggregate_id %></td>
         <td class="govuk-table__cell" scope="row"><%= event.aggregate_type %></td>
-        <td class="govuk-table__cell" scope="row"><%= event.user_id %></td>
+        <td class="govuk-table__cell" scope="row">
+          <% if event.user_id %>
+            <% if event.user_id == current_user.user_id %>
+                <%= t 'users.you' %>
+              <% else %>
+                <%= link_to(event.user_id, update_user_path(event.user_id)) %>
+              <% end %>
+          <% else %>
+            <%= event.user_id %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
