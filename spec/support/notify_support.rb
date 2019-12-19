@@ -1,3 +1,4 @@
+require 'json'
 module NotifySupport
   NOTIFY_ENDPOINT = "https://api.notifications.service.gov.uk/v2/notifications/email".freeze
 

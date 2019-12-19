@@ -89,6 +89,9 @@ Rails.application.configure do
   config.after_initialize do
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
+
+    require 'polling/dev_cert_status_updater'
+    CERT_STATUS_UPDATER = DevCertStatusUpdater.new
   end
 
   config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')

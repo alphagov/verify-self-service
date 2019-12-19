@@ -1,6 +1,7 @@
 require 'yaml'
 require 'digest/md5'
 require 'notify/notification'
+require 'polling/worker'
 
 class PublishServicesMetadataEvent < Event
   include HubEnvironmentConcern
@@ -10,6 +11,7 @@ class PublishServicesMetadataEvent < Event
   validates_presence_of :event_id
   before_create :populate_data_attributes
   before_create :upload
+  after_create_commit Worker.poll
 
   def populate_data_attributes
     @metadata = services_metadata

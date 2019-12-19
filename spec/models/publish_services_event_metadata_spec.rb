@@ -1,10 +1,15 @@
 require 'yaml'
 require 'rails_helper'
+require 'polling/cert_status_updater'
 
 RSpec.describe PublishServicesMetadataEvent, type: :model do
   include StorageSupport, NotifySupport
 
   Time.zone = 'London'
+  include StorageSupport, StubHubConfigApiSupport
+  before(:each) do
+    stub_const('CERT_STATUS_UPDATER', CertStatusUpdater.new)
+  end
 
   let(:published_at) { Time.now }
   let(:event_id) { 0 }
@@ -122,6 +127,91 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
       travel_to Time.zone.local(current.year, current.month, current.day, 8, 00, 00)
       PublishServicesMetadataEvent.create(event_id: event.id, environment: 'production')
       expect(stub_notify_request(expected_body)).not_to have_been_made
+    end
+  end
+  
+  context 'polling' do
+    let!(:service) { create(:service) }
+    let(:hub_response_for_signing_certificate) {
+      [{
+        issuerId: service.entity_id,
+        certificate: sp_signing_certificate.value,
+        keyUse: 'Signing',
+        federationEntityType: 'RP',
+      }].to_json
+    }
+
+    after(:each) do
+      SpComponent.destroy_all
+      MsaComponent.destroy_all
+    end
+
+    context 'does not occur' do
+      require 'polling/dev_cert_status_updater'
+      let(:sp_signing_certificate) { create(:sp_signing_certificate) }
+      it 'updates certificate in_use_at' do
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+        stub_const('CERT_STATUS_UPDATER', DevCertStatusUpdater.new)
+        expect_any_instance_of(Worker).to receive(:poll)
+          .with(hash_including(environment: sp_signing_certificate.component.environment))
+        allow(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(anything, sp_signing_certificate)
+          .and_return(CertificateInUseEvent.create(certificate: sp_signing_certificate))
+
+        create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).not_to be_nil
+      end
+    end
+
+    context 'occurs' do
+      let(:msa_encryption_certificate) { create(:msa_encryption_certificate) }
+      let(:sp_signing_certificate) { create(:sp_signing_certificate) }
+      it 'updates certificate in_use_at' do
+        stub_signing_certificates_hub_request(
+          environment: sp_signing_certificate.component.environment,
+          entity_id: service.entity_id
+        )
+        .to_return(body: hub_response_for_signing_certificate)
+
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+
+        create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).not_to be_nil
+      end
+
+      it 'polls until certificate is in use then updates in_use_at' do
+        stub_signing_certificates_hub_request(
+          environment: sp_signing_certificate.component.environment,
+          entity_id: service.entity_id
+        )
+        .to_return(status: 404)
+        .times(2).then
+        .to_return(status: 200, body: hub_response_for_signing_certificate)
+
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+
+        create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+
+        loop { break if Certificate.find_by_id(sp_signing_certificate.id).in_use_at }
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).not_to be_nil
+      end
+
+      it 'polls but certificate is not in use' do
+        stub_signing_certificates_hub_request(
+          environment: sp_signing_certificate.component.environment,
+          entity_id: service.entity_id
+        )
+        .to_return(status: 404)
+        .times(2).then
+        .to_return(status: 404)
+        scheduler = Polling::Scheduler.new(overlap: false, timeout: '3.0s', times: 3)
+        stub_const('CERT_STATUS_UPDATER', DevCertStatusUpdater.new)
+        expect_any_instance_of(Worker).to receive(:poll)
+          .with(hash_including(environment: sp_signing_certificate.component.environment))
+
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+        create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+      end
     end
   end
 end

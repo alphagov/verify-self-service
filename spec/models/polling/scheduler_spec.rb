@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Polling::Scheduler, type: :model do
   let(:scheduler) { Polling::Scheduler.new }
+
+  after :each do
+    scheduler.rufus_scheduler.shutdown
+  end
+  
   let(:greetings) { 'hello verify self service...' }
   let(:worker) {
    Class.new do

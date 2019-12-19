@@ -114,7 +114,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
         encryption_certificate_id: cert.id,
         admin_upload: true,
       )
-      
+
       certificate_expiry_reminder.run
 
       expected_expiry_date = (Time.now + expires_in_days.days).strftime("%d %B %Y")
@@ -140,7 +140,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
       stub_notify_response
 
       expires_in_days = 7
-      
+
       team = create(:team)
 
       component_vsp = create(:sp_component, vsp: true, environment: 'production', team_id: team.id)
