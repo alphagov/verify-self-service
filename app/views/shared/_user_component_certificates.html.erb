@@ -27,7 +27,7 @@
                     <% end %>
                   </td>
                   <td class="govuk-table__cell">
-                    <div class="app-certificate-tag <%= 'app-certificate-tag-deploying' if cert.deploying? %> <%= 'app-certificate-tag-expiring' if cert.expires_soon? %>">
+                    <div class="app-certificate-tag <%= certificate_status_tag_class(cert) %>">
                       <strong class="govuk-tag"><%= certificate_status(cert) %></strong>
                     </div>
                   </td>
@@ -37,7 +37,7 @@
               <tr class="govuk-table__row" id="<%= cert.id %>">
                 <td class="govuk-table__cell"><%= link_to t('user_journey.encryption_certificate'), view_certificate_path(cert.id) %></td>
                 <td class="govuk-table__cell">
-                  <div class="app-certificate-tag <%= 'app-certificate-tag-expiring' if cert.expires_soon? %> <%= 'app-certificate-tag-deploying' if cert.deploying? %>">
+                  <div class="app-certificate-tag <%= certificate_status_tag_class(cert) %>">
                     <strong class="govuk-tag"><%= certificate_status(cert) %></strong>
                   </div>
                 </td>
