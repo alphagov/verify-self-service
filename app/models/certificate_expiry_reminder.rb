@@ -29,13 +29,21 @@ module CertificateExpiryReminder
   private
 
     def expiring_certs
-      Certificate.where('enabled = ?', true).select { |c| REMIND_DAYS_LEFT.include?(c.days_left) && c.component.present? }
+      find_certs(REMIND_DAYS_LEFT)
     end
 
     def expiring_certs_for_date(date)
       day_diff = (Time.now.to_date - date.to_date).to_i
       adjusted_remind_days_left = REMIND_DAYS_LEFT.map { |day| day - day_diff }
-      Certificate.where('enabled = ?', true).select { |c| adjusted_remind_days_left.include?(c.days_left) && c.component.present? }
+      find_certs(adjusted_remind_days_left)
+    end
+
+    def find_certs(expiration_periods)
+      Certificate.where('enabled = ?', true).select { |c|
+        expiration_periods.include?(c.days_left) &&
+          c.component.present? &&
+          c.component.active_cert?(c)
+      }
     end
 
     def group_by_team(certificates)
