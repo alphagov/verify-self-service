@@ -38,6 +38,23 @@ RSpec.describe 'Check your certificate page', type: :system do
       expect(current_path).to eql confirmation_path(msa_encryption_certificate.id)
     end
 
+    it 'encryption cert uploads when over 2 signing certs exist' do
+      create(:msa_signing_certificate, component: msa_signing_certificate.component)
+      create(:msa_signing_certificate, component: msa_signing_certificate.component)
+
+      msa_encryption_certificate = create(:msa_encryption_certificate, component: msa_signing_certificate.component)
+
+      visit upload_certificate_path(msa_encryption_certificate.id)
+      fill_in 'certificate_value', with: msa_encryption_certificate.value
+      click_button 'Continue'
+      expect(current_path).to eql check_your_certificate_path(msa_encryption_certificate.id)
+
+      expect(page).to have_content 'Encryption'
+      click_button 'Use this certificate'
+
+      expect(page).not_to have_content 'You have already uploaded two signing certificates'
+    end
+
     it 'vsp encryption and successfully goes to next page' do
       visit upload_certificate_path(vsp_encryption_certificate.id)
       fill_in 'certificate_value', with: vsp_encryption_certificate.value
