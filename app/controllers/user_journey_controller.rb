@@ -75,7 +75,7 @@ class UserJourneyController < ApplicationController
   end
 
   def confirm
-    if @certificate.component.enabled_signing_certificates.count >= 2
+    if @certificate.component.enabled_signing_certificates.count >= 2 && @certificate.signing?
       flash[:error] = I18n.t('user_journey.errors.multi_submission')
       redirect_to root_path
     else
