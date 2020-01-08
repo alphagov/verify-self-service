@@ -8,7 +8,7 @@ module CertStatusNotifications
 
   def send_notification_email(mail_client:, certificate:, environment:, email_address:, deadline:)
     component = certificate.component
-    is_dual_running = component.enabled_signing_certificates.length > 1
+    is_dual_running = component.enabled_signing_certificates.count > 1
 
     template = choose_template(
       certificate: certificate,
@@ -17,44 +17,12 @@ module CertStatusNotifications
       deadline: deadline,
     )
 
-    personalisation =
-      case template
-      when MSA_SIGNING_TEMPLATE
-        {
-          team_name: component.team.name,
-          environment: environment,
-          time_and_date: deadline,
-        }
-      when MSA_SIGNING_NO_DEADLINE_TEMPLATE
-        {
-          team_name: component.team.name,
-          environment: environment,
-        }
-      when MSA_VSP_DUAL_RUNNING_SP_ENCRYPTION_TEMPLATE
-        {
-          team_name: component.team.name,
-          component: component.display_long_name,
-          environment: environment,
-        }
-      when SP_ENCRYPTION_NO_DUAL_RUNNING_TEMPLATE
-        {
-          team_name: component.team.name,
-          environment: environment,
-        }
-      when VSP_SP_SIGNING_TEMPLATE
-        {
-          team_name: component.team.name,
-          component: component.display_long_name,
-          environment: environment,
-          time_and_date: deadline,
-        }
-      when VSP_SP_SIGNING_NO_DEADLINE_TEMPLATE
-        {
-          team_name: component.team.name,
-          component: component.display_long_name,
-          environment: environment,
-        }
-      end
+    personalisation = {
+      team_name: component.team.name,
+      component: component.display_long_name,
+      environment: environment,
+      time_and_date: deadline,
+    }
 
     mail_client.send_email(
       email_address: email_address,
