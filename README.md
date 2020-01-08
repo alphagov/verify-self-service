@@ -3,7 +3,14 @@
 [![Build Status](https://travis-ci.org/alphagov/verify-self-service.svg?branch=master)](https://travis-ci.org/alphagov/verify-self-service)
 
 A Ruby on Rails application for the Verify self-service configuration management
-platform. It is currently a work in progress.
+platform.
+
+Currently provides functionality to:
+* rotate (upload) encryption and signing certificates for the connected services (for both production and integration environments)
+* publish the certificates to S3 bucket which is then consumed by Verify Hub
+* notify users of expiring certificates (30, 14 and 3 days in advance)
+* authenticate users (using AWS Cognito) with enforced MFA
+* user management for team admins/user managers (invite, delete, reset passwords)
 
 ## Technical Documentation
 
@@ -12,6 +19,9 @@ Architecture Decision Records can be found in [`doc/adr/`](doc/adr/).
 The application is being developed using the principle of Event Sourcing. Please
 see [doc/adr/0002-use-event-sourcing.md](doc/adr/0002-use-event-sourcing.md) to
 understand why we made that decision and how we are doing it.
+
+Further information on how to support the appplication can be found in the 
+[Verify Team Manual](https://verify-team-manual.cloudapps.digital/documentation/support/#verify-self-service).
 
 ### Running the application
 
