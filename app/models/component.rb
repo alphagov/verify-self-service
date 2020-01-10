@@ -76,8 +76,8 @@ class Component < Aggregate
   def to_metadata
     {
       name: name,
-      encryption_certificate: unexpired_encryption_certificate&.to_metadata,
-      signing_certificates: unexpired_enabled_signing_certificates.map(&:to_metadata),
+      encryption_certificate: encryption_certificate&.to_metadata,
+      signing_certificates: enabled_signing_certificates.map(&:to_metadata),
     }.merge(additional_metadata)
   end
 
@@ -101,23 +101,5 @@ class Component < Aggregate
 
   def active_cert?(certificate)
     current_certificates.include?(certificate)
-  end
-
-private
-
-  def unexpired_encryption_certificate
-    if encryption_certificate&.expired?
-      Rails.logger.error "When publishing the meta data the service '#{name}' has been identified as having an expired encryption certificate."
-      return nil
-    end
-    encryption_certificate
-  end
-
-  def unexpired_enabled_signing_certificates
-    valid_certs = enabled_signing_certificates.reject(&:expired?)
-    if valid_certs.size < enabled_signing_certificates.size
-      Rails.logger.error "When publishing the meta data the service '#{name}' has been identified as having expired signing certificate(s)."
-    end
-    valid_certs
   end
 end
