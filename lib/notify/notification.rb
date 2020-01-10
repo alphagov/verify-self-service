@@ -113,6 +113,19 @@ module Notification
     Rails.logger.error(e.message)
   end
 
+  def send_cert_status_notification_email(certificate:, environment:, email_address:, team_name:, deadline:)
+    CertStatusNotifications.send_notification_email(
+      mail_client: mail_client,
+      certificate: certificate,
+      environment: environment,
+      email_address: email_address,
+      team_name: team_name,
+      deadline: deadline,
+    )
+  rescue Notifications::Client::RequestError => e
+    Rails.logger.error(e.message)
+  end
+
 private
 
   def url
