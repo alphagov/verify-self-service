@@ -32,8 +32,6 @@ RSpec.describe Component, type: :model do
     let(:sp_component) { create(:sp_component) }
     let(:root) { PKI.new }
     let!(:upload_signing_certificate_event_1) do
-
-
       create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 6.months),
@@ -41,7 +39,6 @@ RSpec.describe Component, type: :model do
       )
     end
     let!(:upload_signing_certificate_event_2) do
-
       create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 6.months),
@@ -69,8 +66,6 @@ RSpec.describe Component, type: :model do
       )
     end
     let!(:upload_encryption_event_1) do
-
-
       event = create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: 6.months),
@@ -190,7 +185,6 @@ RSpec.describe Component, type: :model do
     let(:sp_component) { create(:sp_component) }
 
     def encryption_certificate(expires_in: 129.days, component: )
-
       @encryption_event = create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: expires_in),
