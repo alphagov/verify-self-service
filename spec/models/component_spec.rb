@@ -146,40 +146,6 @@ RSpec.describe Component, type: :model do
         service_providers: []
       }
     end
-
-    it 'does not include expired signing certs' do
-      expired_signing_cert = {
-        name: upload_signing_certificate_event_4.certificate.x509.subject.to_s,
-        value: upload_signing_certificate_event_4.certificate.value
-      }
-
-      travel_to Time.now + 2.months + 2.days
-
-      event_id = Event.first.id
-      actual_config = Component.to_service_metadata(event_id, 'staging', published_at)
-      expect(expected_config(event_id)).not_to eq(actual_config)
-      expect(actual_config[:service_providers][0][:signing_certificates].include?(expired_signing_cert)).to eq(false)
-    end
-
-    it 'does not include expired encryption certs' do
-      expired_signing_cert = {
-        name: upload_signing_certificate_event_4.certificate.x509.subject.to_s,
-        value: upload_signing_certificate_event_4.certificate.value
-      }
-
-      expired_encryption_cert = {
-        name: upload_encryption_event_2.certificate.x509.subject.to_s,
-        value: upload_encryption_event_2.certificate.value
-      }
-
-      travel_to Time.now + 4.months
-
-      event_id = Event.first.id
-      actual_config = Component.to_service_metadata(event_id, 'staging', published_at)
-      expect(expected_config(event_id)).not_to eq(actual_config)
-      expect(actual_config[:service_providers][0][:signing_certificates].include?(expired_signing_cert)).to eq(false)
-      expect(actual_config[:service_providers][0][:encryption_certificate]).to be_nil
-    end
   end
   context 'sorting certificates' do
     before(:each) do
