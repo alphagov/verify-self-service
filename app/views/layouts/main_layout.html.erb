@@ -1,7 +1,16 @@
 <% content_for :banner do %>
   <div class="govuk-phase-banner">
     <p class="govuk-phase-banner__content">
-      <span class="govuk-phase-banner__text govuk-heading-s"><%= @team_name %></span>
+      <span class="govuk-phase-banner__text govuk-heading-s">
+        <% if @team_name == TEAMS::GDS %>
+          <%= @team_name.upcase %>
+            <strong class="govuk-tag">
+              <%= t 'users.admin_team' %>
+            </strong>
+        <% else %>
+          <%= @team_name %>
+        <% end %>
+      </span>
     </p>
   </div>
 <% end %>
