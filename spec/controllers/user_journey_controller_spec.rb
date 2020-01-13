@@ -211,17 +211,60 @@ RSpec.describe UserJourneyController, type: :controller do
   end
 
   describe '#confirmation' do
-    it 'renders confirmation page' do
+    it 'renders confirmation page when encryption certificate is replaced' do
       certmgr_stub_auth(team)
       certificate = create(:msa_encryption_certificate)
       msa_component = certificate.component
+      expect(subject).to receive(:uploaded_replaced_certificate_published?).and_return(true)
       post :confirm,
-           params: params.merge({
-             'upload-certificate': 'string',
-             certificate: { new_certificate: certificate.value }
-           })
+            params: params.merge({
+              'upload-certificate': 'string',
+              certificate: { new_certificate: certificate.value }
+            })
       expect(response).to have_http_status(:success)
       expect(subject).to render_template(:confirmation)
+    end
+
+    it 'renders confirmation page when signing certificate is uploaded' do
+      certmgr_stub_auth(team)
+      certificate = create(:msa_signing_certificate)
+      msa_component = certificate.component
+      expect(subject).to receive(:uploaded_certificate_published?).and_return(true)
+      post :confirm,
+            params: params.merge({
+              'upload-certificate': 'string',
+              certificate: { new_certificate: certificate.value }
+            })
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:confirmation)
+    end
+
+    it 'renders publish_failed page when publish replaced event for encryption certificate fails' do
+      certmgr_stub_auth(team)
+      certificate = create(:msa_encryption_certificate)
+      msa_component = certificate.component
+      expect(subject).to receive(:uploaded_replaced_certificate_published?).and_return(false)
+      post :confirm,
+            params: params.merge({
+              'upload-certificate': 'string',
+              certificate: { new_certificate: certificate.value }
+            })
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:publish_failed)
+    end
+
+    it 'renders publish_failed page when publish upload event for signing certificate fails' do
+      certmgr_stub_auth(team)
+      certificate = create(:msa_signing_certificate)
+      msa_component = certificate.component
+      expect(subject).to receive(:uploaded_certificate_published?).and_return(false)
+      post :confirm,
+            params: params.merge({
+              'upload-certificate': 'string',
+              certificate: { new_certificate: certificate.value }
+            })
+      expect(response).to have_http_status(:success)
+      expect(subject).to render_template(:publish_failed)
     end
   end
 
@@ -356,7 +399,7 @@ RSpec.describe UserJourneyController, type: :controller do
 
       expect(subject).to render_template(:upload_certificate)
       expect(
-        assigns(:upload).errors.full_messages.first
+        assigns(:upload_event).errors.full_messages.first
       ).to include(I18n.t('certificates.errors.invalid'))
     end
   end

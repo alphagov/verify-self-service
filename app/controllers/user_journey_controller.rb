@@ -75,45 +75,46 @@ class UserJourneyController < ApplicationController
   end
 
   def confirm
-    if @certificate.component.enabled_signing_certificates.count >= 2 && @certificate.signing?
+    if @certificate.signing? && @certificate.component.enabled_signing_certificates.count >= 2
       flash[:error] = I18n.t('user_journey.errors.multi_submission')
       redirect_to root_path
+    elsif upload_event.invalid?
+      Rails.logger.info(upload_event.errors.full_messages.join(', '))
+      render :upload_certificate
+    elsif upload_event.certificate.signing? && uploaded_certificate_published?
+      render :confirmation
+    elsif upload_event.certificate.encryption? && uploaded_replaced_certificate_published?
+      render :confirmation
     else
-      new_certificate_value = params[:certificate][:new_certificate]
-      @upload = UploadCertificateEvent.create(
-        usage: @certificate.usage,
-        value: new_certificate_value,
-        component_id: @certificate.component_id,
-        component_type: @certificate.component_type,
-      )
-
-      if @upload.valid?
-        component = klass_component(@upload.component_type).find_by_id(@upload.component_id)
-        if @upload.certificate.encryption?
-          replace = ReplaceEncryptionCertificateEvent.create(
-            component: component,
-            encryption_certificate_id: @upload.certificate.id,
-          )
-          replaced_certicate_published = check_metadata_published_user_journey(replace.id)
-        end
-
-        certicate_published = check_metadata_published_user_journey(@upload.id)
-
-        if certicate_published && replaced_certicate_published
-          render :confirmation
-        elsif @upload.certificate.signing? && certicate_published
-          render :confirmation
-        else
-          render :publish_failed
-        end
-      else
-        Rails.logger.info(@upload.errors.full_messages.join(', '))
-        render :upload_certificate
-      end
+      render :publish_failed
     end
   end
 
 private
+
+  def uploaded_certificate_published?
+    @uploaded_certificate_published ||= check_metadata_published_user_journey(upload_event.id)
+  end
+
+  def uploaded_replaced_certificate_published?
+    uploaded_certificate_published? && check_metadata_published_user_journey(replace_event.id)
+  end
+
+  def replace_event
+    ReplaceEncryptionCertificateEvent.create(
+      component: klass_component(upload_event.component_type).find_by_id(upload_event.component_id),
+      encryption_certificate_id: upload_event.certificate.id,
+    )
+  end
+
+  def upload_event
+    @upload_event ||= UploadCertificateEvent.create(
+      usage: @certificate.usage,
+      value: params[:certificate][:new_certificate],
+      component_id: @certificate.component_id,
+      component_type: @certificate.component_type,
+    )
+  end
 
   def find_certificate
     @certificate = Certificate.find_by_id(params[:certificate_id])
