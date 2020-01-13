@@ -3,8 +3,8 @@ module Polling
   class Scheduler
     attr_reader :rufus_scheduler
     attr_reader :job
-    DEFAULT_TIMEOUT = '30.0s'.freeze
-    DEFAULT_NUMBER_POLLS = 30
+    DEFAULT_TIMEOUT = '100.0s'.freeze
+    DEFAULT_NUMBER_POLLS = 12
 
     def initialize(opts = { overlap: false, timeout: DEFAULT_TIMEOUT, times: DEFAULT_NUMBER_POLLS })
       @opts = opts

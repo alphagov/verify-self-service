@@ -22,4 +22,22 @@ module StubHubConfigApiSupport
 
     stub
   end
+
+  def hub_response_for_signing(entity_id:, value:)
+    [{
+      issuerId: entity_id,
+      certificate: value,
+      keyUse: 'Signing',
+      federationEntityType: 'RP',
+    }].to_json
+  end
+
+  def hub_response_for_encryption(entity_id:, value:)
+    {
+      issuerId: entity_id,
+      certificate: value,
+      keyUse: 'Signing',
+      federationEntityType: 'RP',
+    }.to_json
+  end
 end

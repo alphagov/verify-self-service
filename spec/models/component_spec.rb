@@ -3,30 +3,10 @@ require 'rails_helper'
 RSpec.describe Component, type: :model do
   include StubHubConfigApiSupport
   context '#to_service_metadata' do
-
     before(:each) do
       SpComponent.destroy_all
       MsaComponent.destroy_all
     end
-
-    def hub_response_for_encryption(entity_id, certificate_value)
-      {
-        issuerId: entity_id,
-        certificate: certificate_value,
-        keyUse: 'Encryption',
-        federationEntityType: 'RP',
-      }.to_json
-    end
-
-    def hub_response_for_signing(entity_id, certificate_value)
-      [{
-        issuerId: entity_id,
-        certificate: certificate_value,
-        keyUse: 'Signing',
-        federationEntityType: 'RP',
-      }].to_json
-    end
-
     let(:published_at) { Time.now }
     let(:msa_component) { create(:msa_component) }
     let(:sp_component) { create(:sp_component) }
@@ -46,8 +26,6 @@ RSpec.describe Component, type: :model do
       )
     end
     let!(:upload_signing_certificate_event_3) do
-      stub_signing_certificates_hub_request(environment: sp_component.environment, entity_id: sp_service.entity_id)
-      .to_return(body: hub_response_for_signing(sp_service.entity_id, root.generate_encoded_cert(expires_in: 2.months)))
       create(:assign_sp_component_to_service_event, service: sp_service, sp_component_id: sp_component.id)
       create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::SIGNING,
@@ -56,8 +34,6 @@ RSpec.describe Component, type: :model do
       )
     end
     let!(:upload_signing_certificate_event_4) do
-      stub_signing_certificates_hub_request(environment: sp_component.environment, entity_id: sp_service.entity_id)
-      .to_return(body: hub_response_for_signing(sp_service.entity_id, root.generate_encoded_cert(expires_in: 2.months)))
       create(:assign_sp_component_to_service_event, service: sp_service, sp_component_id: sp_component.id)
       create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::SIGNING,
@@ -78,8 +54,6 @@ RSpec.describe Component, type: :model do
       event
     end
     let!(:upload_encryption_event_2) do
-      stub_encryption_certificate_hub_request(environment: sp_component.environment, entity_id: sp_service.entity_id)
-      .to_return(body: hub_response_for_encryption(sp_service.entity_id, root.generate_encoded_cert(expires_in: 3.months)))
       create(:assign_sp_component_to_service_event, service: sp_service, sp_component_id: sp_component.id)
       event = create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::ENCRYPTION,

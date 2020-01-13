@@ -58,11 +58,14 @@ Rails.application.configure do
   config.cognito_aws_secret_access_key = ENV['COGNITO_AWS_SECRET_ACCESS_KEY']
   config.cognito_client_id = ENV['AWS_COGNITO_CLIENT_ID']
   config.cognito_user_pool_id = ENV['AWS_COGNITO_USER_POOL_ID']
-  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
+  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','0.5s')
   config.notify_key = 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111'
   config.app_url = 'www.test.com'
 
   config.after_initialize do
+    require 'polling/scheduler'
+    SCHEDULER = Polling::Scheduler.new
+
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
 

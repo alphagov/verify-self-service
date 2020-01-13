@@ -153,6 +153,6 @@ Rails.application.configure do
     CERT_STATUS_UPDATER = CertStatusUpdater.new
   end
 
-  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
+  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','15s')
   config.authentication_header = ENV.fetch('SELF_SERVICE_AUTHENTICATION_HEADER', nil)
 end

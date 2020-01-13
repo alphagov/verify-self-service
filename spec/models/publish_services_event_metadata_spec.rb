@@ -1,23 +1,35 @@
 require 'yaml'
 require 'rails_helper'
 require 'polling/cert_status_updater'
+require 'polling/scheduler'
 
 RSpec.describe PublishServicesMetadataEvent, type: :model do
-  include StorageSupport, NotifySupport
-
+  include StorageSupport, StubHubConfigApiSupport, NotifySupport
   Time.zone = 'London'
-  include StorageSupport, StubHubConfigApiSupport
+
   before(:each) do
     stub_const('CERT_STATUS_UPDATER', CertStatusUpdater.new)
+    stub_const('SCHEDULER', Polling::Scheduler.new)
   end
-
+  after(:each) do
+    SCHEDULER.rufus_scheduler.shutdown(:kill)
+  end
   let(:published_at) { Time.now }
   let(:event_id) { 0 }
   let(:component) { MsaComponent.create(name: 'lala', entity_id: 'https//test-entity') }
   let(:event) { PublishServicesMetadataEvent.create(event_id: event_id, environment: 'test') }
   let(:current) { Time.current }
   let(:in_hours) { travel_to Time.zone.local(current.year, current.month, current.day, 12, 00, 00)}
-
+  let(:team) { create(:team) }
+  let(:login_current_user) {
+    user = User.new
+    user.user_id = SecureRandom.uuid
+    user.team = team.id
+    user.first_name = "Test"
+    user.last_name = "Tester"
+    user.email = "test@test.test"
+    RequestStore.store[:user] = user
+  }
   context '#create' do
     before(:each) { in_hours }
     it 'creates a valid event which contains hard-coded data' do
@@ -39,6 +51,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
 
   context 'upload when in hours' do
     before(:each) { in_hours }
+
     it 'when environment is set to integration on component' do
       expect(
         SelfService.service(:storage_client)
@@ -48,6 +61,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
     end
 
     it 'when environment is set to production on component' do
+      login_current_user
       expect(
         SelfService.service(:storage_client)
       ).to receive(:put_object).with(hash_including(bucket: "production-bucket"))
@@ -64,16 +78,6 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
   end
 
   context 'upload when out of hours' do
-    let(:team) { create(:team) }
-    let(:login_current_user) {
-      user = User.new
-      user.user_id = SecureRandom.uuid
-      user.team = team.id
-      user.first_name = "Test"
-      user.last_name = "Tester"
-      user.email = "test@test.test"
-      RequestStore.store[:user] = user
-    }
     let(:event) { create(:upload_certificate_event) }
     let(:expected_body) {
       {
@@ -129,88 +133,231 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
       expect(stub_notify_request(expected_body)).not_to have_been_made
     end
   end
-  
+
   context 'polling' do
     let!(:service) { create(:service) }
-    let(:hub_response_for_signing_certificate) {
-      [{
-        issuerId: service.entity_id,
-        certificate: sp_signing_certificate.value,
-        keyUse: 'Signing',
-        federationEntityType: 'RP',
-      }].to_json
-    }
-
+    let(:sp_signing_certificate) { create(:sp_signing_certificate) }
+    let(:msa_encryption_certificate) { create(:msa_encryption_certificate) }
+    let(:new_msa_encryption_certificate) { create(:msa_encryption_certificate) }
+    let(:msa_signing_certificate) { create(:msa_signing_certificate) }
     after(:each) do
       SpComponent.destroy_all
       MsaComponent.destroy_all
+      SCHEDULER.rufus_scheduler.shutdown(:kill)
+    end
+
+    def wait_until(timeout=1.5, frequency=0.1, &block)
+      start = Time.now
+      loop {
+        sleep(frequency)
+        #return if block.call == true
+        r = block.call
+        return r if r
+        break if Time.now - start > timeout
+      }
+      fail "timeout after #{timeout}s"
     end
 
     context 'does not occur' do
       require 'polling/dev_cert_status_updater'
-      let(:sp_signing_certificate) { create(:sp_signing_certificate) }
       it 'updates certificate in_use_at' do
         expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
         stub_const('CERT_STATUS_UPDATER', DevCertStatusUpdater.new)
-        expect_any_instance_of(Worker).to receive(:poll)
-          .with(hash_including(environment: sp_signing_certificate.component.environment))
         allow(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(anything, sp_signing_certificate)
           .and_return(CertificateInUseEvent.create(certificate: sp_signing_certificate))
 
         create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
-        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).not_to be_nil
+        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_present
       end
     end
 
     context 'occurs' do
-      let(:msa_encryption_certificate) { create(:msa_encryption_certificate) }
-      let(:sp_signing_certificate) { create(:sp_signing_certificate) }
-      it 'updates certificate in_use_at' do
-        stub_signing_certificates_hub_request(
-          environment: sp_signing_certificate.component.environment,
-          entity_id: service.entity_id
-        )
-        .to_return(body: hub_response_for_signing_certificate)
 
-        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+      context 'due assign component to service event' do
+        it 'called once and polls hub to update certificate in_use_at' do
+          stub_signing_certificates_hub_request(
+            environment: sp_signing_certificate.component.environment,
+            entity_id: service.entity_id
+          )
+            .to_return(body: hub_response_for_signing(entity_id: service.entity_id, value: sp_signing_certificate.value))
 
-        create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
-        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).not_to be_nil
+          expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+
+          create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+          expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_present
+        end
+
+        it 'called once and polls hub no more than 4 times until certificate is in use' do
+          stub_signing_certificates_hub_request(
+            environment: sp_signing_certificate.component.environment,
+            entity_id: service.entity_id
+          )
+            .to_return(status: 404)
+            .times(2).then
+            .to_return(status: 200, body: hub_response_for_signing(entity_id: service.entity_id, value: sp_signing_certificate.value))
+
+          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(Component).to receive(:all_pollable_certificates).and_call_original
+            .with(sp_signing_certificate.component.environment).once
+
+          expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+
+          create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+
+          wait_until { Certificate.find_by_id(sp_signing_certificate.id).in_use_at }
+          expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_present
+        end
+
+        it 'called many times and polls hub no more than 4 times until certificate is in use' do
+          stub_signing_certificates_hub_request(
+            environment: sp_signing_certificate.component.environment,
+            entity_id: service.entity_id
+          )
+            .to_return(status: 404)
+            .times(2).then
+            .to_return(status: 200, body: hub_response_for_signing(entity_id: service.entity_id, value: sp_signing_certificate.value))
+
+          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(Component).to receive(:all_pollable_certificates).and_call_original.with(sp_signing_certificate.component.environment).at_least(2).times
+
+          expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+
+          wait_until {
+            create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+            Certificate.find_by_id(sp_signing_certificate.id).in_use_at
+          }
+          expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_present
+        end
+
+        it 'called once and polls hub but certificate is never in use when response not successful' do
+          stub_signing_certificates_hub_request(
+            environment: sp_signing_certificate.component.environment,
+            entity_id: service.entity_id
+          )
+            .to_return(status: 404)
+            .times(3)
+
+          expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+          create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+          expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+        end
       end
 
-      it 'polls until certificate is in use then updates in_use_at' do
-        stub_signing_certificates_hub_request(
-          environment: sp_signing_certificate.component.environment,
-          entity_id: service.entity_id
-        )
-        .to_return(status: 404)
-        .times(2).then
-        .to_return(status: 200, body: hub_response_for_signing_certificate)
+      context 'due to replace encryption certificate event' do
+        it 'called once and polls hub to update certificate in_use_at' do
+          stub_encryption_certificate_hub_request(
+            environment: new_msa_encryption_certificate.component.environment,
+            entity_id: new_msa_encryption_certificate.component.entity_id
+          )
+          .to_return(body: hub_response_for_encryption(entity_id: new_msa_encryption_certificate.component.entity_id, value: new_msa_encryption_certificate.value))
 
-        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+          expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
 
-        create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
+          create(:replace_encryption_certificate_event, encryption_certificate_id: new_msa_encryption_certificate.id, component: msa_encryption_certificate.component)
+          expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_present
+        end
 
-        loop { break if Certificate.find_by_id(sp_signing_certificate.id).in_use_at }
-        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).not_to be_nil
+        it 'called once and polls hub no more than 4 times until certificate is in use' do
+          stub_encryption_certificate_hub_request(
+            environment: new_msa_encryption_certificate.component.environment,
+            entity_id: new_msa_encryption_certificate.component.entity_id
+          )
+            .to_return(status: 404)
+            .times(2).then
+            .to_return(status: 200, body: hub_response_for_encryption(entity_id: new_msa_encryption_certificate.component.entity_id, value: new_msa_encryption_certificate.value))
+
+          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(Component).to receive(:all_pollable_certificates).and_call_original
+            .with(msa_encryption_certificate.component.environment).once
+
+          expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
+
+          create(:replace_encryption_certificate_event, encryption_certificate_id: new_msa_encryption_certificate.id, component: msa_encryption_certificate.component)
+
+          wait_until { Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at }
+          expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_present
+        end
+
+        it 'called many times and polls hub no more than 4 times until certificate is in use' do
+          stub_encryption_certificate_hub_request(
+            environment: new_msa_encryption_certificate.component.environment,
+            entity_id: new_msa_encryption_certificate.component.entity_id
+          )
+            .to_return(status: 404)
+            .times(2).then
+            .to_return(status: 200, body: hub_response_for_encryption(entity_id: new_msa_encryption_certificate.component.entity_id, value: new_msa_encryption_certificate.value))
+
+          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(Component).to receive(:all_pollable_certificates).and_call_original.with(msa_encryption_certificate.component.environment).at_least(2)
+
+          expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
+
+          wait_until {
+            create(:replace_encryption_certificate_event, encryption_certificate_id: new_msa_encryption_certificate.id, component: msa_encryption_certificate.component)
+            Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at
+          }
+          expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_present
+        end
+
+        it 'called once and polls hub but certificate is never in use when response not successful' do
+          stub_encryption_certificate_hub_request(
+            environment: new_msa_encryption_certificate.component.environment,
+            entity_id: new_msa_encryption_certificate.component.entity_id
+          )
+            .to_return(status: 404)
+            .times(3)
+
+          expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
+          create(:replace_encryption_certificate_event, encryption_certificate_id: new_msa_encryption_certificate.id, component: msa_encryption_certificate.component)
+          expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
+        end
       end
 
-      it 'polls but certificate is not in use' do
-        stub_signing_certificates_hub_request(
-          environment: sp_signing_certificate.component.environment,
-          entity_id: service.entity_id
-        )
-        .to_return(status: 404)
-        .times(2).then
-        .to_return(status: 404)
-        scheduler = Polling::Scheduler.new(overlap: false, timeout: '3.0s', times: 3)
-        stub_const('CERT_STATUS_UPDATER', DevCertStatusUpdater.new)
-        expect_any_instance_of(Worker).to receive(:poll)
-          .with(hash_including(environment: sp_signing_certificate.component.environment))
+      context 'due to upload certificate event' do
+        it 'called once and polls hub to update certificate in_use_at' do
+          stub_signing_certificates_hub_request(
+            environment: msa_signing_certificate.component.environment,
+            entity_id: msa_signing_certificate.component.entity_id
+          )
+            .to_return(body: hub_response_for_signing(entity_id: msa_signing_certificate.component.entity_id, value: msa_signing_certificate.value))
 
-        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
-        create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
-        expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
+          expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_nil
+
+          create(:upload_certificate_event, component: msa_signing_certificate.component)
+          expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_present
+        end
+
+        it 'called once and polls hub no more than 4 times until certificate is in use' do
+          stub_signing_certificates_hub_request(
+            environment: msa_signing_certificate.component.environment,
+            entity_id: msa_signing_certificate.component.entity_id
+          )
+            .to_return(status: 404)
+            .times(2).then
+            .to_return(status: 200, body: hub_response_for_signing(entity_id: msa_signing_certificate.component.entity_id, value: msa_signing_certificate.value))
+
+          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(Component).to receive(:all_pollable_certificates).and_call_original
+            .with(msa_signing_certificate.component.environment).once
+
+          expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_nil
+          create(:upload_certificate_event, component: msa_signing_certificate.component)
+          wait_until { Certificate.find_by_id(msa_signing_certificate.id).in_use_at }
+          expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_present
+        end
+
+        it 'called once and polls hub but certificate is never in use when response not successful' do
+          stub_signing_certificates_hub_request(
+            environment: msa_signing_certificate.component.environment,
+            entity_id: msa_signing_certificate.component.entity_id
+          )
+            .to_return(status: 404)
+            .times(3)
+
+          expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_nil
+          create(:upload_certificate_event, component: msa_signing_certificate.component)
+          expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_nil
+        end
       end
     end
   end

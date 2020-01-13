@@ -87,6 +87,9 @@ Rails.application.configure do
    end
 
   config.after_initialize do
+    require 'polling/scheduler'
+
+    SCHEDULER = Polling::Scheduler.new
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
 

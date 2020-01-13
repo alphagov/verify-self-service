@@ -6,7 +6,7 @@ RSpec.describe Polling::Scheduler, type: :model do
   after :each do
     scheduler.rufus_scheduler.shutdown
   end
-  
+
   let(:greetings) { 'hello verify self service...' }
   let(:worker) {
    Class.new do
@@ -34,6 +34,12 @@ RSpec.describe Polling::Scheduler, type: :model do
     it 'does something when mode is bad' do
       expect(scheduler.mode(:ofather)).to eql scheduler
       expect(scheduler.perform(->{ worker.work })).not_to be scheduler
+    end
+
+    it 'uses default job frequency when polling on an action' do
+      expect(scheduler.mode(:every)).to eql scheduler
+      expect(scheduler.perform(->{ worker.work })).to be scheduler
+      expect(scheduler.job.frequency).to eq Rails.configuration.scheduler_polling_interval.chomp('s').to_f
     end
 
     it 'uses duration string to poll on a repeatable schedule' do
