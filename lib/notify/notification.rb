@@ -7,6 +7,7 @@ module Notification
   CHANGED_MFA_TEMPLATE = "029b2f45-72f2-4386-8149-71bf57ba86d1".freeze
   CHANGED_PASSWORD_TEMPLATE = "16557e1a-767f-42d9-a8d6-7f35ca57f0dd".freeze
   ADMIN_RESET_USER_PASSWORD_TEMPLATE = "335cc196-0260-493a-9fc7-7440a7110e7e".freeze
+  OUT_OF_HOURS_ROTATION_TEMPLATE = "0cab7f14-c616-4541-8a73-55bf26b93479".freeze
 
   REMINDER_TEMPLATE_SUBJECT = "your GOV.UK Verify certificates will expire on %s".freeze
 
@@ -93,6 +94,34 @@ module Notification
         reset_url: "[#{url}#{reset_password_path}](#{reset_url})",
       },
      )
+  rescue Notifications::Client::RequestError => e
+    Rails.logger.error(e.message)
+  end
+
+  def send_out_of_hours_rotation_email(event_type:, user:, team:)
+    mail_client.send_email(
+      email_address: 'idasupport@digital.cabinet-office.gov.uk',
+      template_id: OUT_OF_HOURS_ROTATION_TEMPLATE,
+      personalisation: {
+        event_type: event_type,
+        user_name: user.full_name,
+        user_email: user.email,
+        user_team: team.name,
+      },
+     )
+  rescue Notifications::Client::RequestError => e
+    Rails.logger.error(e.message)
+  end
+
+  def send_cert_status_notification_email(certificate:, environment:, email_address:, team_name:, deadline:)
+    CertStatusNotifications.send_notification_email(
+      mail_client: mail_client,
+      certificate: certificate,
+      environment: environment,
+      email_address: email_address,
+      team_name: team_name,
+      deadline: deadline,
+    )
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end
