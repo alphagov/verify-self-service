@@ -78,13 +78,13 @@ class UserJourneyController < ApplicationController
     if @certificate.signing? && @certificate.component.enabled_signing_certificates.count >= 2
       flash[:error] = I18n.t('user_journey.errors.multi_submission')
       redirect_to root_path
-    elsif upload.invalid?
-      Rails.logger.info(upload.errors.full_messages.join(', '))
+    elsif upload_event.invalid?
+      Rails.logger.info(upload_event.errors.full_messages.join(', '))
       render :upload_certificate
-    elsif upload.certificate.signing? && uploaded_certificate_published?
+    elsif upload_event.certificate.signing? && uploaded_certificate_published?
       render :confirmation
-    elsif upload.certificate.encryption? && uploaded_certificate_published?
-      render_replaced_encryption_certificate_confirmation
+    elsif upload_event.certificate.encryption? && uploaded_replaced_certificate_published?
+      render :confirmation
     else
       render :publish_failed
     end
@@ -93,20 +93,22 @@ class UserJourneyController < ApplicationController
 private
 
   def uploaded_certificate_published?
-    @uploaded_certificate_published ||= check_metadata_published_user_journey(upload.id)
+    @uploaded_certificate_published ||= check_metadata_published_user_journey(upload_event.id)
   end
 
-  def render_replaced_encryption_certificate_confirmation
-    component = klass_component(upload.component_type).find_by_id(upload.component_id)
-    replace = ReplaceEncryptionCertificateEvent.create(
-      component: component,
-      encryption_certificate_id: upload.certificate.id,
+  def uploaded_replaced_certificate_published?
+    uploaded_certificate_published? && check_metadata_published_user_journey(replace_event.id)
+  end
+
+  def replace_event
+    ReplaceEncryptionCertificateEvent.create(
+      component: klass_component(upload_event.component_type).find_by_id(upload_event.component_id),
+      encryption_certificate_id: upload_event.certificate.id,
     )
-    render :confirmation if check_metadata_published_user_journey(replace.id)
   end
 
-  def upload
-    @upload ||= UploadCertificateEvent.create(
+  def upload_event
+    @upload_event ||= UploadCertificateEvent.create(
       usage: @certificate.usage,
       value: params[:certificate][:new_certificate],
       component_id: @certificate.component_id,
