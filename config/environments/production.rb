@@ -148,8 +148,11 @@ Rails.application.configure do
 
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
+
+    require 'polling/cert_status_updater'
+    CERT_STATUS_UPDATER = CertStatusUpdater.new
   end
 
-  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
+  config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','15s')
   config.authentication_header = ENV.fetch('SELF_SERVICE_AUTHENTICATION_HEADER', nil)
 end

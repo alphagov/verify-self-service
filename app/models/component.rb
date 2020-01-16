@@ -26,6 +26,12 @@ class Component < Aggregate
 
   scope :for_user, ->(user) { where(team_id: user.team) }
 
+  def self.all_pollable_certificates(environment)
+    msa_certificates = MsaComponent.all_components_for_metadata(environment).map(&:unexpired_certificates_not_in_use)
+    sp_certificates = SpComponent.all_components_for_metadata(environment).where.not(services: { id: nil }).map(&:unexpired_certificates_not_in_use)
+    (msa_certificates + sp_certificates).flatten
+  end
+
   def self.to_service_metadata(event_id, environment, published_at = Time.now)
     service_providers = SpComponent.all_components_for_metadata(environment)
     {
@@ -59,14 +65,16 @@ class Component < Aggregate
     certs
   end
 
+  def unexpired_certificates_not_in_use
+    current_certificates.reject { |c| c.expired? || c.in_use_at.present? }
+  end
+
   def days_left
     sorted_certificates&.first&.days_left || NON_SORTING_SEED
   end
 
   def sorted_certificates
-    current_certificates.sort_by do |c|
-      c.expires_soon? ? c.days_left : NON_SORTING_SEED
-    end
+    current_certificates.sort_by { |c| c.expires_soon? ? c.days_left : NON_SORTING_SEED }
   end
 
   def previous_encryption_certificates

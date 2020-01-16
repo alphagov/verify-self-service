@@ -1,17 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe Component, type: :model do
+  include StubHubConfigApiSupport
   context '#to_service_metadata' do
     before(:each) do
       SpComponent.destroy_all
       MsaComponent.destroy_all
-      msa_component.services << msa_service
-      sp_component.services << sp_service
     end
-
     let(:published_at) { Time.now }
-    let(:msa_component) { create(:new_msa_component_event).msa_component }
-    let(:sp_component) { create(:new_sp_component_event).sp_component }
+    let(:msa_component) { create(:msa_component) }
+    let(:sp_component) { create(:sp_component) }
     let(:root) { PKI.new }
     let!(:upload_signing_certificate_event_1) do
       create(:upload_certificate_event,
@@ -28,6 +26,7 @@ RSpec.describe Component, type: :model do
       )
     end
     let!(:upload_signing_certificate_event_3) do
+      create(:assign_sp_component_to_service_event, service: sp_service, sp_component_id: sp_component.id)
       create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 6.months),
@@ -35,6 +34,7 @@ RSpec.describe Component, type: :model do
       )
     end
     let!(:upload_signing_certificate_event_4) do
+      create(:assign_sp_component_to_service_event, service: sp_service, sp_component_id: sp_component.id)
       create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 2.months),
@@ -54,6 +54,7 @@ RSpec.describe Component, type: :model do
       event
     end
     let!(:upload_encryption_event_2) do
+      create(:assign_sp_component_to_service_event, service: sp_service, sp_component_id: sp_component.id)
       event = create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: 3.months),
@@ -65,7 +66,6 @@ RSpec.describe Component, type: :model do
       )
       event
     end
-
 
     let!(:msa_service) { create(:service, entity_id: 'https://old-and-boring') }
     let!(:sp_service) { create(:service, entity_id: 'https://new-hotness') }
@@ -147,6 +147,7 @@ RSpec.describe Component, type: :model do
       }
     end
   end
+
   context 'sorting certificates' do
     before(:each) do
       SpComponent.destroy_all
@@ -154,21 +155,21 @@ RSpec.describe Component, type: :model do
     end
 
     let(:root) { PKI.new }
-    let(:msa_component) { create(:new_msa_component_event).msa_component }
-    let(:sp_component) { create(:new_sp_component_event).sp_component }
+    let(:msa_component) { create(:msa_component) }
+    let(:sp_component) { create(:sp_component) }
 
     def encryption_certificate(expires_in: 129.days, component: )
-      @msa_encryption_event = create(:upload_certificate_event,
+      @encryption_event = create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::ENCRYPTION,
         value: root.generate_encoded_cert(expires_in: expires_in),
         component: component
       )
       create(:replace_encryption_certificate_event,
-        component: msa_component,
-        encryption_certificate_id: @msa_encryption_event.certificate.id
-      ) unless msa_component.encryption_certificate_id == @msa_encryption_event.certificate.id
+        component: component,
+        encryption_certificate_id: @encryption_event.certificate.id
+      ) unless component.encryption_certificate_id == @encryption_event.certificate.id
 
-      @msa_encryption_event.certificate
+      @encryption_event.certificate
     end
 
     it 'maintains order from (lowest to highest) days left' do
