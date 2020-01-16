@@ -149,6 +149,9 @@ Rails.application.configure do
     require 'api/hub_config_api'
     HUB_CONFIG_API = HubConfigApi.new
 
+    require 'polling/scheduler'
+    SCHEDULER = Polling::Scheduler.new
+
     require 'polling/cert_status_updater'
     CERT_STATUS_UPDATER = CertStatusUpdater.new
   end
