@@ -23,6 +23,10 @@
         <td class="govuk-table__cell"><%= certificate.x509.not_after %></td>
       </tr>
       <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">In use at</th>
+        <td class="govuk-table__cell"><%= certificate.in_use_at %></td>
+      </tr>
+      <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Certificate</th>
         <td class="govuk-table__cell">
           <details class="govuk-details" data-module="govuk-details">
