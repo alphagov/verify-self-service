@@ -362,10 +362,10 @@ en:
     secondary: (secondary)
     replacing_certificate_in_config: GOV.UK Verify is replacing your existing certificate with the new one
     adding_certificate_to_config: GOV.UK Verify is adding your certificate to its configuration
-    we_will_email_you: This usually takes around 10 minutes. We'll email you when this is done.
+    we_will_email_you: This usually takes a few minutes. We'll email you when this is done.
     add_new_signing_key_warning: After receiving this email you must add the new signing key to your %{component} config by %{date}, or your service’s connection to GOV.UK Verify will break.
     wait_for_an_email: Wait for an email from GOV.UK Verify confirming your new signing certificate is in use
-    how_long_it_takes: This usually takes around 10 minutes from the time you uploaded the new signing certificate.
+    how_long_it_takes: This usually takes a few minutes from the time you uploaded the new signing certificate.
     delete_old_signing_key_and_cert: Then you can delete the old signing key and certificate from your %{component} configuration.
     maintain_connection: You need to manage your certificates to make sure your service stays connected to GOV.UK Verify.
     connection_broken_or_compromised_guidance: If your connection has been broken or compromised, read
@@ -395,7 +395,7 @@ en:
       title_support_dual_running: Does your service provider support dual running?
       support_dual_running: If your service provider supports dual running, it can try to decrypt messages from the GOV.UK Verify Hub using both your old and new encryption keys. Your connection will not break.
       not_support_dual_running: Because your service provider does not support dual running, your connection to GOV.UK Verify will break when the GOV.UK Verify Hub starts using your new encryption certificate.
-      how_long_it_takes: This usually takes around 10 minutes.
+      how_long_it_takes: This usually takes a few minutes.
       connection_break: Wait for your connection to GOV.UK Verify to break.
       apply_changes: You should have added your new encryption key and certificate to your service provider configuration earlier. Apply the changes to fix the connection.
     before_you_start:
@@ -433,7 +433,7 @@ en:
       common_name: Common name
       used_by: Used by
       view_certificate: View full certificate
-      certificate_update_notice: Using this certificate will replace your old %{certificate} certificate in GOV.UK Verify's configuration within 10 minutes.
+      certificate_update_notice: Using this certificate will replace your old %{certificate} certificate in GOV.UK Verify's configuration within a few minutes.
       use_certificate: Use this certificate
       upload_different_certificate: Upload a different certificate
       certificate: "%{type} certificate"
@@ -446,8 +446,8 @@ en:
       certificate_will_be_added: Once you confirm you want to use this certificate, it will be added to the GOV.UK Verify Hub configuration alongside your old signing certificate.
       encrypt_messages_for_your_service: The GOV.UK Verify Hub will then use your new certificate to encrypt messages for your service.
       signed_mesages_from_your_service: The GOV.UK Verify Hub will then trust your old and new certificates to verify signatures on messages from your service.
-      how_long_it_takes: This takes around 10 minutes. Your connection will not break.
-      will_replace_old_certificate: Using this certificate will replace your old encryption certificate in GOV.UK Verify's configuration within 10 minutes.
+      how_long_it_takes: This will take a few minutes. Your connection will not break.
+      will_replace_old_certificate: Using this certificate will replace your old encryption certificate in GOV.UK Verify's configuration within a few minutes.
       sp_doesnt_support_dual_running: Because your service provider does not support dual running, your connection will break when the GOV.UK Verify Hub starts using your new certificate.
       restore_connection: As soon as this happens, you will need to restore your connection to GOV.UK Verify.
       choose_one: 'Choose one option:'
@@ -455,12 +455,12 @@ en:
       stop_using_primary_warning_html: "This is your primary (most recent) certificate. During a normal certificate rotation you should be disabling your %{href} instead."
       stop_using_secondary_link: secondary certificate
       stop_using_secondary_heading: Stop using this secondary certificate
-      stop_using_secondary_warning: By clicking the button below, GOV.UK Verify will stop using this certificate within 10 minutes. Make sure you're no longer using the corresponding private key.
+      stop_using_secondary_warning: By clicking the button below, GOV.UK Verify will stop using this certificate in a few minutes. Make sure you're no longer using the corresponding private key.
       stop_using: Stop using this certificate
     confirmation:
       title: Confirmation
       publish_failed_title: Publish failed
-      what_to_expect: This usually takes around 10 minutes. We'll email you when your new %{type} certificate is in use.
+      what_to_expect: This usually takes a few minutes. We'll email you when your new %{type} certificate is in use.
       next_steps: Next steps
       rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.
       received_email: Once you've received the email, delete the old %{usage} key and certificate from your %{component} configuration.
