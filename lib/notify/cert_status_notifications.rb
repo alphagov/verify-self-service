@@ -36,24 +36,22 @@ private
   def choose_template(certificate:, component_type:, is_dual_running:, deadline:)
     if certificate.signing?
       choose_template_for_signing_cert(component_type, deadline)
-    elsif component_type == COMPONENT_TYPE::SP_SHORT && !is_dual_running
-      SP_ENCRYPTION_NO_DUAL_RUNNING_TEMPLATE
     else
-      MSA_VSP_DUAL_RUNNING_SP_ENCRYPTION_TEMPLATE
+      choose_template_for_encryption_cert(component_type, is_dual_running)
     end
   end
 
   def choose_template_for_signing_cert(component_type, deadline)
     if component_type == COMPONENT_TYPE::MSA_SHORT
-      if defined?(deadline)
-        MSA_SIGNING_TEMPLATE
-      else
-        MSA_SIGNING_NO_DEADLINE_TEMPLATE
-      end
-    elsif defined?(deadline)
-      VSP_SP_SIGNING_TEMPLATE
+      defined?(deadline) ? MSA_SIGNING_TEMPLATE : MSA_SIGNING_NO_DEADLINE_TEMPLATE
     else
-      VSP_SP_SIGNING_NO_DEADLINE_TEMPLATE
+      defined?(deadline) ? VSP_SP_SIGNING_TEMPLATE : VSP_SP_SIGNING_NO_DEADLINE_TEMPLATE
+    end
+  end
+
+  def choose_template_for_encryption_cert(component_type, is_dual_running)
+    if component_type == COMPONENT_TYPE::SP_SHORT
+      is_dual_running ? MSA_VSP_DUAL_RUNNING_SP_ENCRYPTION_TEMPLATE : SP_ENCRYPTION_NO_DUAL_RUNNING_TEMPLATE
     end
   end
 end

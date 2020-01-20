@@ -1,7 +1,8 @@
 require 'rails_helper'
-
 RSpec.describe CertificateInUseEvent, type: :model do
+  include NotifySupport
   it 'is valid and persisted with hub_use_confirmation_at not nil' do
+    stub_notify_response
     certificate = create(:sp_signing_certificate)
     expect(certificate.in_use_at).to be_nil
     certificate_in_use_event = create(:certificate_in_use_event, certificate: certificate)
