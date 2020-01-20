@@ -45,6 +45,6 @@ class Certificate < Aggregate
   end
 
   def deploying?
-    updated_at >= 10.minutes.ago
+    in_use_at.nil? || Time.now <= in_use_at
   end
 end

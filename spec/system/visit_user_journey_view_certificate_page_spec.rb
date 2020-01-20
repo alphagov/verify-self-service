@@ -17,10 +17,6 @@ RSpec.describe 'View certificate page', type: :system do
       encryption_certificate_id: sp_encryption_certificate.id
     )
     ReplaceEncryptionCertificateEvent.create(
-      component: msa_encryption_certificate.component,
-      encryption_certificate_id: msa_encryption_certificate.id
-    )
-    ReplaceEncryptionCertificateEvent.create(
       component: vsp_encryption_certificate.component,
       encryption_certificate_id: vsp_encryption_certificate.id
     )
@@ -35,7 +31,10 @@ RSpec.describe 'View certificate page', type: :system do
 
   context 'shows existing msa' do
     it 'encryption certificate information and navigates to next page if not being deployed' do
-      travel_to Time.now + 11.minutes
+      expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).and_call_original.with(any_args).at_least(:once)
+      expect(SCHEDULER).to receive(:mode).and_call_original.at_least(:once)
+      create(:replace_encryption_certificate_event, component: msa_encryption_certificate.component, encryption_certificate_id: msa_encryption_certificate.id)
+      travel_to Time.now + Rails.configuration.hub_certs_cache_expiry
       visit view_certificate_path(msa_encryption_certificate.id)
       expect(page).to have_content 'Matching Service Adapter: encryption certificate'
       click_link 'Replace certificate'
@@ -43,6 +42,9 @@ RSpec.describe 'View certificate page', type: :system do
     end
 
     it 'encryption certificate information and warning when being deployed' do
+      expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_return(nil).at_least(:once)
+      expect(SCHEDULER).to receive(:mode).and_call_original.at_least(:once)
+      create(:replace_encryption_certificate_event, component: msa_encryption_certificate.component, encryption_certificate_id: msa_encryption_certificate.id)
       visit view_certificate_path(msa_encryption_certificate.id)
       expect(page).to have_content t('user_journey.replacing_certificate_in_config')
       expect(page).to have_content 'Matching Service Adapter: encryption certificate'
@@ -59,7 +61,8 @@ RSpec.describe 'View certificate page', type: :system do
 
   context 'shows existing vsp' do
     it 'encryption certificate information and navigates to next page' do
-      travel_to Time.now + 11.minutes
+      create(:assign_sp_component_to_service_event, sp_component_id: vsp_encryption_certificate.component.id)
+      travel_to Time.now + Rails.configuration.hub_certs_cache_expiry
       visit view_certificate_path(vsp_encryption_certificate.id)
       expect(page).to have_content 'Verify Service Provider: encryption certificate'
       click_link 'Replace certificate'
@@ -76,7 +79,8 @@ RSpec.describe 'View certificate page', type: :system do
 
   context 'shows existing sp' do
     it 'encryption certificate information and navigates to next page' do
-      travel_to Time.now + 11.minutes
+      create(:assign_sp_component_to_service_event, sp_component_id: sp_encryption_certificate.component.id)
+      travel_to Time.now + Rails.configuration.hub_certs_cache_expiry
       visit view_certificate_path(sp_encryption_certificate.id)
       expect(page).to have_content 'Service provider: encryption certificate'
       click_link 'Replace certificate'
@@ -92,8 +96,13 @@ RSpec.describe 'View certificate page', type: :system do
   end
 
   context 'show signing' do
+    let(:second_signing_certificate) { create(:msa_signing_certificate, component: msa_signing_certificate.component) }
     it 'specific information when certificate is primary and deploying' do
-      second_signing_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
+      expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_return(nil).at_least(:once)
+      expect(SCHEDULER).to receive(:mode).and_call_original.at_least(:once)
+      create(:assign_msa_component_to_service_event, msa_component_id: msa_signing_certificate.component.id)
+      expect(Certificate.find_by_id(msa_signing_certificate)).to be_deploying
+      second_signing_certificate
       visit root_path
       click_link 'Signing certificate (primary)'
       expect(page).to have_content 'GOV.UK Verify is adding your certificate to its configuration'
@@ -103,7 +112,11 @@ RSpec.describe 'View certificate page', type: :system do
     end
 
     it 'specific information when certificate is secondary and deploying' do
-      second_signing_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
+      expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_return(nil).at_least(:once)
+      expect(SCHEDULER).to receive(:mode).and_call_original.at_least(:once)
+      create(:assign_msa_component_to_service_event, msa_component_id: second_signing_certificate.component.id)
+      expect(Certificate.find_by_id(second_signing_certificate)).to be_deploying
+      msa_signing_certificate
       visit root_path
       click_link 'Signing certificate (secondary)'
       expect(page).to have_content 'Wait for an email from GOV.UK Verify confirming your new signing certificate is in use'
@@ -113,8 +126,13 @@ RSpec.describe 'View certificate page', type: :system do
     end
 
     it 'specific information when certificate is primary and not deploying' do
-      second_signing_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
-      travel_to Time.now + 11.minutes
+      second_signing_certificate
+      expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).and_call_original.at_least(:once)
+      expect(SCHEDULER).to receive(:mode).and_call_original.at_least(:once)
+      create(:assign_msa_component_to_service_event, msa_component_id: msa_signing_certificate.component.id)
+      travel_to Time.now + Rails.configuration.hub_certs_cache_expiry
+      expect(Certificate.find_by_id(msa_signing_certificate)).not_to be_deploying
+
       visit root_path
       click_link 'Signing certificate (primary)'
       expect(page).to_not have_content 'GOV.UK Verify is adding your certificate to its configuration'
@@ -124,8 +142,12 @@ RSpec.describe 'View certificate page', type: :system do
     end
 
     it 'specific information when certificate is secondary and not deploying' do
-      second_signing_certificate = create(:msa_signing_certificate, component: msa_signing_certificate.component)
-      travel_to Time.now + 11.minutes
+      msa_signing_certificate
+      expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).and_call_original.at_least(:once)
+      expect(SCHEDULER).to receive(:mode).and_call_original.at_least(:once)
+      create(:assign_msa_component_to_service_event, msa_component_id: second_signing_certificate.component.id)
+      travel_to Time.now + Rails.configuration.hub_certs_cache_expiry
+      expect(Certificate.find_by_id(second_signing_certificate)).not_to be_deploying
       visit root_path
       click_link 'Signing certificate (secondary)'
       expect(page).to_not have_content 'Wait for an email from GOV.UK Verify confirming your new signing certificate is in use'
@@ -147,8 +169,8 @@ RSpec.describe 'View certificate page', type: :system do
     end
 
     it 'is secondary' do
-      travel_to Time.now + 11.minutes
-
+      create(:assign_msa_component_to_service_event, msa_component_id: msa_signing_certificate.component.id)
+      travel_to Time.now + Rails.configuration.hub_certs_cache_expiry
       visit root_path
 
       click_link t('user_journey.two_signing_certificate', type: t('user_journey.secondary'))
@@ -160,9 +182,9 @@ RSpec.describe 'View certificate page', type: :system do
     end
 
     it 'is secondary and fails to publish metadata' do
+      create(:assign_msa_component_to_service_event, msa_component_id: msa_signing_certificate.component.id)
+      travel_to Time.now + Rails.configuration.hub_certs_cache_expiry
       stub_storage_client_service_error
-
-      travel_to Time.now + 11.minutes
 
       visit root_path
       click_link t('user_journey.two_signing_certificate', type: t('user_journey.secondary'))
