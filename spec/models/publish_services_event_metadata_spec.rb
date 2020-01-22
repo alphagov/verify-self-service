@@ -146,18 +146,6 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
       SCHEDULER.rufus_scheduler.shutdown(:kill)
     end
 
-    def wait_until(timeout=1.5, frequency=0.1, &block)
-      start = Time.now
-      loop {
-        sleep(frequency)
-        #return if block.call == true
-        r = block.call
-        return r if r
-        break if Time.now - start > timeout
-      }
-      fail "timeout after #{timeout}s"
-    end
-
     context 'does not occur' do
       require 'polling/dev_cert_status_updater'
       it 'updates certificate in_use_at' do
