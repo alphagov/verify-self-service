@@ -6,11 +6,7 @@ include CertificateSupport
 
 RSpec.describe 'User journey', type: :feature, acceptance: true do
   let(:root) { PKI.new }
-  let(:certificate) {
-    team = Team.find_or_create_by(name: 'acceptance test team')
-    component = build(:msa_component, entity_id: 'https://acceptance-test-msa-2.com', team_id: team.id )
-    create(:msa_encryption_certificate, component: component )
-  }
+  let(:cert) { root.generate_encoded_cert(expires_in: 2.months) }
   let(:email) { ENV['ACCEPTANCE_TEST_EMAIL'] }
   let(:password) { ENV['ACCEPTANCE_TEST_PASSWORD'] }
   let(:totp) { ROTP::TOTP.new(ENV['TOTP_SECRET_CODE']) }
@@ -51,7 +47,7 @@ RSpec.describe 'User journey', type: :feature, acceptance: true do
     click_link 'I have updated my MSA configuration'
 
     choose t('user_journey.certificate.paste_certificate'), visible: false
-    fill_in 'certificate_value', with: certificate.value, visible: false
+    fill_in 'certificate_value', with: cert, visible: false
     click_button t('user_journey.continue')
 
     expect(page).to have_content t('user_journey.certificate.check_certificate_title')
