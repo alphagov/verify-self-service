@@ -141,7 +141,7 @@ RSpec.describe CertificateExpiryReminder, type: :model do
       expires_in_days = 7
       team = create(:team)
 
-      component_vsp = create(:sp_component, vsp: true, environment: 'production', team_id: team.id)
+      component_vsp = create(:sp_component, vsp: true, environment: 'staging', team_id: team.id)
       vsp_cert_one = create(:vsp_encryption_certificate, value: PKI.new.generate_encoded_cert(expires_in: expires_in_days.days), component: component_vsp)
       create(:replace_encryption_certificate_event,
         component: vsp_cert_one.component,
@@ -171,8 +171,8 @@ RSpec.describe CertificateExpiryReminder, type: :model do
           multiple: 'yes',
           expire_on: expected_expiry_date,
           certificates: [
-            "Verify Service Provider (production): signing certificate - expires on #{vsp_cert_two.x509.not_after}",
-            "Verify Service Provider (production): encryption certificate - expires on #{vsp_cert_one.x509.not_after}",
+            "Verify Service Provider (staging): signing certificate - expires on #{vsp_cert_two.x509.not_after}",
+            "Verify Service Provider (staging): encryption certificate - expires on #{vsp_cert_one.x509.not_after}",
             "Matching Service Adapter (integration): signing certificate - expires on #{msa_cert_two.x509.not_after}",
             "Matching Service Adapter (integration): encryption certificate - expires on #{msa_cert_one.x509.not_after}"
           ],
