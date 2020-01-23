@@ -60,7 +60,7 @@ RSpec.describe 'User journey', type: :feature, acceptance: true do
 
     visit ENV['TEST_DOMAIN']
 
-    expect(page).to have_css ".govuk-table", text: t('user_journey.certificate.component_name.MSA')
+    expect(page).to have_css ".govuk-table", text: t('user_journey.component_long_name.MSA')
     expect(page).to have_css ".govuk-table", text: t('user_journey.encryption_certificate')
     expect(page).to have_css ".govuk-table", text: "DEPLOYING"
   end
