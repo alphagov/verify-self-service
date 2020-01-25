@@ -162,7 +162,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
     context 'occurs' do
 
       context 'due assign component to service event' do
-        it 'called once and polls hub to update certificate in_use_at' do
+        it 'called once and calls hub to update certificate in_use_at' do
           stub_signing_certificates_hub_request(
             environment: sp_signing_certificate.component.environment,
             entity_id: service.entity_id
@@ -175,7 +175,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
           expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_present
         end
 
-        it 'called once and polls hub no more than 4 times until certificate is in use' do
+        it 'called once and calls hub exactly 3 times until certificate is in use' do
           stub_signing_certificates_hub_request(
             environment: sp_signing_certificate.component.environment,
             entity_id: service.entity_id
@@ -184,7 +184,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .times(2).then
             .to_return(status: 200, body: hub_response_for_signing(entity_id: service.entity_id, value: sp_signing_certificate.value))
 
-          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(HUB_CONFIG_API).to receive(:signing_certificates).with(any_args).and_call_original.exactly(3).times
           expect(Component).to receive(:all_pollable_certificates).and_call_original
             .with(sp_signing_certificate.component.environment).once
 
@@ -196,7 +196,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
           expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_present
         end
 
-        it 'called many times and polls hub no more than 4 times until certificate is in use' do
+        it 'called many times and calls hub exactly 3 times until certificate is in use' do
           stub_signing_certificates_hub_request(
             environment: sp_signing_certificate.component.environment,
             entity_id: service.entity_id
@@ -205,7 +205,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .times(2).then
             .to_return(status: 200, body: hub_response_for_signing(entity_id: service.entity_id, value: sp_signing_certificate.value))
 
-          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(HUB_CONFIG_API).to receive(:signing_certificates).with(any_args).and_call_original.exactly(3).times
           expect(Component).to receive(:all_pollable_certificates).and_call_original.with(sp_signing_certificate.component.environment).at_least(2).times
 
           expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
@@ -217,14 +217,16 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
           expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_present
         end
 
-        it 'called once and polls hub but certificate is never in use when response not successful' do
+        it 'called once and calls hub but certificate is never in use when response not successful' do
           stub_signing_certificates_hub_request(
             environment: sp_signing_certificate.component.environment,
             entity_id: service.entity_id
           )
-            .to_return(status: 404)
+            .to_return(status: 404, body: "")
             .times(3)
 
+          expect(Rails.logger).to receive(:error)
+            .with("Error getting signing certificates for entity_id: #{service.entity_id}! (Code: 404)")
           expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
           create(:assign_sp_component_to_service_event, service: service, sp_component_id: sp_signing_certificate.component.id)
           expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
@@ -245,7 +247,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
           expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_present
         end
 
-        it 'called once and polls hub no more than 4 times until certificate is in use' do
+        it 'called once and polls hub exactly 3 times until certificate is in use' do
           stub_encryption_certificate_hub_request(
             environment: new_msa_encryption_certificate.component.environment,
             entity_id: new_msa_encryption_certificate.component.entity_id
@@ -254,7 +256,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .times(2).then
             .to_return(status: 200, body: hub_response_for_encryption(entity_id: new_msa_encryption_certificate.component.entity_id, value: new_msa_encryption_certificate.value))
 
-          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(HUB_CONFIG_API).to receive(:encryption_certificate).with(any_args).and_call_original.exactly(3).times
           expect(Component).to receive(:all_pollable_certificates).and_call_original
             .with(msa_encryption_certificate.component.environment).once
 
@@ -266,7 +268,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
           expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_present
         end
 
-        it 'called many times and polls hub no more than 4 times until certificate is in use' do
+        it 'called many times and polls hub exactly 3 times until certificate is in use' do
           stub_encryption_certificate_hub_request(
             environment: new_msa_encryption_certificate.component.environment,
             entity_id: new_msa_encryption_certificate.component.entity_id
@@ -275,7 +277,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .times(2).then
             .to_return(status: 200, body: hub_response_for_encryption(entity_id: new_msa_encryption_certificate.component.entity_id, value: new_msa_encryption_certificate.value))
 
-          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(HUB_CONFIG_API).to receive(:encryption_certificate).with(any_args).and_call_original.exactly(3).times
           expect(Component).to receive(:all_pollable_certificates).and_call_original.with(msa_encryption_certificate.component.environment).at_least(2)
 
           expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
@@ -295,6 +297,8 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .to_return(status: 404)
             .times(3)
 
+          expect(Rails.logger).to receive(:error)
+            .with("Error getting encryption certificate for entity_id: #{new_msa_encryption_certificate.component.entity_id}! (Code: 404)")
           expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
           create(:replace_encryption_certificate_event, encryption_certificate_id: new_msa_encryption_certificate.id, component: msa_encryption_certificate.component)
           expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
@@ -315,7 +319,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
           expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_present
         end
 
-        it 'called once and polls hub no more than 4 times until certificate is in use' do
+        it 'called once and polls hub exactly 4 times until certificate is in use' do
           stub_signing_certificates_hub_request(
             environment: msa_signing_certificate.component.environment,
             entity_id: msa_signing_certificate.component.entity_id
@@ -324,7 +328,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .times(2).then
             .to_return(status: 200, body: hub_response_for_signing(entity_id: msa_signing_certificate.component.entity_id, value: msa_signing_certificate.value))
 
-          expect(CERT_STATUS_UPDATER).to receive(:update_hub_usage_status_for_cert).with(any_args).and_call_original.at_most(4).times
+          expect(HUB_CONFIG_API).to receive(:signing_certificates).with(any_args).and_call_original.exactly(4).times
           expect(Component).to receive(:all_pollable_certificates).and_call_original
             .with(msa_signing_certificate.component.environment).once
 
@@ -342,6 +346,9 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .to_return(status: 404)
             .times(3)
 
+          expect(Rails.logger).to receive(:error)
+            .with("Error getting signing certificates for entity_id: #{new_msa_encryption_certificate.component.entity_id}! (Code: 404)")
+            .twice
           expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_nil
           create(:upload_certificate_event, component: msa_signing_certificate.component)
           expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_nil

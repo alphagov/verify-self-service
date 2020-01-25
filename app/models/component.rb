@@ -60,7 +60,7 @@ class Component < Aggregate
   end
 
   def current_certificates
-    certs ||= enabled_signing_certificates.map(&:clone)
+    certs = enabled_signing_certificates.map(&:clone)
     certs << encryption_certificate unless encryption_certificate.nil?
     certs
   end
