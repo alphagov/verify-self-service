@@ -6,26 +6,22 @@ class CertificateInUseEvent < AggregatedEvent
   include CertStatusNotifications
   belongs_to_aggregate :certificate
   data_attributes :in_use_at
-  after_create_commit :notification_service_team_members
+  after_create_commit :notify_service_team_members
 
   def attributes_to_apply
     { in_use_at: Time.now }
   end
 
-  def notification_service_team_members
+  def notify_service_team_members
     recipients = team_recipients(certificate.component.team.team_alias)
     Rails.logger.error("No recipients found for #{certificate.component.team.name}!") if recipients.empty?
+    mail_client = Notifications::Client.new(Rails.configuration.notify_key)
 
     recipients.each { |email|
-      mail_client = Notifications::Client.new(Rails.configuration.notify_key)
-      send_notification_email(
-        mail_client: mail_client,
-        certificate: certificate,
-        environment: certificate.component.environment,
-        email_address: email,
-        deadline: certificate.component.enabled_signing_certificates&.second&.x509&.not_after,
-      )
+      send_notification_email(mail_client: mail_client, certificate: certificate, email_address: email)
     }
+
+    CertificateNotificationSentEvent.create(certificate: certificate)
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end
