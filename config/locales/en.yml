@@ -379,16 +379,16 @@ en:
     restart_component: Apply the changes to your configuration.
     urls:
       MSA:
-        encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
-        signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate
+        encryption: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/msa-encryption/#rotate-your-msa-encryption-key-and-certificate
+        signing: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/msa-signing/#rotate-your-msa-signing-key-and-certificate
       VSP:
-        encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate
-        signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate
+        encryption: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/vsp-encryption/#rotate-your-vsp-encryption-key-and-certificate
+        signing: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/vsp-signing/#rotate-your-vsp-signing-key-and-certificate
       SP:
-        encryption: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-encryption/#rotate-your-service-provider-encryption-key-and-certificate
-        signing: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
-      connection_broken_or_compromised: https://prototype-docs.cloudapps.digital/emergency-procedures/#emergency-procedures
-      rotation_documentation: https://prototype-docs.cloudapps.digital/rotating-your-keys-and-certificates/#rotating-your-keys-and-certificates
+        encryption: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/service-provider-encryption/#rotate-your-service-provider-encryption-key-and-certificate
+        signing: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
+      connection_broken_or_compromised: https://www.docs.verify.service.gov.uk/emergency-procedures/#emergency-procedures
+      rotation_documentation: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/#rotating-your-keys-and-certificates
       support: https://www.verify.service.gov.uk/support/
     dual_running:
       title: Dual running
