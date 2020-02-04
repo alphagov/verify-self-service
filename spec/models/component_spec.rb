@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Component, type: :model do
-  include StubHubConfigApiSupport, NotifySupport
+  include StubHubConfigApiSupport
   context '#to_service_metadata' do
     before(:each) do
       SpComponent.destroy_all
@@ -12,7 +12,6 @@ RSpec.describe Component, type: :model do
     let(:sp_component) { create(:sp_component) }
     let(:root) { PKI.new }
     let!(:upload_signing_certificate_event_1) do
-      stub_notify_response
       create(:upload_certificate_event,
         usage: CERTIFICATE_USAGE::SIGNING,
         value: root.generate_encoded_cert(expires_in: 6.months),
@@ -153,7 +152,6 @@ RSpec.describe Component, type: :model do
     before(:each) do
       SpComponent.destroy_all
       MsaComponent.destroy_all
-      stub_notify_response
     end
 
     let(:root) { PKI.new }

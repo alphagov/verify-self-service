@@ -6,11 +6,6 @@ module NotifySupport
       .to_return(status: 200, body: "{}", headers: {})
   end
 
-  def stub_notify_error_response
-    stub_request(:post, NOTIFY_ENDPOINT)
-      .to_return(status: 404, body: "{'errors': 'an error'}", headers: {})
-  end
-
   def stub_notify_request(body)
     a_request(:post, NOTIFY_ENDPOINT).with(body: body.to_json)
   end
