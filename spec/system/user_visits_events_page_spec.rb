@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'the events page', type: :system do
-  include CertificateSupport, NotifySupport
+  include CertificateSupport
   let(:component) { create(:msa_component) }
   let(:root) { PKI.new }
   before(:each) do
@@ -12,7 +12,7 @@ RSpec.describe 'the events page', type: :system do
     good_cert_1 = root.generate_encoded_cert(expires_in: 2.months)
     good_cert_2 = root.generate_encoded_cert(expires_in: 2.months)
     good_cert_3 = root.generate_encoded_cert(expires_in: 2.months)
-    stub_notify_response
+
     UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_1, component: component)
     UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::SIGNING, value: good_cert_2, component: component)
     UploadCertificateEvent.create(usage: CERTIFICATE_USAGE::ENCRYPTION, value: good_cert_3, component: component)

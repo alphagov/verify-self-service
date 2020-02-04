@@ -213,11 +213,6 @@ module AuthenticationBackend
     []
   end
 
-  def team_recipients(team_alias)
-    users = get_users_in_group(group_name: team_alias)
-    users.map { |user| user.attributes.find { |att| att.name == 'email' }.value }
-  end
-
   def update_user_email(user_id:, email:)
     email&.downcase!
     client.admin_update_user_attributes(
