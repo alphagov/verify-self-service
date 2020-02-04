@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'IndexPage', type: :system do
+  include NotifySupport
   let(:msa_signing_certificate) { create(:msa_signing_certificate) }
   let(:msa_encryption_certificate) { create(:msa_encryption_certificate) }
   let(:sp_encryption_certificate) { create(:sp_encryption_certificate) }
@@ -9,6 +10,7 @@ RSpec.describe 'IndexPage', type: :system do
     SpComponent.destroy_all
     MsaComponent.destroy_all
     login_gds_user
+    stub_notify_response
     create(:replace_encryption_certificate_event,
       component: sp_encryption_certificate.component,
       encryption_certificate_id: sp_encryption_certificate.id
