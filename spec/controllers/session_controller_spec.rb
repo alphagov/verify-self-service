@@ -84,11 +84,8 @@ RSpec.describe SessionsController, type: :controller do
   end
 
   it 'Renders sign_user_form if user param is not present' do
-    allow(request).to receive(:headers).and_return(user: 'name')
-    stub_cognito_response(method: :initiate_auth, payload: 'PasswordResetRequiredException')
-    username = 'test@test.com'
     @request.env['devise.mapping'] = Devise.mappings[:user]
-    post :create, params: { user: nil }
+    post :create
     expect(response).to have_http_status(:success)
     expect(response).to render_template(:new)
   end
