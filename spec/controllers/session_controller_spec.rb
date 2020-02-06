@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe SessionsController, type: :controller do
   include AuthSupport, CognitoSupport
-  
+
   it 'Get to sign_in page' do
     @request.env['devise.mapping'] = Devise.mappings[:user]
     get :new
@@ -81,6 +81,13 @@ RSpec.describe SessionsController, type: :controller do
     post :create, params: { user: { email: username, password: 'validpass' } }
     expect(response).to have_http_status(:redirect)
     expect(subject).to redirect_to(force_user_reset_password_path(username, true))
+  end
+
+  it 'Renders sign_user_form if user param is not present' do
+    @request.env['devise.mapping'] = Devise.mappings[:user]
+    post :create
+    expect(response).to have_http_status(:success)
+    expect(response).to render_template(:new)
   end
 
   def setup_stub

@@ -7,15 +7,13 @@ class SessionsController < Devise::SessionsController
   before_action :challenge_flash_messages, only: %i(create new)
 
   def create
-    if session[:challenge_parameters].nil?
-      @sign_in_form = SignInForm.new(params['user'])
-      if @sign_in_form.valid?
-        super
-      else
-        render :new
-      end
-    else
+    return render :new if params['user'].blank?
+
+    @sign_in_form = SignInForm.new(params['user'])
+    if session[:challenge_parameters].present? || @sign_in_form.valid?
       super
+    else
+      render :new
     end
   end
 
