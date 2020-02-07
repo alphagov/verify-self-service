@@ -37,6 +37,14 @@ RSpec.describe AssignMsaComponentToServiceEvent, type: :model do
     expect(event.errors.full_messages.first).to eq('Service Wrong component type')
   end
 
+  it 'deassociates msa component from the service' do
+    component = create(:msa_component)
+    event = create(:assign_msa_component_to_service_event, msa_component_id: component.id)
+    expect(event.service.msa_component_id).to eq(component.id)
+    DeleteComponentEvent.create(component: component)
+    expect(Service.find_by_id(event.service).msa_component_id).to be_nil
+  end
+
   context '#trigger_publish_event' do
     it 'when component is assigned to service is enabled' do
       event = create(:assign_msa_component_to_service_event, service: service, msa_component_id: component_1.id)
