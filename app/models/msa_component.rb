@@ -1,6 +1,6 @@
 class MsaComponent < Component
   has_many :certificates, as: :component
-  has_many :services
+  has_many :services, dependent: :nullify
 
 private
 
