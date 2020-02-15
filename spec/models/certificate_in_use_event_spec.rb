@@ -135,6 +135,32 @@ RSpec.describe CertificateInUseEvent, type: :model do
     expect(stub_notify_request(expected_body)).to have_been_made.once
     expect(certificate.events.map(&:class)).to eq [UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent]
   end
+
+  it 'emails notification with msa encryption template when msa encryption certificate is replaced' do
+    stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+    stub_notify_response
+    msa_component = create(:msa_component)
+    old_msa_encryption_certificate = create(:msa_encryption_certificate, component: msa_component)
+
+    msa_encryption_certificate = create(:msa_encryption_certificate, component: msa_component)
+    expect(subject.class).to receive(:create).with(any_args).and_call_original.at_least(:once)
+    event = create(:replace_encryption_certificate_event, encryption_certificate_id: msa_encryption_certificate.id, component: msa_component)
+    component = event.component
+    certificate = component.encryption_certificate
+
+    expected_body = {
+      email_address: 'test@test.com',
+      template_id: '191168a4-1add-4183-8d0d-717eecc42303',
+      personalisation: {
+        team_name: component.team.name,
+        component: component.display_long_name,
+        environment: component.environment,
+      }
+    }
+    expect(stub_notify_request(expected_body)).to have_been_made.once
+    expect(certificate.events.map(&:class)).to eq [CertificateInUseEvent, CertificateNotificationSentEvent]
+  end
+
   it 'emails notification with encryption template when msa encryption certificate is replaced' do
     stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
     stub_notify_response
@@ -147,7 +173,7 @@ RSpec.describe CertificateInUseEvent, type: :model do
 
     expected_body = {
       email_address: 'test@test.com',
-      template_id: '6626922e-3eb7-45e3-b8a9-989ba32a9178',
+      template_id: '191168a4-1add-4183-8d0d-717eecc42303',
       personalisation: {
         team_name: component.team.name,
         component: component.display_long_name,
@@ -157,19 +183,21 @@ RSpec.describe CertificateInUseEvent, type: :model do
     expect(stub_notify_request(expected_body)).to have_been_made.once
     expect(certificate.events.map(&:class)).to eq [CertificateInUseEvent, CertificateNotificationSentEvent]
   end
-  it 'emails notification with encryption template when sp encryption certificate is replaced' do
+
+  it 'emails notification with vsp / sp encryption template when sp encryption certificate is replaced' do
     stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
     stub_notify_response
-    sp_encryption_certificate = create(:sp_encryption_certificate)
-
-    create(:assign_sp_component_to_service_event, sp_component_id: sp_encryption_certificate.component.id)
+    sp_component = create(:sp_component)
+    old_sp_encryption_certificate = create(:sp_encryption_certificate, component: sp_component)
+    sp_encryption_certificate = create(:sp_encryption_certificate, component: sp_component)
+    create(:assign_sp_component_to_service_event, sp_component_id: sp_component.id)
     expect(subject.class).to receive(:create).with(any_args).and_call_original.at_least(:once)
-    event = create(:replace_encryption_certificate_event, encryption_certificate_id: sp_encryption_certificate.id, component: sp_encryption_certificate.component)
+    event = create(:replace_encryption_certificate_event, encryption_certificate_id: sp_encryption_certificate.id, component: sp_component)
     component = event.component
     certificate = component.encryption_certificate
     expected_body = {
       email_address: 'test@test.com',
-      template_id: '6626922e-3eb7-45e3-b8a9-989ba32a9178',
+      template_id: '8fa0bb83-7471-4d8e-8816-56d60ee7e32a',
       personalisation: {
         team_name: component.team.name,
         component: component.display_long_name,
@@ -191,7 +219,7 @@ RSpec.describe CertificateInUseEvent, type: :model do
     certificate = component.encryption_certificate
     expected_body = {
       email_address: 'test@test.com',
-      template_id: '6626922e-3eb7-45e3-b8a9-989ba32a9178',
+      template_id: '8fa0bb83-7471-4d8e-8816-56d60ee7e32a',
       personalisation: {
         team_name: component.team.name,
         component: component.display_long_name,
@@ -216,7 +244,7 @@ RSpec.describe CertificateInUseEvent, type: :model do
 
     expected_body = {
       email_address: 'test@test.com',
-      template_id: '6626922e-3eb7-45e3-b8a9-989ba32a9178',
+      template_id: '8fa0bb83-7471-4d8e-8816-56d60ee7e32a',
       personalisation: {
         team_name: component.team.name,
         component: component.display_long_name,

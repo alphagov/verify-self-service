@@ -1,14 +1,14 @@
 module CertStatusNotifications
-  ENCRYPTION_TEMPLATE = '6626922e-3eb7-45e3-b8a9-989ba32a9178'.freeze
+  MSA_ENCRYPTION_TEMPLATE = '191168a4-1add-4183-8d0d-717eecc42303'.freeze
   MSA_SIGNING_TEMPLATE = 'db78c8a3-54c5-443a-ba93-b64c21799b4c'.freeze
   MSA_SIGNING_NO_DEADLINE_TEMPLATE = 'ib86fd33c-59c1-4ea4-b643-4a88756c21eb'.freeze
+  VSP_SP_ENCRYPTION_TEMPLATE = '8fa0bb83-7471-4d8e-8816-56d60ee7e32a'.freeze
   VSP_SP_SIGNING_TEMPLATE = '8342fbc4-a847-4587-932c-07065d471942'.freeze
   VSP_SP_SIGNING_NO_DEADLINE_TEMPLATE = 'a07ac619-de15-4bde-97cd-7c722f2b950b'.freeze
   attr_accessor :personalisation
 
   def send_notification_email(mail_client:, certificate:, email_address:)
     component = certificate.component
-    second_signing_certificate = component.enabled_signing_certificates.second
 
     @personalisation = {
       team_name: component.team.name,
@@ -19,7 +19,7 @@ module CertStatusNotifications
     template = choose_template(
       certificate: certificate,
       component_type: component.type,
-      deadline: second_signing_certificate,
+      deadline: component.enabled_signing_certificates.second,
     )
 
     mail_client.send_email(
@@ -32,18 +32,33 @@ module CertStatusNotifications
 private
 
   def choose_template(certificate:, component_type:, deadline:)
-    return ENCRYPTION_TEMPLATE unless certificate.signing?
-
-    if component_type == COMPONENT_TYPE::MSA_SHORT
-      return MSA_SIGNING_NO_DEADLINE_TEMPLATE unless deadline.present?
-
-      @personalisation.merge!(time_and_date: deadline.x509.not_after)
-      MSA_SIGNING_TEMPLATE
+    if certificate.signing?
+      choose_signing_template(component_type, deadline)
     else
-      return VSP_SP_SIGNING_NO_DEADLINE_TEMPLATE unless deadline.present?
-
-      @personalisation.merge!(time_and_date: deadline.x509.not_after)
-      VSP_SP_SIGNING_TEMPLATE
+      choose_encryption_template(component_type)
     end
+  end
+
+  def choose_signing_template(component_type, deadline)
+    if component_type == COMPONENT_TYPE::MSA_SHORT && deadline
+      apply_deadline_on(template: MSA_SIGNING_TEMPLATE, deadline: deadline.x509.not_after)
+    elsif component_type == COMPONENT_TYPE::MSA_SHORT && !deadline
+      MSA_SIGNING_NO_DEADLINE_TEMPLATE
+    elsif component_type != COMPONENT_TYPE::MSA_SHORT && deadline
+      apply_deadline_on(template: VSP_SP_SIGNING_TEMPLATE, deadline: deadline.x509.not_after)
+    else
+      VSP_SP_SIGNING_NO_DEADLINE_TEMPLATE
+    end
+  end
+
+  def choose_encryption_template(component_type)
+    return MSA_ENCRYPTION_TEMPLATE if component_type == COMPONENT_TYPE::MSA_SHORT
+
+    VSP_SP_ENCRYPTION_TEMPLATE
+  end
+
+  def apply_deadline_on(template:, deadline:)
+    @personalisation.merge!(time_and_date: deadline)
+    template
   end
 end
