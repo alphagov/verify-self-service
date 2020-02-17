@@ -185,8 +185,6 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .to_return(status: 200, body: hub_response_for_signing(entity_id: service.entity_id, value: sp_signing_certificate.value))
 
           expect(HUB_CONFIG_API).to receive(:signing_certificates).with(any_args).and_call_original.exactly(3).times
-          expect(Component).to receive(:all_pollable_certificates).and_call_original
-            .with(sp_signing_certificate.component.environment).once
 
           expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
 
@@ -206,7 +204,6 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .to_return(status: 200, body: hub_response_for_signing(entity_id: service.entity_id, value: sp_signing_certificate.value))
 
           expect(HUB_CONFIG_API).to receive(:signing_certificates).with(any_args).and_call_original.exactly(3).times
-          expect(Component).to receive(:all_pollable_certificates).and_call_original.with(sp_signing_certificate.component.environment).at_least(2).times
 
           expect(Certificate.find_by_id(sp_signing_certificate.id).in_use_at).to be_nil
 
@@ -278,7 +275,6 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .to_return(status: 200, body: hub_response_for_encryption(entity_id: new_msa_encryption_certificate.component.entity_id, value: new_msa_encryption_certificate.value))
 
           expect(HUB_CONFIG_API).to receive(:encryption_certificate).with(any_args).and_call_original.exactly(3).times
-          expect(Component).to receive(:all_pollable_certificates).and_call_original.with(msa_encryption_certificate.component.environment).at_least(2)
 
           expect(Certificate.find_by_id(new_msa_encryption_certificate.id).in_use_at).to be_nil
 
@@ -329,8 +325,6 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .to_return(status: 200, body: hub_response_for_signing(entity_id: msa_signing_certificate.component.entity_id, value: msa_signing_certificate.value))
 
           expect(HUB_CONFIG_API).to receive(:signing_certificates).with(any_args).and_call_original.exactly(4).times
-          expect(Component).to receive(:all_pollable_certificates).and_call_original
-            .with(msa_signing_certificate.component.environment).once
 
           expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_nil
           create(:upload_certificate_event, component: msa_signing_certificate.component)

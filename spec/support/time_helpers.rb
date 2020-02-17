@@ -1,7 +1,7 @@
 RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
 
-  def wait_until(timeout=1.5, frequency=0.1, &block)
+  def wait_until(timeout=5, frequency=0.1, &block)
     start = Time.now
     loop {
       sleep(frequency)

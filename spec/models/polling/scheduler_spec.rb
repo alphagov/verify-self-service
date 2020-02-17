@@ -4,7 +4,7 @@ RSpec.describe Polling::Scheduler, type: :model do
   let(:scheduler) { Polling::Scheduler.new }
 
   after :each do
-    scheduler.rufus_scheduler.shutdown
+    #scheduler.rufus_scheduler.shutdown
   end
 
   let(:greetings) { 'hello verify self service...' }
@@ -101,7 +101,7 @@ RSpec.describe Polling::Scheduler, type: :model do
         counter = 0
         t = Time.now + 2.seconds
         tt = nil
-        scheduler = Polling::Scheduler.new(last: t)
+        scheduler = Polling::Scheduler.new(frequency: '0.3s', last: t)
         job = scheduler.mode(:every, '0.5s')
                 .perform(-> {
                   display.name('Fido dido')

@@ -1,5 +1,6 @@
 class CertStatusUpdater
   def update_hub_usage_status_for_cert(hub_config_api, certificate_to_check)
+    # TODO: code below prevents sending multiple emails to removed as BAU
     return certificate_in_use_event(certificate_to_check) unless Certificate.find_by(id: certificate_to_check.id, in_use_at: nil)
 
     outcomes = entity_ids_for(certificate_to_check).map { |entity_id| cert_is_in_use_for_entity_id?(hub_config_api, entity_id, certificate_to_check) }
