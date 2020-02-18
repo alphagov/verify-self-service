@@ -77,10 +77,5 @@ module CertificateExpiryReminder
         )
       end
     end
-
-    def team_recipients(team_alias)
-      users = get_users_in_group(group_name: team_alias)
-      users.map { |user| user.attributes.find { |att| att.name == 'email' }.value }
-    end
   end
 end
