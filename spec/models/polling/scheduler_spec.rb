@@ -4,7 +4,7 @@ RSpec.describe Polling::Scheduler, type: :model do
   let(:scheduler) { Polling::Scheduler.new }
 
   after :each do
-    #scheduler.rufus_scheduler.shutdown
+    scheduler.rufus_scheduler.shutdown
   end
 
   let(:greetings) { 'hello verify self service...' }

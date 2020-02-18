@@ -1,5 +1,4 @@
 require 'notifications/client'
-require 'notify/cert_status_notifications'
 module Notification
   INVITE_TEMPLATE = "afdb4827-0f71-4588-b35d-80bd514f5bdb".freeze
   REMINDER_TEMPLATE = "bbc34127-7fca-4d78-a95b-703da58e15ce".freeze
