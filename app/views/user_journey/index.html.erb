@@ -6,7 +6,13 @@
   <p><%= t('user_journey.certificates_expiring', number: pluralize(@total_certificates_expiring_soon, 'certificate')) %></p>
 <% end %>
 
-<p><%= t('user_journey.maintain_connection') %></p>
-<p><%= t('user_journey.connection_broken_or_compromised_guidance') %> <%= link_to t('user_journey.connection_broken_or_compromised_link'), t('user_journey.urls.connection_broken_or_compromised') %>.</p>
+<p><%= t('user_journey.maintain_connection_p1') %></p>
+<p><%= t('user_journey.maintain_connection_p2') %></p>
+<p>
+  <%= t('user_journey.connection_broken_or_compromised_guidance', 
+    instructions_link: link_to(t('user_journey.instructions_link'), t('user_journey.urls.instructions')),
+    compromised_link: link_to(t('user_journey.compromised_link'), t('user_journey.urls.connection_broken_or_compromised'))
+    ).html_safe %>
+</p>
 
 <%= render "shared/user_component_certificates", components: @components %>

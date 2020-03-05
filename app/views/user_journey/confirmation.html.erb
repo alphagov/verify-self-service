@@ -3,6 +3,10 @@
 <%= render 'shared/certificate_details', certificate: @certificate %>
 
 <h1 class="govuk-heading-l"><%= t 'user_journey.adding_certificate_to_config' %></h1>
+  
+<div class="govuk-inset-text">
+  <%= t('user_journey.confirmation.rotate_more', rotate_more_link: link_to(t('user_journey.confirmation.rotate_more_link'), root_path)).html_safe %>
+</div>
 
 <% if @not_dual_running.nil? %>
   <p><%= t('user_journey.confirmation.what_to_expect', type: @certificate.usage ) %></p>
@@ -45,5 +49,3 @@
     </strong>
   </div>
 <% end %>
-
-<%= link_to t('user_journey.confirmation.rotate_more'), root_path, class: "secondary-link secondary-link__confirmation" %>

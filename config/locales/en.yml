@@ -367,9 +367,11 @@ en:
     wait_for_an_email: Wait for an email from GOV.UK Verify confirming your new signing certificate is in use
     how_long_it_takes: This usually takes a few minutes from the time you uploaded the new signing certificate.
     delete_old_signing_key_and_cert: Then you can delete the old signing key and certificate from your %{component} configuration.
-    maintain_connection: You need to manage your certificates to make sure your service stays connected to GOV.UK Verify.
-    connection_broken_or_compromised_guidance: If your connection has been broken or compromised, read
-    connection_broken_or_compromised_link: this guidance
+    maintain_connection_p1: Manage your certificates to make sure your service stays connected to GOV.UK Verify. 
+    maintain_connection_p2: When your certificates are expiring, you can rotate them in any order. You can also rotate more than one certificate at the same time.
+    connection_broken_or_compromised_guidance: You should follow the %{instructions_link}, which also explains what to do %{compromised_link}.
+    instructions_link: instructions in the documentation
+    compromised_link: if your connection has been broken or compromised
     certificates_expiring: "%{number} expiring soon."
     find_out_more: Find out more about %{link} in the documentation.
     rotate_key_and_certificate: rotating your %{component} %{certificate} key and certificate
@@ -387,6 +389,7 @@ en:
       SP:
         encryption: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/service-provider-encryption/#rotate-your-service-provider-encryption-key-and-certificate
         signing: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
+      instructions: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/#rotating-your-keys-and-certificates
       connection_broken_or_compromised: https://www.docs.verify.service.gov.uk/emergency-procedures/#emergency-procedures
       rotation_documentation: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/#rotating-your-keys-and-certificates
       support: https://www.verify.service.gov.uk/support/
@@ -461,12 +464,13 @@ en:
       title: Confirmation
       publish_failed_title: Publish failed
       what_to_expect: This usually takes a few minutes. We'll email you when your new %{type} certificate is in use.
+      rotate_more: You can %{rotate_more_link} while you wait for the email.
       next_steps: Next steps
       rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.
       received_email: Once you've received the email, delete the old %{usage} key and certificate from your %{component} configuration.
       received_email_to_replace: Once you've received the email, replace the old %{usage} key with the new one in your %{component} configuration.
       received_email_to_promote: Once you've received the email, go to your %{component} configuration. Move your 'secondary' %{usage} key and certificate to the 'primary' position, and delete the old key and certificate.
-      rotate_more: Rotate more certificates
+      rotate_more_link: rotate more certificates
       msa_add_new_key_and_certificate: Add the new signing key and certificate to your Matching Service Adapter (MSA) configuration.
       configuration_warning: You must update your %{component} configuration by %{date}, or your service’s connection to GOV.UK Verify will break.
       certificate_rotations_are_independent: You can rotate other certificates while you wait for the email - certificate rotations are independent of each other.
