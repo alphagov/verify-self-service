@@ -3,6 +3,8 @@
 require 'yaml'
 require 'json'
 
+HUB_FED_CONFIG_DIRECTORY = "../../verify-hub-federation-config"
+
 ENVIRONMENTS = ["prod", "integration"]
 ENVIRONMENT = ARGV[0]
 ENTITY_ID = ARGV[1]
@@ -13,6 +15,23 @@ if ENVIRONMENT.nil? || File.basename(Dir.getwd) != "tools"
   puts "Needs to be run from the /tools directory"
   exit 1
 end
+
+Dir.chdir(HUB_FED_CONFIG_DIRECTORY){
+  branch = `git rev-parse --abbrev-ref HEAD`
+  unless branch == "master\n"
+    puts "ERROR! The verify-hub-federation-config repo is not on master!"
+    exit 1
+  end
+
+  `git fetch origin master`
+
+  unless `git rev-parse HEAD` == `git rev-parse origin/master`
+    puts "ERROR! The verify-hub-federation-config repo does not appear to be in sync with origin/master. You need to git pull and retry"
+    exit 1
+  end
+}
+
+`git rev-parse --abbrev-ref HEAD`
 
 unless ENVIRONMENTS.include?(ENVIRONMENT)
   puts "Invalid environment, accepted values are: #{ENVIRONMENTS}"
@@ -61,7 +80,7 @@ def get_fed_config_certs(config)
   }
 end
 
-hub_fed_config_directory = "../../verify-hub-federation-config/configuration/config-service-data/#{ENVIRONMENT}/#{MSA ? 'matching-services' : 'transactions'}/"
+hub_fed_config_directory = "#{HUB_FED_CONFIG_DIRECTORY}/configuration/config-service-data/#{ENVIRONMENT}/#{MSA ? 'matching-services' : 'transactions'}/"
 config_files = Dir.children(hub_fed_config_directory)
 all_good = false
 
