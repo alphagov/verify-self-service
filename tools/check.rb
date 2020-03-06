@@ -8,8 +8,10 @@ ENVIRONMENT = ARGV[0]
 ENTITY_ID = ARGV[1]
 MSA = ARGV[2] == '--msa'
 
-if ENVIRONMENT.nil?
+if ENVIRONMENT.nil? || File.basename(Dir.getwd) != "tools"
   puts "USAGE: ./check.rb <environment> <entity_id> [--msa optional]"
+  puts "Needs to be run from the /tools directory"
+  exit 1
 end
 
 unless ENVIRONMENTS.include?(ENVIRONMENT)
