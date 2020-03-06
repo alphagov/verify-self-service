@@ -57,3 +57,6 @@ yarn-error.log
 
 # cached rubocop rules pulled locally
 .rubocop-h*
+
+# temp file for remote comparison
+tools/temp_remote_metadata.json
