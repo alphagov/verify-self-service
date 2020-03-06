@@ -3,16 +3,15 @@
 require 'yaml'
 require 'json'
 
-HUB_FED_CONFIG_DIRECTORY = "../../verify-hub-federation-config"
+HUB_FED_CONFIG_DIRECTORY = File.join(__dir__, '../../verify-hub-federation-config')
 
 ENVIRONMENTS = ["prod", "integration"]
 ENVIRONMENT = ARGV[0]
 ENTITY_ID = ARGV[1]
 MSA = ARGV[2] == '--msa'
 
-if ENVIRONMENT.nil? || File.basename(Dir.getwd) != "tools"
+if ENVIRONMENT.nil?
   puts "USAGE: ./check.rb <environment> <entity_id> [--msa optional]"
-  puts "Needs to be run from the /tools directory"
   exit 1
 end
 
@@ -30,8 +29,6 @@ Dir.chdir(HUB_FED_CONFIG_DIRECTORY){
     exit 1
   end
 }
-
-`git rev-parse --abbrev-ref HEAD`
 
 unless ENVIRONMENTS.include?(ENVIRONMENT)
   puts "Invalid environment, accepted values are: #{ENVIRONMENTS}"
