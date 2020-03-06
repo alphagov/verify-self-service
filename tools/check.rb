@@ -6,6 +6,11 @@ require 'json'
 ENVIRONMENTS = ["prod", "integration"]
 ENVIRONMENT = ARGV[0]
 ENTITY_ID = ARGV[1]
+MSA = ARGV[2] == '--msa'
+
+if ENVIRONMENT.nil?
+  puts "USAGE: ./check.rb <environment> <entity_id> [--msa optional]"
+end
 
 unless ENVIRONMENTS.include?(ENVIRONMENT)
   puts "Invalid environment, accepted values are: #{ENVIRONMENTS}"
@@ -30,11 +35,17 @@ end
 def get_published_certs(entity_id)
   json = `aws s3 cp s3://govukverify-self-service-#{ENVIRONMENT}-config-metadata/verify_services_metadata.json temp_remote_metadata.json`
   published_metadata = JSON.parse(File.read('temp_remote_metadata.json'))
-  sp_id = published_metadata["connected_services"].find{ |component| component['entity_id'] == entity_id}&.fetch('service_provider_id', nil)
-  if sp_id.nil?
-    puts "ERROR! Component with the entityid is not being published by self-service"
-  end
-  certs = published_metadata["service_providers"].find{ |sp| sp['id'] == sp_id}
+  if MSA
+    certs = published_metadata["matching_service_adapters"].find{ |msa| msa['entity_id'] == entity_id}
+  else
+    type = 'service_providers'
+    sp_id = published_metadata["connected_services"].find{ |component| component['entity_id'] == entity_id}&.fetch('service_provider_id', nil)
+    if sp_id.nil?
+      puts "ERROR! Component with the entityid is not being published by self-service"
+    end
+    certs = published_metadata["service_providers"].find{ |sp| sp['id'] == sp_id}
+  end  
+
   {
     signing: certs.fetch('signing_certificates', [])&.map{|c| c['value']},
     encryption: certs.dig('encryption_certificate', 'value')
@@ -48,7 +59,7 @@ def get_fed_config_certs(config)
   }
 end
 
-hub_fed_config_directory = "../../verify-hub-federation-config/configuration/config-service-data/#{ENVIRONMENT}/transactions/"
+hub_fed_config_directory = "../../verify-hub-federation-config/configuration/config-service-data/#{ENVIRONMENT}/#{MSA ? 'matching-services' : 'transactions'}/"
 config_files = Dir.children(hub_fed_config_directory)
 all_good = false
 
