@@ -45,6 +45,27 @@ To automagically fix any issues use the `-a` flag:
 
 `bundle exec rubocop -a`
 
+### Integrity checker when on-boarding a service
+
+The `/tools` directory contains a script `./check.rb` which allows us to check whether a service
+has been on-boarded correctly to the self-service app. There are a few steps required:
+
+1. Fully on-board the service (or MSA) to self-service, as per the [team manual instructions](https://verify-team-manual.cloudapps.digital/documentation/support/self-service/onboard-new-service.html)
+2. Make sure the [verify-hub-federation-config]() repository is on master and up-to-date
+3. Login to AWS using the gds-cli
+    - `gds aws verify-prod-a -e` for the production environment
+    - `gds aws verify-integration-a -e` for the integration environment
+4. Run the script using the environment and entityId you wish to check for
+
+    `./check.rb <prod | integration> <entityId> [--msa optional]`
+
+    For example:
+
+    `./check.rb prod http://prod-entity-id`
+
+The script will output whether the hub-fed-config is matching the config which self-service is publishing.
+This script can only be used while the certs are still in the hub-fed-config (i.e. before they were removed after the on-boarding)
+
 ## Licence
 
 [MIT License](LICENCE)
