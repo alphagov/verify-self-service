@@ -8,4 +8,6 @@
 <p><%= t('user_journey.confirmation.publish_time') %></p>
 <p><%= t('user_journey.confirmation.will_not_break') %></p>
 
-<%= link_to t('user_journey.confirmation.rotate_more'), root_path, class: "secondary-link secondary-link__confirmation" %>
+<div class="govuk-inset-text">
+    <%= t('user_journey.confirmation.rotate_more_html', rotate_more_link: link_to(t('user_journey.confirmation.rotate_more_link'), root_path)) %>
+</div>

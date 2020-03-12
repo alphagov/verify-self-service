@@ -369,7 +369,7 @@ en:
     delete_old_signing_key_and_cert: Then you can delete the old signing key and certificate from your %{component} configuration.
     maintain_connection_p1: Manage your certificates to make sure your service stays connected to GOV.UK Verify. 
     maintain_connection_p2: When your certificates are expiring, you can rotate them in any order. You can also rotate more than one certificate at the same time.
-    connection_broken_or_compromised_guidance: You should follow the %{instructions_link}, which also explains what to do %{compromised_link}.
+    connection_broken_or_compromised_guidance_html: You should follow the %{instructions_link}, which also explains what to do %{compromised_link}.
     instructions_link: instructions in the documentation
     compromised_link: if your connection has been broken or compromised
     certificates_expiring: "%{number} expiring soon."
@@ -463,7 +463,7 @@ en:
       title: Confirmation
       publish_failed_title: Publish failed
       what_to_expect: This usually takes a few minutes. We'll email you when your new %{type} certificate is in use.
-      rotate_more: You can %{rotate_more_link} while you wait for the email.
+      rotate_more_html: You can %{rotate_more_link} while you wait for the email.
       next_steps: Next steps
       rotate_other_certificates: You can rotate other certificates straight away - you do not need to wait for the email.
       received_email: Once you've received the email, delete the old %{usage} key and certificate from your %{component} configuration.
