@@ -21,6 +21,34 @@ RSpec.describe ChangeServiceEvent, type: :model do
       expect(change_service_event.data['name']).to eql(new_service_name)
     end
   end
+  context '#trigger_publish_event' do
+    it 'when entity id is changed on an sp_component' do
+      event = create(:assign_sp_component_to_service_event, service: service)
+      updated_entity_id = 'https://changed-entity-id1'
+      service.assign_attributes(entity_id: updated_entity_id)
+      change_service_event = create(:change_service_event, service: service)
+
+      resulting_event = PublishServicesMetadataEvent.where("data->>'event_id' = ?", change_service_event.id).first
+      expect(resulting_event).not_to be_nil
+      expect(resulting_event.data['services_metadata']['connected_services'][0]['entity_id']).to eq(updated_entity_id)
+    end
+    it 'when entity id is changed on an msa_component' do
+      event = create(:assign_msa_component_to_service_event, service: service)
+      updated_entity_id = 'https://changed-entity-id1'
+      service.assign_attributes(entity_id: updated_entity_id)
+      change_service_event = create(:change_service_event, service: service)
+
+      resulting_event = PublishServicesMetadataEvent.where("data->>'event_id' = ?", change_service_event.id).first
+      expect(resulting_event).not_to be_nil
+    end
+    it 'when a new change service is created without an MSA or SP component it doesnt publish' do
+      new_entity_id = 'https://changed-entity-id'
+      service.assign_attributes(entity_id: new_entity_id)
+      change_service_event = create(:change_service_event, service: service)
+      resulting_event = PublishServicesMetadataEvent.where("data->>'event_id' = ?", change_service_event.id).first
+      expect(resulting_event).to be_nil
+    end
+  end
   context 'failure' do
     it 'disallows changing entity_id when change is not unique' do
       [1, 2, 3].each { |n| create(:service, entity_id: "https://not-a-real-entity-id_#{n}") }
