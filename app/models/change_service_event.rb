@@ -2,6 +2,7 @@ class ChangeServiceEvent < AggregatedEvent
   belongs_to_aggregate :service
   data_attributes :attributes_changed
   validate :validate_changes
+  after_save TriggerMetadataEventCallback.publish
 
   def attributes_to_apply
     self.data = attributes_changed
