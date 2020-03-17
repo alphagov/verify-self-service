@@ -19,11 +19,11 @@
       <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item ">
           <%= f.radio_button :component_type, COMPONENT_TYPE::VSP, class: 'govuk-radios__input' %>
-          <%= f.label :component_type, COMPONENT_TYPE::VSP_SHORT, class: 'govuk-label govuk-radios__label' %>
+          <%= f.label :component_type, COMPONENT_TYPE::VSP_SHORT, value: COMPONENT_TYPE::VSP, class: 'govuk-label govuk-radios__label' %>
         </div>
         <div class="govuk-radios__item">
           <%= f.radio_button :component_type, COMPONENT_TYPE::SP, class: 'govuk-radios__input'  %>
-          <%= f.label :component_type, COMPONENT_TYPE::SP_SHORT, class: 'govuk-label govuk-radios__label' %>
+          <%= f.label :component_type, COMPONENT_TYPE::SP_SHORT, value: COMPONENT_TYPE::SP, class: 'govuk-label govuk-radios__label' %>
         </div>
       </div>
     </div>

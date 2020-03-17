@@ -6,11 +6,11 @@
     <div class="govuk-radios govuk-radios--inline">
       <div class="govuk-radios__item ">
         <%= f.radio_button :usage, CERTIFICATE_USAGE::SIGNING, class: 'govuk-radios__input'  %>
-        <%= f.label :usage, CERTIFICATE_USAGE::SIGNING, class: 'govuk-label govuk-radios__label' %>
+        <%= f.label :usage, CERTIFICATE_USAGE::SIGNING, value: CERTIFICATE_USAGE::SIGNING, class: 'govuk-label govuk-radios__label' %>
       </div>
       <div class="govuk-radios__item">
         <%= f.radio_button :usage, CERTIFICATE_USAGE::ENCRYPTION, class: 'govuk-radios__input'  %>
-        <%= f.label :usage, CERTIFICATE_USAGE::ENCRYPTION, class: 'govuk-label govuk-radios__label' %>
+        <%= f.label :usage, CERTIFICATE_USAGE::ENCRYPTION, value: CERTIFICATE_USAGE::ENCRYPTION, class: 'govuk-label govuk-radios__label' %>
       </div>
     </div>
   </div>
