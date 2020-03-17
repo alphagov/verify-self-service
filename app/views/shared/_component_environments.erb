@@ -4,7 +4,7 @@
     <% @hub_environments.each do |hub_environment| %>
       <div class="govuk-radios__item">
         <%= f.radio_button :environment, hub_environment, class: 'govuk-radios__input'  %>
-        <%= f.label :environment, hub_environment.capitalize, class: 'govuk-label govuk-radios__label' %>
+        <%= f.label :environment, hub_environment.capitalize, value: hub_environment, class: 'govuk-label govuk-radios__label' %>
       </div>
     <% end %>
   </div>
