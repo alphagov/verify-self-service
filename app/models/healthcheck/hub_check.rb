@@ -7,7 +7,7 @@ module Healthcheck
     end
 
     def status
-      Rails.configuration.hub_environments.keys.each do |environment|
+      Rails.configuration.hub_environments.each_key do |environment|
         response = HUB_CONFIG_API.healthcheck(environment)
 
         unless response.success?

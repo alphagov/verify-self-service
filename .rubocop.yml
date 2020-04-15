@@ -1,5 +1,6 @@
-inherit_from:
-  - https://raw.githubusercontent.com/alphagov/govuk-lint/master/configs/rubocop/all.yml
+inherit_gem:
+  rubocop-govuk: 
+    - config/default.yml
 
 Style/ConditionalAssignment:
   Enabled: false
