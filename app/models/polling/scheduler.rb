@@ -7,7 +7,7 @@ module Polling
 
     def initialize(opts = { overlap: false, timeout: DEFAULT_TIMEOUT, times: DEFAULT_NUMBER_POLLS, frequency: Rails.configuration.scheduler_polling_interval })
       @opts = opts
-      @rufus_scheduler ||= Rufus::Scheduler.new(frequency: opts[:frequency])
+      @rufus_scheduler ||= Rufus::Scheduler.new(frequency: opts[:frequency], max_work_threads: ENV['DB_POOL'] || ENV['RAILS_MAX_THREADS'] || DEFAULT_NUMBER_POLLS)
       @rufus_scheduler.stderr = StringIO.new
     end
 
