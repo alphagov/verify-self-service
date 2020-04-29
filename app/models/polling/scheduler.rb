@@ -19,8 +19,10 @@ module Polling
     end
 
     def perform(action = -> {})
-      @job = @rufus_scheduler.method("schedule_#{@mode}")
-                            .call(time, **opts, &action)
+      ActiveRecord::Base.connection_pool.with_connection do
+        @job = @rufus_scheduler.method("schedule_#{@mode}")
+                              .call(time, **opts, &action)
+      end
       self
     rescue Rufus::Scheduler::NotRunningError => e
       rufus_scheduler.on_error(rufus_scheduler, e)
