@@ -9,17 +9,16 @@ RSpec.describe Polling::Scheduler, type: :model do
 
   let(:greetings) { 'hello verify self service...' }
   let(:worker) {
-   Class.new do
-      def work
-      end
-   end.new
+    Class.new {
+      def work; end
+    }.new
   }
   let(:display) {
-    Class.new do
+    Class.new {
       def name(name)
         "my name is #{name}"
       end
-    end.new
+    }.new
   }
   context 'is polling (every)' do
     it 'creates a new scheduler' do
@@ -28,23 +27,23 @@ RSpec.describe Polling::Scheduler, type: :model do
 
     it 'has chainable methods' do
       expect(scheduler.mode(:every)).to eql scheduler
-      expect(scheduler.perform(->{ worker.work })).to be scheduler
+      expect(scheduler.perform(-> { worker.work })).to be scheduler
     end
 
     it 'does something when mode is bad' do
       expect(scheduler.mode(:ofather)).to eql scheduler
-      expect(scheduler.perform(->{ worker.work })).not_to be scheduler
+      expect(scheduler.perform(-> { worker.work })).not_to be scheduler
     end
 
     it 'uses default job frequency when polling on an action' do
       expect(scheduler.mode(:every)).to eql scheduler
-      expect(scheduler.perform(->{ worker.work })).to be scheduler
+      expect(scheduler.perform(-> { worker.work })).to be scheduler
       expect(scheduler.job.frequency).to eq Rails.configuration.scheduler_polling_interval.chomp('s').to_f
     end
 
     it 'uses duration string to poll on a repeatable schedule' do
       scheduler.mode(:every, '1h')
-              .perform(->{ display.name('Fido dido')})
+              .perform(-> { display.name('Fido dido') })
       job = scheduler.job
 
       expect(job.class).to eql(Rufus::Scheduler::EveryJob)
@@ -55,7 +54,7 @@ RSpec.describe Polling::Scheduler, type: :model do
 
     it 'polls when there is an action but until test is not given' do
       scheduler.mode(:every, '2m')
-              .perform(->{ greetings })
+              .perform(-> { greetings })
 
       job = scheduler.job
       expect(job).to be_scheduled
@@ -65,7 +64,7 @@ RSpec.describe Polling::Scheduler, type: :model do
 
     it 'does not poll when there is an action but until test is true' do
       scheduler.mode(:every, '2m')
-               .perform(->{ 'hello verify self service...' })
+               .perform(-> { 'hello verify self service...' })
                .until(scheduler.action_result.present?)
 
       job = scheduler.job
@@ -77,23 +76,19 @@ RSpec.describe Polling::Scheduler, type: :model do
     it 'can display errors when timeout is specified' do
       scheduler = Polling::Scheduler.new(timeout: '0.5s')
       scheduler.mode(:every, '1s')
-               .perform(-> {
-                 sleep 0.9
-                })
+               .perform(-> { sleep 0.9 })
 
-        sleep(2)
-        expect(scheduler.stderr.string).to match(/Rufus::Scheduler::TimeoutError/)
+      sleep(2)
+      expect(scheduler.stderr.string).to match(/Rufus::Scheduler::TimeoutError/)
     end
 
     it 'can display errors when timeout is specified' do
       scheduler = Polling::Scheduler.new(timeout: '0.5s')
       scheduler.mode(:every, '1s')
-               .perform(-> {
-                 sleep 0.9
-                })
+               .perform(-> { sleep 0.9 })
 
-        sleep(2)
-        expect(scheduler.stderr.string).to match(/Rufus::Scheduler::TimeoutError/)
+      sleep(2)
+      expect(scheduler.stderr.string).to match(/Rufus::Scheduler::TimeoutError/)
     end
 
     context 'stops using last:/last_in/:last_at/times: options' do
@@ -106,9 +101,9 @@ RSpec.describe Polling::Scheduler, type: :model do
                 .perform(-> {
                   display.name('Fido dido')
                   counter += 1
-                  tt = Time.now}
-                  )
-                  .job
+                  tt = Time.now }
+                )
+                .job
         sleep 3
 
         expect(job.last_at.to_f).to eql(t.to_f)
@@ -146,7 +141,7 @@ RSpec.describe Polling::Scheduler, type: :model do
 
   it 'can create and use multiple scheduler instances' do
     scheduler.mode(:every, '2m')
-    .perform(->{ greetings })
+    .perform(-> { greetings })
 
     job = scheduler.job
     expect(job).to be_scheduled
@@ -165,7 +160,7 @@ RSpec.describe Polling::Scheduler, type: :model do
 
     scheduler_two = Polling::Scheduler.new
     scheduler_two.mode(:every, '1h')
-    .perform(->{ display.name('Fido dido')})
+    .perform(-> { display.name('Fido dido') })
     job_two = scheduler_two.job
 
     expect(job_two.class).to eql(Rufus::Scheduler::EveryJob)
@@ -177,11 +172,11 @@ RSpec.describe Polling::Scheduler, type: :model do
   context 'is scheduling (in)' do
     it 'creates an in job schedule' do
       expect(scheduler.mode(:in)).to eql scheduler
-      expect(scheduler.perform(->{ worker.work })).to be scheduler
+      expect(scheduler.perform(-> { worker.work })).to be scheduler
     end
     it 'uses duration string to schedule an action' do
       job = scheduler.mode(:in, '1h')
-                     .perform(->{ display.name('Fido dido')})
+                     .perform(-> { display.name('Fido dido') })
                      .job
 
       expect(job.class).to eql(Rufus::Scheduler::InJob)
