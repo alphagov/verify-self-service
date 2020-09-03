@@ -1,6 +1,6 @@
 language: ruby
 addons:
-  firefox: latest
+  firefox: 78.0
 services:
 - postgresql
 before_script:
