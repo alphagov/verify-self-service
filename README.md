@@ -20,7 +20,7 @@ The application is being developed using the principle of Event Sourcing. Please
 see [doc/adr/0002-use-event-sourcing.md](doc/adr/0002-use-event-sourcing.md) to
 understand why we made that decision and how we are doing it.
 
-Further information on how to support the appplication can be found in the 
+Further information on how to support the appplication can be found in the
 [Verify Team Manual](https://verify-team-manual.cloudapps.digital/documentation/support/#verify-self-service).
 
 ### Running the application
@@ -30,8 +30,9 @@ You can start the application with:
 `./startup.sh`
 
 ### Running the tests
+Test are run in docker environment pegged to use firefox-esr and can be run as follows:
 
-`./pre-commit.sh` will run the tests.
+`./pre-commit-local.sh` will run the tests.
 
 You can use `bundle exec rspec $PATH_TO_SPEC` to run individual spec files.
 
