@@ -11,6 +11,10 @@ class CertificatesController < ApplicationController
     )
   end
 
+  def show
+    @certificate = Certificate.find_by_id(params[:id])
+  end
+
   def create
     @upload = UploadCertificateEvent.create(upload_params)
     if @upload.valid?

@@ -10,6 +10,10 @@ class TeamsControllerPolicy < ApplicationPolicy
     user.permissions.team_management
   end
 
+  def show?
+    user.permissions.team_management
+  end
+
   def new?
     user.permissions.team_management
   end

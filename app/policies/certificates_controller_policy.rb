@@ -10,6 +10,10 @@ class CertificatesControllerPolicy < ApplicationPolicy
     user.permissions.certificate_management
   end
 
+  def show?
+    user.permissions.certificate_management
+  end
+
   def create?
     user.permissions.certificate_management
   end
