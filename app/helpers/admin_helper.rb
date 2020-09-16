@@ -1,6 +1,6 @@
 module AdminHelper
-  def certificate_component_url(component, component_id)
-    component == 'SpComponent' ? sp_component_path(component_id) : msa_component_path(component_id)
+  def certificate_component_url(component_type, component_id)
+    component_type == COMPONENT_TYPE::SP ? sp_component_path(component_id) : msa_component_path(component_id)
   end
 
   def service_sp_component_url(service)
