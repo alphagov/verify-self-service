@@ -251,7 +251,7 @@ RSpec.describe UsersController, type: :controller do
           template_id: "335cc196-0260-493a-9fc7-7440a7110e7e",
           personalisation: {
             first_name: "Cherry",
-            reset_url: "[http://www.test.com/reset-password](#{force_user_reset_password_path(email: 'cherry.one@test.com', reset_by_admin: true)})",
+            reset_url: "[http://www.test.com/reset-password](http://www.test.com#{force_user_reset_password_path(email: 'cherry.one@test.com', reset_by_admin: true)})",
           }
         }
         post :reset_user_password, params: { user_id: user_id }

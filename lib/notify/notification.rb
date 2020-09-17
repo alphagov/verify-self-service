@@ -90,7 +90,7 @@ module Notification
       template_id: ADMIN_RESET_USER_PASSWORD_TEMPLATE,
       personalisation: {
         first_name: first_name,
-        reset_url: "[#{url}#{reset_password_path}](#{reset_url})",
+        reset_url: "[#{url}#{reset_password_path}](#{url}#{reset_url})",
       },
      )
   rescue Notifications::Client::RequestError => e
