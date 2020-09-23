@@ -44,10 +44,7 @@
         </div>
       </fieldset>
     </div>
-
-    <div class="actions">
-      <%= f.submit t('users.update.button'), class: "govuk-button", data: { module: "govuk-button" } %>
-      <%= link_to t('users.remove_user.remove_link'), remove_user_path, class: "secondary-link remove-user-link" %></td>
-    </div>
+    <%= f.submit t('users.update.button'), class: "govuk-button", data: { module: "govuk-button" } %>
   <% end %>
+  <%= link_to t('users.remove_user.remove_link'), remove_user_path, class: "#{'secondary-link' if !@team_member.gds? } remove-user-link" %></td>
 <% end %>
