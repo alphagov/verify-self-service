@@ -8,6 +8,10 @@ class TeamsController < ApplicationController
     @team = NewTeamEvent.new
   end
 
+  def show
+    @team = Team.find_by_id(params[:id])
+  end
+
   def destroy
     team = Team.find_by_id(params[:id])
     change_event = DeleteTeamEvent.create(team: team, data: { group: team.name })

@@ -1,4 +1,4 @@
-<%= link_to "Create new MSA component", new_msa_component_path, class: "govuk-button"  %>
+<%= link_to "Create new MSA component", new_msa_component_path, class: "govuk-button" %>
 
 <% components.reverse.each do |component| %>
   <table class="govuk-table">
@@ -14,7 +14,7 @@
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Team ID</th>
-        <td class="govuk-table__cell"><%= link_to(component.team_id, "/admin#teams/#{component.team_id}") if component.team_id %></td>
+        <td class="govuk-table__cell"><%= link_to(component.team_id, team_path(component.team_id)) if component.team_id %></td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Environment</th>
@@ -22,7 +22,7 @@
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Encryption certificate ID</th>
-        <td class="govuk-table__cell"><%= link_to(component.encryption_certificate_id, "/admin#certificates/#{component.encryption_certificate_id}") if component.encryption_certificate_id %></td>
+        <td class="govuk-table__cell"><%= link_to(component.encryption_certificate_id, msa_component_certificate_path(component.id, component.encryption_certificate_id)) if component.encryption_certificate_id %></td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Created</th>

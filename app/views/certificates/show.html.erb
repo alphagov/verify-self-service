@@ -1,0 +1,65 @@
+<%= page_title t('certificates.title') %>
+
+<h1 class="govuk-heading-l">Certificate: <%= @certificate.usage %></h1>
+
+<table class="govuk-table">
+  <caption class="govuk-table__caption">Certificate ID: <%= @certificate.id %></caption>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Name</th>
+      <td class="govuk-table__cell"><%= @certificate.x509.subject.to_s %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Enabled</th>
+      <td class="govuk-table__cell"><%= @certificate.enabled %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Usage</th>
+      <td class="govuk-table__cell"><%= @certificate.usage %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid from</th>
+      <td class="govuk-table__cell"><%= @certificate.x509.not_before %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid until</th>
+      <td class="govuk-table__cell"><%= @certificate.x509.not_after %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">In use at</th>
+      <td class="govuk-table__cell"><%= @certificate.in_use_at %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Certificate</th>
+      <td class="govuk-table__cell">
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Show certificate
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <pre><%= @certificate.x509.to_text %></pre>
+            <pre class="wrap-text"><%= @certificate.value %></pre>
+          </div>
+        </details>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Component ID</th>
+      <td class="govuk-table__cell"><%= link_to @certificate.component_id, certificate_component_url(@certificate.component_type, @certificate.component_id) %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Component type</th>
+      <td class="govuk-table__cell"><%= @certificate.component_type %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Created</th>
+      <td class="govuk-table__cell"><%= @certificate.created_at %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Updated</th>
+      <td class="govuk-table__cell"><%= @certificate.updated_at %></td>
+    </tr>
+  </tbody>
+</table>

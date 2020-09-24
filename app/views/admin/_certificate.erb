@@ -44,7 +44,7 @@
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Component ID</th>
-        <td class="govuk-table__cell"><%= link_to certificate.component_id, "/admin##{certificate.component_type}/#{certificate.component_id}" %></td>
+        <td class="govuk-table__cell"><%= link_to certificate.component_id, certificate_component_url(certificate.component_type, certificate.component_id) %></td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Component type</th>

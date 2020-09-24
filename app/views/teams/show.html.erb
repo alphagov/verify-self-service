@@ -1,0 +1,30 @@
+<%= page_title t('team.title') %>
+
+<h1 class="govuk-heading-l">Team name: <%= @team.name %></h1>
+
+<table class="govuk-table" >
+  <caption class="govuk-table__caption">Team ID: <%= @team.id %></caption>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Alias</th>
+      <td class="govuk-table__cell"><%= @team.team_alias %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Created</th>
+      <td class="govuk-table__cell"><%= @team.created_at %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Updated</th>
+      <td class="govuk-table__cell"><%= @team.updated_at %></td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2">
+        <% unless @team.team_alias == TEAMS::GDS %>
+          <%= link_to t('users.invite.button'), invite_to_team_path(@team.id), class: 'govuk-button govuk-button--secondary'%>
+          <%= link_to 'Delete', team_path(id: @team.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'govuk-button govuk-button--warning' %>
+        <% end %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
