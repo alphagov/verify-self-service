@@ -9,6 +9,7 @@ module AuthenticationBackend
   class UserGroupNotFoundException < StandardError; end
   class AuthenticationBackendException < StandardError; end
   class UsernameExistsException < StandardError; end
+  class UserSessionTimeOutException < StandardError; end
   class GroupExistsException < StandardError; end
   class InvalidOldPasswordError < StandardError; end
   class InvalidNewPasswordException < StandardError; end
@@ -426,8 +427,7 @@ private
       challenge_responses.merge!("NEW_PASSWORD": params[:new_password])
       send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
     when 'SMS_MFA', 'SOFTWARE_TOKEN_MFA'
-      challenge_responses.merge!('SOFTWARE_TOKEN_MFA_CODE': params[:totp_code])
-      send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
+      software_token_mfa_response(params, challenge_name, challenge_responses)
     when 'MFA_SETUP'
       mfa_setup_response(params, challenge_name, challenge_responses)
     else
@@ -474,6 +474,12 @@ private
     )
   end
 
+  def software_token_mfa_response(params, challenge_name, challenge_responses)
+    challenge_responses.merge!('SOFTWARE_TOKEN_MFA_CODE': params[:totp_code])
+    send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
+  rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
+    raise UserSessionTimeOutException.new(e)
+  end
 
   def mfa_setup_response(params, challenge_name, challenge_responses)
     totp_resp = client.verify_software_token(session: params[:cognito_session_id], user_code: params[:totp_code])

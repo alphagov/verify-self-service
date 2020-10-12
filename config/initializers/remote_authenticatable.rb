@@ -37,6 +37,10 @@ module Devise
             clean_up_session
             Rails.logger.warn e
             fail!(:qr_code_expired)
+          rescue AuthenticationBackend::UserSessionTimeOutException => e
+            clean_up_session
+            Rails.logger.warn e
+            fail!(:invalid_session)
           rescue AuthenticationBackend::PasswordResetRequiredException => e
             Rails.logger.error e
             clean_up_session
