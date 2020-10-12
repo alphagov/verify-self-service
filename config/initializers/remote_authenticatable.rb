@@ -23,29 +23,33 @@ module Devise
               end
             else
               clean_up_session
-              return fail!(:unknown_cognito_response)
+              fail!(:unknown_cognito_response)
             end
-          rescue AuthenticationBackend::NotAuthorizedException => error
+          rescue AuthenticationBackend::NotAuthorizedException => e
             clean_up_session
-            Rails.logger.warn error
-            return fail!(:invalid_login)
-          rescue AuthenticationBackend::TemporaryPasswordExpiredException => error
+            Rails.logger.warn e
+            fail!(:invalid_login)
+          rescue AuthenticationBackend::TemporaryPasswordExpiredException => e
             clean_up_session
-            Rails.logger.warn error
-            return fail!(:temporary_password_expired)
-          rescue AuthenticationBackend::PasswordResetRequiredException => error
-            Rails.logger.error error
+            Rails.logger.warn e
+            fail!(:temporary_password_expired)
+          rescue AuthenticationBackend::QRCodeExpiredException => e
             clean_up_session
-            return redirect!(Rails.application.routes.url_helpers.force_user_reset_password_path(email: params[:user][:email], reset_by_admin: true))
-          rescue StandardError => error
-            Rails.logger.error error
+            Rails.logger.warn e
+            fail!(:qr_code_expired)
+          rescue AuthenticationBackend::PasswordResetRequiredException => e
+            Rails.logger.error e
             clean_up_session
-            return fail!(:unknown_cognito_response)
+            redirect!(Rails.application.routes.url_helpers.force_user_reset_password_path(email: params[:user][:email], reset_by_admin: true))
+          rescue StandardError => e
+            Rails.logger.error e
+            clean_up_session
+            fail!(:unknown_cognito_response)
           end
         end
       end
 
-      private
+    private
 
       def populate_session_for_auth_challenge(resource)
         session[:email] = resource.email

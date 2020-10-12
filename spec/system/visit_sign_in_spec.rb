@@ -178,6 +178,28 @@ RSpec.describe 'Sign in', type: :system do
     expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
   end
 
+  scenario 'User redirected back to sign in after QR code expires' do
+    stub_cognito_response(method: :initiate_auth, payload: { challenge_name: "MFA_SETUP", session: SecureRandom.uuid, challenge_parameters: { 'USER_ID_FOR_SRP' => '0000-0000' } })
+    stub_cognito_response(method: :associate_software_token, payload: { secret_code: 'OC7YQ4VYEVRWQGIKSXV25B3MZUV355I5XUKKM4P7KGTO72OTXXUQ', session: SecureRandom.uuid })
+    SelfService.service(:cognito_client).stub_responses(:verify_software_token, Aws::CognitoIdentityProvider::Errors::NotAuthorizedException.new(nil, "Invalid session for the user, session is expired."))
+
+    user = FactoryBot.create(:user_manager_user)
+    sign_in(user.email, user.password)
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content t('mfa_enrolment.heading')
+    expect(page).to have_content t('mfa_enrolment.description')
+    expect(page).to have_css("#qr-code svg")
+
+    fill_in "user[totp_code]", with: "000000"
+    click_button(t('sign_in.sign_in'))
+
+    expect(current_path).to eql new_user_session_path
+    expect(page).to have_content t("devise.failure.user.qr_code_expired")
+    # Ensure session is cleaned up from flow
+    expect(page.get_rack_session.has_key?(:cognito_session_id)).to eql false
+    expect(page.get_rack_session.has_key?(:challenge_name)).to eql false
+    expect(page.get_rack_session.has_key?(:challenge_parameters)).to eql false
+  end
   scenario 'user redirected when PasswordResetRequiredException is raised' do
     stub_cognito_response(method: :initiate_auth, payload: 'PasswordResetRequiredException')
     user = FactoryBot.create(:user_manager_user)
