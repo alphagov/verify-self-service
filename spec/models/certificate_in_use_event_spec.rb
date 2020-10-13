@@ -5,34 +5,44 @@ RSpec.describe CertificateInUseEvent, type: :model do
   let(:cognito_users) {
     { users: [
         { username: '0000',
-         attributes: [{name: "given_name", value: "Cherry"},
-                      {name: "family_name", value: "One"},
-                      {name: "email", value: email},
-                      {name: "custom:roles", value: "certmgr"}
-         ]}
-    ]}
+         attributes: [{ name: "given_name", value: "Cherry" },
+                      { name: "family_name", value: "One" },
+                      { name: "email", value: email },
+                      { name: "custom:roles", value: "certmgr" }] },
+    ] }
   }
   let(:many_cognito_users) {
-    { users: [
-        { username: '0000',
-         attributes: [{name: "given_name", value: "Cherry"},
-                      {name: "family_name", value: "One"},
-                      {name: "email", value: email},
-                      {name: "custom:roles", value: "certmgr"}
-        ]},
-        { username: '0001',
-          attributes: [{name: "given_name", value: "Cherry"},
-                       {name: "family_name", value: "Two"},
-                       {name: "email", value: email},
-                       {name: "custom:roles", value: "certmgr"}
-        ]},
-        { username: '0002',
-            attributes: [{name: "given_name", value: "Cherry"},
-                         {name: "family_name", value: "Three"},
-                         {name: "email", value: email},
-                         {name: "custom:roles", value: "certmgr"}
-        ]}
-    ]}
+    {
+      users: [
+        {
+          username: '0000',
+          attributes: [
+                       { name: "given_name", value: "Cherry" },
+                       { name: "family_name", value: "One" },
+                       { name: "email", value: email },
+                       { name: "custom:roles", value: "certmgr" },
+                      ],
+        },
+        {
+          username: '0001',
+          attributes: [
+                        { name: "given_name", value: "Cherry" },
+                        { name: "family_name", value: "Two" },
+                        { name: "email", value: email },
+                        { name: "custom:roles", value: "certmgr" },
+                      ],
+        },
+        {
+          username: '0002',
+          attributes: [
+                        { name: "given_name", value: "Cherry" },
+                        { name: "family_name", value: "Three" },
+                        { name: "email", value: email },
+                        { name: "custom:roles", value: "certmgr" },
+                      ],
+        },
+      ],
+    }
   }
   it 'is valid and persisted with hub_use_confirmation_at not nil' do
     stub_notify_response
@@ -46,7 +56,7 @@ RSpec.describe CertificateInUseEvent, type: :model do
   it 'emails notification with a template having defined deadline when msa signing certificate is uploaded' do
     stub_notify_response
     msa_component = create(:msa_component)
-    old_signing_certificate = create(:upload_certificate_event, component: msa_component).certificate
+    create(:upload_certificate_event, component: msa_component).certificate
     stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
 
     expect(subject.class).to receive(:create).with(any_args).and_call_original.at_least(:once)
@@ -61,11 +71,11 @@ RSpec.describe CertificateInUseEvent, type: :model do
         component: component.display_long_name,
         environment: component.environment,
         time_and_date: component.enabled_signing_certificates.second.x509.not_after,
-      }
+      },
     }
     expect(expected_body[:personalisation][:time_and_date]).to be_present
     expect(stub_notify_request(expected_body)).to have_been_made.once
-    expect(certificate.events.map(&:class)).to eq [UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent]
+    expect(certificate.events.map(&:class)).to contain_exactly(UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent)
   end
   it 'emails notification with a template having defined deadline when sp signing certificate is uploaded' do
     old_signing_certificate = create(:upload_certificate_event).certificate
@@ -85,11 +95,11 @@ RSpec.describe CertificateInUseEvent, type: :model do
         component: component.display_long_name,
         environment: component.environment,
         time_and_date: component.enabled_signing_certificates.second.x509.not_after,
-      }
+      },
     }
     expect(expected_body[:personalisation][:time_and_date]).to be_present
     expect(stub_notify_request(expected_body)).to have_been_made.once
-    expect(certificate.events.map(&:class)).to eq [UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent]
+    expect(certificate.events.map(&:class)).to contain_exactly(UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent)
   end
   it 'emails notification with a template without defined deadline when msa signing certificate is uploaded' do
     stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
@@ -106,11 +116,11 @@ RSpec.describe CertificateInUseEvent, type: :model do
         team_name: component.team.name,
         component: component.display_long_name,
         environment: component.environment,
-      }
+      },
     }
 
     expect(stub_notify_request(expected_body)).to have_been_made.once
-    expect(certificate.events.map(&:class)).to eq [UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent]
+    expect(certificate.events.map(&:class)).to contain_exactly(UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent)
   end
   it 'emails notification with a template without defined deadline when sp signing certificate is uploaded' do
     stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
@@ -129,18 +139,18 @@ RSpec.describe CertificateInUseEvent, type: :model do
         team_name: component.team.name,
         component: component.display_long_name,
         environment: component.environment,
-      }
+      },
     }
 
     expect(stub_notify_request(expected_body)).to have_been_made.once
-    expect(certificate.events.map(&:class)).to eq [UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent]
+    expect(certificate.events.map(&:class)).to contain_exactly(UploadCertificateEvent, CertificateInUseEvent, CertificateNotificationSentEvent)
   end
 
   it 'emails notification with msa encryption template when msa encryption certificate is replaced' do
     stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
     stub_notify_response
     msa_component = create(:msa_component)
-    old_msa_encryption_certificate = create(:msa_encryption_certificate, component: msa_component)
+    create(:msa_encryption_certificate, component: msa_component)
 
     msa_encryption_certificate = create(:msa_encryption_certificate, component: msa_component)
     expect(subject.class).to receive(:create).with(any_args).and_call_original.at_least(:once)
@@ -155,10 +165,10 @@ RSpec.describe CertificateInUseEvent, type: :model do
         team_name: component.team.name,
         component: component.display_long_name,
         environment: component.environment,
-      }
+      },
     }
     expect(stub_notify_request(expected_body)).to have_been_made.once
-    expect(certificate.events.map(&:class)).to eq [CertificateInUseEvent, CertificateNotificationSentEvent]
+    expect(certificate.events.map(&:class)).to contain_exactly(CertificateInUseEvent, CertificateNotificationSentEvent)
   end
 
   it 'emails notification with encryption template when msa encryption certificate is replaced' do
@@ -178,17 +188,17 @@ RSpec.describe CertificateInUseEvent, type: :model do
         team_name: component.team.name,
         component: component.display_long_name,
         environment: component.environment,
-      }
+      },
     }
     expect(stub_notify_request(expected_body)).to have_been_made.once
-    expect(certificate.events.map(&:class)).to eq [CertificateInUseEvent, CertificateNotificationSentEvent]
+    expect(certificate.events.map(&:class)).to contain_exactly(CertificateInUseEvent, CertificateNotificationSentEvent)
   end
 
   it 'emails notification with vsp / sp encryption template when sp encryption certificate is replaced' do
     stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
     stub_notify_response
     sp_component = create(:sp_component)
-    old_sp_encryption_certificate = create(:sp_encryption_certificate, component: sp_component)
+    create(:sp_encryption_certificate, component: sp_component)
     sp_encryption_certificate = create(:sp_encryption_certificate, component: sp_component)
     create(:assign_sp_component_to_service_event, sp_component_id: sp_component.id)
     expect(subject.class).to receive(:create).with(any_args).and_call_original.at_least(:once)
@@ -202,10 +212,10 @@ RSpec.describe CertificateInUseEvent, type: :model do
         team_name: component.team.name,
         component: component.display_long_name,
         environment: component.environment,
-      }
+      },
     }
     expect(stub_notify_request(expected_body)).to have_been_made.once
-    expect(certificate.events.map(&:class)).to eq [CertificateInUseEvent, CertificateNotificationSentEvent]
+    expect(certificate.events.map(&:class)).to contain_exactly(CertificateInUseEvent, CertificateNotificationSentEvent)
   end
   it 'emails notification sent to 3 team members when certificate is replaced' do
     stub_cognito_response(method: :list_users_in_group, payload: many_cognito_users)
@@ -224,10 +234,10 @@ RSpec.describe CertificateInUseEvent, type: :model do
         team_name: component.team.name,
         component: component.display_long_name,
         environment: component.environment,
-      }
+      },
     }
     expect(stub_notify_request(expected_body)).to have_been_made.times(3)
-    expect(certificate.events.map(&:class)).to eq [CertificateInUseEvent, CertificateNotificationSentEvent]
+    expect(certificate.events.map(&:class)).to contain_exactly(CertificateInUseEvent, CertificateNotificationSentEvent)
   end
   it 'logs error when mail client is return 404' do
     stub_notify_error_response
@@ -240,7 +250,6 @@ RSpec.describe CertificateInUseEvent, type: :model do
 
     event = create(:replace_encryption_certificate_event, encryption_certificate_id: sp_encryption_certificate.id, component: sp_encryption_certificate.component)
     component = event.component
-    certificate = component.encryption_certificate
 
     expected_body = {
       email_address: 'test@test.com',
@@ -249,7 +258,7 @@ RSpec.describe CertificateInUseEvent, type: :model do
         team_name: component.team.name,
         component: component.display_long_name,
         environment: component.environment,
-      }
+      },
     }
     expect(stub_notify_request(expected_body)).to have_been_made.once
   end
