@@ -4,10 +4,12 @@ require 'securerandom'
 
 module AuthenticationBackend
   class NotAuthorizedException < StandardError; end
+  class QRCodeExpiredException < StandardError; end
   class TemporaryPasswordExpiredException < StandardError; end
   class UserGroupNotFoundException < StandardError; end
   class AuthenticationBackendException < StandardError; end
   class UsernameExistsException < StandardError; end
+  class UserSessionTimeOutException < StandardError; end
   class GroupExistsException < StandardError; end
   class InvalidOldPasswordError < StandardError; end
   class InvalidNewPasswordException < StandardError; end
@@ -425,33 +427,15 @@ private
       challenge_responses.merge!("NEW_PASSWORD": params[:new_password])
       send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
     when 'SMS_MFA', 'SOFTWARE_TOKEN_MFA'
-      challenge_responses.merge!('SOFTWARE_TOKEN_MFA_CODE': params[:totp_code])
-      send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
+      software_token_mfa_response(params, challenge_name, challenge_responses)
     when 'MFA_SETUP'
-      totp_resp = client.verify_software_token(session: params[:cognito_session_id], user_code: params[:totp_code])
-      if totp_resp.status == 'SUCCESS'
-        challenge_responses.merge!('ANSWER': 'SOFTWARE_TOKEN_MFA')
-        resp = send_challenge(session: totp_resp.session, challenge_name: challenge_name, challenge_responses: challenge_responses)
-        set_mfa_preferences(access_token: resp.authentication_result[:access_token]) unless resp.authentication_result[:access_token].nil?
-        resp
-      else
-        raise AuthenticationBackendException.new("Unknown status returned by cognito when verifying software token.  Status returned: #{totp_resp.status}")
-      end
+      mfa_setup_response(params, challenge_name, challenge_responses)
     else
       raise AuthenticationBackendException.new("Unknown challenge_name returned by cognito.  Challenge name returned: #{challenge_name}")
     end
   rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException,
          Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
-    response_hash = {
-      type: RETRY,
-      email: params[:email],
-      secret_code: params[:secret_code],
-      session_id: params[:cognito_session_id],
-      challenge_name: "#{params[:challenge_name]}_RETRY",
-      challenge_parameters: params[:challenge_parameters],
-      flash_message: { code: e.code, message: e.message },
-    }
-    ChallengeResponse.new(response_hash)
+    response_hash(params, e)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
          Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
     raise NotAuthorizedException.new(e)
@@ -476,5 +460,38 @@ private
 
   def user_pool_id
     Rails.configuration.cognito_user_pool_id
+  end
+
+  def response_hash(params, exception)
+    ChallengeResponse.new(
+      type: RETRY,
+      email: params[:email],
+      secret_code: params[:secret_code],
+      session_id: params[:cognito_session_id],
+      challenge_name: "#{params[:challenge_name]}_RETRY",
+      challenge_parameters: params[:challenge_parameters],
+      flash_message: { code: exception.code, message: exception.message },
+    )
+  end
+
+  def software_token_mfa_response(params, challenge_name, challenge_responses)
+    challenge_responses.merge!('SOFTWARE_TOKEN_MFA_CODE': params[:totp_code])
+    send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
+  rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
+    raise UserSessionTimeOutException.new(e)
+  end
+
+  def mfa_setup_response(params, challenge_name, challenge_responses)
+    totp_resp = client.verify_software_token(session: params[:cognito_session_id], user_code: params[:totp_code])
+    if totp_resp.status == 'SUCCESS'
+      challenge_responses.merge!('ANSWER': 'SOFTWARE_TOKEN_MFA')
+      resp = send_challenge(session: totp_resp.session, challenge_name: challenge_name, challenge_responses: challenge_responses)
+      set_mfa_preferences(access_token: resp.authentication_result[:access_token]) unless resp.authentication_result[:access_token].nil?
+      resp
+    else
+      raise AuthenticationBackendException.new("Unknown status returned by cognito when verifying software token.  Status returned: #{totp_resp.status}")
+    end
+  rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
+    raise QRCodeExpiredException.new(e)
   end
 end

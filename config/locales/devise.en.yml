@@ -20,7 +20,9 @@ en:
       unknown_cognito_response: "Something went wrong in our backend. Try again later."
       user:
         invalid_login: "Invalid username or password. Please try again."
+        invalid_session: "Invalid session for the user, session is expired."
         temporary_password_expired: "Your temporary password expired. Please contact your admin for a new one."
+        qr_code_expired: "QR code has expired. Please try again."
         unknown_cognito_response: "Unknown authentication response."
     mailer:
       confirmation_instructions:
