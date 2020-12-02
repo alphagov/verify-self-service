@@ -35,7 +35,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'colorize'
 
-gem 'kaminari', '~> 1.1'
+gem 'kaminari', '~> 1.2'
 
 gem 'aws-sdk-cognitoidentityprovider'
 gem 'aws-sdk-s3'
