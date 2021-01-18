@@ -3,6 +3,7 @@ class NewMsaComponentEvent < AggregatedEvent
   data_attributes :name, :entity_id, :team_id, :environment
   validate :msa_has_entity_id
   validate :component_is_new, on: :create
+  validate :not_an_existing_msa_entity_id, on: :create
   validates_presence_of :name, message: I18n.t('events.errors.missing_name')
   validates_presence_of :team_id, message: I18n.t('components.errors.invalid_team')
   validates_presence_of :environment,
@@ -30,7 +31,11 @@ class NewMsaComponentEvent < AggregatedEvent
 
 private
 
+  def not_an_existing_msa_entity_id
+    errors.add(:entity_id, I18n.t('components.errors.invalid_entity_id')) if MsaComponent.exists? entity_id: entity_id
+  end
+
   def msa_has_entity_id
-    errors.add(:entity_id, message: I18n.t('components.errors.missing_entity_id')) unless entity_id.present?
+    errors.add(:entity_id, I18n.t('components.errors.missing_entity_id')) unless entity_id.present?
   end
 end

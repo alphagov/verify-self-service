@@ -16,7 +16,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
   end
   let(:published_at) { Time.now }
   let(:event_id) { 0 }
-  let(:component) { MsaComponent.create(name: 'lala', entity_id: 'https//test-entity') }
+  let(:component) { MsaComponent.create(name: 'lala', entity_id: SecureRandom.alphanumeric) }
   let(:event) { PublishServicesMetadataEvent.create(event_id: event_id, environment: 'test') }
   let(:current) { Time.current }
   let(:in_hours) { travel_to Time.zone.local(current.year, current.month, current.day, 12, 00, 00)}
@@ -340,7 +340,7 @@ RSpec.describe PublishServicesMetadataEvent, type: :model do
             .times(3)
 
           expect(Rails.logger).to receive(:error)
-            .with("Error getting signing certificates for entity_id: #{new_msa_encryption_certificate.component.entity_id}! (Code: 404)")
+            .with("Error getting signing certificates for entity_id: #{msa_signing_certificate.component.entity_id}! (Code: 404)")
             .twice
           expect(Certificate.find_by_id(msa_signing_certificate.id).in_use_at).to be_nil
           create(:upload_certificate_event, component: msa_signing_certificate.component)

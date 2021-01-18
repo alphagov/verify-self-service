@@ -329,6 +329,7 @@ en:
       already_exists: already exists
       must_exist: must exist
       missing_entity_id: ID is required for the MSA component
+      invalid_entity_id: Entity ID already in use, must be unique
       invalid_team: Component must belong to a valid team
       invalid_environment: Component must belong to a valid environment
       invalid_type: must be either VSP or SP

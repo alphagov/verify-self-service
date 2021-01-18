@@ -8,7 +8,7 @@ FactoryBot.define do
 
   factory :new_msa_component_event do
     name { SecureRandom.alphanumeric }
-    entity_id { 'https://test-entity-id' }
+    entity_id { SecureRandom.alphanumeric }
     team_id { create(:team).id }
     environment { 'staging' }
   end
