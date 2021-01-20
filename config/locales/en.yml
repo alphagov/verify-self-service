@@ -267,6 +267,7 @@ en:
       wrong_component_type: Wrong component type
       unknown_component_or_service: Invalid component or service
       missing_entity_id: ID is required for the Service
+      invalid_entity_id_format: ID cannot contain spaces
   shared:
     errors:
       error: Error
@@ -329,7 +330,8 @@ en:
       already_exists: already exists
       must_exist: must exist
       missing_entity_id: ID is required for the MSA component
-      invalid_entity_id: Entity ID already in use, must be unique
+      existing_entity_id: ID already in use, must be unique
+      invalid_entity_id_format: ID cannot contain spaces
       invalid_team: Component must belong to a valid team
       invalid_environment: Component must belong to a valid environment
       invalid_type: must be either VSP or SP

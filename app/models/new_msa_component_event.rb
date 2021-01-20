@@ -4,11 +4,13 @@ class NewMsaComponentEvent < AggregatedEvent
   validate :msa_has_entity_id
   validate :component_is_new, on: :create
   validate :not_an_existing_msa_entity_id, on: :create
+  validates :entity_id, format: { without: /\s/, message: I18n.t('components.errors.invalid_entity_id_format') }
   validates_presence_of :name, message: I18n.t('events.errors.missing_name')
   validates_presence_of :team_id, message: I18n.t('components.errors.invalid_team')
   validates_presence_of :environment,
                         in: Rails.configuration.hub_environments.keys,
                         message: I18n.t('components.errors.invalid_environment')
+  before_validation :strip_entity_id
 
   def build_msa_component
     MsaComponent.new
@@ -32,7 +34,7 @@ class NewMsaComponentEvent < AggregatedEvent
 private
 
   def not_an_existing_msa_entity_id
-    errors.add(:entity_id, I18n.t('components.errors.invalid_entity_id')) if MsaComponent.exists? entity_id: entity_id
+    errors.add(:entity_id, I18n.t('components.errors.existing_entity_id')) if MsaComponent.exists? entity_id: entity_id
   end
 
   def msa_has_entity_id
