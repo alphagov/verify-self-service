@@ -1,8 +1,8 @@
 class NewServiceEvent < AggregatedEvent
   belongs_to_aggregate :service
   data_attributes :entity_id, :sp_component_id, :msa_component_id, :name
-  validates_presence_of :entity_id, message: I18n.t('service.errors.missing_entity_id')
   validate :name_is_present
+  validates_presence_of :entity_id, message: I18n.t('services.errors.missing_entity_id')
   validates :entity_id, format: { without: /\s/, message: I18n.t('services.errors.invalid_entity_id_format') }
   before_validation :strip_entity_id
 

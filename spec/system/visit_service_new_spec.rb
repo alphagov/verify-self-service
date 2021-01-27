@@ -53,7 +53,7 @@ RSpec.describe 'New Service Page', type: :system do
       fill_in 'service_entity_id', with: entity_id
       click_button 'Create service'
 
-      expect(page).to have_content I18n.t('service.errors.missing_entity_id')
+      expect(page).to have_content I18n.t('services.errors.missing_entity_id')
     end
 
     it 'when entity id has spaces between words' do

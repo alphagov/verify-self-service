@@ -25,6 +25,12 @@ FactoryBot.define do
     component { create(:new_sp_component_event) }
   end
 
+  factory :new_service_event do
+    service { create(:service) }
+    name { SecureRandom.alphanumeric }
+    entity_id { SecureRandom.alphanumeric }
+  end
+
   factory :delete_service_event do
     service { create(:service) }
   end
