@@ -37,6 +37,10 @@ class AggregatedEvent < Event
     errors.add(:name, I18n.t('events.errors.missing_name')) unless name.present?
   end
 
+  def strip_entity_id
+    self.entity_id = self.entity_id.strip unless self.entity_id.nil?
+  end
+
 private
 
   def aggregate_exists_and_unchanged?
