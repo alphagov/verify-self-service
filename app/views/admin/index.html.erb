@@ -9,12 +9,12 @@
   <ul class="govuk-tabs__list">
     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
       <a class="govuk-tabs__tab" href="#SpComponent">
-        SP Components
+        SP's
       </a>
     </li>
     <li class="govuk-tabs__list-item">
       <a class="govuk-tabs__tab" href="#MsaComponent">
-        MSA Components
+        MSA's
       </a>
     </li>
     <li class="govuk-tabs__list-item">
@@ -23,8 +23,13 @@
       </a>
     </li>
     <li class="govuk-tabs__list-item">
-      <a class="govuk-tabs__tab" href="#teams">
-        Teams
+      <a class="govuk-tabs__tab" href="#rp_teams">
+        RP Teams
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#idp_teams">
+        IDP Teams
       </a>
     </li>
     <li class="govuk-tabs__list-item">
@@ -45,12 +50,12 @@
   </ul>
 
   <section class="govuk-tabs__panel" id="SpComponent">
-    <h2 class="govuk-heading-l">SP components</h2>
+    <h2 class="govuk-heading-l">Service Provider components</h2>
     <%= render "admin/sp_component", components: @sp_components %>
   </section>
 
   <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="MsaComponent">
-    <h2 class="govuk-heading-l">MSA components</h2>
+    <h2 class="govuk-heading-l">Matching Service Adapater components</h2>
     <%= render "admin/msa_component", components: @msa_components %>
   </section>
 
@@ -59,9 +64,14 @@
     <%= render "admin/service", services: @services %>
   </section>
 
-  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="teams">
-    <h2 class="govuk-heading-l">Teams</h2>
-     <%= render "admin/team", teams: @teams %>
+  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="rp_teams">
+    <h2 class="govuk-heading-l">Relying Party Teams</h2>
+     <%= render "admin/team", teams: @relying_parties %>
+  </section>
+
+  <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="idp_teams">
+    <h2 class="govuk-heading-l">Identity Provider Teams</h2>
+     <%= render "admin/team", teams: @identity_providers %>
   </section>
 
   <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="certificates">
