@@ -22,6 +22,7 @@ RSpec.describe TeamsController, type: :controller do
 
   describe 'POST #create' do
     let(:team_name) { 'super-awesome-team' }
+    let(:team_type) { 'rp' }
 
     it 'successfully creates a group in cognito' do
       Rails.configuration.cognito_user_pool_id = 'dummy'
@@ -35,7 +36,7 @@ RSpec.describe TeamsController, type: :controller do
           }
         }
       )
-      post :create, params: { team: { name: team_name } }
+      post :create, params: { team: { name: team_name, team_type: team_type } }
 
       expect(subject).to redirect_to(teams_path)
       expect(flash.now[:errors]).to be_nil

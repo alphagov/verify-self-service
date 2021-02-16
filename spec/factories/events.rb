@@ -15,6 +15,7 @@ FactoryBot.define do
 
   factory :new_team_event do
     name { SecureRandom.alphanumeric }
+    team_type { 'rp' }
   end
 
   factory :delete_team_event do

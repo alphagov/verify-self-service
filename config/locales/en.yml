@@ -283,6 +283,7 @@ en:
       title: New team
       heading: Add a team
       team_name_field: Team name
+      team_type_field: Team type
       create_team: Create team
       success: created successfully
     errors:
@@ -293,6 +294,7 @@ en:
       not_empty: Cannot delete team with members
       blank_name: Enter a team name
       name_not_unique: This team name is already being used, enter a unique one
+      team_type_invalid: Must have a team type
   components:
     title: Manage certificates
     new_sp_title: Create a new SP component

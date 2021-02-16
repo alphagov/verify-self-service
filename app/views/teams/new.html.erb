@@ -12,8 +12,15 @@
       <%= error_message_on(f.object.errors, :name) %>
       <%= f.text_field :name, class: 'govuk-input' %>
     </div>
+
+    <div class="govuk-form-group <%= 'govuk-form-group--error' if @team.errors.key?(:team_type) %>">
+      <h3 class="govuk-heading-m"><%= t('team.new.team_type_field') %></h3>
+      <%= error_message_on(f.object.errors, :team_type) %>
+      <%= f.select(:team_type, options_for_select(['rp', 'idp', 'other']), {include_blank: 'Select'}, {class: 'govuk-select'}) %>
+    </div>
+
     <div class="govuk-form-group">
-        <%= f.submit t('team.new.create_team'), class: "govuk-button" %>
+      <%= f.submit t('team.new.create_team'), class: "govuk-button" %>
     </div>
   <% end %>
 </fieldset>
