@@ -27,6 +27,18 @@ FactoryBot.define do
       permissions { UserRolePermissions.new(ROLE::USER_MANAGER) }
     end
 
+    factory :rp_user_manager_user do
+      roles { ROLE::USER_MANAGER }
+      permissions { UserRolePermissions.new(ROLE::USER_MANAGER) }
+      team { create(:team, team_type: 'rp').id }
+    end
+
+    factory :idp_user_manager_user do
+      roles { ROLE::USER_MANAGER }
+      permissions { UserRolePermissions.new(ROLE::USER_MANAGER) }
+      team { create(:team, team_type: 'idp').id }
+    end
+
     factory :component_manager_user do
       roles { ROLE::COMPONENT_MANAGER }
       permissions { UserRolePermissions.new(ROLE::COMPONENT_MANAGER) }

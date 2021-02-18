@@ -50,4 +50,12 @@ module UserJourneyHelper
   def certificate_expiry_count(components)
     components.map(&:current_certificates).flatten.select(&:expires_soon?).count
   end
+
+  def idp_team_user?
+    Team.find(current_user.team).team_type == TEAMS::IDP unless current_user.team.nil?
+  end
+
+  def rp_team_user?
+    Team.find(current_user.team).team_type == TEAMS::RP unless current_user.team.nil?
+  end
 end

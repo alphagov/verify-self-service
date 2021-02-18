@@ -19,9 +19,11 @@
     <div class="govuk-grid-column-one-quarter">
       <div class="side-navigation">
         <ul class="govuk-list">
-          <li class="<%= 'active' if 'user_journey'.include?(params[:controller])  %>">
-            <%= link_to t('components.title'), root_path, class: "govuk-link--no-visited-state" %>
-          </li>
+          <% unless idp_team_user? %>
+            <li class="<%= 'active' if 'user_journey'.include?(params[:controller])  %>">
+              <%= link_to t('components.title'), root_path, class: "govuk-link--no-visited-state" %>
+            </li>
+          <% end %>
           <% if policy(UsersController).index? %>
             <li class="<%= 'active' if 'users'.include?(params[:controller]) %>">
               <%= link_to t('layout.main_layout.team_members'), users_path, class: "govuk-link--no-visited-state" %>

@@ -36,6 +36,20 @@ RSpec.describe 'IndexPage', type: :system do
     expect(page).to have_content 'Manage certificates'
   end
 
+  it 'shows the users page if current user is part of an IDP team' do
+    login_idp_user
+    visit '/'
+    expect(page).to have_content t('users.title_for_team')
+    expect(page).to_not have_content t('components.title')
+  end
+
+  it 'shows the home manage certificates page if current user is part of a RP team' do
+    login_rp_user
+    visit '/'
+    expect(page).to have_content t('components.title')
+    expect(page).to_not have_content t('users.title_for_team')
+  end
+
   it 'shows index page and successfully goes to next page' do
     visit root_path
     expect(page).to have_content 'Manage certificates'

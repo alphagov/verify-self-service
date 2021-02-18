@@ -11,9 +11,45 @@ RSpec.describe 'Users Page', type: :system do
   let(:team_apple) { create(:new_team_event) }
   let(:team_banana) { create(:new_team_event) }
   let(:team_cherry) { create(:new_team_event) }
+  let(:team_rp) { create(:new_team_event, team_type: 'rp') }
+  let(:team_idp) { create(:new_team_event, team_type: 'idp') }
   let(:create_teams) { team_apple
                         team_banana
                         team_cherry }
+  let(:cognito_users) {
+  {users: [
+      {username: "111",
+        user_status: 'CONFIRMED',
+        attributes: [{name: "given_name", value: "Apple"},
+                    {name: "family_name", value: "One"},
+                    {name: "email", value: "apple.one@test.com"},
+                    {name: "custom:roles", value: "usermgr"}
+        ]},
+      {username: "222",
+        user_status: 'FORCE_CHANGE_PASSWORD',
+        attributes: [{name: "given_name", value: "Apple"},
+                    {name: "family_name", value: "Two"},
+                    {name: "email", value: "apple.two@test.com"},
+                    {name: "custom:roles", value: "certmgr,usermgr"}
+        ]},
+      {username: "333",
+        user_status: 'COMPROMISED',
+        attributes: [{name: "given_name", value: "Apple"},
+                    {name: "family_name", value: "Three"},
+                    {name: "email", value: "apple.three@test.com"},
+                    {name: "custom:roles", value: "certmgr"}
+        ]},
+        {username: "444",
+        user_status: 'RESET_REQUIRED',
+        attributes: [{name: "given_name", value: "Apple"},
+                      {name: "family_name", value: "Four"},
+                      {name: "email", value: "apple.four@test.com"},
+                      {name: "custom:roles", value: "certmgr"}
+        ]}
+        ]}
+  }
+  let(:visible_statuses) { %w(FORCE_CHANGE_PASSWORD RESET_REQUIRED)}
+
 
   context 'GDS user' do
     before(:each) do
@@ -30,42 +66,6 @@ RSpec.describe 'Users Page', type: :system do
   end
 
   context 'User Manager' do
-    let(:cognito_users) {
-      {users: [
-          {username: "111",
-           user_status: 'CONFIRMED',
-           attributes: [{name: "given_name", value: "Apple"},
-                        {name: "family_name", value: "One"},
-                        {name: "email", value: "apple.one@test.com"},
-                        {name: "custom:roles", value: "usermgr"}
-           ]},
-          {username: "222",
-           user_status: 'FORCE_CHANGE_PASSWORD',
-           attributes: [{name: "given_name", value: "Apple"},
-                        {name: "family_name", value: "Two"},
-                        {name: "email", value: "apple.two@test.com"},
-                        {name: "custom:roles", value: "certmgr,usermgr"}
-           ]},
-          {username: "333",
-           user_status: 'COMPROMISED',
-           attributes: [{name: "given_name", value: "Apple"},
-                        {name: "family_name", value: "Three"},
-                        {name: "email", value: "apple.three@test.com"},
-                        {name: "custom:roles", value: "certmgr"}
-           ]},
-           {username: "444",
-            user_status: 'RESET_REQUIRED',
-            attributes: [{name: "given_name", value: "Apple"},
-                         {name: "family_name", value: "Four"},
-                         {name: "email", value: "apple.four@test.com"},
-                         {name: "custom:roles", value: "certmgr"}
-            ]}
-           ]}
-    }
-
-    let(:visible_statutes) { %w(FORCE_CHANGE_PASSWORD RESET_REQUIRED)}
-
-
     before(:each) do
       user = FactoryBot.create(:user_manager_user, team: team_apple.team.id)
       login_as(user, scope: :user)
@@ -76,7 +76,7 @@ RSpec.describe 'Users Page', type: :system do
       visit users_path
       expect(page).to have_content t('users.title_for_team')+' '+team_apple.name
       cognito_users[:users].each do |user|
-        if visible_statutes.include?(user[:user_status])
+        if visible_statuses.include?(user[:user_status])
           expect(page).to have_content(t("users.status.#{user[:user_status]}"))
         else
           expect(page).not_to have_content(t("users.status.#{user[:user_status]}"))
@@ -91,5 +91,55 @@ RSpec.describe 'Users Page', type: :system do
     end
   end
 
+  context 'RP User' do
+    before(:each) do
+      user = FactoryBot.create(:rp_user_manager_user, team: team_rp.team.id)
+      login_as(user, scope: :user)
+      stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+    end
 
+    it 'shows team members' do
+      visit users_path
+      expect(page).to have_content t('users.title_for_team')+' '+team_rp.name
+      cognito_users[:users].each do |user|
+        if visible_statuses.include?(user[:user_status])
+          expect(page).to have_content(t("users.status.#{user[:user_status]}"))
+        else
+          expect(page).not_to have_content(t("users.status.#{user[:user_status]}"))
+        end
+
+        expect(page).to have_content(user[:attributes][0][:value] +' '+ user[:attributes][1][:value] )
+        within("##{user[:username]}") do
+          expect(page).to have_content((user[:attributes][3][:value].split(',').include?(ROLE::CERTIFICATE_MANAGER) ? 'Can' : 'Cannot' ) + ' ' + t('users.roles.certmgr'))
+          expect(page).to have_content((user[:attributes][3][:value].split(',').include?(ROLE::USER_MANAGER) ? 'Can' : 'Cannot' ) + ' ' + t('users.roles.usermgr'))
+        end
+      end
+    end
+  end
+
+  context 'IDP User' do
+    before(:each) do
+      user = FactoryBot.create(:idp_user_manager_user, team: team_idp.team.id)
+      login_as(user, scope: :user)
+      stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+    end
+
+    it 'shows team members' do
+      visit users_path
+      expect(page).to have_content t('users.title_for_team')+' '+team_idp.name
+      cognito_users[:users].each do |user|
+        if visible_statuses.include?(user[:user_status])
+          expect(page).to have_content(t("users.status.#{user[:user_status]}"))
+        else
+          expect(page).not_to have_content(t("users.status.#{user[:user_status]}"))
+        end
+
+        expect(page).to have_content(user[:attributes][0][:value] +' '+ user[:attributes][1][:value] )
+        within("##{user[:username]}") do
+          expect(page).to_not have_content((user[:attributes][3][:value].split(',').include?(ROLE::CERTIFICATE_MANAGER) ? 'Can' : 'Cannot' ) + ' ' + t('users.roles.certmgr'))
+          expect(page).to have_content((user[:attributes][3][:value].split(',').include?(ROLE::USER_MANAGER) ? 'Can' : 'Cannot' ) + ' ' + t('users.roles.usermgr'))
+        end
+      end
+    end
+  end
 end

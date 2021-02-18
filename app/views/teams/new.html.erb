@@ -16,7 +16,7 @@
     <div class="govuk-form-group <%= 'govuk-form-group--error' if @team.errors.key?(:team_type) %>">
       <h3 class="govuk-heading-m"><%= t('team.new.team_type_field') %></h3>
       <%= error_message_on(f.object.errors, :team_type) %>
-      <%= f.select(:team_type, options_for_select(['rp', 'idp', 'other']), {include_blank: 'Select'}, {class: 'govuk-select'}) %>
+      <%= f.select(:team_type, options_for_select([TEAMS::RP, TEAMS::IDP, TEAMS::OTHER]), {include_blank: 'Select'}, {class: 'govuk-select'}) %>
     </div>
 
     <div class="govuk-form-group">

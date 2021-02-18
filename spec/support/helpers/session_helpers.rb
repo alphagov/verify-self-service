@@ -22,6 +22,18 @@ module System
       user
     end
 
+    def login_rp_user
+      user = FactoryBot.create(:rp_user_manager_user)
+      login_as(user, scope: :user)
+      user
+    end
+
+    def login_idp_user
+      user = FactoryBot.create(:idp_user_manager_user)
+      login_as(user, scope: :user)
+      user
+    end
+
     def login_gds_user
       user = FactoryBot.create(:gds_user)
       login_as(user, scope: :user)
