@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   delete '/users/:user_id/remove-user', to: 'users#remove_user', as: :remove_user_post
   get '/users/:user_id/reset-user-password', to: 'users#show_reset_user_password', as: :reset_user_password
   post '/users/:user_id/reset-user-password', to: 'users#reset_user_password', as: :reset_user_password_post
+  get '/users/emails-csv', to: 'users#emails_csv', as: :emails_csv
 
   get '/profile/change-password', to: 'password#password_form'
   post '/profile/change-password', to: 'password#update_password'

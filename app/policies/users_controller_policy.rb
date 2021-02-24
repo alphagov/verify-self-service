@@ -53,4 +53,8 @@ class UsersControllerPolicy < ApplicationPolicy
   def reset_user_password?
     user.permissions.user_management
   end
+
+  def emails_csv?
+    user.permissions.user_management
+  end
 end

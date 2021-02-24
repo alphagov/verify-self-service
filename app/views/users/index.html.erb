@@ -1,21 +1,58 @@
 <%= page_title t('users.title') %>
 
 <% if @gds && params['team_id'].nil? %>
-  <h1 class="govuk-heading-l"><%= t 'team.heading' %></h1>
+
+  <h2 class="govuk-heading-m"><%= t 'team.heading' %>
+    <%= link_to t('users.download_csv_list', team_type: TEAMS::ALL.upcase), 
+        emails_csv_path(format: :csv, :team => TEAMS::ALL), 
+        class: 'govuk-button download_csv', data: { module: 'govuk-button' } %>
+  </h2><br>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">  
+
+  <h2 class="govuk-heading-m"><%= t 'team.relying_parties' %>
+    <%= link_to t('users.download_csv_list', team_type: TEAMS::RP.upcase), 
+        emails_csv_path(format: :csv, :team => TEAMS::RP), 
+        class: 'govuk-button download_csv', data: { module: 'govuk-button' } %>
+  </h2>
   <ul class="govuk-list">
-    <% @teams.reverse.each do |team| %>
+    <% @rps&.reverse&.each do |team| %>
       <li>
-      <% if team.name == TEAMS::GDS %>
-        <%= link_to team.name.upcase, admin_users_path(team.id) %>
+        <%= link_to team.name, admin_users_path(team.id) %>
+      </li>
+    <% end %>
+  </ul>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <h2 class="govuk-heading-m"><%= t 'team.identity_providers' %>
+    <%= link_to t('users.download_csv_list', team_type: TEAMS::IDP.upcase), 
+        emails_csv_path(format: :csv, :team => TEAMS::IDP), 
+        class: 'govuk-button download_csv', data: { module: 'govuk-button' } %>
+  </h2>
+  <ul class="govuk-list">
+    <% @idps&.reverse&.each do |team| %>
+      <li>
+        <%= link_to team.name, admin_users_path(team.id) %>
+      </li>
+    <% end %>
+  </ul>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+  <h2 class="govuk-heading-m"><%= t 'team.other' %></h2>
+  <ul class="govuk-list">
+    <% @other&.reverse&.each do |team| %>
+      <li>
+        <% if team.name == TEAMS::GDS %>
+          <%= link_to team.name.upcase, admin_users_path(team.id) %>
           <strong class="govuk-tag">
             <%= t 'users.admin_team' %>
           </strong>
-        </li>
-      <% else %>
-        <%= link_to team.name, admin_users_path(team.id) %>
-      <% end %>
+        <% else %>
+          <%= link_to team.name, admin_users_path(team.id) %>
+        <% end %>
+      </li>
     <% end %>
   </ul>
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 <% else %>
   <% if @gds %>
     <%= link_to t('common.back'), users_path, class: 'govuk-back-link' %>

@@ -5,4 +5,5 @@ module TEAMS
   RP = 'rp'.freeze
   IDP = 'idp'.freeze
   OTHER = 'other'.freeze
+  ALL = 'all'.freeze
 end

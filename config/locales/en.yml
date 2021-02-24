@@ -59,6 +59,7 @@ en:
     title_for_team: Team members for
     change_details: Change details
     user_details: User details
+    download_csv_list: Download %{team_type} contacts
     invite:
       title: Invite a new user
       button: Invite user
@@ -279,6 +280,9 @@ en:
     heading: All teams
     name: Name
     add_team: Add new team
+    relying_parties: RPs
+    identity_providers: IDPs
+    other: Other
     new:
       title: New team
       heading: Add a team
