@@ -70,7 +70,7 @@ class InitialSeeder
   end
 
   def create_gds_group
-    event = NewTeamEvent.create(name: TEAMS::GDS)
+    event = NewTeamEvent.create(name: TEAMS::GDS, team_type: 'other')
     Rails.logger.warn("There was an issue creating the GDS team: #{event.errors.full_messages}") unless event.valid?
   end
 end

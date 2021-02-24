@@ -7,10 +7,13 @@ RSpec.describe 'New Team Page', type: :system do
     login_gds_user
   end
   let(:team_name) { 'test team' }
+  let(:team_type) { 'rp' }
+
   context 'creation succeeds' do
     it 'when a valid name' do
       visit new_team_path
       fill_in 'team_name', with: team_name
+      select team_type, from: "team_team_type"
       click_button t('team.new.create_team')
 
       expect(page).to have_content t('team.heading')
@@ -27,13 +30,24 @@ RSpec.describe 'New Team Page', type: :system do
       expect(page).to have_content t('team.errors.blank_name')
     end
 
-    it 'when name is not unique' do
+    it 'when team_type is not specified' do
       visit new_team_path
       fill_in 'team_name', with: team_name
       click_button t('team.new.create_team')
 
+      expect(page).to have_content t('team.new.heading')
+      expect(page).to have_content t('team.errors.team_type_invalid')
+    end
+
+    it 'when name is not unique' do
       visit new_team_path
       fill_in 'team_name', with: team_name
+      select team_type, from: "team_team_type"
+      click_button t('team.new.create_team')
+
+      visit new_team_path
+      fill_in 'team_name', with: team_name
+      select team_type, from: "team_team_type"
       click_button t('team.new.create_team')
 
       expect(page).to have_content t('team.new.heading')
@@ -49,6 +63,7 @@ RSpec.describe 'New Team Page', type: :system do
       )
       visit new_team_path
       fill_in 'team_name', with: team_name
+      select team_type, from: "team_team_type"
       click_button t('team.new.create_team')
 
       expect(page).to have_content t('team.new.heading')
@@ -62,6 +77,7 @@ RSpec.describe 'New Team Page', type: :system do
       )
       visit new_team_path
       fill_in 'team_name', with: team_name
+      select team_type, from: "team_team_type"
       click_button t('team.new.create_team')
 
       expect(page).to have_content t('team.new.heading')

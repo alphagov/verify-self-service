@@ -4,9 +4,10 @@ class NewTeamEvent < AggregatedEvent
   include AuthenticationBackend
 
   belongs_to_aggregate :team
-  data_attributes :name, :team_alias
+  data_attributes :name, :team_alias, :team_type
 
   validates_presence_of :name, message: I18n.t('team.errors.blank_name')
+  validates_presence_of :team_type, message: I18n.t('team.errors.team_type_invalid')
 
   validate :create_cognito_group
 
@@ -18,6 +19,7 @@ class NewTeamEvent < AggregatedEvent
     {
       name: name,
       team_alias: team_alias,
+      team_type: team_type,
       created_at: created_at,
     }
   end

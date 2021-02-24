@@ -55,4 +55,34 @@ RSpec.describe 'Update user Page', type: :system do
       expect(page).to have_content member_first_name + ' ' + member_family_name
     end
   end
+
+  context 'RP user' do
+    before(:each) do
+      login_rp_user
+      stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+    end
+
+    it 'shows team members' do
+      visit update_user_path(user_id: member_user_id)
+      expect(page).to have_title t('users.show.title', name: member_first_name + ' ' + member_family_name)
+      expect(page).to have_content member_first_name + ' ' + member_family_name
+      expect(page).to have_content t('users.roles.certmgr')
+      expect(page).to have_content t('users.roles.usermgr')
+    end
+  end
+
+  context 'IDP user' do
+    before(:each) do
+      login_idp_user
+      stub_cognito_response(method: :list_users_in_group, payload: cognito_users)
+    end
+
+    it 'shows team members' do
+      visit update_user_path(user_id: member_user_id)
+      expect(page).to have_title t('users.show.title', name: member_first_name + ' ' + member_family_name)
+      expect(page).to have_content member_first_name + ' ' + member_family_name
+      expect(page).to_not have_content t('users.roles.certmgr')
+      expect(page).to have_content t('users.roles.usermgr')
+    end
+  end
 end

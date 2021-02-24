@@ -37,10 +37,12 @@
               <span class="govuk-hint email-wrapper"><%= @user.email == member.email ? t('users.you') : member.email %></span>
             </h3>
             <% unless member.gds? %>
-              <span class="tick-cross-<%= member.cert_manager? ? 'tick' : 'cross' %>">
-                <span class="govuk-visually-hidden"><%= member.cert_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
-                <%= t 'users.roles.certmgr' %>
-              </span><br>
+              <% unless idp_team_user? %>
+                <span class="tick-cross-<%= member.cert_manager? ? 'tick' : 'cross' %>">
+                  <span class="govuk-visually-hidden"><%= member.cert_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
+                  <%= t 'users.roles.certmgr' %>
+                </span><br>
+              <% end %>
               <span class="tick-cross-<%= member.user_manager? ? 'tick' : 'cross' %>">
                 <span class="govuk-visually-hidden"><%= member.user_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
                 <%= t 'users.roles.usermgr' %>

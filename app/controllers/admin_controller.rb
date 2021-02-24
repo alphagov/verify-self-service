@@ -7,6 +7,7 @@ class AdminController < ApplicationController
     @services = Service.all
     @certificates = Certificate.all
     @teams = Team.all
+    @relying_parties, @identity_providers, @other = @teams.group_by(&:team_type).values_at(TEAMS::RP, TEAMS::IDP, TEAMS::OTHER)
   end
 
   def publish_metadata

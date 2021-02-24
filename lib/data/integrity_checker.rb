@@ -23,7 +23,7 @@ class IntegrityChecker
       else
         Rails.logger.warn("#{group.group_name} group does not have a corresponding team in DB! Creating...")
         name = group.description.present? ? group.description : group.group_name
-        NewTeamEvent.create(name: name)
+        NewTeamEvent.create(name: name, team_type: 'other')
       end
     end
   end

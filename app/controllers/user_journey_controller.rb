@@ -10,8 +10,9 @@ class UserJourneyController < ApplicationController
   before_action :dual_running, except: :index
   before_action :find_team_name
 
-
   def index
+    return redirect_to users_path if helpers.idp_team_user?
+
     if current_user.permissions.component_management
       @components = SpComponent.all + MsaComponent.all
     else
