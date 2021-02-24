@@ -1,39 +1,41 @@
 <%= link_to t('team.add_team'), new_team_path, class: "govuk-button" %>
 
-<% teams.reverse.each do |team| %>
-  <table class="govuk-table">
-    <caption class="govuk-table__caption" id="teams/<%= team.id %>">Team ID: <%= team.id %></caption>
-    <tbody class="govuk-table__body">
-      <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Name</th>
-        <td class="govuk-table__cell"><%= team.name %></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Alias</th>
-        <td class="govuk-table__cell"><%= team.team_alias %></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Team type</th>
-        <td class="govuk-table__cell"><%= team.team_type %></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Created</th>
-        <td class="govuk-table__cell"><%= team.created_at %></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">Updated</th>
-        <td class="govuk-table__cell"><%= team.updated_at %></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2">
-          <% unless team.team_alias == TEAMS::GDS %>
-            <%= link_to 'Delete', team_path(id: team.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'govuk-button govuk-button--warning' %>
-          <% end %>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+<% if !teams.nil? %>
+  <% teams.each do |team| %>
+    <table class="govuk-table">
+      <caption class="govuk-table__caption" id="teams/<%= team.id %>">Team ID: <%= team.id %></caption>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Name</th>
+          <td class="govuk-table__cell"><%= team.name %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Alias</th>
+          <td class="govuk-table__cell"><%= team.team_alias %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Team type</th>
+          <td class="govuk-table__cell"><%= team.team_type %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Created</th>
+          <td class="govuk-table__cell"><%= team.created_at %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Updated</th>
+          <td class="govuk-table__cell"><%= team.updated_at %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell govuk-table__cell--numeric" colspan="2">
+            <% unless team.team_alias == TEAMS::GDS %>
+              <%= link_to 'Delete', team_path(id: team.id), method: :delete, data: { confirm: 'Are you sure?' }, class: 'govuk-button govuk-button--warning' %>
+            <% end %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  <% end %>
 <% end %>
 
 
