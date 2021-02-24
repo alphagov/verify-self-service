@@ -1,6 +1,6 @@
 <%= link_to t('team.add_team'), new_team_path, class: "govuk-button" %>
 
-<% @teams.reverse.each do |team| %>
+<% teams.reverse.each do |team| %>
   <table class="govuk-table">
     <caption class="govuk-table__caption" id="teams/<%= team.id %>">Team ID: <%= team.id %></caption>
     <tbody class="govuk-table__body">
