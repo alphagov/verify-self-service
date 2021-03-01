@@ -11,7 +11,7 @@ class UserJourneyController < ApplicationController
   before_action :find_team_name
 
   def index
-    return redirect_to users_path if helpers.idp_team_user?
+    return redirect_to users_path if helpers.idp_team?(current_user&.team)
 
     if current_user.permissions.component_management
       @components = SpComponent.all + MsaComponent.all

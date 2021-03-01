@@ -74,7 +74,7 @@
               <span class="govuk-hint email-wrapper"><%= @user.email == member.email ? t('users.you') : member.email %></span>
             </h3>
             <% unless member.gds? %>
-              <% unless idp_team_user? %>
+              <% unless idp_team?(params[:team_id] || current_user&.team) %>
                 <span class="tick-cross-<%= member.cert_manager? ? 'tick' : 'cross' %>">
                   <span class="govuk-visually-hidden"><%= member.cert_manager? ? t('users.permissions.can') : t('users.permissions.cannot') %></span>
                   <%= t 'users.roles.certmgr' %>
@@ -89,7 +89,7 @@
           <td class="govuk-table__cell">
             <div class="align-member-status-right">
               <% if @user.email != member.email %>
-                  <%= link_to t('users.change_details'), update_user_path(member.user_id) %>
+                  <%= link_to t('users.change_details'), update_user_path(member.user_id, team_type: determine_team_type)%>
                 <% if @gds || (member.user_status?('FORCE_CHANGE_PASSWORD') || member.user_status?('RESET_REQUIRED')) %>
                   <p><%= t("users.status.#{member.status}") unless member.status == "CONFIRMED" %></p>
                 <% end %>

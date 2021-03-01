@@ -48,7 +48,7 @@
       <%= error_message_on(f.object.errors, :roles) if @form.errors.key?(:roles) %>
       <fieldset class="govuk-fieldset">
         <div class="govuk-checkboxes" id="invite_user_form_roles">
-          <% unless idp_team_user? %>
+          <% unless idp_team?(params[:team_id]) %>
             <div class="govuk-checkboxes__item">
               <%= f.check_box(:roles, { class: 'govuk-checkboxes__input', multiple: true }, ROLE::CERTIFICATE_MANAGER, nil) %>
               <%= f.label :roles, t("users.roles.#{ROLE::CERTIFICATE_MANAGER}"), class: 'govuk-label govuk-checkboxes__label' %>

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :user do
-    user_id { '000000'}
+    user_id { SecureRandom.uuid }
     first_name { 'John' }
     last_name  { 'Doe' }
     email { 'test@test.test' }

@@ -6,9 +6,12 @@ RSpec.describe 'New SP Component Page', type: :system do
     create_teams
   end
 
-  let(:entity_id) { 'http://test-entity-id' }
   let(:team) { create(:new_team_event).team }
-  let(:create_teams) { team }
+  let(:rp_team) { create(:new_team_event, team_type: 'rp').team }
+  let(:idp_team) { create(:new_team_event, team_type: 'idp').team }
+  let(:create_teams) { team
+                       idp_team
+                       rp_team }
 
   context 'creation is successful' do
     it 'when required input is specified' do
@@ -18,6 +21,22 @@ RSpec.describe 'New SP Component Page', type: :system do
       choose 'component_environment_staging'
       fill_in 'component_name', with: component_name
       select team.name, from: "component_team_id"
+      click_button 'Create SP component'
+
+      expect(current_path).to eql admin_path
+    end
+
+    it 'does not show IDP teams in team list' do
+      component_name = 'test component'
+      visit new_sp_component_path
+      choose 'component_component_type_vspcomponent', allow_label_click: true
+      choose 'component_environment_staging'
+      fill_in 'component_name', with: component_name
+      select team.name, from: "component_team_id"
+      choose('component_environment_staging')
+      expect(page).to have_content(team.name)
+      expect(page).to have_content(rp_team.name)
+      expect(page).to_not have_content(idp_team.name)
       click_button 'Create SP component'
 
       expect(current_path).to eql admin_path
