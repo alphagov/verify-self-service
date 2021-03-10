@@ -23,14 +23,12 @@ RSpec.describe UsersController, type: :controller do
                         {name: "custom:roles", value: "certmgr"}]}
   }
 
-
   context 'GDS User' do
     before(:each) do
       gdsuser_stub_auth
     end
 
     describe '#index' do
-
 
       it 'renders the page' do
         get :index
@@ -48,7 +46,6 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to render_template(:index)
         expect(response).to have_http_status(:success)
       end
-
     end
 
     describe '#show' do
@@ -456,6 +453,38 @@ RSpec.describe UsersController, type: :controller do
         expect(subject).to redirect_to(update_user_path(user_id: user_id))
         expect(flash[:error]).to eq(t('users.update.resend_invitation.error'))
         expect(flash[:success]).to be_nil
+      end
+    end
+  end
+
+  context 'GDS User CSV download' do
+    render_views
+    before(:each) do
+      gdsuser_stub_auth
+    end
+
+    let(:rp_team) { create(:team, team_type: 'rp') }
+
+    describe '#emails_csv' do
+      it 'returns success if request format is CSV' do
+        get :emails_csv, format: :csv, params: { team: TEAMS::RP }
+        expect(response).to have_http_status(:success)
+        expect(response.header['Content-Type']).to include 'text/csv'
+      end
+
+      it 'get expected headers in CSV' do
+        get :emails_csv, format: :csv, params: { team: TEAMS::RP }
+        csv_data = response.body
+        csv_headers = CSV.parse(csv_data)[0]
+        expected_headers = ['email address']
+        expect(csv_headers).to match_array(expected_headers)
+      end
+
+      it 'get expected data in csv' do
+        get :emails_csv, format: :csv, params: { team: TEAMS::RP }
+        csv_first_row = CSV.parse(response.body)[1][0]
+        expected_first_row = ['cherry.one@test.com']
+        expect(expected_first_row).to match_array(csv_first_row)
       end
     end
   end

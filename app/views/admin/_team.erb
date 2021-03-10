@@ -1,6 +1,6 @@
 <%= link_to t('team.add_team'), new_team_path, class: "govuk-button" %>
 
-<% teams&.each do |team| %>
+<% teams&.reverse&.each do |team| %>
   <table class="govuk-table">
     <caption class="govuk-table__caption" id="teams/<%= team.id %>">Team ID: <%= team.id %></caption>
     <tbody class="govuk-table__body">
@@ -14,7 +14,7 @@
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Team type</th>
-        <td class="govuk-table__cell"><%= team.team_type %></td>
+        <td class="govuk-table__cell"><%= team.team_type.upcase %></td>
       </tr>
       <tr class="govuk-table__row">
         <th scope="row" class="govuk-table__header">Created</th>

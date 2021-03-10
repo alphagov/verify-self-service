@@ -13,9 +13,15 @@ RSpec.describe 'Users Page', type: :system do
   let(:team_cherry) { create(:new_team_event) }
   let(:team_rp) { create(:new_team_event, team_type: 'rp') }
   let(:team_idp) { create(:new_team_event, team_type: 'idp') }
+  let(:team_other) { create(:new_team_event, team_type: 'other') }
+
   let(:create_teams) { team_apple
-                        team_banana
-                        team_cherry }
+                       team_banana
+                       team_cherry
+                       team_rp
+                       team_idp
+                       team_other
+                      }
   let(:cognito_users) {
   {users: [
       {username: "111",
@@ -62,6 +68,16 @@ RSpec.describe 'Users Page', type: :system do
       expect(page).to have_link(team_apple.name)
       expect(page).to have_link(team_banana.name)
       expect(page).to have_link(team_cherry.name)
+      expect(page).to have_link(team_rp.name)
+      expect(page).to have_link(team_idp.name)
+      expect(page).to have_link(team_other.name)
+    end
+
+    it 'shows links to download csv lists' do
+      visit users_path
+      expect(page).to have_content t('users.download_csv_list', team_type: TEAMS::RP.upcase)
+      expect(page).to have_content t('users.download_csv_list', team_type: TEAMS::IDP.upcase)
+      expect(page).to have_content t('users.download_csv_list', team_type: TEAMS::ALL.upcase)
     end
   end
 
@@ -115,6 +131,13 @@ RSpec.describe 'Users Page', type: :system do
         end
       end
     end
+
+    it 'does not shows links to download csv lists' do
+      visit users_path
+      expect(page).to_not have_content t('users.download_csv_list', team_type: TEAMS::RP.upcase)
+      expect(page).to_not have_content t('users.download_csv_list', team_type: TEAMS::IDP.upcase)
+      expect(page).to_not have_content t('users.download_csv_list', team_type: TEAMS::ALL.upcase)
+    end
   end
 
   context 'IDP User' do
@@ -140,6 +163,13 @@ RSpec.describe 'Users Page', type: :system do
           expect(page).to have_content((user[:attributes][3][:value].split(',').include?(ROLE::USER_MANAGER) ? 'Can' : 'Cannot' ) + ' ' + t('users.roles.usermgr'))
         end
       end
+    end
+
+    it 'does not shows links to download csv lists' do
+      visit users_path
+      expect(page).to_not have_content t('users.download_csv_list', team_type: TEAMS::RP.upcase)
+      expect(page).to_not have_content t('users.download_csv_list', team_type: TEAMS::IDP.upcase)
+      expect(page).to_not have_content t('users.download_csv_list', team_type: TEAMS::ALL.upcase)
     end
   end
 end

@@ -1,6 +1,7 @@
 require 'auth/authentication_backend'
 require 'notify/notification'
 require 'auth/temporary_password'
+require 'csv'
 
 class UsersController < ApplicationController
   include Notification
@@ -12,13 +13,12 @@ class UsersController < ApplicationController
   def index
     @user = current_user
     @gds = current_user.permissions.admin_management
-
     if @gds
       if params['team_id']
         @team = Team.find_by_id(params['team_id'])
         @team_members = get_users_in_group(group_name: @team.team_alias).map { |cognito_user| as_team_member(cognito_user: cognito_user) }
       else
-        @teams = Team.all
+        @rps, @idps, @other = Team.all.group_by(&:team_type).values_at(TEAMS::RP, TEAMS::IDP, TEAMS::OTHER)
       end
     else
       @team = Team.find_by_id(current_user.team)
@@ -147,6 +147,18 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
+  def emails_csv
+    emails = get_all_emails_for_users_in_teams(Team.retrieve_teams_by_type(params['team'] == TEAMS::ALL ? [TEAMS::IDP, TEAMS::RP] : params['team']))
+
+    csv_out_file = CSV.generate(headers: true) do |csv|
+      csv << ['email address']
+      emails.each do |email|
+        csv << [email]
+      end
+    end
+    send_data csv_out_file, filename: 'user-list.csv', type: 'text/csv'
+  end
+
 private
 
   def send_invite_email(user, temporary_password)
@@ -211,5 +223,10 @@ private
       flash[:success] = t('users.invite.success')
       redirect_to users_path
     end
+  end
+
+  def get_all_emails_for_users_in_teams(teams)
+    email_addresses = teams && teams.map { |team| team_recipients(team.team_alias) }.flatten(&:email) || []
+    email_addresses << t('user_journey.confirmation.support_email')
   end
 end
