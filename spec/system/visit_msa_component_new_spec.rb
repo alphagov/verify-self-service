@@ -8,7 +8,11 @@ RSpec.describe 'New MSA Component Page', type: :system do
 
   let(:entity_id) { SecureRandom.alphanumeric }
   let(:team) { create(:new_team_event).team }
-  let(:create_teams) { team }
+  let(:rp_team) { create(:new_team_event, team_type: 'rp').team }
+  let(:idp_team) { create(:new_team_event, team_type: 'idp').team }
+  let(:create_teams) { team
+                       idp_team
+                       rp_team }
   let(:msa_component) { create(:msa_component, entity_id: 'http://test-entity-id') }
 
   context 'creation is successful' do
@@ -20,6 +24,22 @@ RSpec.describe 'New MSA Component Page', type: :system do
       fill_in 'component_entity_id', with: entity
       select team.name, from: "component_team_id"
       choose('component_environment_staging')
+      click_button 'Create MSA component'
+
+      expect(current_path).to eql admin_path
+    end
+
+    it 'does not show IDP teams in team list' do
+      entity = entity_id
+      component_name = 'test component'
+      visit new_msa_component_path
+      fill_in 'component_name', with: component_name
+      fill_in 'component_entity_id', with: entity
+      select team.name, from: "component_team_id"
+      choose('component_environment_staging')
+      expect(page).to have_content(team.name)
+      expect(page).to have_content(rp_team.name)
+      expect(page).to_not have_content(idp_team.name)
       click_button 'Create MSA component'
 
       expect(current_path).to eql admin_path
