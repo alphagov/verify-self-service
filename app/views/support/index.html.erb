@@ -1,0 +1,31 @@
+<%= page_title 'Support' %>
+
+<main class="govuk-main-wrapper" id="main" role="main">
+  <div class="govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+          Support
+        </h1>
+        <div>
+          <h2 class="govuk-heading-m">
+            What to do when your service is experiencing issues
+          </h2>
+          <p class="govuk-body">
+            If there are disruptions to your service and you think they’re connected to Verify, your Matching Service Adapter or Verify Service Provider:
+          </p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>
+              check if there are any
+              <a href="https://verifystatus.digital.cabinet-office.gov.uk/" class="govuk-link">ongoing incidents</a>:
+              if it's a known issue with the platform, it will show there and we'll keep our users updated on how the incident is progressing
+            </li>
+            <li>
+              if there are no incidents, <a href="mailto:<%= @support_email %>" class="govuk-link">email our support team</a> with the details of the problem your service is experiencing
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

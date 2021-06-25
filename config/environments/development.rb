@@ -99,5 +99,6 @@ Rails.application.configure do
 
   config.scheduler_polling_interval =  ENV.fetch('SCHEDULER_POLLING_INTERVAL','5s')
   config.notify_key = ENV.fetch('NOTIFY_KEY', 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111')
+  config.support_email = ENV.fetch('SUPPORT_EMAIL', 'default@mail.com')
   config.app_url = ENV.fetch('APP_URL', 'localhost:3000')
 end
