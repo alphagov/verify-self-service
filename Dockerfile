@@ -17,8 +17,6 @@ RUN bundle install
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && apt-get install -y nodejs
 
-RUN npm install yarn -g
-
 ADD . /verify-self-service/
 
 WORKDIR /verify-self-service
