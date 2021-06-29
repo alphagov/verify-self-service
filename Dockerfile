@@ -1,4 +1,5 @@
-FROM ghcr.io/alphagov/verify/ruby:2.6.6
+ARG base_image=ruby:2.6.6
+FROM ${base_image}
 
 ADD Gemfile Gemfile
 ADD Gemfile.lock Gemfile.lock
