@@ -400,7 +400,6 @@ en:
         signing: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/service-provider-signing/#rotate-your-service-provider-signing-key-and-certificate
       connection_broken_or_compromised: https://www.docs.verify.service.gov.uk/emergency-procedures/#emergency-procedures
       rotation_documentation: https://www.docs.verify.service.gov.uk/rotating-your-keys-and-certificates/#rotating-your-keys-and-certificates
-      support: https://www.verify.service.gov.uk/support/
     dual_running:
       title: Dual running
       title_support_dual_running: Does your service provider support dual running?

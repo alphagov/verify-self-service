@@ -29,6 +29,11 @@ You can start the application with:
 
 `./startup.sh`
 
+Use these credentials when running Self-Service locally
+
+* email: any email address
+* password: any password with at least 8 characters
+
 ### Running the tests
 Test are run in docker environment pegged to use firefox-esr and can be run as follows:
 
