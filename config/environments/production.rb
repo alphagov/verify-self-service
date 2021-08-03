@@ -122,13 +122,13 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.aws_region = ENV.fetch('AWS_REGION')
-
   config.hub_environments = JSON.parse(ENV.fetch('HUB_ENVIRONMENTS'))
 
   config.cognito_client_id = ENV.fetch('AWS_COGNITO_CLIENT_ID')
   config.cognito_user_pool_id = ENV.fetch('AWS_COGNITO_USER_POOL_ID')
 
   config.notify_key = ENV.fetch('NOTIFY_KEY')
+  config.support_email = ENV.fetch('SUPPORT_EMAIL')
 
   config.app_url = ENV.fetch('APP_URL')
 

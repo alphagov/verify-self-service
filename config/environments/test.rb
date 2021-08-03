@@ -60,6 +60,7 @@ Rails.application.configure do
   config.cognito_user_pool_id = ENV['AWS_COGNITO_USER_POOL_ID']
   config.scheduler_polling_interval = ENV.fetch('SCHEDULER_POLLING_INTERVAL', '1s')
   config.notify_key = 'test-11111111-1111-1111-1111-111111111111-11111111-1111-1111-1111-111111111111'
+  config.support_email = 'test@mail.com'
   config.app_url = 'www.test.com'
 
   config.after_initialize do

@@ -1,6 +1,6 @@
 class UserRolePermissions
   attr_reader :admin_management, :component_management, :team_management, :user_management, :event_management,
-              :certificate_management, :read_components, :update_profile, :change_password
+              :certificate_management, :read_components, :update_profile, :change_password, :view_support
 
   def initialize(roles_str, email = nil)
     all_users
@@ -15,6 +15,7 @@ class UserRolePermissions
     "read_components = #{read_components}\n" \
     "update_profile = #{update_profile}\n" \
     "change_password = #{change_password}\n" \
+    "view_support = #{view_support}\n" \
     "certificate_management = #{certificate_management}\n" \
     "component_management = #{component_management}\n" \
     "team_management = #{team_management}\n" \
@@ -33,6 +34,7 @@ private
     @read_components = true
     @update_profile = true
     @change_password = true
+    @view_support = true
     @certificate_management = false
     @component_management = false
     @team_management = false
