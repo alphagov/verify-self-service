@@ -58,18 +58,19 @@ gem 'mimemagic', '~> 0.3.8'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'capybara'
+  gem 'capybara', '~> 3.35'  
   gem 'factory_bot_rails'
-  gem 'geckodriver-helper'
   gem 'rubocop-govuk'
   gem 'scss_lint-govuk'
   gem 'pry'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
-  gem 'rspec-rails', '>= 4.0.0.beta2'
-  gem 'selenium-webdriver'
+  gem 'rspec', '~> 3.10'
+  gem 'rspec-rails', '~> 5.0'
+  gem 'selenium-webdriver', '~> 3'
+  gem 'webdrivers', '~> 4.0'
+  gem 'webmock', require: false
   gem 'rotp'
-  gem 'webmock'
 end
 
 group :development do

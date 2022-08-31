@@ -31,7 +31,6 @@ RSpec.describe 'IndexPage', type: :system do
   end
 
   it 'shows greeting with JS', js: true do
-    WebMock.allow_net_connect!
     visit '/'
     expect(page).to have_content 'Manage certificates'
   end
