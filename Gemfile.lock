@@ -58,8 +58,6 @@ GEM
       zeitwerk (~> 2.2, >= 2.2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    archive-zip (0.12.0)
-      io-like (~> 0.3.0)
     ast (2.4.0)
     aws-eventstream (1.1.0)
     aws-partitions (1.296.0)
@@ -86,13 +84,14 @@ GEM
       msgpack (~> 1.0)
     builder (3.2.4)
     byebug (11.1.1)
-    capybara (3.32.1)
+    capybara (3.36.0)
       addressable
+      matrix
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
       rack (>= 1.6.0)
       rack-test (>= 0.6.3)
-      regexp_parser (~> 1.5)
+      regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
     childprocess (3.0.0)
     chunky_png (1.3.11)
@@ -108,7 +107,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    diff-lcs (1.3)
+    diff-lcs (1.5.0)
     dotenv (2.7.5)
     dotenv-rails (2.7.5)
       dotenv (= 2.7.5)
@@ -130,14 +129,11 @@ GEM
     fugit (1.3.4)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.1)
-    geckodriver-helper (0.24.0)
-      archive-zip (~> 0.7)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     hashdiff (1.0.1)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    io-like (0.3.1)
     jaro_winkler (1.5.4)
     jbuilder (2.10.0)
       activesupport (>= 5.0.0)
@@ -165,6 +161,7 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (1.0.1)
+    matrix (0.4.2)
     method_source (1.0.0)
     mimemagic (0.3.10)
       nokogiri (~> 1)
@@ -235,7 +232,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    regexp_parser (1.7.0)
+    regexp_parser (2.5.0)
     request_store (1.5.0)
       rack (>= 1.4)
     responders (3.0.0)
@@ -248,23 +245,27 @@ GEM
       chunky_png (~> 1.0)
       rqrcode_core (~> 0.1)
     rqrcode_core (0.1.2)
-    rspec-core (3.9.1)
-      rspec-support (~> 3.9.1)
-    rspec-expectations (3.9.1)
+    rspec (3.11.0)
+      rspec-core (~> 3.11.0)
+      rspec-expectations (~> 3.11.0)
+      rspec-mocks (~> 3.11.0)
+    rspec-core (3.11.0)
+      rspec-support (~> 3.11.0)
+    rspec-expectations (3.11.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.9.0)
-    rspec-mocks (3.9.1)
+      rspec-support (~> 3.11.0)
+    rspec-mocks (3.11.1)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.9.0)
-    rspec-rails (4.0.0)
-      actionpack (>= 4.2)
-      activesupport (>= 4.2)
-      railties (>= 4.2)
-      rspec-core (~> 3.9)
-      rspec-expectations (~> 3.9)
-      rspec-mocks (~> 3.9)
-      rspec-support (~> 3.9)
-    rspec-support (3.9.2)
+      rspec-support (~> 3.11.0)
+    rspec-rails (5.1.2)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
+      railties (>= 5.2)
+      rspec-core (~> 3.10)
+      rspec-expectations (~> 3.10)
+      rspec-mocks (~> 3.10)
+      rspec-support (~> 3.10)
+    rspec-support (3.11.0)
     rubocop (0.80.1)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
@@ -337,6 +338,10 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
+    webdrivers (4.7.0)
+      nokogiri (~> 1.6)
+      rubyzip (>= 1.3.0)
+      selenium-webdriver (> 3.141, < 5.0)
     webmock (3.8.3)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -356,14 +361,13 @@ DEPENDENCIES
   aws-sdk-s3
   bootsnap (>= 1.1.0)
   byebug
-  capybara
+  capybara (~> 3.35)
   colorize
   devise
   dotenv-rails
   email_validator
   factory_bot_rails
   faraday
-  geckodriver-helper
   jbuilder (~> 2.5)
   jwt
   kaminari (~> 1.2)
@@ -380,17 +384,19 @@ DEPENDENCIES
   request_store
   rotp
   rqrcode
-  rspec-rails (>= 4.0.0.beta2)
+  rspec (~> 3.10)
+  rspec-rails (~> 5.0)
   rubocop-govuk
   rufus-scheduler
   sassc-rails
   scss_lint-govuk
-  selenium-webdriver
+  selenium-webdriver (~> 3)
   sentry-raven
   spring
   spring-watcher-listen (~> 2.0.0)
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)
+  webdrivers (~> 4.0)
   webmock
 
 RUBY VERSION
