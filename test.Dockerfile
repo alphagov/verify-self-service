@@ -7,6 +7,7 @@ ADD Gemfile.lock Gemfile.lock
 # We're hoping adding this stops the pipeline breaking
 # see https://github.com/sass/sassc-ruby/issues/146
 RUN bundle config --local build.sassc --disable-march-tune-native \
+    && bundle config force_ruby_platform true \
     && bundle install \
     && wget https://dl.yarnpkg.com/debian/pubkey.gpg \
     && curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -y nodejs \
