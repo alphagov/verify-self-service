@@ -67,7 +67,7 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'rspec', '~> 3.10'
   gem 'rspec-rails', '~> 5.0'
-  gem 'selenium-webdriver', '~> 3'
+  gem 'selenium-webdriver', '~> 4'
   gem 'webdrivers', '~> 4.0'
   gem 'webmock', require: false
   gem 'rotp'
