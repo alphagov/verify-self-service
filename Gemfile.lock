@@ -116,7 +116,7 @@ GEM
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
-    email_validator (2.0.1)
+    email_validator (2.2.3)
       activemodel
     erubi (1.11.0)
     et-orbi (1.2.7)
