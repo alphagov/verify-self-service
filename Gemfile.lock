@@ -169,7 +169,7 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
-    mimemagic (0.3.10)
+    mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
     mini_mime (1.1.2)
@@ -376,7 +376,7 @@ DEPENDENCIES
   jwt
   kaminari (~> 1.2)
   listen (>= 3.0.5, < 3.8)
-  mimemagic (~> 0.3.8)
+  mimemagic (~> 0.4.3)
   notifications-ruby-client
   pg
   pry
