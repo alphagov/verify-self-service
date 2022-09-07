@@ -53,7 +53,7 @@ gem 'email_validator'
 gem 'sentry-raven'
 
 gem 'faraday'
-gem 'mimemagic', '~> 0.3.8'
+gem 'mimemagic', '~> 0.4.3'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
