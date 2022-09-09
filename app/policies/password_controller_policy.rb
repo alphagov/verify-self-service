@@ -2,6 +2,7 @@ class PasswordControllerPolicy < ApplicationPolicy
   attr_reader :user, :email
 
   def initialize(user, email)
+    super
     @user = user
     @email = email
   end

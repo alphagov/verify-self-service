@@ -2,6 +2,7 @@ class CertificatesControllerPolicy < ApplicationPolicy
   attr_reader :user, :certificate
 
   def initialize(user, certificate)
+    super
     @user = user
     @certificate = certificate
   end

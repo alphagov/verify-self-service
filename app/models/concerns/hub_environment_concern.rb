@@ -7,7 +7,6 @@ module HubEnvironmentConcern
   CERTIFICATES_SIGNING_ENDPOINT = "%{entity_id}/certs/signing".freeze
 
   def hub_environment(environment, value)
-    environment = environment
     value = value.to_s
     Rails.configuration.hub_environments.fetch(environment)[value]
   rescue KeyError

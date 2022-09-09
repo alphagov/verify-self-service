@@ -4,6 +4,7 @@ class MemberPolicy < ApplicationPolicy
   attr_reader :user, :object
 
   def initialize(user, object)
+    super
     @user = user
     @object = object
   end

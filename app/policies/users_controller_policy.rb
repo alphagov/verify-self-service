@@ -2,6 +2,7 @@ class UsersControllerPolicy < ApplicationPolicy
   attr_reader :user, :event
 
   def initialize(user, event)
+    super
     @user = user
     @event = event
   end

@@ -1,4 +1,4 @@
-class JwksLoaderStub < JwksLoader
+class JwksLoaderStub
   attr_reader :jwk
 
   def initialize(cognito_jwk_private_key)

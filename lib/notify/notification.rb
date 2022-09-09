@@ -30,7 +30,7 @@ module Notification
 
   def send_reminder_email(email_address:, team_name:, days_left:, certificates:)
     expiry_date = (Time.now + days_left.days).strftime("%d %B %Y")
-    subject = days_left == 3 ? "Urgent: #{REMINDER_TEMPLATE_SUBJECT}" % expiry_date : (REMINDER_TEMPLATE_SUBJECT % expiry_date).sub(/^./, &:upcase)
+    subject = days_left == 3 ? sprintf("Urgent: #{REMINDER_TEMPLATE_SUBJECT}", expiry_date) : (REMINDER_TEMPLATE_SUBJECT % expiry_date).sub(/^./, &:upcase)
     mail_client.send_email(
       email_address: email_address,
       template_id: REMINDER_TEMPLATE,
