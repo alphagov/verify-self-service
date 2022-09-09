@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :cert do
+  factory :cert, class: 'Certificate' do
     value { PKI.new.generate_encoded_cert(expires_in: 9.months) }
     in_use_at { nil }
     notification_sent { false }
