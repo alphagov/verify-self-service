@@ -2,6 +2,7 @@ require 'rufus-scheduler'
 module Polling
   class Scheduler
     attr_reader :rufus_scheduler, :job, :time, :opts
+
     DEFAULT_TIMEOUT = '100.0s'.freeze
     DEFAULT_NUMBER_POLLS = 8
     # MAX_WORK_THREADS is set to a value substantially lower than db connection pool, so rufus is limited to creating only 2 connections from the pool
@@ -13,14 +14,14 @@ module Polling
     end
 
     def mode(mode, time = Rails.configuration.scheduler_polling_interval)
-    # @mode is any of kind of rufus-scheduler job i.e in, at, every, interval and cron jobs
+      # @mode is any of kind of rufus-scheduler job i.e in, at, every, interval and cron jobs
       @mode = mode
       @time = time
       self
     end
 
     def perform(action = -> {})
-      #rufus starts a new thread for every job, active record does not share connection between threads
+      # rufus starts a new thread for every job, active record does not share connection between threads
       # below allows the connection in the rufus thread to be released back to the pool when the thread is done
       ActiveRecord::Base.connection_pool.with_connection do
         @job = @rufus_scheduler.method("schedule_#{@mode}")

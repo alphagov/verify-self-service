@@ -22,7 +22,7 @@ class StorageRegistrar
 
   def register_dev_client
     s3_client = Aws::S3::Client.new(stub_responses: true)
-    s3_client.stub_responses(:put_object, ->(context) {
+    s3_client.stub_responses(:put_object, lambda { |context|
       Rails.logger.info(JSON.parse(context.params[:body].string))
     })
 

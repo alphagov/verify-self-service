@@ -58,7 +58,7 @@ class InitialSeeder
   end
 
   def add_gds_users_to_group(gds_users = @gds_users)
-    gds_users.each { |user|
+    gds_users.each do |user|
       user_email = user.attributes.find { |att| att.name == 'email' }
       if user_email.value.end_with?(TEAMS::GDS_EMAIL_DOMAIN)
         Rails.logger.info("Adding user #{user.username} to the GDS group.")
@@ -66,7 +66,7 @@ class InitialSeeder
       else
         Rails.logger.warn("Skipping user #{user.username} from being added GDS group - non-GDS email (#{user_email.value})")
       end
-    }
+    end
   end
 
   def create_gds_group

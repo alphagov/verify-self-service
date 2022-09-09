@@ -3,8 +3,8 @@ class SessionsController < Devise::SessionsController
 
   layout 'full_width_layout'
 
-  before_action :load_secret_code, only: %i(create new)
-  before_action :challenge_flash_messages, only: %i(create new)
+  before_action :load_secret_code, only: %i[create new]
+  before_action :challenge_flash_messages, only: %i[create new]
 
   def create
     return render :new if params['user'].blank?

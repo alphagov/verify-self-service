@@ -158,6 +158,6 @@ private
   end
 
   def errors_present?
-    (%i(certificate value cert_file) & @upload.errors.attribute_names).any?
+    (%i[certificate value cert_file] & @upload.errors.attribute_names).any?
   end
 end

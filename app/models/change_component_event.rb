@@ -37,7 +37,7 @@ private
       when "entity_id"
         errors.add(:entity_id, I18n.t('components.errors.missing_entity_id')) unless value[1].present?
       else
-        raise NotImplementedError.new("Attribute #{attribute} is unexpected or missing validation")
+        raise NotImplementedError, "Attribute #{attribute} is unexpected or missing validation"
       end
     end
   end

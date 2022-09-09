@@ -12,7 +12,6 @@ class NewSpComponentEvent < AggregatedEvent
                          in: [COMPONENT_TYPE::SP, COMPONENT_TYPE::VSP],
                          message: I18n.t('components.errors.invalid_type')
 
-
   def build_sp_component
     SpComponent.new
   end

@@ -1,7 +1,7 @@
 require 'auth/jwks_loader_stub'
 
 class CognitoStubClient
-  # TODO Turn stub_user_hash into a JWT token which
+  # TODO: Turn stub_user_hash into a JWT token which
   # can be returned by the stub client
   def self.stub_user_hash(role:, email_domain: "test.com", groups: %w[devs])
     {
@@ -41,11 +41,11 @@ class CognitoStubClient
   end
 
   def self.stub_gds_user_hash
-    self.stub_user_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN)
+    stub_user_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN)
   end
 
   def self.stub_gds_user_info
-    self.stub_user_info_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN)
+    stub_user_info_hash(role: ROLE::GDS, email_domain: TEAMS::GDS_EMAIL_DOMAIN)
   end
 
   def self.setup_user(user_hash, user_info)

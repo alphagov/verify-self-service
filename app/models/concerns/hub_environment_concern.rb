@@ -16,11 +16,11 @@ module HubEnvironmentConcern
   end
 
   def encryption_cert_path(environment, entity_id)
-    { environment: environment, url: [hub_environment(environment, :hub_config_host), CERTIFICATES_ROUTE, CERTIFICATE_ENCRYPTION_ENDPOINT % { entity_id: CGI.escape(entity_id) }].join }
+    { environment: environment, url: [hub_environment(environment, :hub_config_host), CERTIFICATES_ROUTE, sprintf(CERTIFICATE_ENCRYPTION_ENDPOINT, entity_id: CGI.escape(entity_id))].join }
   end
 
   def signing_certs_path(environment, entity_id)
-    { environment: environment, url: [hub_environment(environment, :hub_config_host), CERTIFICATES_ROUTE, CERTIFICATES_SIGNING_ENDPOINT % { entity_id: CGI.escape(entity_id) }].join }
+    { environment: environment, url: [hub_environment(environment, :hub_config_host), CERTIFICATES_ROUTE, sprintf(CERTIFICATES_SIGNING_ENDPOINT, entity_id: CGI.escape(entity_id))].join }
   end
 
   def healthcheck_path(environment)

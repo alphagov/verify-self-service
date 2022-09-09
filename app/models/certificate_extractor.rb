@@ -32,14 +32,14 @@ private
   end
 
   def file_content_type
-    unless VALID_CONTENT_TYPES.include?(params[:certificate].dig(:cert_file)&.content_type)
+    unless VALID_CONTENT_TYPES.include?(params[:certificate][:cert_file]&.content_type)
       errors.add(:cert_file, I18n.t('certificates.errors.invalid_file_type'))
     end
   end
 
   def contents
     @contents ||= begin
-      tempfile = params[:certificate].dig(:cert_file)&.tempfile
+      tempfile = params[:certificate][:cert_file]&.tempfile
       to_x509(File.read(tempfile)) if tempfile
     end
   rescue OpenSSL::X509::CertificateError

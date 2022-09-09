@@ -38,7 +38,7 @@ class AggregatedEvent < Event
   end
 
   def strip_entity_id
-    self.entity_id = self.entity_id.strip unless self.entity_id.nil?
+    self.entity_id = entity_id.strip unless entity_id.nil?
   end
 
 private
