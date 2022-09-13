@@ -2,6 +2,7 @@ class MfaControllerPolicy < ApplicationPolicy
   attr_reader :user, :mfa_controller
 
   def initialize(user, mfa_controller)
+    super
     @user = user
     @mfa_controller = mfa_controller
   end

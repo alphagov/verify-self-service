@@ -7,6 +7,7 @@ class PublishServicesMetadataEvent < Event
   include HubEnvironmentConcern
   include Notification
   attr_reader :metadata
+
   data_attributes :event_id, :services_metadata, :environment
   validates_presence_of :event_id
   before_create :populate_data_attributes

@@ -36,10 +36,8 @@ class NewTeamEvent < AggregatedEvent
   end
 
   def team_alias
-    @team_alias ||= begin
-      unless name.blank?
-        name.delete(' ').strip.match(TEAMS::GROUP_NAME_REGEX)[0]
-      end
-    end
+    @team_alias ||= unless name.blank?
+                      name.delete(' ').strip.match(TEAMS::GROUP_NAME_REGEX)[0]
+                    end
   end
 end

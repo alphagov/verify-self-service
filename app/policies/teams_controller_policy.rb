@@ -2,6 +2,7 @@ class TeamsControllerPolicy < ApplicationPolicy
   attr_reader :user, :team_controller
 
   def initialize(user, team_controller)
+    super
     @user = user
     @team_controller = team_controller
   end

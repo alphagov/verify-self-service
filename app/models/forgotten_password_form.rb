@@ -2,6 +2,7 @@ class ForgottenPasswordForm
   include ActiveModel::Model
 
   attr_reader :email
+
   validates_presence_of :email
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
 

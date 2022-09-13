@@ -35,7 +35,7 @@ module AuthenticationBackend
     end
     return process_response(cognito_response: resp, params: params) if resp.present?
 
-    raise AuthenticationBackendException.new("No Response Back from Authentication Service to process")
+    raise AuthenticationBackendException, "No Response Back from Authentication Service to process"
   end
 
   def request_password_reset(params)
@@ -61,16 +61,16 @@ module AuthenticationBackend
       username: params[:email],
       confirmation_code: params[:code],
       password: params[:password],
-      )
+    )
   rescue Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
-    raise InvalidConfirmationCodeException.new(e)
+    raise InvalidConfirmationCodeException, e
   rescue Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
-    raise InvalidNewPasswordException.new(e)
+    raise InvalidNewPasswordException, e
   rescue Aws::CognitoIdentityProvider::Errors::ExpiredCodeException => e
-    raise ExpiredConfirmationCodeException.new(e)
+    raise ExpiredConfirmationCodeException, e
   rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
     Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
-    raise UserNotFoundException.new(e)
+    raise UserNotFoundException, e
   end
 
   def admin_reset_user_password(username:)
@@ -80,9 +80,9 @@ module AuthenticationBackend
     )
   rescue Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
     Rails.logger.error("User #{params[:email]} is not present but is trying to reset their password")
-    raise UserNotFoundException.new(e)
+    raise UserNotFoundException, e
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def create_group(name:, description:)
@@ -92,11 +92,11 @@ module AuthenticationBackend
       user_pool_id: user_pool_id,
     )
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   rescue Aws::CognitoIdentityProvider::Errors::GroupExistsException => e
-    raise GroupExistsException.new(e)
+    raise GroupExistsException, e
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def delete_group(name:)
@@ -108,7 +108,7 @@ module AuthenticationBackend
     Rails.logger.warn('The group does not exist/already been deleted')
     {}
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def delete_user(username:)
@@ -117,7 +117,7 @@ module AuthenticationBackend
       user_pool_id: user_pool_id,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   # Returns a secret shared code to associate a TOTP app/device with
@@ -125,7 +125,7 @@ module AuthenticationBackend
     associate = client.associate_software_token(access_token: access_token)
     associate.secret_code
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new("Error occurred associating device with error #{e.message}")
+    raise AuthenticationBackendException, "Error occurred associating device with error #{e.message}"
   end
 
   def add_user(email:, given_name:, family_name:, roles:, temporary_password:)
@@ -157,12 +157,12 @@ module AuthenticationBackend
       ],
       username: email,
       user_pool_id: user_pool_id,
-  )
+    )
   rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException,
          Aws::CognitoIdentityProvider::Errors::UsernameExistsException => e
-    raise UsernameExistsException.new(e)
+    raise UsernameExistsException, e
   rescue StandardError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def resend_invite(username:, temporary_password:)
@@ -171,9 +171,9 @@ module AuthenticationBackend
       permanent: false,
       username: username,
       user_pool_id: user_pool_id,
-  )
+    )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def add_user_to_group(username:, group:)
@@ -183,7 +183,7 @@ module AuthenticationBackend
       group_name: group,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def get_users(limit: 60)
@@ -192,7 +192,7 @@ module AuthenticationBackend
       limit: limit,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def get_user_by_email(email:)
@@ -209,8 +209,8 @@ module AuthenticationBackend
 
   def get_users_in_group(group_name:, limit: 60)
     client.list_users_in_group(user_pool_id: user_pool_id,
-        group_name: group_name,
-        limit: limit).users
+                               group_name: group_name,
+                               limit: limit).users
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError
     []
   end
@@ -231,9 +231,9 @@ module AuthenticationBackend
       ],
     )
   rescue Aws::CognitoIdentityProvider::Errors::AliasExistsException => e
-    raise UsernameExistsException.new(e)
+    raise UsernameExistsException, e
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def update_user_name(access_token:, given_name:, family_name:)
@@ -245,7 +245,7 @@ module AuthenticationBackend
       ],
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def list_groups(limit: 60)
@@ -258,7 +258,7 @@ module AuthenticationBackend
   def get_user(user_id:)
     client.admin_get_user(user_pool_id: user_pool_id, username: user_id)
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException, e.message
   end
 
   def update_user_roles(user_id:, roles:)
@@ -268,16 +268,16 @@ module AuthenticationBackend
       user_attributes: [{ name: "custom:roles", value: roles.join(',') }],
     )
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e.message)
+    raise AuthenticationBackendException, e.message
   end
 
-  def find_users_by_role(limit: 60, role:)
+  def find_users_by_role(role:, limit: 60)
     users = get_users(limit: limit)
-    users.users.select { |user|
-      user.attributes.find { |att|
+    users.users.select do |user|
+      user.attributes.find do |att|
         att.name == 'custom:roles' && att.value.include?(role)
-      }
-    }
+      end
+    end
   end
 
   def get_group(group_name:)
@@ -286,16 +286,16 @@ module AuthenticationBackend
       user_pool_id: user_pool_id,
     )
   rescue Aws::CognitoIdentityProvider::Errors::ResourceNotFoundException => e
-    raise UserGroupNotFoundException.new(e)
+    raise UserGroupNotFoundException, e
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def authentication_backend_status
     client.describe_user_pool(user_pool_id: user_pool_id)
     OK
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def change_password(new_password:, current_password:, access_token:)
@@ -305,12 +305,12 @@ module AuthenticationBackend
       access_token: access_token,
     )
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
-    raise InvalidOldPasswordError.new(e)
+    raise InvalidOldPasswordError, e
   rescue Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
-    raise InvalidNewPasswordException.new(e)
+    raise InvalidNewPasswordException, e
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
     Rails.logger.warn "An unknown cognito error occured with message: #{e}"
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
   def as_team_member(cognito_user:)
@@ -349,9 +349,9 @@ module AuthenticationBackend
       user_code: code,
     ).status
   rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException => e
-    raise InvalidConfirmationCodeException.new(e)
+    raise InvalidConfirmationCodeException, e
   rescue Aws::CognitoIdentityProvider::Errors::ServiceError => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   end
 
 private
@@ -407,14 +407,14 @@ private
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException,
          Aws::CognitoIdentityProvider::Errors::UserNotFoundException => e
     if e.message == 'Temporary password has expired and must be reset by an administrator.'
-      raise TemporaryPasswordExpiredException.new(e)
+      raise TemporaryPasswordExpiredException, e
     else
-      raise NotAuthorizedException.new(e)
+      raise NotAuthorizedException, e
     end
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException => e
-    raise AuthenticationBackendException.new(e)
+    raise AuthenticationBackendException, e
   rescue Aws::CognitoIdentityProvider::Errors::PasswordResetRequiredException
-    raise PasswordResetRequiredException.new
+    raise PasswordResetRequiredException
   end
 
   # Returns an authentication response normally with JWT
@@ -431,14 +431,14 @@ private
     when 'MFA_SETUP'
       mfa_setup_response(params, challenge_name, challenge_responses)
     else
-      raise AuthenticationBackendException.new("Unknown challenge_name returned by cognito.  Challenge name returned: #{challenge_name}")
+      raise AuthenticationBackendException, "Unknown challenge_name returned by cognito.  Challenge name returned: #{challenge_name}"
     end
   rescue Aws::CognitoIdentityProvider::Errors::EnableSoftwareTokenMFAException,
          Aws::CognitoIdentityProvider::Errors::InvalidPasswordException => e
     response_hash(params, e)
   rescue Aws::CognitoIdentityProvider::Errors::InvalidParameterException,
          Aws::CognitoIdentityProvider::Errors::CodeMismatchException => e
-    raise NotAuthorizedException.new(e)
+    raise NotAuthorizedException, e
   end
 
   def send_challenge(session:, challenge_name:, challenge_responses:)
@@ -478,7 +478,7 @@ private
     challenge_responses.merge!('SOFTWARE_TOKEN_MFA_CODE': params[:totp_code])
     send_challenge(session: params[:cognito_session_id], challenge_name: challenge_name, challenge_responses: challenge_responses)
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
-    raise UserSessionTimeOutException.new(e)
+    raise UserSessionTimeOutException, e
   end
 
   def mfa_setup_response(params, challenge_name, challenge_responses)
@@ -489,9 +489,9 @@ private
       set_mfa_preferences(access_token: resp.authentication_result[:access_token]) unless resp.authentication_result[:access_token].nil?
       resp
     else
-      raise AuthenticationBackendException.new("Unknown status returned by cognito when verifying software token.  Status returned: #{totp_resp.status}")
+      raise AuthenticationBackendException, "Unknown status returned by cognito when verifying software token.  Status returned: #{totp_resp.status}"
     end
   rescue Aws::CognitoIdentityProvider::Errors::NotAuthorizedException => e
-    raise QRCodeExpiredException.new(e)
+    raise QRCodeExpiredException, e
   end
 end

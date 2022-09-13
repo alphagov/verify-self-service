@@ -9,7 +9,7 @@ class CognitoChooser
     elsif aws_access_key.present? && aws_secret_key.present? && Rails.env != 'test'
       Rails.logger.info "choosing dev client"
       register_dev_client
-    elsif %w(test development).include? Rails.env
+    elsif %w[test development].include? Rails.env
       Rails.logger.info "choosing stub client"
       register_stub_client
       CognitoStubClient.register_jwks

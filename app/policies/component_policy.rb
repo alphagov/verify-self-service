@@ -2,6 +2,7 @@ class ComponentPolicy < ApplicationPolicy
   attr_reader :user, :component, :msa_component, :sp_component
 
   def initialize(user, component)
+    super
     @user = user
     @component = component
     @msa_component = component

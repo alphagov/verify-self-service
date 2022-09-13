@@ -2,9 +2,7 @@ module TemporaryPassword
   MINIMUM_PASSWORD_LENGTH = 12
   def create_temporary_password
     temporary_password = ''
-    until password_meets_criteria?(temporary_password) do
-      temporary_password = generate_password
-    end
+    temporary_password = generate_password until password_meets_criteria?(temporary_password)
     temporary_password
   end
 

@@ -17,9 +17,9 @@ class CertificateInUseEvent < AggregatedEvent
     Rails.logger.error("No recipients found for #{certificate.component.team.name}!") if recipients.empty?
     mail_client = Notifications::Client.new(Rails.configuration.notify_key)
 
-    recipients.each { |email|
+    recipients.each do |email|
       send_notification_email(mail_client: mail_client, certificate: certificate, email_address: email)
-    }
+    end
 
     CertificateNotificationSentEvent.create(certificate: certificate)
   rescue Notifications::Client::RequestError => e

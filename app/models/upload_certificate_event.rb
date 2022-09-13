@@ -21,11 +21,11 @@ class UploadCertificateEvent < AggregatedEvent
 
   def attributes_to_apply
     {
-      usage: self.usage,
-      value: self.value,
-      component_id: self.component_id,
-      component_type: self.component_type,
-      created_at: self.created_at,
+      usage: usage,
+      value: value,
+      component_id: component_id,
+      component_type: component_type,
+      created_at: created_at,
     }
   end
 
@@ -58,7 +58,7 @@ private
   end
 
   def upload_max_2_signing_certificates
-    return if self.usage == CERTIFICATE_USAGE::ENCRYPTION
+    return if usage == CERTIFICATE_USAGE::ENCRYPTION
     return if component.enabled_signing_certificates.count < 2
 
     errors.add(:certificate, I18n.t('certificates.errors.cannot_publish'))

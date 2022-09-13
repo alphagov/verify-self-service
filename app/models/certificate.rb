@@ -5,7 +5,7 @@ class Certificate < Aggregate
   belongs_to :component, polymorphic: true
 
   def to_metadata
-    { name: x509.subject.to_s, value: self.value }
+    { name: x509.subject.to_s, value: value }
   end
 
   def encryption?

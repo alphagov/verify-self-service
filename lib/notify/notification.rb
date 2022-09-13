@@ -23,14 +23,14 @@ module Notification
         url: url,
         temporary_password: temporary_password,
       },
-     )
+    )
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end
 
   def send_reminder_email(email_address:, team_name:, days_left:, certificates:)
     expiry_date = (Time.now + days_left.days).strftime("%d %B %Y")
-    subject = days_left == 3 ? "Urgent: #{REMINDER_TEMPLATE_SUBJECT}" % expiry_date : (REMINDER_TEMPLATE_SUBJECT % expiry_date).sub(/^./, &:upcase)
+    subject = days_left == 3 ? sprintf("Urgent: #{REMINDER_TEMPLATE_SUBJECT}", expiry_date) : (REMINDER_TEMPLATE_SUBJECT % expiry_date).sub(/^./, &:upcase)
     mail_client.send_email(
       email_address: email_address,
       template_id: REMINDER_TEMPLATE,
@@ -43,7 +43,7 @@ module Notification
         certificates: certificates,
         url: url,
       },
-     )
+    )
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end
@@ -55,7 +55,7 @@ module Notification
       personalisation: {
         new_name: new_name,
       },
-     )
+    )
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end
@@ -67,7 +67,7 @@ module Notification
       personalisation: {
         first_name: first_name,
       },
-     )
+    )
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end
@@ -79,7 +79,7 @@ module Notification
       personalisation: {
         first_name: first_name,
       },
-     )
+    )
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end
@@ -92,7 +92,7 @@ module Notification
         first_name: first_name,
         reset_url: "[#{url}#{reset_password_path}](#{url}#{reset_url})",
       },
-     )
+    )
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end
@@ -107,7 +107,7 @@ module Notification
         user_email: user.email,
         user_team: team.name,
       },
-     )
+    )
   rescue Notifications::Client::RequestError => e
     Rails.logger.error(e.message)
   end

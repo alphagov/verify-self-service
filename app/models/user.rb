@@ -3,8 +3,8 @@ require_relative 'remote_authenticatable'
 class User
   include ActiveModel::Serialization
   include ActiveModel::AttributeAssignment
-  include ActiveModel::Validations #required because some before_validations are defined in devise
-  extend ActiveModel::Callbacks #required to define callbacks
+  include ActiveModel::Validations # required because some before_validations are defined in devise
+  extend ActiveModel::Callbacks # required to define callbacks
   extend Devise::Models
 
   # create getter and setter methods internally for the fields below
@@ -13,7 +13,7 @@ class User
                 :first_name, :phone_number, :user_id, :login_id, :password, :new_password,
                 :totp_code, :permissions, :session_start_time, :team, :cognito_groups, :secret_code
 
-  #required by Devise
+  # required by Devise
   define_model_callbacks :validation
 
   devise :remote_authenticatable, :timeoutable
@@ -33,6 +33,6 @@ class User
   end
 
   def full_name
-    first_name + " " + last_name
+    "#{first_name} #{last_name}"
   end
 end

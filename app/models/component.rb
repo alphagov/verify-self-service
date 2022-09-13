@@ -3,19 +3,19 @@ class Component < Aggregate
   self.abstract_class = true
 
   has_many :signing_certificates,
-           -> {
+           lambda {
              where(usage: CERTIFICATE_USAGE::SIGNING)
            }, class_name: 'Certificate', as: :component
   has_many :encryption_certificates,
-           -> {
+           lambda {
              where(usage: CERTIFICATE_USAGE::ENCRYPTION).order(created_at: :desc)
            }, class_name: 'Certificate', as: :component
   has_many :enabled_signing_certificates,
-           -> {
+           lambda {
              where(usage: CERTIFICATE_USAGE::SIGNING, enabled: true).order(created_at: :desc)
            }, class_name: 'Certificate', as: :component
   has_many :disabled_signing_certificates,
-           -> {
+           lambda {
              where(usage: CERTIFICATE_USAGE::SIGNING, enabled: false)
            }, class_name: 'Certificate', as: :component
 
@@ -44,7 +44,7 @@ class Component < Aggregate
   end
 
   def self.all_components_for_metadata(environment)
-    self.where(environment: environment)
+    where(environment: environment)
         .includes(:services)
         .includes(:enabled_signing_certificates)
         .includes(:encryption_certificate)

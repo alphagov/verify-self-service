@@ -18,10 +18,11 @@ class ProfileController < ApplicationController
   end
 
   def switch_client
-    if params[:client] == 'cognito'
+    case params[:client]
+    when 'cognito'
       CognitoStubClient.switch_to_cognito
       flash[:notice] = 'Switched to Cognito Auth Client'
-    elsif params[:client] == 'stub'
+    when 'stub'
       CognitoStubClient.switch_to_stub
       flash[:notice] = 'Switched to Stub Auth Client'
     end
@@ -99,7 +100,7 @@ class ProfileController < ApplicationController
     if @form.valid?
       update_user_name(access_token: current_user.access_token, given_name: @form.first_name, family_name: @form.last_name)
       UpdateUserNameEvent.create(data: { first_name: @form.first_name, last_name: @form.last_name })
-      send_changed_name_email(email_address: current_user.email, new_name: @form.first_name + ' ' + @form.last_name)
+      send_changed_name_email(email_address: current_user.email, new_name: "#{@form.first_name} #{@form.last_name}")
       redirect_to profile_path
     else
       @user = current_user

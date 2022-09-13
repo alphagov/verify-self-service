@@ -43,7 +43,7 @@ module Support
                 (
                    message.include?('ActionController::RoutingError') ||
                    message == UNLABELED_EVENT
-                )
+                 )
             )
         end
       end

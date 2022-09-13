@@ -39,11 +39,11 @@ module CertificateExpiryReminder
     end
 
     def find_certs(expiration_periods)
-      Certificate.where('enabled = ?', true).select { |c|
+      Certificate.where('enabled = ?', true).select do |c|
         expiration_periods.include?(c.days_left) &&
           c.component.present? &&
           c.component.active_cert?(c)
-      }
+      end
     end
 
     def group_by_team(certificates)
