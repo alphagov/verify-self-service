@@ -1,0 +1,56 @@
+name: Pre-merge checks
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.6.6"
+
+      - uses: browser-actions/setup-firefox@latest
+
+      - name: check firefox
+        run: "firefox --version"
+
+      - name: "Install rails dependencies"
+        run: "bundle install --frozen"
+
+      - name: "Install js dependencies"
+        run: "yarn install --frozen-lockfile"
+
+      - name: "Test with RSpec"
+        env:
+          DATABASE_URL: "postgres://postgres@localhost:5432/vss_test"
+          RAILS_ENV: test
+        run: |
+            cp config/database.yml.github-actions config/database.yml
+            bundle exec rails db:setup
+            bundle exec rails db:migrate
+            bundle exec rspec
+
+      - name: "Run tests"
+        env:
+          DATABASE_URL: "postgres://postgres@localhost:5432/vss_test"
+          RAILS_ENV: test
+        run: |
+            bundle exec rails db:migrate:reset
+            bundle exec rails db:seed
+            bundle exec rake
