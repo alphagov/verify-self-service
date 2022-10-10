@@ -66,7 +66,7 @@ group :development, :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec', '~> 3.10'
-  gem 'rspec-rails', '~> 5.0'
+  gem 'rspec-rails', '~> 6.0'
   gem 'selenium-webdriver', '~> 4'
   gem 'webdrivers', '~> 5.0'
   gem 'webmock', require: false
