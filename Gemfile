@@ -8,7 +8,7 @@ gem 'rails', '~> 6.1.7'
 # Use postgres as the database for Active Record
 gem 'pg'
 # Use Puma as the app server
-gem 'puma', '~> 6.0'
+gem 'puma', '~> 5.6.5'
 # Use SCSS for stylesheets
 gem 'sassc-rails'
 # Use Uglifier as compressor for JavaScript assets
@@ -58,7 +58,7 @@ gem 'mimemagic', '~> 0.4.3'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'capybara', '~> 3.35'  
+  gem 'capybara', '~> 3.35'
   gem 'factory_bot_rails'
   gem 'rubocop-govuk'
   gem 'scss_lint-govuk'
