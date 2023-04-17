@@ -12,7 +12,8 @@ RUN bundle config --local build.sassc --disable-march-tune-native \
     && bundle install \
     && wget https://dl.yarnpkg.com/debian/pubkey.gpg \
     && curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -y nodejs \
-    && cat pubkey.gpg | apt-key add - \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
+    # && cat pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update -qq \
     && apt-get upgrade -y \
