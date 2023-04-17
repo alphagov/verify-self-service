@@ -15,6 +15,7 @@ ENV RAILS_SERVE_STATIC_FILES true
 RUN bundle config --local build.sassc --disable-march-tune-native
 RUN bundle install
 
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && apt-get install -y nodejs
 
 ADD . /verify-self-service/
