@@ -1,6 +1,8 @@
 # Verify Self Service Platform
 
-[![Build Status](https://travis-ci.org/alphagov/verify-self-service.svg?branch=master)](https://travis-ci.org/alphagov/verify-self-service)
+>**GOV.UK Verify has closed**
+>
+>This repository is out of date and has been archived
 
 A Ruby on Rails application for the Verify self-service configuration management
 platform.
